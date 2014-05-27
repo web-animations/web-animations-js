@@ -20,6 +20,7 @@
     this.source = source;
     this.paused = false;
     this.finished = false;
+    this.reversed = false;
     source(0);
   };
 
@@ -32,19 +33,19 @@
           this.__currentTime = this.endTime;
           this.finished = true;
         }
-        this.source(this.__currentTime);
+        this.source(this.reversed ? this.source.totalDuration - this.__currentTime : this.__currentTime);
       }
     },
     set currentTime(newTime) {
       this._currentTime = newTime;
       this._startTime = this._timeline.currentTime - this.__currentTime;
+      this.endTime = this._startTime + this.source.totalDuration;
     },
     get startTime() { return this._startTime; },
     set startTime(newTime) {
       this._startTime = newTime;
       this.endTime = this._startTime + this.source.totalDuration;
-      this.__currentTime = this._timeline.currentTime - newTime;
-      this.source(this.__currentTime);
+      this._currentTime = this._timeline.currentTime - newTime;
     },
     pause: function() {
       this.paused = true;
@@ -53,6 +54,13 @@
     play: function() {
       this.paused = false;
       this._startTime = this._timeline.currentTime - this.__currentTime;
+    },
+    reverse: function() {
+      this.reversed = !this.reversed;
+      this.currentTime = this.source.totalDuration - this.__currentTime;
+    },
+    finish: function() {
+      this.currentTime = this.endTime;
     }
   };
 

@@ -16,15 +16,19 @@
 
   scope.Timeline = function() {
     this.players = [];
+    this.currentTime = undefined;
   };
 
   scope.Timeline.prototype = {
     play: function(source) {
       var player = new scope.Player(source);
-      player._startTime = performance.now();
-      player.endTime = player._startTime + source.totalDuration;
+      if (this.currentTime) {
+        player._startTime = this.currentTime;
+        player.endTime = player._startTime + source.totalDuration;
+      }
       player._timeline = this;
       this.players.push(player);
+      return player;
     }
   };
 
@@ -32,6 +36,9 @@
     global.document.timeline.currentTime = t;
     global.document.timeline.players.forEach(function(player) {
       if (!(player.paused || player.finished)) {
+        if (!(player.startTime)) {
+         player.startTime = this.currentTime;
+        }
         player._currentTime = t - player.startTime;
       }
     });
