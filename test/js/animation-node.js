@@ -59,11 +59,15 @@ suite('animation-node', function() {
     assert.equal(calculateActiveTime(1000, 'forwards', 500, PhaseActive, 200), 300);
     assert.equal(calculateActiveTime(1000, 'forwards', 1100, PhaseAfter, 200), 1000);
     assert.equal(calculateActiveTime(1000, 'none', 1100, PhaseAfter, 200), null);
+    assert.equal(calculateActiveTime(Infinity, 'both', 5000000, PhaseActive, 2000000), 3000000);
+    assert.equal(calculateActiveTime(Infinity, 'both', 50000, PhaseBefore, 2000000), 0);
   });
   test('calculating scaled active time', function() {
     // calculateScaledActiveTime(activeDuration, activeTime, startOffset, timingInput);
     assert.equal(calculateScaledActiveTime(1000, 200, 300, {playbackRate: 1.5}), 600);
     assert.equal(calculateScaledActiveTime(1000, 200, 300, {playbackRate: -4}), 3500);
+    assert.equal(calculateScaledActiveTime(Infinity, 400, 200, {playbackRate: 1}), 600);
+    assert.equal(calculateScaledActiveTime(Infinity, 400, 200, {playbackRate: -4}), Infinity);
   });
   test('calculating iteration time', function() {
     // calculateIterationTime(iterationDuration, repeatedDuration, scaledActiveTime, startOffset, timingInput);
@@ -83,19 +87,26 @@ suite('animation-node', function() {
     assert.closeTo(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x * x; }, direction: 'reverse'}), 640, 0.0001);
     assert.closeTo(calculateTransformedTime(4, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate'}), 360, 0.0001);
     assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate'}), 160, 0.0001);
+    assert.closeTo(calculateTransformedTime(4, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 160, 0.0001);
+    assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 360, 0.0001);
   });
   test('Animation Node', function() {
     var node = AnimationNode({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});
     var node2 = AnimationNode({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'ease', direction: 'alternate', delay: 100, fill: 'forwards'});
     assert.equal(node(0), null);
     assert.equal(node(100), 0.5);
-    assert.equal(node2(100), 0.5);
+    assert.closeTo(node2(100), 0.8, 0.005);
     assert.equal(node(600), 1);
-    assert.equal(node2(600), 1);
+    assert.closeTo(node2(600), 1, 0.005);
     assert.equal(node(700), 0.9);
+    assert.closeTo(node2(700), 0.99, 0.005);
     assert.equal(node(1600), 0);
+    assert.closeTo(node2(1600), 0, 0.005);
     assert.equal(node(4000), 0.4);
+    assert.closeTo(node2(4000), 0.68, 0.005);
     assert.equal(node(4100), 0.5);
+    assert.closeTo(node2(4100), 0.8, 0.005);
     assert.equal(node(6000), 0.5);
+    assert.closeTo(node2(6000), 0.8, 0.005);
   });
 });
