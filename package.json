@@ -1,0 +1,9 @@
+{
+  "name": "web-animations",
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "^1.9.1",
+    "grunt": "^0.4.4",
+    "grunt-contrib-uglify": "^0.4.0"
+  }
+}
