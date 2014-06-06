@@ -16,6 +16,6 @@
   global.Element.animate = function(effectInput, timingInput) {
     var effect = EffectInput.convert(effectInput);
     var timing = TimingInput.convert(timingInput);
-    return timeline.play(new Animation(EffectInput.convert(effect), timing));
+    return timeline.play(new Animation(effect, timing));
   };
 })(WebAnimations);
