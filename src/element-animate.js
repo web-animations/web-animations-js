@@ -18,4 +18,4 @@
     var timing = TimingInput.convert(timingInput);
     return timeline.play(new Animation(effect, timing));
   };
-})(WebAnimations);
+})(webAnimations);

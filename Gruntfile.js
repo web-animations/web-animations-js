@@ -12,6 +12,11 @@ module.exports = function(grunt) {
           sourceMapName: 'web-animations.min.js.map',
           banner: grunt.file.read('src/boilerplate'),
           wrap: true,
+          compress: {
+            global_defs: {
+              "TESTING": false
+            }
+          }
         },
         nonull: true,
         dest: 'web-animations.min.js',
