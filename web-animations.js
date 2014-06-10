@@ -12,6 +12,9 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
+var global = window;
+var TESTING = false;
+
 (function() {
   var sources = [
     'src/scope.js', // This must be first.
@@ -22,6 +25,7 @@
     module.exports = sources;
     return;
   }
+
   var scripts = document.getElementsByTagName('script');
   var location = scripts[scripts.length - 1].src.replace(/[^\/]+$/, '');
   sources.forEach(function(src) {

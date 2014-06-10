@@ -12,4 +12,5 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-window.WebAnimations = window.WebAnimations || {};
+var webAnimations = {};
+var testing = {};

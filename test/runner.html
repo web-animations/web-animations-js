@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
-<script>global = testScope = this;</script>
-<script src="../web-animations.js"></script>
+<script>global = testing = webAnimations = window; TESTING=true;</script>
+<script src="../src/element-animate.js"></script>
 <script src="../node_modules/mocha/mocha.js"></script>
 <script src="../node_modules/chai/chai.js"></script>
 <div id="mocha"></div>
