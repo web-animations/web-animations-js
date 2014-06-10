@@ -18,6 +18,7 @@ var TESTING = false;
 (function() {
   var sources = [
     'src/scope.js', // This must be first.
+    'src/interpolation.js',
     'src/element-animate.js',
   ];
 
