@@ -1,6 +1,7 @@
 (function() {
   var sources = [
     'element-animate.js',
+    'interpolation.js'
   ];
 
   var scripts = document.getElementsByTagName('script');

@@ -12,24 +12,27 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-var global = window;
-var TESTING = false;
+(function(scope, testing) {
 
-(function() {
-  var sources = [
-    'src/scope.js', // This must be first.
-    'src/interpolation.js',
-    'src/element-animate.js',
-  ];
-
-  if (typeof module != 'undefined') {
-    module.exports = sources;
-    return;
+  function interpolate(from, to, f) {
+    if ((typeof from == 'number') && (typeof to == 'number')) {
+      return from * (1 - f) + to * f;
+    }
+    if ((typeof from == 'boolean') && (typeof to == 'boolean')) {
+      return f < 0.5 ? from : to;
+    }
+    if (from.length == to.length) {
+      var r = [];
+      for (var i = 0; i < from.length; i++) {
+        r.push(interpolate(from[i], to[i], f));
+      }
+      return r;
+    }
+    throw 'Mismatched interpolation arguments ' + from + ':' + to;
   }
 
-  var scripts = document.getElementsByTagName('script');
-  var location = scripts[scripts.length - 1].src.replace(/[^\/]+$/, '');
-  sources.forEach(function(src) {
-    document.write('<script src="' + location + src + '"></script>');
-  });
-})();
+  if (TESTING) {
+    testing.interpolate = interpolate;
+  }
+
+})(webAnimations, testing);
