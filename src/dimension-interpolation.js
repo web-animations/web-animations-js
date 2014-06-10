@@ -30,16 +30,16 @@
     // each other (although prefixes may be problematic!)
     var matchedUnits = {};
     string = string.replace(unitRegExp, function(match) {
-        matchedUnits[match] = null;
-        return 'U' + match;
-        });
+      matchedUnits[match] = null;
+      return 'U' + match;
+    });
     var taggedUnitRegExp = 'U(' + unitRegExp.source + ')';
 
     // Validating input is simply applying as many reductions as we can.
-    var typeCheck = string.replace(/[-+]?([0-9]*\.)?[0-9]+/g, 'N').
-                 replace(new RegExp('N' + taggedUnitRegExp, 'g'), 'D').
-                 replace(/\s[+-]\s/g, 'O').
-                 replace(/\s/g, '');
+    var typeCheck = string.replace(/[-+]?([0-9]*\.)?[0-9]+/g, 'N')
+                          .replace(new RegExp('N' + taggedUnitRegExp, 'g'), 'D')
+                          .replace(/\s[+-]\s/g, 'O')
+                          .replace(/\s/g, '');
     var reductions = [/N\*(D)/g, /(N|D)[*/]N/g, /(N|D)O\1/g, /\((N|D)\)/g];
     var i = 0;
     while (i < reductions.length) {
