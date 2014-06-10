@@ -2,15 +2,11 @@ suite('dimension-interpolation', function() {
   setup(function() {
     this.convert = convertDimension.bind(null, new RegExp(lengthUnits, 'g'));
   });
-  test('convert length values', function() {
-    assert.deepEqual(this.convert(' 0 '),
-        {px: 0});
-    assert.deepEqual(this.convert('10px'),
-        {px: 10});
-    assert.deepEqual(this.convert('5VmIN'),
-        {vmin: 5});
-    assert.deepEqual(this.convert('-12.5em'),
-        {em: -12.5});
+  test('convert simple length values', function() {
+    assert.deepEqual(this.convert(' 0 '), {px: 0});
+    assert.deepEqual(this.convert('10px'), {px: 10});
+    assert.deepEqual(this.convert('5VmIN'), {vmin: 5});
+    assert.deepEqual(this.convert('-12.5em'), {em: -12.5});
   });
   test('convert length calcs', function() {
     assert.deepEqual(this.convert('calc(10px*3) '),
