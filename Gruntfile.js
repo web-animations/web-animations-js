@@ -15,8 +15,9 @@ module.exports = function(grunt) {
           compress: {
             global_defs: {
               "TESTING": false
-            }
-          }
+            },
+            dead_code: true
+          },
         },
         nonull: true,
         dest: 'web-animations.min.js',
@@ -28,7 +29,8 @@ module.exports = function(grunt) {
         flags: [
           '--nojsdoc',
           '--nostrict',
-          '--disable 121', // Illegal comma at end of object literal
+          '--disable 121,110', // 121: Illegal comma at end of object literal
+                               // 110: Line too long
         ],
         reporter: {
           name: 'console'
