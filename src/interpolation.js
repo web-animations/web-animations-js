@@ -31,13 +31,11 @@
     throw 'Mismatched interpolation arguments ' + from + ':' + to;
   }
 
-  function Interpolation(from, to, convertToString) {
+  scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
       return convertToString(interpolate(from, to, f));
     }
-  }
-
-  scope.Interpolation = Interpolation;
+  };
 
   if (TESTING) {
     testing.interpolate = interpolate;
