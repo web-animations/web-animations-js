@@ -2,7 +2,8 @@
   var sources = [
     'element-animate.js',
     'dimension-interpolation.js',
-    'interpolation.js'
+    'interpolation.js',
+    'property-interpolation.js',
   ];
 
   var scripts = document.getElementsByTagName('script');
