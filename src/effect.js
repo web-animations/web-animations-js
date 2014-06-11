@@ -16,15 +16,78 @@
 
   // PLACEHOLDER: Replace with something that works.
   scope.convertEffectInput = function(effectInput) {
-    var placeholderProperty = 'left';
-    var interpolation = scope.propertyInterpolation(placeholderProperty, '0px', '100px');
+    // TODO: clone effectInput
+    // TODO: normalize effectInput clone && space the keyframes by offsets
+
+    // TODO: convert normalized effect to property specific keyframes
+    // TODO: make interpolations from pairs of PSKs (like this v) and insert into a thing (data structure)
+    var interpolation = scope.propertyInterpolation('left', '0px', '100px');
     return function(target, fraction) {
-      if (fraction !== null) {
-        scope.apply(target, placeholderProperty, interpolation(fraction));
-      } else {
-        scope.clear(target, placeholderProperty);
-      }
+      // TODO: look up the interpolations in the thing that will apply at
+      // fraction
+      // TODO: apply them like this v
+      scope.apply(target, 'left', interpolation(fraction));
     };
   };
+
+  function normalize(effectInput) {
+    if (!Array.isArray(effectInput) || effectInput.length < 2) {
+        ;// TODO: Invalid input. Fail.
+    }
+
+    var effectInputCopy = [];
+    function addKeyframe(originalKeyframe) {
+      var keyframe = {};
+      for (var member in originalKeyframe) {
+        if (originalKeyframe.hasOwnProperty(member)) {
+          var memberValue = originalKeyframe[member];
+          // FIXME: If the value isn't a number or a string, this sets it to the empty string. Should do something better.
+          if (typeof memberValue != 'number' && typeof memberValue != 'string')
+            memberValue = "";
+          keyframe[member] = memberValue;
+        }
+      }
+      effectInputCopy.push(keyframe);
+    }
+
+    var everyFrameHasOffset = true;
+    var looselySortedByOffset = true;
+    var lastOffset = -Infinity;
+
+    for (var i = 0; i < effectInput.length; i++) {
+      var keyframeHasOffset = false;
+      var offset = effectInput[i].offset;
+      if (offset !== null && offset !== undefined) {
+        if (typeof offset != 'number' || offset < 0 || offset > 1)
+          continue; // NOTE: This doesn't quite match the spec. Fix?
+        keyframeHasOffset = true;
+
+        if (keyframeHasOffset) {
+          if (offset < lastOffset)
+            looselySortedByOffset = false;
+          lastOffset = offset;
+        }
+      }
+      everyFrameHasOffset = everyFrameHasOffset && keyframeHasOffset;
+      if (effectInput[i].composite == 'add') {
+        ;// TODO: Fail?
+      }
+
+      addKeyframe(effectInput[i]);
+
+      // TODO: Check property value pairs (here or in addKeyframe). Convert dashed properties to CamelCase?
+    }
+    if (!looselySortedByOffset) {
+      if (!everyFrameHasOffset)
+        ; // TODO: Can't resolve. Fail.
+      else
+        ; // TODO: Sort them by offset.
+    }
+    // TODO: Check for partial keyframes?
+
+    // TODO: Space the normalized keyframes
+
+    return effectInputCopy;
+  }
 
 })(webAnimations, testing);
