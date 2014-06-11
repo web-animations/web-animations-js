@@ -89,9 +89,10 @@
   }
 
   var lengthUnits = 'px|em|ex|ch|rem|vw|vh|vmin|vmax|cm|mm|in|pt|pc';
-  scope.makePercentInterpolation = makeDimensionInterpolation(/%/g);
-  scope.makeLengthInterpolation = makeDimensionInterpolation(new RegExp(lengthUnits, 'g'));
-  scope.makeLengthOrPercentInterpolation = makeDimensionInterpolation(new RegExp(lengthUnits + '|%', 'g'));
+  var lengthOrPercentInterpolation = makeDimensionInterpolation(new RegExp(lengthUnits + '|%', 'g'));
+
+  scope.addPropertiesHandler(lengthOrPercentInterpolation,
+    'left|right|top|bottom|width|height'.split('|'));
 
   if (TESTING) {
     testing.convertDimension = convertDimension;
