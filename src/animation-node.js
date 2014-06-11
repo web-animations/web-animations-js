@@ -32,6 +32,7 @@
     } else if (timingInput !== undefined) {
       Object.getOwnPropertyNames(timingInput).forEach(function(property) {
         if (timingInput[property] !== 'auto') {
+          // TODO: Validate inputs here
           input[property] = timingInput[property];
         }
       });
@@ -46,7 +47,7 @@
   };
 
   function calculateActiveDuration(timingInput) {
-    return timingInput.playbackRate ? repeatedDuration(timingInput) / Math.abs(timingInput.playbackRate) : Infinity;
+    return Math.abs(repeatedDuration(timingInput) / timingInput.playbackRate);
   }
 
   function repeatedDuration(timingInput) {
@@ -81,7 +82,7 @@
         return localTime - timingInput.delay;
       case PhaseAfter:
         if (fillMode == 'forwards' || fillMode == 'both')
-          return 0;
+          return activeDuration;
         return null;
       case PhaseNone:
         return null;
@@ -93,7 +94,7 @@
   }
 
   function calculateIterationTime(iterationDuration, repeatedDuration, scaledActiveTime, startOffset, timingInput) {
-    if (scaledActiveTime === Infinity || scaledActiveTime === -Infinity || (scaledActiveTime - startOffset == repeatedDuration && timingInput.iterations && (timingInput.iterations + timingInput.iterationStart % 1 == 0))) {
+    if (scaledActiveTime === Infinity || scaledActiveTime === -Infinity || (scaledActiveTime - startOffset == repeatedDuration && timingInput.iterations && ((timingInput.iterations + timingInput.iterationStart) % 1 == 0))) {
       return iterationDuration;
     }
 
