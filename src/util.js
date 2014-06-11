@@ -13,7 +13,14 @@
 // limitations under the License.
 
 (function(scope) {
-  global.Element.animate = function(effectInput, timingInput) {
-    return timeline.play(new Animation(effectInput, timingInput));
+
+  scope.createObject = function(proto, obj) {
+    var newObject = Object.create(proto);
+    Object.getOwnPropertyNames(obj).forEach(function(name) {
+      Object.defineProperty(
+          newObject, name, Object.getOwnPropertyDescriptor(obj, name));
+    });
+    return newObject;
   };
+
 })(webAnimations);

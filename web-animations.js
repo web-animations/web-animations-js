@@ -18,10 +18,15 @@ var TESTING = false;
 (function() {
   var sources = [
     'src/scope.js', // This must be first.
+    'src/util.js',
     'src/interpolation.js',
     'src/property-interpolation.js',
     'src/dimension-interpolation.js',
     'src/element-animate.js',
+    'src/animation-node.js',
+    'src/animation.js',
+    'src/effect.js',
+    'src/apply.js',
   ];
 
   if (typeof module != 'undefined') {

@@ -12,8 +12,15 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope) {
-  global.Element.animate = function(effectInput, timingInput) {
-    return timeline.play(new Animation(effectInput, timingInput));
+(function(scope, testing) {
+
+  scope.Animation = function(target, effectInput, timingInput) {
+    var animationNode = scope.AnimationNode(timingInput);
+    var effect = scope.convertEffectInput(effectInput);
+    return function(localTime) {
+      var timeFraction = animationNode(localTime);
+      effect(timeFraction);
+    };
   };
-})(webAnimations);
+
+})(webAnimations, testing);
