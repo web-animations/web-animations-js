@@ -41,9 +41,6 @@ suite('dimension-interpolation', function() {
     assert.isNull(this.convert('calc(10px / 0)'));
     assert.isNull(this.convert('calc()'));
     assert.isNull(this.convert('ch'));
-    assert.isNull(propertyInterpolation('left', 'foo', '10px'));
-    assert.isNull(propertyInterpolation('left', '10px', 'bar'));
-    assert.isNull(propertyInterpolation('left', 'foo', 'bar'));
   });
   test('interpolate lengths and percents', function() {
     assert.equal(propertyInterpolation('left', '10px', '50px')(0.25), '20px');

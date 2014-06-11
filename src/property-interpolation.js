@@ -27,14 +27,14 @@
 
   function propertyInterpolation(property, left, right) {
     var handlers = propertyHandlers[property];
-    if (!handlers)
-      return null;
-    for (var i = 0; i < handlers.length; i++) {
+    for (var i = 0; handlers && i < handlers.length; i++) {
       var interpolation = handlers[i](left, right);
       if (interpolation)
         return interpolation;
     }
-    return null;
+    return scope.Interpolation(false, true, function(bool) {
+      return bool ? right : left;
+    });
   }
   scope.propertyInterpolation = propertyInterpolation;
 
