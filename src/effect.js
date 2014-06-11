@@ -32,10 +32,10 @@
 
   function normalize(effectInput) {
     if (!Array.isArray(effectInput) || effectInput.length < 2) {
-        ;// TODO: Invalid input. Fail.
+        throw 'Keyframe effect must be an array of 2 or more keyframes';
     }
 
-    var effectInputCopy = [];
+    var keyframeEffect = [];
     function addKeyframe(originalKeyframe) {
       var keyframe = {};
       for (var member in originalKeyframe) {
@@ -47,7 +47,7 @@
           keyframe[member] = memberValue;
         }
       }
-      effectInputCopy.push(keyframe);
+      keyframeEffect.push(keyframe);
     }
 
     var everyFrameHasOffset = true;
@@ -70,24 +70,33 @@
       }
       everyFrameHasOffset = everyFrameHasOffset && keyframeHasOffset;
       if (effectInput[i].composite == 'add') {
-        ;// TODO: Fail?
+        throw 'composite: \'add\' not supported';
       }
 
       addKeyframe(effectInput[i]);
 
       // TODO: Check property value pairs (here or in addKeyframe). Convert dashed properties to CamelCase?
     }
+
+    function compareKeyframesByOffset(keyframe1, keyframe2) {
+      if (keyframe1.offset < keyframe2.offset)
+        return -1;
+      else if (keyframe1.offset == keyframe2.offset)
+        return 0;
+      return 1;
+    }
+
     if (!looselySortedByOffset) {
       if (!everyFrameHasOffset)
-        ; // TODO: Can't resolve. Fail.
+        throw 'Keyframes are not loosely sorted by offset. Sort or specify offsets.';
       else
-        ; // TODO: Sort them by offset.
+        keyframeEffect.sort(compareKeyframesByOffset);
     }
-    // TODO: Check for partial keyframes?
+    // TODO: Check for partial keyframes? (including checking that there are 2 or more keyframes in keyframeEffect)
 
     // TODO: Space the normalized keyframes
 
-    return effectInputCopy;
+    return keyframeEffect;
   }
 
 })(webAnimations, testing);
