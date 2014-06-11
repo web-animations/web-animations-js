@@ -19,7 +19,7 @@
     var effect = scope.convertEffectInput(effectInput);
     return function(localTime) {
       var timeFraction = animationNode(localTime);
-      effect(timeFraction);
+      effect(target, timeFraction);
     };
   };
 

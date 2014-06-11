@@ -27,6 +27,8 @@ var TESTING = false;
     'src/animation.js',
     'src/effect.js',
     'src/apply.js',
+    'src/player.js',
+    'src/timeline.js',
   ];
 
   if (typeof module != 'undefined') {

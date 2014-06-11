@@ -12,8 +12,22 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope) {
-  global.Element.prototype.animate = function(effectInput, timingInput) {
-    return scope.timeline.play(scope.Animation(this, effectInput, timingInput));
+(function(scope, testing) {
+
+  scope.Player = function(source) {
+    this._currentTime = 0;
+    this.source = source;
+    source(0);
   };
-})(webAnimations);
+
+  scope.Player.prototype = {
+    get currentTime() { return this._currentTime; },
+    set currentTime(newTime) {
+      if (newTime != this._currentTime) {
+        this._currentTime = newTime;
+        this.source(newTime);
+      }
+    }
+  };
+
+})(webAnimations, testing);
