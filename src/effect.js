@@ -17,7 +17,6 @@
   // PLACEHOLDER: Replace with something that works.
   scope.convertEffectInput = function(effectInput) {
     var interpolation = scope.propertyInterpolation('left', '0px', '100px');
-    console.log(interpolation);
     return function(target, fraction) {
       scope.apply(target, 'left', interpolation(fraction));
     };
