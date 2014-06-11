@@ -12,8 +12,10 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope) {
-  global.Element.prototype.animate = function(effectInput, timingInput) {
-    return scope.timeline.play(scope.Animation(this, effectInput, timingInput));
+(function(scope, testing) {
+
+  scope.apply = function(element, property, value) {
+    element.style[property] = value;
   };
-})(webAnimations);
+
+})(webAnimations, testing);

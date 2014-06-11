@@ -12,8 +12,14 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope) {
-  global.Element.prototype.animate = function(effectInput, timingInput) {
-    return scope.timeline.play(scope.Animation(this, effectInput, timingInput));
+(function(scope, testing) {
+
+  // PLACEHOLDER: Replace with something that works.
+  scope.convertEffectInput = function(effectInput) {
+    var interpolation = scope.propertyInterpolation('left', '0px', '100px');
+    return function(target, fraction) {
+      scope.apply(target, 'left', interpolation(fraction));
+    };
   };
-})(webAnimations);
+
+})(webAnimations, testing);

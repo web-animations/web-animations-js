@@ -22,6 +22,12 @@ var TESTING = false;
     'src/property-interpolation.js',
     'src/dimension-interpolation.js',
     'src/element-animate.js',
+    'src/animation-node.js',
+    'src/animation.js',
+    'src/effect.js',
+    'src/apply.js',
+    'src/player.js',
+    'src/timeline.js',
   ];
 
   if (typeof module != 'undefined') {
