@@ -18,7 +18,6 @@ var TESTING = false;
 (function() {
   var sources = [
     'src/scope.js', // This must be first.
-    'src/util.js',
     'src/interpolation.js',
     'src/property-interpolation.js',
     'src/dimension-interpolation.js',
