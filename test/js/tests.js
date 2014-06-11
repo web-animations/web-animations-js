@@ -1,6 +1,7 @@
 (function() {
   var sources = [
     'element-animate.js',
+    'dimension-interpolation.js',
     'interpolation.js'
   ];
 

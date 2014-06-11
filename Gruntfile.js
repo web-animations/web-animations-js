@@ -18,6 +18,9 @@ module.exports = function(grunt) {
             },
             dead_code: true
           },
+          mangle: {
+            eval: true
+          },
         },
         nonull: true,
         dest: 'web-animations.min.js',
