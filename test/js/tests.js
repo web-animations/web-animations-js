@@ -4,6 +4,7 @@
     'dimension-interpolation.js',
     'interpolation.js',
     'property-interpolation.js',
+    'animation-node.js',
   ];
 
   var scripts = document.getElementsByTagName('script');

@@ -14,13 +14,135 @@
 
 (function(scope, testing) {
 
+  function normalizeTimingInput(timingInput) {
+    var input = {
+      delay: 0,
+      endDelay: 0,
+      fill: 'none',
+      iterationStart: 0,
+      iterations: 1,
+      duration: 0,
+      playbackRate: 1,
+      direction: 'normal',
+      easing: 'linear'
+    };
+
+    if (typeof timingInput == 'number') {
+      input.duration = timingInput;
+    } else if (timingInput !== undefined) {
+      Object.getOwnPropertyNames(timingInput).forEach(function(property) {
+        if (timingInput[property] !== 'auto') {
+          input[property] = timingInput[property];
+        }
+      });
+    }
+    input.easing = toTimingFunction(input.easing);
+    return input;
+  }
+
+  // TODO: Implement me!
+  function toTimingFunction(easing) {
+    return function(x) { return x; }
+  };
+
+  function calculateActiveDuration(timingInput) {
+    return timingInput.playbackRate ? repeatedDuration(timingInput) / Math.abs(timingInput.playbackRate) : Infinity;
+  }
+
+  function repeatedDuration(timingInput) {
+    return timingInput.duration * timingInput.iterations;
+  }
+
+  var PhaseNone = 0;
+  var PhaseBefore = 1;
+  var PhaseAfter = 2;
+  var PhaseActive = 3;
+
+  function calculatePhase(activeDuration, localTime, timingInput) {
+    if (localTime == null) {
+      return PhaseNone;
+    }
+    if (localTime < timingInput.delay) {
+      return PhaseBefore;
+    }
+    if (localTime >= timingInput.delay + activeDuration) {
+      return PhaseAfter;
+    }
+    return PhaseActive;
+  }
+
+  function calculateActiveTime(activeDuration, fillMode, localTime, phase, timingInput) {
+    switch (phase) {
+      case PhaseBefore:
+        if (fillMode == 'backwards' || fillMode == 'both')
+          return 0;
+        return null;
+      case PhaseActive:
+        return localTime - timingInput.delay;
+      case PhaseAfter:
+        if (fillMode == 'forwards' || fillMode == 'both')
+          return 0;
+        return null;
+      case PhaseNone:
+        return null;
+    }
+  }
+
+  function calculateScaledActiveTime(activeDuration, activeTime, startOffset, timingInput) {
+    return (timingInput.playbackRate < 0 ? activeTime - activeDuration : activeTime) * timingInput.playbackRate + startOffset;
+  }
+
+  function calculateIterationTime(iterationDuration, repeatedDuration, scaledActiveTime, startOffset, timingInput) {
+    if (scaledActiveTime === Infinity || scaledActiveTime === -Infinity || (scaledActiveTime - startOffset == repeatedDuration && timingInput.iterations && (timingInput.iterations + timingInput.iterationStart % 1 == 0))) {
+      return iterationDuration;
+    }
+
+    return scaledActiveTime % iterationDuration;
+  }
+
+  function calculateCurrentIteration(iterationDuration, iterationTime, scaledActiveTime, timingInput) {
+    if (scaledActiveTime === 0) {
+      return 0;
+    }
+    if (iterationTime == iterationDuration) {
+      return timingInput.iterationStart + timingInput.iterations - 1;
+    }
+    return Math.floor(scaledActiveTime / iterationDuration);
+  }
+
+  function calculateTransformedTime(currentIteration, iterationDuration, iterationTime, timingInput) {
+    var currentIterationIsOdd = currentIteration % 2 >= 1;
+    var currentDirectionIsForwards = timingInput.direction == 'normal' || timingInput.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
+    var directedTime = currentDirectionIsForwards ? iterationTime : iterationDuration - iterationTime;
+    var timeFraction = directedTime / iterationDuration;
+    return iterationDuration * timingInput.easing(timeFraction);
+  }
+
+  function calculateTimeFraction(activeDuration, localTime, timingInput) {
+    var phase = calculatePhase(activeDuration, localTime, timingInput);
+    var activeTime = calculateActiveTime(activeDuration, timingInput.fillMode, localTime, phase, timingInput);
+    if (activeTime === null) {
+      return null;
+    }
+    var startOffset = timingInput.iterationStart * timingInput.duration;
+    var scaledActiveTime = calculateScaledActiveTime(activeDuration, activeTime, startOffset, timingInput);
+    var iterationTime = calculateIterationTime(timingInput.duration, repeatedDuration(timingInput), scaledActiveTime, startOffset, timingInput);
+    var currentIteration = calculateCurrentIteration(timingInput.duration, iterationTime, scaledActiveTime, timingInput);
+    return calculateTransformedTime(currentIteration, timingInput.duration, iterationTime, timingInput) / timingInput.duration;
+  }
+
   // PLACEHOLDER: Replace with something that works.
   scope.AnimationNode = function(timingInput) {
+    var input = normalizeTimingInput(timingInput);
     var timeFraction = 0;
-    return function(time) {
-      timeFraction = (timeFraction + 0.05) % 1;
-      return timeFraction;
+    var activeDuration = calculateActiveDuration(input);
+    return function(localTime) {
+      return calculateTimeFraction(activeDuration, localTime, input);
     }
   };
+
+  if (TESTING) {
+    testing.normalizeTimingInput = normalizeTimingInput;
+  }
 
 })(webAnimations, testing);
