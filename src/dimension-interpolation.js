@@ -78,7 +78,7 @@
 
       left = units.map(function(unit) { return left[unit] || 0; });
       right = units.map(function(unit) { return right[unit] || 0; });
-      return Interpolation(left, right, function(values) {
+      return scope.Interpolation(left, right, function(values) {
         var result = values.map(function(value, i) {
           // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
           return value.toFixed(3).replace('.000', '') + units[i];
