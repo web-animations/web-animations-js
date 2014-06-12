@@ -27,7 +27,6 @@
     cssText: true,
     length: true,
     parentRule: true,
-    'var': true
   };
 
   var cssStyleDeclarationMethodModifiesStyle = {
@@ -91,9 +90,6 @@
     },
     get parentRule() {
       return this._style.parentRule;
-    },
-    get 'var'() {
-      return this._style.var;
     },
     _updateIndices: function() {
       while (this._length < this._surrogateElement.style.length) {
