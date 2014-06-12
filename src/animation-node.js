@@ -227,6 +227,7 @@
     testing.PhaseAfter = PhaseAfter;
     testing.calculateActiveTime = calculateActiveTime;
     testing.calculateScaledActiveTime = calculateScaledActiveTime;
+    testing.calculateIterationTime = calculateIterationTime;
   }
 
 })(webAnimations, testing);

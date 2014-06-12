@@ -65,4 +65,10 @@ suite('animation-node', function() {
     assert.equal(calculateScaledActiveTime(1000, 200, 300, {playbackRate: 1.5}), 600);
     assert.equal(calculateScaledActiveTime(1000, 200, 300, {playbackRate: -4}), 3500);
   });
+  test('calculating iteration time', function() {
+    // calculateIterationTime(iterationDuration, repeatedDuration, scaledActiveTime, startOffset, timingInput);
+    assert.equal(calculateIterationTime(500, 5000, 600, 100, {iterations: 10, iterationStart: 0}), 100);
+    assert.equal(calculateIterationTime(500, 5000, Infinity, 100, {iterations: 10, iterationStart: 0}), 500);
+    assert.equal(calculateIterationTime(500, 5000, 5100, 100, {iterations: 3.2, iterationStart: 0.8}), 500);
+  });
 });
