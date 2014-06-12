@@ -195,7 +195,7 @@
 
   function calculateTimeFraction(activeDuration, localTime, timingInput) {
     var phase = calculatePhase(activeDuration, localTime, timingInput);
-    var activeTime = calculateActiveTime(activeDuration, timingInput.fillMode, localTime, phase, timingInput.delay);
+    var activeTime = calculateActiveTime(activeDuration, timingInput.fill, localTime, phase, timingInput.delay);
     if (activeTime === null) {
       return null;
     }

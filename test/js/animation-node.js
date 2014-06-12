@@ -79,9 +79,23 @@ suite('animation-node', function() {
   test('calculating transformed time', function() {
     // calculateTransformedTime(currentIteration, iterationDuration, iterationTime, timingInput);
     assert.equal(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x; }, direction: 'normal'}), 200);
-    assert.equal(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x; }, direction: 'backwards'}), 800);
-    assert.closeTo(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x * x; }, direction: 'backwards'}), 640, 0.0001);
+    assert.equal(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x; }, direction: 'reverse'}), 800);
+    assert.closeTo(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x * x; }, direction: 'reverse'}), 640, 0.0001);
     assert.closeTo(calculateTransformedTime(4, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate'}), 360, 0.0001);
     assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate'}), 160, 0.0001);
+  });
+  test('Animation Node', function() {
+    var node = AnimationNode({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});
+    var node2 = AnimationNode({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'ease', direction: 'alternate', delay: 100, fill: 'forwards'});
+    assert.equal(node(0), null);
+    assert.equal(node(100), 0.5);
+    assert.equal(node2(100), 0.5);
+    assert.equal(node(600), 1);
+    assert.equal(node2(600), 1);
+    assert.equal(node(700), 0.9);
+    assert.equal(node(1600), 0);
+    assert.equal(node(4000), 0.4);
+    assert.equal(node(4100), 0.5);
+    assert.equal(node(6000), 0.5);
   });
 });
