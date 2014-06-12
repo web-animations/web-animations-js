@@ -14,22 +14,51 @@
 
 (function(scope, testing) {
 
-  // PLACEHOLDER: Replace with something that works.
   scope.convertEffectInput = function(effectInput) {
     // Clone effectInput and normalize the keyframes
     var keyframeEffect = normalize(effectInput);
-
-    // TODO: convert normalized effect to property specific keyframes
-    // TODO: Check for partial keyframes
-    // TODO: make interpolations from pairs of PSKs (like this v) and insert into a thing (data structure)
-    var interpolation = scope.propertyInterpolation('left', '0px', '100px');
+    // Convert normalized effect to property specific keyframes && check for partial keyframes
+    var propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframeEffect);
+    // Make interpolations from pairs of PSKs (like this v) and insert into a thing (data structure)
+    var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
+    // var interpolation = scope.propertyInterpolation('left', '0px', '100px');
+    // put the above in an array and sort them based on startTimes.
     return function(target, fraction) {
-      // TODO: look up the interpolations in the thing that will apply at
-      // fraction
-      // TODO: apply them like this v
-      scope.apply(target, 'left', interpolation(fraction));
+      // Look up the interpolations in the thing that will apply at
+      // fraction and apply them like this v
+      // scope.apply(target, 'left', interpolation(fraction));
+      for (var i = 0; i < interpolations.length; i++)
+        if (interpolations[i].endTime >= fraction && interpolations[i].startTime <= fraction)
+          scope.apply(target, interpolations[i].property, interpolations[i].interpolation(fraction)); // TODO: Do the times need to be scaled to the local time?
     };
   };
+
+  function makeInterpolations(propertySpecificKeyframeGroups) {
+    var interpolations = [];
+    for (var groupName in propertySpecificKeyframeGroups) {
+      if (propertySpecificKeyframeGroups.hasOwnProperty(groupName)) {
+        var group = propertySpecificKeyframeGroups[groupName];
+        for (var i = 0; i < group.length - 1; i++) {
+          interpolations.push({
+            startTime: group[i].offset,
+            endTime: group[i + 1].offset,
+            property: groupName,
+            interpolation: scope.propertyInterpolation(groupName, group[i].value, group[i + 1].value)
+          });
+        }
+      }
+    }
+    function compareInterpolationsByStartTimes(interpolation1, interpolation2) {
+      if (interpolation1.startTime < interpolation2.startTime)
+        return -1;
+      else if (interpolation1.startTime == interpolation2.startTime)
+        return 0;
+      return 1;
+    }
+    interpolations.sort(compareInterpolationsByStartTimes);
+    return interpolations;
+  }
+
 
   function normalize(effectInput) {
     if (!Array.isArray(effectInput) || effectInput.length < 2)
@@ -119,51 +148,26 @@
     return keyframeEffect;
   }
 
-  // function cleanPropertyName(name) {
-  //   var start = 0;
-  //   var end = 0;
-  //   var result = '';
-  //   var first = true;
-  //   for (var i = 0; i < name.length; i++) {
-  //     if (name.charAt(i) === '-') {
-  //       if (start != end && start != 0) {
-  //         result = result.concat((name.substring(start, start + 1)).toUpperCase());
-  //         result = result.concat((name.substring(start + 1, end)).toLowerCase());
-  //       }
-  //       else {
-  //         result = result.concat((name.substring(start, end)).toLowerCase());
-  //       }
-  //       start = i + 1;
-  //     }
-  //     end = i + 1;
-  //   }
-  //   if (start != end && start != 0) {
-  //     result = result.concat((name.substring(start, start + 1)).toUpperCase());
-  //     result = result.concat((name.substring(start + 1, end)).toLowerCase());
-  //   }
-  //   else {
-  //     result = result.concat((name.substring(start, end)).toLowerCase());
-  //   }
-  //   return result;
-  // }
-
   function makePropertySpecificKeyframeGroups(keyframeEffect) {
     var propertySpecificKeyframeGroups = {};
 
     for (var i = 0; i < keyframeEffect.length; i++) {
       for (var member in keyframeEffect[i]) {
         if (keyframeEffect[i].hasOwnProperty(member) && member !== 'offset') {
-          var memberValue = keyframeEffect[i][member];
-          // // FIXME: If the value isn't a number or a string, this sets it to the empty string. Should do something better.
-          // if (typeof memberValue != 'number' && typeof memberValue != 'string')
-          //   memberValue = "";
-          var propertySpecificKeyframe = {};
-          propertySpecificKeyframe[member] = memberValue;
-          propertySpecificKeyframe.offset = keyframeEffect[i].offset;
+          var propertySpecificKeyframe = {offset: keyframeEffect[i].offset};
+          propertySpecificKeyframe.value = keyframeEffect[i][member];
           if (propertySpecificKeyframeGroups[member] === undefined)
             propertySpecificKeyframeGroups[member] = [];
           propertySpecificKeyframeGroups[member].push(propertySpecificKeyframe);
         }
+      }
+    }
+
+    for (var groupName in propertySpecificKeyframeGroups) {
+      if (propertySpecificKeyframeGroups.hasOwnProperty(groupName)) {
+        var group = propertySpecificKeyframeGroups[groupName];
+        if (group[0].offset != 0 || group[group.length - 1].offset != 1)
+          throw "Partial keyframes are not supported";
       }
     }
     return propertySpecificKeyframeGroups;
@@ -171,8 +175,8 @@
 
   if (TESTING) {
     testing.normalize = normalize;
-    // testing.cleanPropertyName = cleanPropertyName;
     testing.makePropertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups;
+    testing.makeInterpolations = makeInterpolations;
   }
 
 })(webAnimations, testing);
