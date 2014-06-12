@@ -207,6 +207,7 @@
 
   if (TESTING) {
     testing.normalizeTimingInput = normalizeTimingInput;
+    testing.toTimingFunction = toTimingFunction;
   }
 
 })(webAnimations, testing);
