@@ -15,16 +15,11 @@
 (function(scope, testing) {
 
   scope.convertEffectInput = function(effectInput) {
-    // Clone effectInput and normalize the keyframes
     var keyframeEffect = normalize(effectInput);
-    // Convert normalized effect to property specific keyframes && check for partial keyframes
     var propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframeEffect);
-    // Make interpolations from pairs of PSKs (like this v) and insert into a thing (data structure)
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
-    // var interpolation = scope.propertyInterpolation('left', '0px', '100px');
-    // put the above in an array and sort them based on startTimes.
     return function(target, fraction) {
-      // Look up the interpolations in the thing that will apply at
+      // Look up the interpolations that will apply at
       // fraction and apply them like this v
       // scope.apply(target, 'left', interpolation(fraction));
       for (var i = 0; i < interpolations.length; i++)
