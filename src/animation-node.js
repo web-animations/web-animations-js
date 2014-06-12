@@ -14,6 +14,9 @@
 
 (function(scope, testing) {
 
+  var fills = 'backwards|forwards|both'.split('|');
+  var directions = 'reverse|alternate|alternate-reverse'.split('|');
+
   function normalizeTimingInput(timingInput) {
     var input = {
       delay: 0,
@@ -32,7 +35,15 @@
     } else if (timingInput !== undefined) {
       Object.getOwnPropertyNames(timingInput).forEach(function(property) {
         if (timingInput[property] !== 'auto') {
-          // TODO: Validate inputs here
+          if (typeof input[property] == 'number' && typeof timingInput[property] != 'number') {
+            return;
+          }
+          if ((property == 'fill') && (fills.indexOf(timingInput[property]) == -1)) {
+            return;
+          }
+          if ((property == 'direction') && (directions.indexOf(timingInput[property]) == -1)) {
+            return;
+          }
           input[property] = timingInput[property];
         }
       });
