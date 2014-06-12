@@ -41,9 +41,71 @@
     return input;
   }
 
-  // TODO: Implement me!
+  function cubic(a, b, c, d) {
+    if (a < 0 || a > 1 || c < a || c < 0 || c > 1) {
+      return linear;
+    }
+    return function(x) {
+      var start = 0, end = 1;
+      while (1) {
+        var mid = (start + end) / 2;
+        function f(a, b, m) { return 3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m};
+        var xEst = f(a, c, mid);
+        if (Math.abs(x - xEst) < 0.001) {
+          return f(b, d, mid);
+        }
+        if (xEst < x) {
+          start = mid;
+        } else {
+          end = mid;
+        }
+      }
+    }
+  }
+
+  var Start = 1;
+  var Middle = 0.5;
+  var End = 0;
+
+  function step(count, pos) {
+    return function(x) {
+      if (x >= 1) {
+        return 1;
+      }
+      var stepSize = 1 / count;
+      x += pos * stepSize;
+      return x - x % stepSize;
+    }
+  }
+
+  var presets = {
+    'ease': cubic(0.25, 0.1, 0.25, 1),
+    'ease-in': cubic(0.42, 0, 1, 1),
+    'ease-out': cubic(0, 0, 0.58, 1),
+    'ease-in-out': cubic(0.42, 0, 0.58, 1),
+    'step-start': step(1, Start),
+    'step-middle': step(1, Middle),
+    'step-end': step(1, End)
+  };
+
+  var cubicBezierRe = /cubic-bezier\(\s*(\d*.?\d*)\s*,\s*(-?\d*.?\d*)\s*,\s*(-?\d*.?\d*)\s*,\s*(\d*.?\d*)\s*\)/;
+  var stepRe = /step\(\s*(\d*)\s*,\s*(start|middle|end)\s*\)/;
+  var linear = function(x) { return x; };
+
   function toTimingFunction(easing) {
-    return function(x) { return x; }
+    var cubicData = cubicBezierRe.exec(easing);
+    if (cubicData) {
+      return cubic(Number(cubicData[1]), Number(cubicData[2]), Number(cubicData[3]), Number(cubicData[4]));
+    }
+    var stepData = stepRe.exec(easing);
+    if (stepData) {
+      return step(Number(stepData[1]), {'start': Start, 'middle': Middle, 'end': End}[stepData[2]]);
+    }
+    var preset = presets[easing];
+    if (preset) {
+      return preset;
+    }
+    return linear;
   };
 
   function calculateActiveDuration(timingInput) {
