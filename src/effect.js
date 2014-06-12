@@ -20,6 +20,7 @@
     // TODO: normalize effectInput clone && space the keyframes by offsets
 
     // TODO: convert normalized effect to property specific keyframes
+    // TODO: Check for partial keyframes
     // TODO: make interpolations from pairs of PSKs (like this v) and insert into a thing (data structure)
     var interpolation = scope.propertyInterpolation('left', '0px', '100px');
     return function(target, fraction) {
@@ -31,8 +32,11 @@
   };
 
   function normalize(effectInput) {
-    if (!Array.isArray(effectInput) || effectInput.length < 2) {
+    if (!Array.isArray(effectInput) || effectInput.length < 2)
         throw 'Keyframe effect must be an array of 2 or more keyframes';
+
+    function offsetGiven(offset) {
+      return (offset !== undefined && offset !== null);
     }
 
     var keyframeEffect = [];
@@ -45,6 +49,7 @@
           if (typeof memberValue != 'number' && typeof memberValue != 'string')
             memberValue = "";
           keyframe[member] = memberValue;
+          // TODO: Check property value pairs?
         }
       }
       keyframeEffect.push(keyframe);
@@ -53,13 +58,12 @@
     var everyFrameHasOffset = true;
     var looselySortedByOffset = true;
     var lastOffset = -Infinity;
-
     for (var i = 0; i < effectInput.length; i++) {
       var keyframeHasOffset = false;
       var offset = effectInput[i].offset;
-      if (offset !== null && offset !== undefined) {
+      if (offsetGiven(offset)) {
         if (typeof offset != 'number' || offset < 0 || offset > 1)
-          continue; // NOTE: This doesn't quite match the spec. Fix?
+          continue;
         keyframeHasOffset = true;
 
         if (keyframeHasOffset) {
@@ -69,13 +73,10 @@
         }
       }
       everyFrameHasOffset = everyFrameHasOffset && keyframeHasOffset;
-      if (effectInput[i].composite == 'add') {
+      if (effectInput[i].composite == 'add')
         throw 'composite: \'add\' not supported';
-      }
 
       addKeyframe(effectInput[i]);
-
-      // TODO: Check property value pairs (here or in addKeyframe). Convert dashed properties to CamelCase?
     }
 
     function compareKeyframesByOffset(keyframe1, keyframe2) {
@@ -86,15 +87,34 @@
       return 1;
     }
 
-    if (!looselySortedByOffset) {
+    if (!looselySortedByOffset)
       if (!everyFrameHasOffset)
         throw 'Keyframes are not loosely sorted by offset. Sort or specify offsets.';
       else
         keyframeEffect.sort(compareKeyframesByOffset);
-    }
-    // TODO: Check for partial keyframes? (including checking that there are 2 or more keyframes in keyframeEffect)
 
-    // TODO: Space the normalized keyframes
+    function spaceKeyframes() {
+      var length = keyframeEffect.length;
+      if (!offsetGiven(keyframeEffect[length - 1].offset))
+        keyframeEffect[length - 1].offset = 1;
+      if (length > 1 && !offsetGiven(keyframeEffect[0].offset))
+        keyframeEffect[0].offset = 0;
+
+      var lastIndex = 0;
+      var lastOffset = keyframeEffect[0].offset;
+      for (var i = 1; i < length; i++) {
+        var offset = keyframeEffect[i].offset;
+        if (offsetGiven(offset)) {
+          if (lastIndex + 1 < i)
+            for (var j = 1; j < i - lastIndex; j++)
+              keyframeEffect[lastIndex + j].offset = lastOffset + (offset - lastOffset) * j / (i - lastIndex);
+          lastIndex = i;
+          lastOffset = offset;
+        }
+      }
+    }
+    if (!everyFrameHasOffset)
+      spaceKeyframes();
 
     return keyframeEffect;
   }
