@@ -76,4 +76,12 @@ suite('animation-node', function() {
     assert.equal(calculateCurrentIteration(1000, 400, 4400, {iterations: 50, iterationStart: 0.8}), 4);
     assert.equal(calculateCurrentIteration(1000, 1000, 4400, {iterations: 50.2, iterationStart: 0.8}), 50);
   });
+  test('calculating transformed time', function() {
+    // calculateTransformedTime(currentIteration, iterationDuration, iterationTime, timingInput);
+    assert.equal(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x; }, direction: 'normal'}), 200);
+    assert.equal(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x; }, direction: 'backwards'}), 800);
+    assert.closeTo(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x * x; }, direction: 'backwards'}), 640, 0.0001);
+    assert.closeTo(calculateTransformedTime(4, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate'}), 360, 0.0001);
+    assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate'}), 160, 0.0001);
+  });
 });
