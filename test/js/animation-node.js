@@ -44,5 +44,10 @@ suite('animation-node', function() {
     assert.equal(f(0.1), 0.1);
     assert.equal(f(0.25), 0.2);
   });
-
+  test('calculating phase', function() {
+    assert.equal(calculatePhase(1000, 100, {delay: 0}), PhaseActive);
+    assert.equal(calculatePhase(1000, 100, {delay: 200}), PhaseBefore);
+    assert.equal(calculatePhase(1000, 2000, {delay: 200}), PhaseAfter);
+    assert.equal(calculatePhase(1000, null, {delay: 200}), PhaseNone);
+  });
 });

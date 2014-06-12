@@ -221,6 +221,10 @@
     testing.toTimingFunction = toTimingFunction;
     testing.calculateActiveDuration = calculateActiveDuration;
     testing.calculatePhase = calculatePhase;
+    testing.PhaseNone = PhaseNone;
+    testing.PhaseBefore = PhaseBefore;
+    testing.PhaseActive = PhaseActive;
+    testing.PhaseAfter = PhaseAfter;
   }
 
 })(webAnimations, testing);
