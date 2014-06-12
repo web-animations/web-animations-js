@@ -16,8 +16,8 @@
 
   // PLACEHOLDER: Replace with something that works.
   scope.convertEffectInput = function(effectInput) {
-    // TODO: clone effectInput
-    // TODO: normalize effectInput clone && space the keyframes by offsets
+    // Clone effectInput and normalize the keyframes
+    var keyframeEffect = normalize(effectInput);
 
     // TODO: convert normalized effect to property specific keyframes
     // TODO: Check for partial keyframes
@@ -49,7 +49,6 @@
           if (typeof memberValue != 'number' && typeof memberValue != 'string')
             memberValue = "";
           keyframe[member] = memberValue;
-          // TODO: Check property value pairs?
         }
       }
       keyframeEffect.push(keyframe);
@@ -77,7 +76,7 @@
         throw 'composite: \'add\' not supported';
 
       addKeyframe(effectInput[i]);
-    }
+    }         
 
     function compareKeyframesByOffset(keyframe1, keyframe2) {
       if (keyframe1.offset < keyframe2.offset)
@@ -87,11 +86,12 @@
       return 1;
     }
 
-    if (!looselySortedByOffset)
+    if (!looselySortedByOffset) {
       if (!everyFrameHasOffset)
         throw 'Keyframes are not loosely sorted by offset. Sort or specify offsets.';
       else
         keyframeEffect.sort(compareKeyframesByOffset);
+    }
 
     function spaceKeyframes() {
       var length = keyframeEffect.length;
@@ -117,6 +117,62 @@
       spaceKeyframes();
 
     return keyframeEffect;
+  }
+
+  // function cleanPropertyName(name) {
+  //   var start = 0;
+  //   var end = 0;
+  //   var result = '';
+  //   var first = true;
+  //   for (var i = 0; i < name.length; i++) {
+  //     if (name.charAt(i) === '-') {
+  //       if (start != end && start != 0) {
+  //         result = result.concat((name.substring(start, start + 1)).toUpperCase());
+  //         result = result.concat((name.substring(start + 1, end)).toLowerCase());
+  //       }
+  //       else {
+  //         result = result.concat((name.substring(start, end)).toLowerCase());
+  //       }
+  //       start = i + 1;
+  //     }
+  //     end = i + 1;
+  //   }
+  //   if (start != end && start != 0) {
+  //     result = result.concat((name.substring(start, start + 1)).toUpperCase());
+  //     result = result.concat((name.substring(start + 1, end)).toLowerCase());
+  //   }
+  //   else {
+  //     result = result.concat((name.substring(start, end)).toLowerCase());
+  //   }
+  //   return result;
+  // }
+
+  function makePropertySpecificKeyframeGroups(keyframeEffect) {
+    var propertySpecificKeyframeGroups = {};
+
+    for (var i = 0; i < keyframeEffect.length; i++) {
+      for (var member in keyframeEffect[i]) {
+        if (keyframeEffect[i].hasOwnProperty(member) && member !== 'offset') {
+          var memberValue = keyframeEffect[i][member];
+          // // FIXME: If the value isn't a number or a string, this sets it to the empty string. Should do something better.
+          // if (typeof memberValue != 'number' && typeof memberValue != 'string')
+          //   memberValue = "";
+          var propertySpecificKeyframe = {};
+          propertySpecificKeyframe[member] = memberValue;
+          propertySpecificKeyframe.offset = keyframeEffect[i].offset;
+          if (propertySpecificKeyframeGroups[member] === undefined)
+            propertySpecificKeyframeGroups[member] = [];
+          propertySpecificKeyframeGroups[member].push(propertySpecificKeyframe);
+        }
+      }
+    }
+    return propertySpecificKeyframeGroups;
+  }
+
+  if (TESTING) {
+    testing.normalize = normalize;
+    // testing.cleanPropertyName = cleanPropertyName;
+    testing.makePropertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups;
   }
 
 })(webAnimations, testing);
