@@ -88,8 +88,9 @@
     'step-end': step(1, End)
   };
 
-  var cubicBezierRe = /cubic-bezier\(\s*(\d*.?\d*)\s*,\s*(-?\d*.?\d*)\s*,\s*(-?\d*.?\d*)\s*,\s*(\d*.?\d*)\s*\)/;
-  var stepRe = /step\(\s*(\d*)\s*,\s*(start|middle|end)\s*\)/;
+  var numberString = '\\s*(\\d+\\.?\\d*)\\s*|\\s*(\\.\\d+)\\s';
+  var cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
+  var stepRe = /step\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
   var linear = function(x) { return x; };
 
   function toTimingFunction(easing) {
