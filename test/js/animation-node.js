@@ -1,9 +1,12 @@
 suite('animation-node', function() {
   test('normalize timing input', function() {
     assert.equal(normalizeTimingInput(1).duration, 1);
-    assert.equal(normalizeTimingInput(1).easing, 'linear');
-    assert.equal(normalizeTimingInput(undefined).duration, 'auto');
-    assert.equal(normalizeTimingInput({easing: 'ease'}).easing, 'ease');
+    assert.equal(normalizeTimingInput(1).easing(0.2), 0.2);
+    assert.equal(normalizeTimingInput(undefined).duration, 0);
+  });
+  test('calculating active duration', function() {
+    assert.equal(calculateActiveDuration({duration: 1000, playbackRate: 4, iterations: 20}), 5000);
+    assert.equal(calculateActiveDuration({duration: 500, playbackRate: 0.1, iterations: 300}), 1500000);
   });
   test('conversion of timing functions', function() {
     var f = toTimingFunction('ease');
