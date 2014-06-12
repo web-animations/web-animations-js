@@ -71,4 +71,9 @@ suite('animation-node', function() {
     assert.equal(calculateIterationTime(500, 5000, Infinity, 100, {iterations: 10, iterationStart: 0}), 500);
     assert.equal(calculateIterationTime(500, 5000, 5100, 100, {iterations: 3.2, iterationStart: 0.8}), 500);
   });
+  test('calculating current iteration', function() {
+    // calculateCurrentIteration(iterationDuration, iterationTime, scaledActiveTime, timingInput);
+    assert.equal(calculateCurrentIteration(1000, 400, 4400, {iterations: 50, iterationStart: 0.8}), 4);
+    assert.equal(calculateCurrentIteration(1000, 1000, 4400, {iterations: 50.2, iterationStart: 0.8}), 50);
+  });
 });

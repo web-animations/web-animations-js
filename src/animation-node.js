@@ -228,6 +228,7 @@
     testing.calculateActiveTime = calculateActiveTime;
     testing.calculateScaledActiveTime = calculateScaledActiveTime;
     testing.calculateIterationTime = calculateIterationTime;
+    testing.calculateCurrentIteration = calculateCurrentIteration;
   }
 
 })(webAnimations, testing);
