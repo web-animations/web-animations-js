@@ -14,8 +14,24 @@
 
 (function(scope, testing) {
 
+  function stashName(property) {
+    return '_' + property;
+  }
+
   scope.apply = function(element, property, value) {
+    var stash = stashName(property);
+    if (!element.style.hasOwnProperty(stash)) {
+      element.style[stash] = element.style[property];
+    }
     element.style[property] = value;
+  };
+
+  scope.clear = function(element, property) {
+    var stash = stashName(property);
+    if (element.style.hasOwnProperty(stash)) {
+      element.style[property] = element.style[stash];
+      delete element.style[stash];
+    }
   };
 
 })(webAnimations, testing);

@@ -16,9 +16,14 @@
 
   // PLACEHOLDER: Replace with something that works.
   scope.convertEffectInput = function(effectInput) {
-    var interpolation = scope.propertyInterpolation('left', '0px', '100px');
+    var placeholderProperty = 'left';
+    var interpolation = scope.propertyInterpolation(placeholderProperty, '0px', '100px');
     return function(target, fraction) {
-      scope.apply(target, 'left', interpolation(fraction));
+      if (fraction !== null) {
+        scope.apply(target, placeholderProperty, interpolation(fraction));
+      } else {
+        scope.clear(target, placeholderProperty);
+      }
     };
   };
 
