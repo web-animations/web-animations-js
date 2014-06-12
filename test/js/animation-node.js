@@ -60,4 +60,9 @@ suite('animation-node', function() {
     assert.equal(calculateActiveTime(1000, 'forwards', 1100, PhaseAfter, 200), 1000);
     assert.equal(calculateActiveTime(1000, 'none', 1100, PhaseAfter, 200), null);
   });
+  test('calculating scaled active time', function() {
+    // calculateScaledActiveTime(activeDuration, activeTime, startOffset, timingInput);
+    assert.equal(calculateScaledActiveTime(1000, 200, 300, {playbackRate: 1.5}), 600);
+    assert.equal(calculateScaledActiveTime(1000, 200, 300, {playbackRate: -4}), 3500);
+  });
 });
