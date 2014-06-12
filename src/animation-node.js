@@ -88,7 +88,7 @@
     'step-end': step(1, End)
   };
 
-  var numberString = '\\s*(-?\\d+\\.?\\d*)\\s*|\\s*(-?\\.\\d+)\\s';
+  var numberString = '\\s*(-?\\d+\\.?\\d*|-?\\.\\d+)\\s*';
   var cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
   var stepRe = /step\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
   var linear = function(x) { return x; };
@@ -96,7 +96,7 @@
   function toTimingFunction(easing) {
     var cubicData = cubicBezierRe.exec(easing);
     if (cubicData) {
-      return cubic(Number(cubicData[1]), Number(cubicData[2]), Number(cubicData[3]), Number(cubicData[4]));
+      return cubic.apply(this, cubicData.slice(1).map(Number));
     }
     var stepData = stepRe.exec(easing);
     if (stepData) {
