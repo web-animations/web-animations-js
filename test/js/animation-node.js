@@ -45,9 +45,19 @@ suite('animation-node', function() {
     assert.equal(f(0.25), 0.2);
   });
   test('calculating phase', function() {
+    // calculatePhase(activeDuration, localTime, timing);
     assert.equal(calculatePhase(1000, 100, {delay: 0}), PhaseActive);
     assert.equal(calculatePhase(1000, 100, {delay: 200}), PhaseBefore);
     assert.equal(calculatePhase(1000, 2000, {delay: 200}), PhaseAfter);
     assert.equal(calculatePhase(1000, null, {delay: 200}), PhaseNone);
+  });
+  test('calculating active time', function() {
+    // calculateActiveTime(activeDuration, fillMode, localTime, phase, delay);
+    assert.equal(calculateActiveTime(1000, 'forwards', 100, PhaseActive, 0), 100);
+    assert.equal(calculateActiveTime(1000, 'forwards', 100, PhaseBefore, 200), null);
+    assert.equal(calculateActiveTime(1000, 'both', 100, PhaseBefore, 200), 0);
+    assert.equal(calculateActiveTime(1000, 'forwards', 500, PhaseActive, 200), 300);
+    assert.equal(calculateActiveTime(1000, 'forwards', 1100, PhaseAfter, 200), 1000);
+    assert.equal(calculateActiveTime(1000, 'none', 1100, PhaseAfter, 200), null);
   });
 });

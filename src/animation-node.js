@@ -146,14 +146,14 @@
     return PhaseActive;
   }
 
-  function calculateActiveTime(activeDuration, fillMode, localTime, phase, timingInput) {
+  function calculateActiveTime(activeDuration, fillMode, localTime, phase, delay) {
     switch (phase) {
       case PhaseBefore:
         if (fillMode == 'backwards' || fillMode == 'both')
           return 0;
         return null;
       case PhaseActive:
-        return localTime - timingInput.delay;
+        return localTime - delay;
       case PhaseAfter:
         if (fillMode == 'forwards' || fillMode == 'both')
           return activeDuration;
@@ -195,7 +195,7 @@
 
   function calculateTimeFraction(activeDuration, localTime, timingInput) {
     var phase = calculatePhase(activeDuration, localTime, timingInput);
-    var activeTime = calculateActiveTime(activeDuration, timingInput.fillMode, localTime, phase, timingInput);
+    var activeTime = calculateActiveTime(activeDuration, timingInput.fillMode, localTime, phase, timingInput.delay);
     if (activeTime === null) {
       return null;
     }
@@ -225,6 +225,7 @@
     testing.PhaseBefore = PhaseBefore;
     testing.PhaseActive = PhaseActive;
     testing.PhaseAfter = PhaseAfter;
+    testing.calculateActiveTime = calculateActiveTime;
   }
 
 })(webAnimations, testing);
