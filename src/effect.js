@@ -19,14 +19,14 @@
     var propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframeEffect);
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
     return function(target, fraction) {
-      // Look up the interpolations that will apply at
-      // fraction and apply them like this v
-      // scope.apply(target, 'left', interpolation(fraction));
       for (var i = 0; i < interpolations.length; i++)
         if (interpolations[i].endTime >= fraction && interpolations[i].startTime <= fraction)
-          scope.apply(target, interpolations[i].property, interpolations[i].interpolation(fraction)); // TODO: Do the times need to be scaled to the local time?
+          scope.apply(target,
+            interpolations[i].property,
+            interpolations[i].interpolation((fraction - interpolations[i].startTime) / (interpolations[i].endTime - interpolations[i].startTime)));
     };
   };
+
 
   function makeInterpolations(propertySpecificKeyframeGroups) {
     var interpolations = [];
@@ -71,7 +71,7 @@
           var memberValue = originalKeyframe[member];
           // FIXME: If the value isn't a number or a string, this sets it to the empty string. Should do something better.
           if (typeof memberValue != 'number' && typeof memberValue != 'string')
-            memberValue = "";
+            memberValue = '';
           keyframe[member] = memberValue;
         }
       }
@@ -100,7 +100,7 @@
         throw 'composite: \'add\' not supported';
 
       addKeyframe(effectInput[i]);
-    }         
+    }
 
     function compareKeyframesByOffset(keyframe1, keyframe2) {
       if (keyframe1.offset < keyframe2.offset)
@@ -143,6 +143,7 @@
     return keyframeEffect;
   }
 
+
   function makePropertySpecificKeyframeGroups(keyframeEffect) {
     var propertySpecificKeyframeGroups = {};
 
@@ -162,11 +163,12 @@
       if (propertySpecificKeyframeGroups.hasOwnProperty(groupName)) {
         var group = propertySpecificKeyframeGroups[groupName];
         if (group[0].offset != 0 || group[group.length - 1].offset != 1)
-          throw "Partial keyframes are not supported";
+          throw 'Partial keyframes are not supported';
       }
     }
     return propertySpecificKeyframeGroups;
   }
+
 
   if (TESTING) {
     testing.normalize = normalize;
