@@ -211,9 +211,11 @@
     var input = normalizeTimingInput(timingInput);
     var timeFraction = 0;
     var activeDuration = calculateActiveDuration(input);
-    return function(localTime) {
+    var f = function(localTime) {
       return calculateTimeFraction(activeDuration, localTime, input);
-    }
+    };
+    f.totalDuration = activeDuration + input.delay + input.endDelay;
+    return f;
   };
 
   if (TESTING) {

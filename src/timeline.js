@@ -21,14 +21,19 @@
   scope.Timeline.prototype = {
     play: function(source) {
       var player = new scope.Player(source);
-      player.startTime = performance.now();
+      player._startTime = performance.now();
+      player.endTime = player._startTime + source.totalDuration;
+      player._timeline = this;
       this.players.push(player);
     }
   };
 
   function tick(t) {
+    global.document.timeline.currentTime = t;
     global.document.timeline.players.forEach(function(player) {
-      player.currentTime = t - player.startTime;
+      if (!(player.paused || player.finished)) {
+        player._currentTime = t - player.startTime;
+      }
     });
     requestAnimationFrame(tick);
   };

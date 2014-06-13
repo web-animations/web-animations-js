@@ -15,18 +15,44 @@
 (function(scope, testing) {
 
   scope.Player = function(source) {
-    this._currentTime = 0;
+    this.__currentTime = 0;
+    this._startTime = null;
     this.source = source;
+    this.paused = false;
+    this.finished = false;
     source(0);
   };
 
   scope.Player.prototype = {
-    get currentTime() { return this._currentTime; },
-    set currentTime(newTime) {
-      if (newTime != this._currentTime) {
-        this._currentTime = newTime;
-        this.source(newTime);
+    get currentTime() { return this.__currentTime; },
+    set _currentTime(newTime) {
+      if (newTime != this.__currentTime) {
+        this.__currentTime = newTime;
+        if (this.__currentTime >= this.endTime) {
+          this.__currentTime = this.endTime;
+          this.finished = true;
+        }
+        this.source(this.__currentTime);
       }
+    },
+    set currentTime(newTime) {
+      this._currentTime = newTime;
+      this._startTime = this._timeline.currentTime - this.__currentTime;
+    },
+    get startTime() { return this._startTime; },
+    set startTime(newTime) {
+      this._startTime = newTime;
+      this.endTime = this._startTime + this.source.totalDuration;
+      this.__currentTime = this._timeline.currentTime - newTime;
+      this.source(this.__currentTime);
+    },
+    pause: function() {
+      this.paused = true;
+      this._startTime = null;
+    },
+    play: function() {
+      this.paused = false;
+      this._startTime = this._timeline.currentTime - this.__currentTime;
     }
   };
 
