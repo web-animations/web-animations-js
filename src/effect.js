@@ -43,14 +43,10 @@
         }
       }
     }
-    function compareInterpolationsByStartTimes(interpolation1, interpolation2) {
-      if (interpolation1.startTime < interpolation2.startTime)
-        return -1;
-      else if (interpolation1.startTime == interpolation2.startTime)
-        return 0;
-      return 1;
-    }
-    interpolations.sort(compareInterpolationsByStartTimes);
+    interpolations.sort(
+      function(leftInterpolation, rightInterpolation) {
+        return leftInterpolation.startTime - rightInterpolation.startTime;
+      });
     return interpolations;
   }
 
@@ -80,41 +76,34 @@
 
     var everyFrameHasOffset = true;
     var looselySortedByOffset = true;
-    var lastOffset = -Infinity;
+    var previousOffset = -Infinity;
     for (var i = 0; i < effectInput.length; i++) {
-      var keyframeHasOffset = false;
       var offset = effectInput[i].offset;
       if (offsetGiven(offset)) {
         if (typeof offset != 'number' || offset < 0 || offset > 1)
           continue;
-        keyframeHasOffset = true;
 
-        if (keyframeHasOffset) {
-          if (offset < lastOffset)
-            looselySortedByOffset = false;
-          lastOffset = offset;
-        }
+        if (offset < previousOffset)
+          looselySortedByOffset = false;
+        previousOffset = offset;
       }
-      everyFrameHasOffset = everyFrameHasOffset && keyframeHasOffset;
+      else {
+        everyFrameHasOffset = false;
+      }
       if (effectInput[i].composite == 'add')
         throw 'composite: \'add\' not supported';
 
       addKeyframe(effectInput[i]);
     }
 
-    function compareKeyframesByOffset(keyframe1, keyframe2) {
-      if (keyframe1.offset < keyframe2.offset)
-        return -1;
-      else if (keyframe1.offset == keyframe2.offset)
-        return 0;
-      return 1;
-    }
-
     if (!looselySortedByOffset) {
       if (!everyFrameHasOffset)
         throw 'Keyframes are not loosely sorted by offset. Sort or specify offsets.';
       else
-        keyframeEffect.sort(compareKeyframesByOffset);
+        keyframeEffect.sort(
+          function(leftKeyframe, rightKeyframe) {
+            return leftKeyframe.offset - rightKeyframe.offset;
+          });
     }
 
     function spaceKeyframes() {
@@ -124,16 +113,16 @@
       if (length > 1 && !offsetGiven(keyframeEffect[0].offset))
         keyframeEffect[0].offset = 0;
 
-      var lastIndex = 0;
-      var lastOffset = keyframeEffect[0].offset;
+      var previousIndex = 0;
+      var previousOffset = keyframeEffect[0].offset;
       for (var i = 1; i < length; i++) {
         var offset = keyframeEffect[i].offset;
         if (offsetGiven(offset)) {
-          if (lastIndex + 1 < i)
-            for (var j = 1; j < i - lastIndex; j++)
-              keyframeEffect[lastIndex + j].offset = lastOffset + (offset - lastOffset) * j / (i - lastIndex);
-          lastIndex = i;
-          lastOffset = offset;
+          if (previousIndex + 1 < i)
+            for (var j = 1; j < i - previousIndex; j++)
+              keyframeEffect[previousIndex + j].offset = previousOffset + (offset - previousOffset) * j / (i - previousIndex);
+          previousIndex = i;
+          previousOffset = offset;
         }
       }
     }
@@ -150,10 +139,11 @@
     for (var i = 0; i < keyframeEffect.length; i++) {
       for (var member in keyframeEffect[i]) {
         if (keyframeEffect[i].hasOwnProperty(member) && member !== 'offset') {
-          var propertySpecificKeyframe = {offset: keyframeEffect[i].offset};
-          propertySpecificKeyframe.value = keyframeEffect[i][member];
-          if (propertySpecificKeyframeGroups[member] === undefined)
-            propertySpecificKeyframeGroups[member] = [];
+          var propertySpecificKeyframe = {
+            offset: keyframeEffect[i].offset,
+            value: keyframeEffect[i][member]
+          };
+          propertySpecificKeyframeGroups[member] = propertySpecificKeyframeGroups[member] || [];
           propertySpecificKeyframeGroups[member].push(propertySpecificKeyframe);
         }
       }
@@ -171,9 +161,10 @@
 
 
   if (TESTING) {
+    testing.convertEffectInput = convertEffectInput;
+    testing.makeInterpolations = makeInterpolations;
     testing.normalize = normalize;
     testing.makePropertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups;
-    testing.makeInterpolations = makeInterpolations;
   }
 
 })(webAnimations, testing);
