@@ -31,16 +31,14 @@
   function makeInterpolations(propertySpecificKeyframeGroups) {
     var interpolations = [];
     for (var groupName in propertySpecificKeyframeGroups) {
-      if (propertySpecificKeyframeGroups.hasOwnProperty(groupName)) {
-        var group = propertySpecificKeyframeGroups[groupName];
-        for (var i = 0; i < group.length - 1; i++) {
-          interpolations.push({
-            startTime: group[i].offset,
-            endTime: group[i + 1].offset,
-            property: groupName,
-            interpolation: scope.propertyInterpolation(groupName, group[i].value, group[i + 1].value)
-          });
-        }
+      var group = propertySpecificKeyframeGroups[groupName];
+      for (var i = 0; i < group.length - 1; i++) {
+        interpolations.push({
+          startTime: group[i].offset,
+          endTime: group[i + 1].offset,
+          property: groupName,
+          interpolation: scope.propertyInterpolation(groupName, group[i].value, group[i + 1].value)
+        });
       }
     }
     interpolations.sort(
@@ -55,72 +53,69 @@
     if (!Array.isArray(effectInput) || effectInput.length < 2)
         throw 'Keyframe effect must be an array of 2 or more keyframes';
 
-    function offsetGiven(offset) {
-      return (offset !== undefined && offset !== null);
-    }
-
-    var keyframeEffect = [];
-    function addKeyframe(originalKeyframe) {
+    var keyframeEffect = effectInput.map(function(originalKeyframe) {
       var keyframe = {};
       for (var member in originalKeyframe) {
-        if (originalKeyframe.hasOwnProperty(member)) {
-          var memberValue = originalKeyframe[member];
+        var memberValue = originalKeyframe[member];
+        if (member == 'offset') {
+          if (memberValue != null) {
+            memberValue = Number(memberValue);
+            if (!isFinite(memberValue))
+              throw new TypeError("keyframe offsets must be numbers.");
+          }
+        } else if (typeof memberValue != 'string' && typeof memberValue != 'number') {
           // FIXME: If the value isn't a number or a string, this sets it to the empty string. Should do something better.
-          if (typeof memberValue != 'number' && typeof memberValue != 'string')
-            memberValue = '';
-          keyframe[member] = memberValue;
+          memberValue = '';
         }
+        keyframe[member] = memberValue;
       }
-      keyframeEffect.push(keyframe);
-    }
+      if (keyframe.offset == undefined)
+        keyframe.offset = null;
+      return keyframe;
+    });
 
     var everyFrameHasOffset = true;
     var looselySortedByOffset = true;
     var previousOffset = -Infinity;
-    for (var i = 0; i < effectInput.length; i++) {
-      var offset = effectInput[i].offset;
-      if (offsetGiven(offset)) {
-        if (typeof offset != 'number' || offset < 0 || offset > 1)
-          continue;
-
+    for (var i = 0; i < keyframeEffect.length; i++) {
+      var offset = keyframeEffect[i].offset;
+      if (offset != null) {
         if (offset < previousOffset)
           looselySortedByOffset = false;
         previousOffset = offset;
-      }
-      else {
+      } else {
         everyFrameHasOffset = false;
       }
-      if (effectInput[i].composite == 'add')
-        throw 'composite: \'add\' not supported';
-
-      addKeyframe(effectInput[i]);
     }
 
+    keyframeEffect = keyframeEffect.filter(function(keyframe) {
+      return keyframe.offset >= 0 && keyframe.offset <= 1;
+    });
+
     if (!looselySortedByOffset) {
-      if (!everyFrameHasOffset)
+      if (!everyFrameHasOffset) {
         throw 'Keyframes are not loosely sorted by offset. Sort or specify offsets.';
-      else
-        keyframeEffect.sort(
-          function(leftKeyframe, rightKeyframe) {
-            return leftKeyframe.offset - rightKeyframe.offset;
-          });
+      }
+      keyframeEffect.sort(
+        function(leftKeyframe, rightKeyframe) {
+          return leftKeyframe.offset - rightKeyframe.offset;
+        });
     }
 
     function spaceKeyframes() {
       var length = keyframeEffect.length;
-      if (!offsetGiven(keyframeEffect[length - 1].offset))
+      if (keyframeEffect[length - 1].offset == null)
         keyframeEffect[length - 1].offset = 1;
-      if (length > 1 && !offsetGiven(keyframeEffect[0].offset))
+      if (length > 1 && keyframeEffect[0].offset == null)
         keyframeEffect[0].offset = 0;
 
       var previousIndex = 0;
       var previousOffset = keyframeEffect[0].offset;
       for (var i = 1; i < length; i++) {
         var offset = keyframeEffect[i].offset;
-        if (offsetGiven(offset)) {
-          if (previousIndex + 1 < i)
-            for (var j = 1; j < i - previousIndex; j++)
-              keyframeEffect[previousIndex + j].offset = previousOffset + (offset - previousOffset) * j / (i - previousIndex);
+        if (offset != null) {
+          for (var j = 1; j < i - previousIndex; j++)
+            keyframeEffect[previousIndex + j].offset = previousOffset + (offset - previousOffset) * j / (i - previousIndex);
           previousIndex = i;
           previousOffset = offset;
         }
@@ -138,7 +133,7 @@
 
     for (var i = 0; i < keyframeEffect.length; i++) {
       for (var member in keyframeEffect[i]) {
-        if (keyframeEffect[i].hasOwnProperty(member) && member !== 'offset') {
+        if (member != 'offset') {
           var propertySpecificKeyframe = {
             offset: keyframeEffect[i].offset,
             value: keyframeEffect[i][member]
@@ -150,11 +145,9 @@
     }
 
     for (var groupName in propertySpecificKeyframeGroups) {
-      if (propertySpecificKeyframeGroups.hasOwnProperty(groupName)) {
-        var group = propertySpecificKeyframeGroups[groupName];
-        if (group[0].offset != 0 || group[group.length - 1].offset != 1)
-          throw 'Partial keyframes are not supported';
-      }
+      var group = propertySpecificKeyframeGroups[groupName];
+      if (group[0].offset != 0 || group[group.length - 1].offset != 1)
+        throw 'Partial keyframes are not supported';
     }
     return propertySpecificKeyframeGroups;
   }
