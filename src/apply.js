@@ -18,4 +18,8 @@
     element.style[property] = value;
   };
 
+  scope.clear = function(element, property) {
+    element.style[property] = '';
+  };
+
 })(webAnimations, testing);
