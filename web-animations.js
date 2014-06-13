@@ -21,6 +21,8 @@ var TESTING = false;
     'src/interpolation.js',
     'src/property-interpolation.js',
     'src/dimension-interpolation.js',
+    'src/number-interpolation.js',
+    'src/transform-interpolation.js',
     'src/element-animate.js',
     'src/animation-node.js',
     'src/animation.js',
