@@ -63,9 +63,9 @@
             if (!isFinite(memberValue))
               throw new TypeError("keyframe offsets must be numbers.");
           }
-        } else if (typeof memberValue != 'string' && typeof memberValue != 'number') {
+        } else {
           // FIXME: If the value isn't a number or a string, this sets it to the empty string. Should do something better.
-          memberValue = '';
+          memberValue = '' + memberValue;
         }
         keyframe[member] = memberValue;
       }
