@@ -146,14 +146,14 @@
     return PhaseActive;
   }
 
-  function calculateActiveTime(activeDuration, fillMode, localTime, phase, timingInput) {
+  function calculateActiveTime(activeDuration, fillMode, localTime, phase, delay) {
     switch (phase) {
       case PhaseBefore:
         if (fillMode == 'backwards' || fillMode == 'both')
           return 0;
         return null;
       case PhaseActive:
-        return localTime - timingInput.delay;
+        return localTime - delay;
       case PhaseAfter:
         if (fillMode == 'forwards' || fillMode == 'both')
           return activeDuration;
@@ -195,7 +195,7 @@
 
   function calculateTimeFraction(activeDuration, localTime, timingInput) {
     var phase = calculatePhase(activeDuration, localTime, timingInput);
-    var activeTime = calculateActiveTime(activeDuration, timingInput.fillMode, localTime, phase, timingInput);
+    var activeTime = calculateActiveTime(activeDuration, timingInput.fill, localTime, phase, timingInput.delay);
     if (activeTime === null) {
       return null;
     }
@@ -219,6 +219,17 @@
   if (TESTING) {
     testing.normalizeTimingInput = normalizeTimingInput;
     testing.toTimingFunction = toTimingFunction;
+    testing.calculateActiveDuration = calculateActiveDuration;
+    testing.calculatePhase = calculatePhase;
+    testing.PhaseNone = PhaseNone;
+    testing.PhaseBefore = PhaseBefore;
+    testing.PhaseActive = PhaseActive;
+    testing.PhaseAfter = PhaseAfter;
+    testing.calculateActiveTime = calculateActiveTime;
+    testing.calculateScaledActiveTime = calculateScaledActiveTime;
+    testing.calculateIterationTime = calculateIterationTime;
+    testing.calculateCurrentIteration = calculateCurrentIteration;
+    testing.calculateTransformedTime = calculateTransformedTime;
   }
 
 })(webAnimations, testing);
