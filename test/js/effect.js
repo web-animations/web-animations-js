@@ -1,6 +1,6 @@
 suite('effect', function() {
   // Test normalize.
-  test('Normalize keyframes with all offsets specified but not sorted by offset.',
+  test('Normalize keyframes with all offsets specified but not sorted by offset. Some offsets are out of [0, 1] range.',
     function() {
       var normalizedKeyframes;
       assert.doesNotThrow(function() {
@@ -68,33 +68,33 @@ suite('effect', function() {
       assert.closeTo(normalizedKeyframes[3].offset, 1, 0.001);
     });
 
-  test('Normalize keyframes where a keyframe has an offset that is not a number.',
-    function() {
-      assert.throws(function() {
-        normalize(
-          [
-          {offset: 0},
-          {offset: 'one'},
-          {offset: 1}
-          ]);
-      });
-    });
-
-  test('Normalize keyframes where a keyframe has an offset that is a numeric string.',
+  test('Normalize keyframes with some offsets not specified, but sorted by offset where specified. All specified offsets in [0, 1] range.',
     function() {
       var normalizedKeyframes;
       assert.doesNotThrow(function() {
         normalizedKeyframes = normalize(
           [
-          {offset: 0},
-          {offset: '0.5'},
-          {offset: 1}
+          {left: '0px', offset: 0},
+          {left: '10px'},
+          {left: '20px'},
+          {left: '30px', offset: 0.6},
+          {left: '40px'},
+          {left: '50px'}
           ]);
       });
-      assert.equal(normalizedKeyframes.length, 3);
+      assert.equal(normalizedKeyframes.length, 6);
       assert.closeTo(normalizedKeyframes[0].offset, 0, 0.001);
-      assert.closeTo(normalizedKeyframes[1].offset, 0.5, 0.001);
-      assert.closeTo(normalizedKeyframes[2].offset, 1, 0.001);
+      assert.equal(normalizedKeyframes[0].left, '0px');
+      assert.closeTo(normalizedKeyframes[1].offset, 0.2, 0.001);
+      assert.equal(normalizedKeyframes[1].left, '10px');
+      assert.closeTo(normalizedKeyframes[2].offset, 0.4, 0.001);
+      assert.equal(normalizedKeyframes[2].left, '20px');
+      assert.closeTo(normalizedKeyframes[3].offset, 0.6, 0.001);
+      assert.equal(normalizedKeyframes[3].left, '30px');
+      assert.closeTo(normalizedKeyframes[4].offset, 0.8, 0.001);
+      assert.equal(normalizedKeyframes[4].left, '40px');
+      assert.closeTo(normalizedKeyframes[5].offset, 1, 0.001);
+      assert.equal(normalizedKeyframes[5].left, '50px');
     });
 
   test('Normalize keyframes with no offsets specified.',
@@ -123,33 +123,33 @@ suite('effect', function() {
       assert.equal(normalizedKeyframes[4].left, '40px');
     });
 
-  test('Normalize keyframes with some offsets not specified, but sorted by offset where specified. All specified offsets in [0, 1] range.',
+  test('Normalize keyframes where a keyframe has an offset that is not a number.',
+    function() {
+      assert.throws(function() {
+        normalize(
+          [
+          {offset: 0},
+          {offset: 'one'},
+          {offset: 1}
+          ]);
+      });
+    });
+
+  test('Normalize keyframes where a keyframe has an offset that is a numeric string.',
     function() {
       var normalizedKeyframes;
       assert.doesNotThrow(function() {
         normalizedKeyframes = normalize(
           [
-          {left: '0px', offset: 0},
-          {left: '10px'},
-          {left: '20px'},
-          {left: '30px', offset: 0.6},
-          {left: '40px'},
-          {left: '50px'}
+          {offset: 0},
+          {offset: '0.5'},
+          {offset: 1}
           ]);
       });
-      assert.equal(normalizedKeyframes.length, 6);
+      assert.equal(normalizedKeyframes.length, 3);
       assert.closeTo(normalizedKeyframes[0].offset, 0, 0.001);
-      assert.equal(normalizedKeyframes[0].left, '0px');
-      assert.closeTo(normalizedKeyframes[1].offset, 0.2, 0.001);
-      assert.equal(normalizedKeyframes[1].left, '10px');
-      assert.closeTo(normalizedKeyframes[2].offset, 0.4, 0.001);
-      assert.equal(normalizedKeyframes[2].left, '20px');
-      assert.closeTo(normalizedKeyframes[3].offset, 0.6, 0.001);
-      assert.equal(normalizedKeyframes[3].left, '30px');
-      assert.closeTo(normalizedKeyframes[4].offset, 0.8, 0.001);
-      assert.equal(normalizedKeyframes[4].left, '40px');
-      assert.closeTo(normalizedKeyframes[5].offset, 1, 0.001);
-      assert.equal(normalizedKeyframes[5].left, '50px');
+      assert.closeTo(normalizedKeyframes[1].offset, 0.5, 0.001);
+      assert.closeTo(normalizedKeyframes[2].offset, 1, 0.001);
     });
 
   test('Normalize keyframes where some properties are given non-string, non-number values.',
@@ -346,36 +346,6 @@ suite('effect', function() {
       assert.equal(Object.getOwnPropertyNames(groups).length, 2);
     });
 
-  // TODO: Test this case for convertEffectInput.
-  test('Make property specific keyframes where two properties are animated. Both properties in a keyframe with offset 1. One property in the last keyframe, with no offset.',
-    function() {
-      var groups;
-      assert.doesNotThrow(function() {
-        groups = makePropertySpecificKeyframeGroups(normalize(
-          [
-          {left: '0px', top: '0px', offset: 0},
-          {left: '20px', top: '20px', offset: 1},
-          {left: '30px'}
-          ])
-        );
-      });
-      assert.equal(Object.getOwnPropertyNames(groups).length, 2);
-
-      assert.equal(groups.left.length, 3);
-      assert.closeTo(groups.left[0].offset, 0, 0.001);
-      assert.equal(groups.left[0].value, '0px');
-      assert.closeTo(groups.left[1].offset, 1, 0.001);
-      assert.equal(groups.left[1].value, '20px');
-      assert.closeTo(groups.left[2].offset, 1, 0.001);
-      assert.equal(groups.left[2].value, '30px')
-
-      assert.equal(groups.top.length, 2);
-      assert.closeTo(groups.top[0].offset, 0, 0.001);
-      assert.equal(groups.top[0].value, '0px');
-      assert.closeTo(groups.top[1].offset, 1, 0.001);
-      assert.equal(groups.top[1].value, '20px');
-    });
-
   // Test makeInterpolations
   test('Make interpolations for a simple effect with one property.',
     function() {
@@ -390,10 +360,12 @@ suite('effect', function() {
         ));
       });
       assert.equal(interpolations.length, 2);
+
       assert.closeTo(interpolations[0].startTime, 0, 0.001);
       assert.closeTo(interpolations[0].endTime, 0.3, 0.001);
       assert.equal(interpolations[0].property, 'left');
       assert.equal(typeof interpolations[0].interpolation, 'function');
+
       assert.closeTo(interpolations[1].startTime, 0.3, 0.001);
       assert.closeTo(interpolations[1].endTime, 1, 0.001);
       assert.equal(interpolations[1].property, 'left');
@@ -414,18 +386,23 @@ suite('effect', function() {
           ]
         );
       });
+
+      function targetLeftAsNumber() {
+        return Number(target.style.left.substring(0, target.style.left.length - 2));
+      }
+
       effectFunction(target, 0);
-      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 0, 0.001);
+      assert.closeTo(targetLeftAsNumber(), 0, 0.001);
       effectFunction(target, 0.075);
-      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 50, 0.001);
+      assert.closeTo(targetLeftAsNumber(), 50, 0.001);
       effectFunction(target, 0.15);
-      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 100, 0.001);
+      assert.closeTo(targetLeftAsNumber(), 100, 0.001);
       effectFunction(target, 0.65);
-      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 150, 0.001);
+      assert.closeTo(targetLeftAsNumber(), 150, 0.001);
       effectFunction(target, 1);
-      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 100, 0.001);
+      assert.closeTo(targetLeftAsNumber(), 100, 0.001);
       effectFunction(target, 2);
-      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 100, 0.001);
+      assert.closeTo(targetLeftAsNumber(), 100, 0.001);
     });
 
   test('Convert effect input where one property is animated and the property has two keyframes at offset 1.',
@@ -442,8 +419,8 @@ suite('effect', function() {
         );
       });
       effectFunction(target, 1);
-      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 20, 0.001);
+      assert.equal(target.style.left, '20px');
       effectFunction(target, 2);
-      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 20, 0.001);
+      assert.equal(target.style.left, '20px');
     });
 });
