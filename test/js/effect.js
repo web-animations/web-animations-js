@@ -1,10 +1,4 @@
 suite('effect', function() {
-  setup(function() {
-    // var keyframes = [{left: '0px'}, {left: '100px'}];
-    // this.effect = convertEffectInput(keyframes);
-    this.element = document.createElement('div');
-  });
-
   // Test normalize.
   test('Normalize keyframes with all offsets specified but not sorted by offset.',
     function() {
@@ -352,7 +346,7 @@ suite('effect', function() {
       assert.equal(Object.getOwnPropertyNames(groups).length, 2);
     });
 
-  // TODO: Test this case for makeInterpolations.
+  // TODO: Test this case for convertEffectInput.
   test('Make property specific keyframes where two properties are animated. Both properties in a keyframe with offset 1. One property in the last keyframe, with no offset.',
     function() {
       var groups;
@@ -382,46 +376,74 @@ suite('effect', function() {
       assert.equal(groups.top[1].value, '20px');
     });
 
-  // TODO: Test this case for makeInterpolations.
-  test('Make property specific keyframes where two properties are animated. Both properties in the first keyframe, with no offset. One property in a keyframe with offset 0.',
+  // Test makeInterpolations
+  test('Make interpolations for a simple effect with one property.',
     function() {
-      var groups;
+      var interpolations;
       assert.doesNotThrow(function() {
-        groups = makePropertySpecificKeyframeGroups(normalize(
+        interpolations = makeInterpolations(makePropertySpecificKeyframeGroups(normalize(
           [
-          {left: '10px', top: '10px'},
-          {left: '0px', offset: 0},
-          {left: '20px', top: '20px', offset: 1}
+          {left: '0px'},
+          {left: '200px', offset: 0.3},
+          {left: '0px'}
           ])
-        );
+        ));
       });
-      assert.equal(Object.getOwnPropertyNames(groups).length, 2);
-
-      assert.equal(groups.left.length, 3);
-      assert.closeTo(groups.left[0].offset, 0, 0.001);
-      assert.equal(groups.left[0].value, '10px');
-      assert.closeTo(groups.left[1].offset, 0, 0.001);
-      assert.equal(groups.left[1].value, '0px');
-      assert.closeTo(groups.left[2].offset, 1, 0.001);
-      assert.equal(groups.left[2].value, '20px')
-
-      assert.equal(groups.top.length, 2);
-      assert.closeTo(groups.top[0].offset, 0, 0.001);
-      assert.equal(groups.top[0].value, '10px');
-      assert.closeTo(groups.top[1].offset, 1, 0.001);
-      assert.equal(groups.top[1].value, '20px');
+      assert.equal(interpolations.length, 2);
+      assert.closeTo(interpolations[0].startTime, 0, 0.001);
+      assert.closeTo(interpolations[0].endTime, 0.3, 0.001);
+      assert.equal(interpolations[0].property, 'left');
+      assert.equal(typeof interpolations[0].interpolation, 'function');
+      assert.closeTo(interpolations[1].startTime, 0.3, 0.001);
+      assert.closeTo(interpolations[1].endTime, 1, 0.001);
+      assert.equal(interpolations[1].property, 'left');
+      assert.equal(typeof interpolations[1].interpolation, 'function');
     });
 
-  // 
-  // test();
+  // Test convertEffectInput
+  test('Convert effect input for a simple effect with one property.',
+    function() {
+      var target = document.createElement('div');
+      var effectFunction;
+      assert.doesNotThrow(function() {
+        effectFunction = convertEffectInput(
+          [
+          {left: '0px'},
+          {left: '200px', offset: 0.3},
+          {left: '100px'}
+          ]
+        );
+      });
+      effectFunction(target, 0);
+      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 0, 0.001);
+      effectFunction(target, 0.075);
+      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 50, 0.001);
+      effectFunction(target, 0.15);
+      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 100, 0.001);
+      effectFunction(target, 0.65);
+      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 150, 0.001);
+      effectFunction(target, 1);
+      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 100, 0.001);
+      effectFunction(target, 2);
+      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 100, 0.001);
+    });
 
-  // test('apply effect', function() {
-  //   this.effect(this.element, 0.5);
-  //   assert.equal(this.element.style.left, '50px');
-  // });
-  // test('apply and clear effect', function() {
-  //   this.effect(this.element, 0.5);
-  //   this.effect(this.element, null);
-  //   assert.equal(this.element.style.left, '');
-  // });
+  test('Convert effect input where one property is animated and the property has two keyframes at offset 1.',
+    function() {
+      var target = document.createElement('div');
+      var effectFunction;
+      assert.doesNotThrow(function() {
+        effectFunction = convertEffectInput(
+          [
+          {left: '0px', offset: 0},
+          {left: '20px', offset: 1},
+          {left: '30px'}
+          ]
+        );
+      });
+      effectFunction(target, 1);
+      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 20, 0.001);
+      effectFunction(target, 2);
+      assert.closeTo(Number(target.style.left.substring(0, target.style.left.length - 2)), 20, 0.001);
+    });
 });
