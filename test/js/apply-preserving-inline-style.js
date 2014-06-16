@@ -1,4 +1,4 @@
-suite('apply-preserving', function() {
+suite('apply-preserving-inline-style', function() {
   setup(function() {
     this.element = document.createElement('div');
     ensureStyleIsPatched(this.element);
