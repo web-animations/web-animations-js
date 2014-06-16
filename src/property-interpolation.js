@@ -16,11 +16,11 @@
 
   var propertyHandlers = {};
 
-  function addPropertiesHandler(handler, properties) {
+  function addPropertiesHandler(parser, merger, properties) {
     for (var i = 0; i < properties.length; i++) {
       var property = properties[i];
       propertyHandlers[property] = propertyHandlers[property] || [];
-      propertyHandlers[property].push(handler);
+      propertyHandlers[property].push([parser, merger]);
     }
   }
   scope.addPropertiesHandler = addPropertiesHandler;
@@ -28,9 +28,13 @@
   function propertyInterpolation(property, left, right) {
     var handlers = propertyHandlers[property];
     for (var i = 0; handlers && i < handlers.length; i++) {
-      var interpolation = handlers[i](left, right);
-      if (interpolation)
-        return interpolation;
+      var parsedLeft = handlers[i][0](left);
+      var parsedRight = handlers[i][0](right);
+      if (parsedLeft !== undefined && parsedRight !== undefined) {
+        var interpolationArgs = handlers[i][1](parsedLeft, parsedRight);
+        if (interpolationArgs)
+          return Interpolation.apply(null, interpolationArgs);
+      }
     }
     return scope.Interpolation(false, true, function(bool) {
       return bool ? right : left;

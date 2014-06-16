@@ -14,15 +14,15 @@
 
 (function(scope, testing) {
 
-  function convertDimension(unitRegExp, string) {
+  function parseDimension(unitRegExp, string) {
     string = string.trim().toLowerCase();
 
-    if (string == '0' && unitRegExp.test('px'))
+    if (string == '0' && 'px'.search(unitRegExp) >= 0)
       return {px: 0};
 
     // If we have parenthesis, we're a calc and need to start with 'calc'.
     if (!/^[^(]*$|^calc/.test(string))
-      return null;
+      return;
     string = string.replace(/calc\(/g, '(');
 
     // We tag units by prefixing them with 'U' (note that we are already
@@ -36,7 +36,7 @@
     var taggedUnitRegExp = 'U(' + unitRegExp.source + ')';
 
     // Validating input is simply applying as many reductions as we can.
-    var typeCheck = string.replace(/[-+]?([0-9]*\.)?[0-9]+/g, 'N')
+    var typeCheck = string.replace(/[-+]?(\d*\.)?\d+/g, 'N')
                           .replace(new RegExp('N' + taggedUnitRegExp, 'g'), 'D')
                           .replace(/\s[+-]\s/g, 'O')
                           .replace(/\s/g, '');
@@ -51,52 +51,47 @@
       }
     }
     if (typeCheck != 'D')
-      return null;
+      return;
 
     for (var unit in matchedUnits) {
       var result = eval(string.replace(new RegExp('U' + unit, 'g'), '').replace(new RegExp(taggedUnitRegExp, 'g'), '*0'));
       if (!isFinite(result))
-        return null;
+        return;
       matchedUnits[unit] = result;
     }
     return matchedUnits;
   }
 
-  function makeDimensionInterpolation(unitRegExp) {
-    return function(left, right) {
-      left = convertDimension(unitRegExp, left);
-      right = convertDimension(unitRegExp, right);
-      if (!left || !right)
-        return null;
-
-      var units = [], unit;
-      for (unit in left)
+  function mergeDimensions(left, right) {
+    var units = [], unit;
+    for (unit in left)
+      units.push(unit);
+    for (unit in right)
+      if (units.indexOf(unit) < 0)
         units.push(unit);
-      for (unit in right)
-        if (units.indexOf(unit) < 0)
-          units.push(unit);
 
-      left = units.map(function(unit) { return left[unit] || 0; });
-      right = units.map(function(unit) { return right[unit] || 0; });
-      return scope.Interpolation(left, right, function(values) {
-        var result = values.map(function(value, i) {
-          // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
-          return value.toFixed(3).replace('.000', '') + units[i];
-        }).join(' + ');
-        return values.length > 1 ? 'calc(' + result + ')' : result;
-      });
-    }
+    left = units.map(function(unit) { return left[unit] || 0; });
+    right = units.map(function(unit) { return right[unit] || 0; });
+    return [left, right, function(values) {
+      var result = values.map(function(value, i) {
+        // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
+        return value.toFixed(3).replace('.000', '') + units[i];
+      }).join(' + ');
+      return values.length > 1 ? 'calc(' + result + ')' : result;
+    }];
   }
 
   var lengthUnits = 'px|em|ex|ch|rem|vw|vh|vmin|vmax|cm|mm|in|pt|pc';
-  var lengthOrPercentInterpolation = makeDimensionInterpolation(new RegExp(lengthUnits + '|%', 'g'));
+  var parseLength = parseDimension.bind(null, new RegExp(lengthUnits, 'g'));
+  var parseLengthOrPercent = parseDimension.bind(null, new RegExp(lengthUnits + '|%', 'g'));
+  var parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
 
-  scope.addPropertiesHandler(lengthOrPercentInterpolation,
+  scope.parseLength = parseLength;
+  scope.parseLengthOrPercent = parseLengthOrPercent;
+  scope.parseAngle = parseAngle;
+  scope.mergeDimensions = mergeDimensions;
+
+  scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions,
     'left|right|top|bottom|width|height'.split('|'));
-
-  if (TESTING) {
-    testing.convertDimension = convertDimension;
-    testing.lengthUnits = lengthUnits;
-  }
 
 })(webAnimations, testing);
