@@ -220,10 +220,10 @@ suite('effect', function() {
         groups = makePropertySpecificKeyframeGroups(normalize(
           [
           {left: '0px', top: '200px', opacity: 1},
-          {left: '200px', top: "0px"},
-          {left: "0px", top: "200px", opacity: 0},
-          {top: "0px", opacity: 1},
-          {left: "200px", top: '200px', opacity: 0}
+          {left: '200px', top: '0px'},
+          {left: '0px', top: '200px', opacity: 0},
+          {top: '0px', opacity: 1},
+          {left: '200px', top: '200px', opacity: 0}
           ])
         );
       });
