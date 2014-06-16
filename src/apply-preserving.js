@@ -219,4 +219,6 @@
     }
   };
 
+  testing.ensureStyleIsPatched = ensureStyleIsPatched;
+
 })(webAnimations, testing);
