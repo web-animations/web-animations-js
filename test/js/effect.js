@@ -423,4 +423,23 @@ suite('effect', function() {
       effectFunction(target, 2);
       assert.equal(target.style.left, '20px');
     });
+
+  test('Convert effect input and apply effect at fraction null.',
+    function() {
+      var target = document.createElement('div');
+      var effectFunction;
+      assert.doesNotThrow(function() {
+        effectFunction = convertEffectInput(
+          [
+          {left: '0px'},
+          {left: '100px'}
+          ]
+        );
+      });
+
+      effectFunction(target, 1);
+      assert.equal(target.style.left, '100px');
+      effectFunction(target, null);
+      assert.equal(target.style.left, '');
+    });
 });
