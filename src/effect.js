@@ -20,8 +20,8 @@
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
     return function(target, fraction) {
       if (fraction != null) {
-        for (var i = 0; i < interpolations.length; i++)
-          if (interpolations[i].endTime >= fraction && interpolations[i].startTime <= fraction)
+        for (var i = 0; i < interpolations.length && interpolations[i].startTime <= fraction; i++)
+          if (interpolations[i].endTime >= fraction)
             scope.apply(target,
               interpolations[i].property,
               interpolations[i].interpolation((fraction - interpolations[i].startTime) / (interpolations[i].endTime - interpolations[i].startTime)));
