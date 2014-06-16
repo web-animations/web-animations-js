@@ -29,7 +29,7 @@
     set _currentTime(newTime) {
       if (newTime != this.__currentTime) {
         this.__currentTime = newTime;
-        if (this._playbackRate > 0 && this.__currentTime - this.source.totalDuration >= 0) {
+        if (this._playbackRate > 0 && this.__currentTime >= this.source.totalDuration) {
           this.__currentTime = this.source.totalDuration;
           this.finished = true;
         }
