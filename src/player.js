@@ -17,7 +17,7 @@
   scope.Player = function(source) {
     this.__currentTime = 0;
     this._startTime = null;
-    this.source = source;
+    this._source = source;
     this.paused = false;
     this.finished = false;
     this._playbackRate = 1;
@@ -29,15 +29,15 @@
     set _currentTime(newTime) {
       if (newTime != this.__currentTime) {
         this.__currentTime = newTime;
-        if (this._playbackRate > 0 && this.__currentTime >= this.source.totalDuration) {
-          this.__currentTime = this.source.totalDuration;
+        if (this._playbackRate > 0 && this.__currentTime >= this._source.totalDuration) {
+          this.__currentTime = this._source.totalDuration;
           this.finished = true;
         }
         if (this._playbackRate < 0 && this.__currentTime <= 0) {
           this.__currentTime = 0;
           this.finished = true;
         }
-        this.source(this.__currentTime);
+        this._source(this.__currentTime);
       }
     },
     get playbackRate() { return this._playbackRate; },
@@ -62,7 +62,7 @@
     play: function() {
       this.paused = false;
       if (this.finished) {
-        this.__currentTime = this._playbackRate > 0 ? 0 : this.source.totalDuration;
+        this.__currentTime = this._playbackRate > 0 ? 0 : this._source.totalDuration;
         this.finished = false;
       }
       this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
@@ -73,7 +73,7 @@
       this.finished = false;
     },
     finish: function() {
-      this.currentTime = this._playbackRate > 0 ? this.source.totalDuration : 0;
+      this.currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
     }
   };
 
