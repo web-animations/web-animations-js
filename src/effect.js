@@ -19,40 +19,24 @@
     var propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframeEffect);
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
     return function(target, fraction) {
-      if (fraction != null)
+      if (fraction != null) {
         for (var i = 0; i < interpolations.length; i++)
           if (interpolations[i].endTime >= fraction && interpolations[i].startTime <= fraction)
             scope.apply(target,
               interpolations[i].property,
               interpolations[i].interpolation((fraction - interpolations[i].startTime) / (interpolations[i].endTime - interpolations[i].startTime)));
+        } else {
+          for (var property in propertySpecificKeyframeGroups)
+            if (property != 'offset')
+              scope.clear(target, property);
+        }
     };
   };
 
 
-  function makeInterpolations(propertySpecificKeyframeGroups) {
-    var interpolations = [];
-    for (var groupName in propertySpecificKeyframeGroups) {
-      var group = propertySpecificKeyframeGroups[groupName];
-      for (var i = 0; i < group.length - 1; i++) {
-        interpolations.push({
-          startTime: group[i].offset,
-          endTime: group[i + 1].offset,
-          property: groupName,
-          interpolation: scope.propertyInterpolation(groupName, group[i].value, group[i + 1].value)
-        });
-      }
-    }
-    interpolations.sort(
-      function(leftInterpolation, rightInterpolation) {
-        return leftInterpolation.startTime - rightInterpolation.startTime;
-      });
-    return interpolations;
-  }
-
-
   function normalize(effectInput) {
     if (!Array.isArray(effectInput) || effectInput.length < 2)
-        throw 'Keyframe effect must be an array of 2 or more keyframes';
+        throw new TypeError('Keyframe effect must be an array of 2 or more keyframes');
 
     var keyframeEffect = effectInput.map(function(originalKeyframe) {
       var keyframe = {};
@@ -62,10 +46,9 @@
           if (memberValue != null) {
             memberValue = Number(memberValue);
             if (!isFinite(memberValue))
-              throw new TypeError("keyframe offsets must be numbers.");
+              throw new TypeError('keyframe offsets must be numbers.');
           }
         } else {
-          // FIXME: If the value isn't a number or a string, this sets it to the empty string. Should do something better.
           memberValue = '' + memberValue;
         }
         keyframe[member] = memberValue;
@@ -154,11 +137,32 @@
   }
 
 
+  function makeInterpolations(propertySpecificKeyframeGroups) {
+    var interpolations = [];
+    for (var groupName in propertySpecificKeyframeGroups) {
+      var group = propertySpecificKeyframeGroups[groupName];
+      for (var i = 0; i < group.length - 1; i++) {
+        interpolations.push({
+          startTime: group[i].offset,
+          endTime: group[i + 1].offset,
+          property: groupName,
+          interpolation: scope.propertyInterpolation(groupName, group[i].value, group[i + 1].value)
+        });
+      }
+    }
+    interpolations.sort(
+      function(leftInterpolation, rightInterpolation) {
+        return leftInterpolation.startTime - rightInterpolation.startTime;
+      });
+    return interpolations;
+  }
+
+
   if (TESTING) {
     testing.convertEffectInput = convertEffectInput;
-    testing.makeInterpolations = makeInterpolations;
     testing.normalize = normalize;
     testing.makePropertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups;
+    testing.makeInterpolations = makeInterpolations;
   }
 
 })(webAnimations, testing);
