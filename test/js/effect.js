@@ -184,15 +184,15 @@ suite('effect', function() {
 
   test('Normalize an empty array.',
     function() {
-      assert.throws(function() {
+      assert.doesNotThrow(function() {
         normalize([]);
       });
     });
 
-  test('Normalize an array containing only one keyframe.',
+  test('Normalize null.',
     function() {
-      assert.throws(function() {
-        normalize([{}]);
+      assert.doesNotThrow(function() {
+        normalize(null);
       });
     });
 

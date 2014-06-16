@@ -21,7 +21,7 @@
     return function(target, fraction) {
       if (fraction != null) {
         for (var i = 0; i < interpolations.length && interpolations[i].startTime <= fraction; i++)
-          if (interpolations[i].endTime >= fraction)
+          if (interpolations[i].endTime >= fraction && interpolations[i].endTime != interpolations[i].startTime)
             scope.apply(target,
               interpolations[i].property,
               interpolations[i].interpolation((fraction - interpolations[i].startTime) / (interpolations[i].endTime - interpolations[i].startTime)));
@@ -35,8 +35,11 @@
 
 
   function normalize(effectInput) {
-    if (!Array.isArray(effectInput) || effectInput.length < 2)
-        throw new TypeError('Keyframe effect must be an array of 2 or more keyframes');
+    if (!Array.isArray(effectInput) && effectInput !== null)
+        throw new TypeError('Keyframe effect must be null or an array of keyframes');
+
+    if (effectInput == null)
+      return [];
 
     var keyframeEffect = effectInput.map(function(originalKeyframe) {
       var keyframe = {};
