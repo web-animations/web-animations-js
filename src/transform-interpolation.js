@@ -35,10 +35,10 @@
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
-    rotate: ['A', cast([0, 0, 1, _])],
-    rotatex: ['A', cast([1, 0, 0, _])],
-    rotatey: ['A', cast([0, 1, 0, _])],
-    rotatez: ['A', cast([0, 0, 1, _])],
+    rotate: ['A'],
+    rotatex: ['A'],
+    rotatey: ['A'],
+    rotatez: ['A'],
     scale: ['Nn', cast([_, _, 1]), id],
     scalex: ['N', cast([_, 1, 1]), cast([_, 1])],
     scaley: ['N', cast([1, _, 1]), cast([1, _])],

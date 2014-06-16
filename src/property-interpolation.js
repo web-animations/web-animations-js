@@ -31,9 +31,9 @@
       var parsedLeft = handlers[i][0](left);
       var parsedRight = handlers[i][0](right);
       if (parsedLeft !== undefined && parsedRight !== undefined) {
-        var interpolation = Interpolation.apply(null, handlers[i][1](parsedLeft, parsedRight));
-        if (interpolation)
-          return interpolation;
+        var interpolationArgs = handlers[i][1](parsedLeft, parsedRight);
+        if (interpolationArgs)
+          return Interpolation.apply(null, interpolationArgs);
       }
     }
     return scope.Interpolation(false, true, function(bool) {

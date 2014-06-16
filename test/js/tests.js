@@ -6,7 +6,7 @@
     'interpolation.js',
     'property-interpolation.js',
     'animation-node.js',
-    'player.js'
+    'player.js',
     'transform-interpolation.js',
   ];
 
