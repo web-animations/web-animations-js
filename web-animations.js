@@ -27,7 +27,7 @@ var TESTING = false;
     'src/animation-node.js',
     'src/animation.js',
     'src/effect.js',
-    'src/apply-preserving.js',
+    'src/apply.js',
     'src/player.js',
     'src/timeline.js',
     // --- maxifill below here --- //
