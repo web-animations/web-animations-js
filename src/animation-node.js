@@ -206,7 +206,6 @@
     return calculateTransformedTime(currentIteration, timingInput.duration, iterationTime, timingInput) / timingInput.duration;
   }
 
-  // PLACEHOLDER: Replace with something that works.
   scope.AnimationNode = function(timingInput) {
     var input = normalizeTimingInput(timingInput);
     var timeFraction = 0;

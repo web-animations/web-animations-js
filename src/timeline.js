@@ -22,9 +22,8 @@
   scope.Timeline.prototype = {
     play: function(source) {
       var player = new scope.Player(source);
-      if (this.currentTime) {
+      if (this.currentTime !== undefined) {
         player._startTime = this.currentTime;
-        player.endTime = player._startTime + source.totalDuration;
       }
       player._timeline = this;
       this.players.push(player);
@@ -39,13 +38,19 @@
         if (!(player.startTime)) {
          player.startTime = this.currentTime;
         }
-        player._currentTime = t - player.startTime;
+        player._currentTime = (t - player.startTime) * player.playbackRate;
       }
     });
-    requestAnimationFrame(tick);
+    if (!TESTING) {
+      requestAnimationFrame(tick);
+    }
   };
 
-  requestAnimationFrame(tick);
+  if (!TESTING) {
+    requestAnimationFrame(tick);
+  } else {
+    testing.tick = tick;
+  }
 
   var timeline = new scope.Timeline();
   scope.timeline = timeline;

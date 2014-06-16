@@ -20,7 +20,7 @@
     this.source = source;
     this.paused = false;
     this.finished = false;
-    this.reversed = false;
+    this.playbackRate = 1;
     source(0);
   };
 
@@ -29,22 +29,24 @@
     set _currentTime(newTime) {
       if (newTime != this.__currentTime) {
         this.__currentTime = newTime;
-        if (this.__currentTime >= this.endTime) {
-          this.__currentTime = this.endTime;
+        if (this.playbackRate > 0 && this.__currentTime - this.source.totalDuration >= 0) {
+          this.__currentTime = this.source.totalDuration;
           this.finished = true;
         }
-        this.source(this.reversed ? this.source.totalDuration - this.__currentTime : this.__currentTime);
+        if (this.playbackRate < 0 && this.__currentTime <= 0) {
+          this.__currentTime = 0;
+          this.finished = true;
+        }
+        this.source(this.__currentTime);
       }
     },
     set currentTime(newTime) {
       this._currentTime = newTime;
-      this._startTime = this._timeline.currentTime - this.__currentTime;
-      this.endTime = this._startTime + this.source.totalDuration;
+      this._startTime = this._timeline.currentTime - this.__currentTime / this.playbackRate;
     },
     get startTime() { return this._startTime; },
     set startTime(newTime) {
       this._startTime = newTime;
-      this.endTime = this._startTime + this.source.totalDuration;
       this._currentTime = this._timeline.currentTime - newTime;
     },
     pause: function() {
@@ -53,14 +55,19 @@
     },
     play: function() {
       this.paused = false;
-      this._startTime = this._timeline.currentTime - this.__currentTime;
+      if (this.finished) {
+        this.__currentTime = this.playbackRate > 0 ? 0 : this.source.totalDuration;
+        this.finished = false;
+      }
+      this._startTime = this._timeline.currentTime - this.__currentTime / this.playbackRate;
     },
     reverse: function() {
-      this.reversed = !this.reversed;
-      this.currentTime = this.source.totalDuration - this.__currentTime;
+      this.playbackRate *= -1;
+      this._startTime = this._timeline.currentTime - this.__currentTime / this.playbackRate;
+      this.finished = false;
     },
     finish: function() {
-      this.currentTime = this.endTime;
+      this.currentTime = this._startTime + this.source.totalDuration;
     }
   };
 
