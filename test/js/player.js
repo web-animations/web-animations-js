@@ -116,4 +116,16 @@ suite('player', function() {
     assert.equal(p.currentTime, 300);
     assert.equal(p.startTime, 1200);
   });
+  test('seeking while paused works as expected', function() {
+    tick(800);
+    var p = document.body.animate([], 1000);
+    tick(1000);
+    p.pause();
+    assert.equal(p.currentTime, 200);
+    assert.equal(p.startTime, null);
+    assert.equal(p.paused, true);
+    p.currentTime = 500;
+    assert.equal(p.startTime, null);
+    assert.equal(p.paused, true);
+  });
 });

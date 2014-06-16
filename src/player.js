@@ -43,7 +43,9 @@
     get playbackRate() { return this._playbackRate; },
     set currentTime(newTime) {
       this._currentTime = newTime;
-      this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      if (!this.paused) {
+        this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      }
     },
     get startTime() { return this._startTime; },
     set startTime(newTime) {
