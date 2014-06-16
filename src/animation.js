@@ -17,10 +17,12 @@
   scope.Animation = function(target, effectInput, timingInput) {
     var animationNode = scope.AnimationNode(timingInput);
     var effect = scope.convertEffectInput(effectInput);
-    return function(localTime) {
+    var f = function(localTime) {
       var timeFraction = animationNode(localTime);
       effect(target, timeFraction);
     };
+    f.totalDuration = animationNode.totalDuration;
+    return f;
   };
 
 })(webAnimations, testing);

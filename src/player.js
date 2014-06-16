@@ -15,18 +15,65 @@
 (function(scope, testing) {
 
   scope.Player = function(source) {
-    this._currentTime = 0;
+    this.__currentTime = 0;
+    this._startTime = null;
     this.source = source;
+    this.paused = false;
+    this.finished = false;
+    this._playbackRate = 1;
     source(0);
   };
 
   scope.Player.prototype = {
-    get currentTime() { return this._currentTime; },
-    set currentTime(newTime) {
-      if (newTime != this._currentTime) {
-        this._currentTime = newTime;
-        this.source(newTime);
+    get currentTime() { return this.__currentTime; },
+    set _currentTime(newTime) {
+      if (newTime != this.__currentTime) {
+        this.__currentTime = newTime;
+        if (this._playbackRate > 0 && this.__currentTime >= this.source.totalDuration) {
+          this.__currentTime = this.source.totalDuration;
+          this.finished = true;
+        }
+        if (this._playbackRate < 0 && this.__currentTime <= 0) {
+          this.__currentTime = 0;
+          this.finished = true;
+        }
+        this.source(this.__currentTime);
       }
+    },
+    get playbackRate() { return this._playbackRate; },
+    set currentTime(newTime) {
+      this._currentTime = newTime;
+      if (!this.paused) {
+        this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      }
+    },
+    get startTime() { return this._startTime; },
+    set startTime(newTime) {
+      if (this.paused) {
+        return;
+      }
+      this._startTime = newTime;
+      this._currentTime = this._timeline.currentTime - newTime;
+    },
+    pause: function() {
+      this.paused = true;
+      this._startTime = null;
+    },
+    play: function() {
+      this.paused = false;
+      if (this.finished) {
+        this.__currentTime = this._playbackRate > 0 ? 0 : this.source.totalDuration;
+        this.finished = false;
+      }
+      this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+    },
+    reverse: function() {
+      this._playbackRate *= -1;
+      this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      this.finished = false;
+    },
+    finish: function() {
+      this.currentTime = this._playbackRate > 0 ? this.source.totalDuration : 0;
     }
   };
 

@@ -6,6 +6,7 @@
     'interpolation.js',
     'property-interpolation.js',
     'animation-node.js',
+    'player.js'
   ];
 
   var scripts = document.getElementsByTagName('script');

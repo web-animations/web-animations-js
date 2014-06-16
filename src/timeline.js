@@ -16,24 +16,41 @@
 
   scope.Timeline = function() {
     this.players = [];
+    this.currentTime = undefined;
   };
 
   scope.Timeline.prototype = {
     play: function(source) {
       var player = new scope.Player(source);
-      player.startTime = performance.now();
+      if (this.currentTime !== undefined) {
+        player._startTime = this.currentTime;
+      }
+      player._timeline = this;
       this.players.push(player);
+      return player;
     }
   };
 
   function tick(t) {
+    global.document.timeline.currentTime = t;
     global.document.timeline.players.forEach(function(player) {
-      player.currentTime = t - player.startTime;
+      if (!(player.paused || player.finished)) {
+        if (!(player.startTime)) {
+         player.startTime = this.currentTime;
+        }
+        player._currentTime = (t - player.startTime) * player.playbackRate;
+      }
     });
-    requestAnimationFrame(tick);
+    if (!TESTING) {
+      requestAnimationFrame(tick);
+    }
   };
 
-  requestAnimationFrame(tick);
+  if (!TESTING) {
+    requestAnimationFrame(tick);
+  } else {
+    testing.tick = tick;
+  }
 
   var timeline = new scope.Timeline();
   scope.timeline = timeline;
