@@ -20,7 +20,7 @@
     this.source = source;
     this.paused = false;
     this.finished = false;
-    this.playbackRate = 1;
+    this._playbackRate = 1;
     source(0);
   };
 
@@ -29,20 +29,21 @@
     set _currentTime(newTime) {
       if (newTime != this.__currentTime) {
         this.__currentTime = newTime;
-        if (this.playbackRate > 0 && this.__currentTime - this.source.totalDuration >= 0) {
+        if (this._playbackRate > 0 && this.__currentTime - this.source.totalDuration >= 0) {
           this.__currentTime = this.source.totalDuration;
           this.finished = true;
         }
-        if (this.playbackRate < 0 && this.__currentTime <= 0) {
+        if (this._playbackRate < 0 && this.__currentTime <= 0) {
           this.__currentTime = 0;
           this.finished = true;
         }
         this.source(this.__currentTime);
       }
     },
+    get playbackRate() { return this._playbackRate; },
     set currentTime(newTime) {
       this._currentTime = newTime;
-      this._startTime = this._timeline.currentTime - this.__currentTime / this.playbackRate;
+      this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
     },
     get startTime() { return this._startTime; },
     set startTime(newTime) {
@@ -56,14 +57,14 @@
     play: function() {
       this.paused = false;
       if (this.finished) {
-        this.__currentTime = this.playbackRate > 0 ? 0 : this.source.totalDuration;
+        this.__currentTime = this._playbackRate > 0 ? 0 : this.source.totalDuration;
         this.finished = false;
       }
-      this._startTime = this._timeline.currentTime - this.__currentTime / this.playbackRate;
+      this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
     },
     reverse: function() {
-      this.playbackRate *= -1;
-      this._startTime = this._timeline.currentTime - this.__currentTime / this.playbackRate;
+      this._playbackRate *= -1;
+      this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       this.finished = false;
     },
     finish: function() {
