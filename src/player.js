@@ -73,7 +73,7 @@
       this.finished = false;
     },
     finish: function() {
-      this.currentTime = this._startTime + this.source.totalDuration;
+      this.currentTime = this._playbackRate > 0 ? this.source.totalDuration : 0;
     }
   };
 
