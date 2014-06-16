@@ -34,22 +34,11 @@
     setProperty: 1,
   };
 
-  function configureDescriptor(descriptor) {
+  function configureProperty(object, property, descriptor) {
     descriptor.enumerable = true;
     descriptor.configurable = true;
-    return descriptor;
+    Object.defineProperty(object, property, descriptor);
   }
-
-  function configureProperty(object, property, descriptor) {
-    Object.defineProperty(object, property, configureDescriptor(descriptor));
-  }
-
-  function copyInlineStyle(sourceStyle, destinationStyle) {
-    for (var i = 0; i < sourceStyle.length; i++) {
-      var property = sourceStyle[i];
-      destinationStyle[property] = sourceStyle[property];
-    }
-  };
 
   function AnimatedCSSStyleDeclaration(element) {
     TESTING && console.assert(!(element.style instanceof AnimatedCSSStyleDeclaration),
@@ -64,9 +53,13 @@
     this._length = 0;
     this._isAnimatedProperty = {};
 
-    copyInlineStyle(this._style, this._surrogateStyle);
+    // Copy the inline style contents over to the surrogate.
+    for (var i = 0; i < this._style.length; i++) {
+      var property = this._style[i];
+      this._surrogateStyle[property] = this._style[property];
+    }
     this._updateIndices();
-  };
+  }
 
   AnimatedCSSStyleDeclaration.prototype = {
     get cssText() {
@@ -160,50 +153,15 @@
     })(property);
   }
 
-  // This patching method is a fallback for when we are unable to replace the browser's element.style property.
-  // This has the disadvantage that reading style.cssProperty getters will return the animated value.
-  // The correct way to interact with this patched style is to only use the style methods listed in styleMethods,
-  // animated values will not leak into the return values of these methods.
-  function patchInlineStyleForAnimation(element) {
-    var style = element.style;
-    var surrogateElement = document.createElement('div');
-    copyInlineStyle(style, surrogateElement.style);
-    var isAnimatedProperty = {};
-    for (var method in styleMethods) {
-      if (!(method in style))
-        return;
-      configureProperty(style, method, {
-        value: (function(method, originalMethodFunction) {
-          return function(property) {
-            var result = surrogateElement.style[method].apply(surrogateElement.style, arguments);
-            if (!isAnimatedProperty[property])
-              originalMethodFunction.apply(style, arguments);
-            return result;
-          }
-        })(method, style[method]),
-      });
-    }
-
-    style._set = function(property, value) {
-      style[property] = value;
-      isAnimatedProperty[property] = true;
-    };
-
-    style._clear = function(property) {
-      style[property] = surrogateElement.style[property];
-      delete isAnimatedProperty[property];
-    };
-  }
-
   function ensureStyleIsPatched(element) {
     if (element._webAnimationsPatchedStyle)
       return;
-    try {
-      var animatedStyle = new AnimatedCSSStyleDeclaration(element);
-      configureProperty(element, 'style', { get: function() { return animatedStyle; } });
-    } catch (error) {
-      patchInlineStyleForAnimation(element.style);
-    }
+
+    // If this style patch fails (on Safari and iOS) use the apply-preserving-inline-style-methods.js
+    // module instead and restrict inline style interactions to the methods listed in styleMethods.
+    var animatedStyle = new AnimatedCSSStyleDeclaration(element);
+    configureProperty(element, 'style', { get: function() { return animatedStyle; } });
+
     // We must keep a handle on the patched style to prevent it from getting GC'd.
     element._webAnimationsPatchedStyle = element.style;
   }
