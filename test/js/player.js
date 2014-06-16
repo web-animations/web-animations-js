@@ -128,4 +128,14 @@ suite('player', function() {
     assert.equal(p.startTime, null);
     assert.equal(p.paused, true);
   });
+  test('setting start time while paused is ignored', function() {
+    tick(900);
+    var p = document.body.animate([], 1234);
+    p.pause();
+    assert.equal(p.startTime, null);
+    assert.equal(p.currentTime, 0);
+    p.startTime = 2232;
+    assert.equal(p.startTime, null);
+    assert.equal(p.currentTime, 0);
+  });
 });

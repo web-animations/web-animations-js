@@ -49,6 +49,9 @@
     },
     get startTime() { return this._startTime; },
     set startTime(newTime) {
+      if (this.paused) {
+        return;
+      }
       this._startTime = newTime;
       this._currentTime = this._timeline.currentTime - newTime;
     },
