@@ -35,9 +35,8 @@
     global.document.timeline.currentTime = t;
     global.document.timeline.players.forEach(function(player) {
       if (!(player.paused || player.finished)) {
-        if (!(player.startTime)) {
-         player.startTime = this.currentTime;
-        }
+        if (!player.startTime)
+          player.startTime = t;
         player._currentTime = (t - player.startTime) * player.playbackRate;
       }
     });
