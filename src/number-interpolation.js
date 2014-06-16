@@ -15,13 +15,13 @@
 (function(scope, testing) {
 
   function parseNumber(string) {
-    if (/^\s*[-+]?(\d*\.)?\d+\s*/.test(string))
+    if (/^\s*[-+]?(\d*\.)?\d+\s*$/.test(string))
       return Number(string);
   }
 
   // FIXME: We will need to support clamping for opacity, etc.
   function mergeNumbers(left, right) {
-    return [left, right, function(x) { return x; }];
+    return [left, right, function(x) { return x.toFixed(3).replace('.000', ''); }];
   }
 
   scope.parseNumber = parseNumber;

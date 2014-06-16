@@ -14,9 +14,11 @@
 
 (function(scope, testing) {
 
+  // This returns a function for converting transform functions to equivalent
+  // primitive functions, which will take an array of values from the
+  // derivative type and fill in the blanks (underscores) with them.
   var _ = null;
   function cast(pattern) {
-    // Splat contents into the _'s of the pattern array
     return function(contents) {
       var i = 0;
       return pattern.map(function(x) { return x === _ ? contents[i++] : x; });
@@ -31,19 +33,20 @@
   // FIXME: We should support matrix, matrix3d, perspective and rotate3d
 
   // type: [argTypes, convertTo3D, convertTo2D]
+  // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
     rotate: ['A', cast([0, 0, 1, _])],
     rotatex: ['A', cast([1, 0, 0, _])],
     rotatey: ['A', cast([0, 1, 0, _])],
     rotatez: ['A', cast([0, 0, 1, _])],
-    scale: ['Nn', cast([_, _, 1])],
+    scale: ['Nn', cast([_, _, 1]), id],
     scalex: ['N', cast([_, 1, 1]), cast([_, 1])],
     scaley: ['N', cast([1, _, 1]), cast([1, _])],
     scalez: ['N', cast([1, 1, _])],
     scale3d: ['NNN', id],
-    skew: ['Aa', _, id],
-    skewx: ['A', _, cast([_, Odeg])],
-    skewy: ['A', _, cast([Odeg, _])],
+    skew: ['Aa', null, id],
+    skewx: ['A', null, cast([_, Odeg])],
+    skewy: ['A', null, cast([Odeg, _])],
     translate: ['Tt', cast([_, _, Opx]), id],
     translatex: ['T', cast([_, Opx, Opx]), cast([_, Opx])],
     translatey: ['T', cast([Opx, _, Opx]), cast([Opx, _])],
@@ -98,12 +101,12 @@
     }
   };
 
-  function nameTo2D(name) {
-    return name.replace(/[xy]/, '');
+  function typeTo2D(type) {
+    return type.replace(/[xy]/, '');
   }
 
-  function nameTo3D(name) {
-    return name.replace(/(x|y|z|3d)?$/, '3d');
+  function typeTo3D(type) {
+    return type.replace(/(x|y|z|3d)?$/, '3d');
   }
 
   function mergeTransforms(left, right) {
@@ -120,7 +123,7 @@
       var rightArgs = right[i][1];
 
       var leftFunctionData = transformFunctions[leftType];
-      var rightFunctionData = transformFunctions[leftType];
+      var rightFunctionData = transformFunctions[rightType];
 
       var type;
       if (leftType == rightType) {
@@ -138,7 +141,7 @@
       }
 
       var stringConversions = [];
-      for (var j = 0; j < leftArgs.left; j++) {
+      for (var j = 0; j < leftArgs.length; j++) {
         var merge = typeof leftArgs[j] == 'number' ? scope.mergeNumbers : scope.mergeDimensions;
         var merged = merge(leftArgs[j], rightArgs[j]);
         leftArgs[j] = merged[0];
@@ -153,7 +156,7 @@
     return [leftResult, rightResult, function(list) {
       return list.map(function(args, i) {
         var stringifiedArgs = args.map(function(arg, j) {
-          return types[i][j](arg);
+          return types[i][1][j](arg);
         }).join(',');
         return types[i][0] + '(' + stringifiedArgs + ')';
       }).join(' ');
