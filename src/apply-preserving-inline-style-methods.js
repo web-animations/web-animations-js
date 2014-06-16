@@ -27,8 +27,7 @@
   // This patch has the disadvantage that reading style.cssProperty getters will return the animated value.
   // The correct way to interact with this patched style is to only use the style methods listed in styleMethods,
   // animated values will not leak into the return values of these methods.
-  function patchInlineStyleForAnimation(element) {
-    var style = element.style;
+  function patchInlineStyleForAnimation(style) {
     var surrogateStyle = document.createElement('div').style;
     // Copy the inline style contents over to the surrogate.
     for (var i = 0; i < style.length; i++) {
