@@ -1,4 +1,4 @@
-suite('number-interpolation', function() {
+suite('number-handler', function() {
   test('parse numbers', function() {
     var tests = {
       '0': 0,
@@ -22,7 +22,10 @@ suite('number-interpolation', function() {
   test('invalid numbers fail to parse', function() {
     assert.isUndefined(parseNumber(''));
     assert.isUndefined(parseNumber('nine'));
-    assert.isUndefined(parseNumber('nine'));
+    assert.isUndefined(parseNumber('1 2'));
+    assert.isUndefined(parseNumber('+-0'));
+    assert.isUndefined(parseNumber('50px'));
+    assert.isUndefined(parseNumber('1.2.3'));
   });
   test('opacity clamping', function() {
     var interpolation = propertyInterpolation('opacity', '-1', '3');
