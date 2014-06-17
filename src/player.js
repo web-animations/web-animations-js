@@ -19,7 +19,6 @@
     this._startTime = null;
     this._source = source;
     this.paused = false;
-    this.finished = false;
     this._playbackRate = 1;
     source(0);
   };
@@ -29,14 +28,8 @@
     set _currentTime(newTime) {
       if (newTime != this.__currentTime) {
         this.__currentTime = newTime;
-        if (this._playbackRate > 0 && this.__currentTime >= this._source.totalDuration) {
-          this.__currentTime = this._source.totalDuration;
-          this.finished = true;
-        }
-        if (this._playbackRate < 0 && this.__currentTime <= 0) {
-          this.__currentTime = 0;
-          this.finished = true;
-        }
+        if (this.finished)
+          this.__currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
         this._source(this.__currentTime);
       }
     },
@@ -46,6 +39,10 @@
       if (!this.paused) {
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       }
+    },
+    get finished() {
+      return this._playbackRate > 0 && this.__currentTime >= this._source.totalDuration ||
+             this._playbackRate < 0 && this.__currentTime <= 0;
     },
     get startTime() { return this._startTime; },
     set startTime(newTime) {
@@ -61,16 +58,13 @@
     },
     play: function() {
       this.paused = false;
-      if (this.finished) {
+      if (this.finished)
         this.__currentTime = this._playbackRate > 0 ? 0 : this._source.totalDuration;
-        this.finished = false;
-      }
       this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
     },
     reverse: function() {
       this._playbackRate *= -1;
       this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
-      this.finished = false;
     },
     finish: function() {
       this.currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
