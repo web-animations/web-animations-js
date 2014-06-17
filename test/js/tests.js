@@ -1,5 +1,6 @@
 (function() {
   var sources = [
+    'player-finish-event.js',
     'animation-node.js',
     'dimension-handler.js',
     'effect.js',

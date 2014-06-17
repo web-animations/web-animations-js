@@ -24,6 +24,8 @@
     this._playbackRate = 1;
     this._sequenceNumber = sequenceNumber++;
     this._inTimeline = true;
+    this._finishedFlag = false;
+    this.onfinish = null;
     source(0);
   };
 
@@ -39,6 +41,7 @@
           this._inTimeline = true;
           timeline.players.push(this);
         }
+        this._source(this.__currentTime);
       }
     },
     get playbackRate() { return this._playbackRate; },
@@ -69,6 +72,7 @@
       if (this.finished)
         this.__currentTime = this._playbackRate > 0 ? 0 : this._source.totalDuration;
       this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      this._finishedFlag = false;
     },
     reverse: function() {
       this._playbackRate *= -1;
@@ -77,6 +81,7 @@
         this._inTimeline = true;
         timeline.players.push(this);
       }
+      this._finishedFlag = false;
     },
     finish: function() {
       this.currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
@@ -85,6 +90,14 @@
       this._source = function() { };
       this._source.totalDuration = 0;
       this.currentTime = 0;
+    },
+    _fireEvents: function() {
+      // TODO: Support addEventListener.
+      // TODO: Pass a finish event in to the callbacks.
+      var finished = this.finished;
+      if (this.onfinish && !this._finishedFlag && finished)
+        setTimeout(this.onfinish, 0);
+      this._finishedFlag = finished;
     }
   };
 
