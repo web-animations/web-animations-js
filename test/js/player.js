@@ -159,4 +159,11 @@ suite('player', function() {
     tick(2000);
     assert.equal(p.currentTime, 0);
   });
+  test('startTime is set on first tick if timeline hasn\'t started', function() {
+    document.timeline.currentTime = undefined;
+    var p = document.body.animate([], 1000);
+    tick(0);
+    tick(100);
+    assert.equal(p.startTime, 0);
+  });
 });
