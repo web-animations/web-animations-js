@@ -77,6 +77,13 @@ suite('transform-interpolation interpolation', function() {
     assert.equal(propertyInterpolation('transform', 'skew(10deg)', 'skewy(30deg)')(0.2), 'skew(8deg,6deg)');
   });
 
+  test('transform interpolations with none', function() {
+    assert.equal(propertyInterpolation('transform', 'none', 'scale(5) translateX(100px) rotate(1000deg)')(0.25), 'scale(2,2) translatex(25px) rotate(250deg)');
+    assert.equal(propertyInterpolation('transform', 'scale(5) translateX(100px) rotate(1000deg)', 'none')(0.75), 'scale(2,2) translatex(25px) rotate(250deg)');
+    assert.equal(propertyInterpolation('transform', 'none', 'scaleX(5) skewY(100grad)')(0.25), 'scalex(2) skewy(25grad)');
+    assert.equal(propertyInterpolation('transform', 'none', 'none')(0.4), 'none');
+  });
+
   test('currently unsupported transform interpolations', function() {
     assert.equal(propertyInterpolation('transform', 'translate(10px)', 'scale(2)')(0.4), 'translate(10px)');
     assert.equal(propertyInterpolation('transform', 'rotateX(10deg)', 'rotateY(20deg)')(0.4), 'rotateX(10deg)');

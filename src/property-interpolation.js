@@ -26,7 +26,7 @@
   scope.addPropertiesHandler = addPropertiesHandler;
 
   function propertyInterpolation(property, left, right) {
-    var handlers = propertyHandlers[property];
+    var handlers = left == right ? [] : propertyHandlers[property];
     for (var i = 0; handlers && i < handlers.length; i++) {
       var parsedLeft = handlers[i][0](left);
       var parsedRight = handlers[i][0](right);

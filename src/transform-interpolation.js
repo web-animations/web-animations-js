@@ -55,10 +55,11 @@
   };
 
   function parseTransform(string) {
-    // FIXME: We should support 'none'
-    string = string.toLowerCase();
+    string = string.toLowerCase().trim();
+    if (string == 'none')
+      return [];
     // FIXME: Using a RegExp means calcs won't work here
-    var transformRegExp = /\s*(\w+)\(([^)]*)\)\s*/g;
+    var transformRegExp = /\s*(\w+)\(([^)]*)\)/g;
     var result = [];
     var match;
     var prevLastIndex = 0;
@@ -111,6 +112,28 @@
 
   function mergeTransforms(left, right) {
     // FIXME: We should add optional matrix interpolation support for the early return cases
+    var flipResults = false;
+    if (!left.length || !right.length) {
+      if (!left.length) {
+        flipResults = true;
+        left = right;
+        right = [];
+      }
+      for (var i = 0; i < left.length; i++) {
+        var type = left[i][0];
+        var args = left[i][1];
+        var defaultValue = type.substr(0, 5) == 'scale' ? 1 : 0;
+        right.push([type, args.map(function(arg) {
+          if (typeof arg == 'number')
+            return defaultValue;
+          var result = {};
+          for (var unit in arg)
+            result[unit] = defaultValue;
+          return result;
+        })]);
+      }
+    }
+
     if (left.length != right.length)
       return;
     var leftResult = [];
@@ -151,6 +174,12 @@
       leftResult.push(leftArgs);
       rightResult.push(rightArgs);
       types.push([type, stringConversions]);
+    }
+
+    if (flipResults) {
+      var tmp = leftResult;
+      leftResult = rightResult;
+      rightResult = tmp;
     }
 
     return [leftResult, rightResult, function(list) {
