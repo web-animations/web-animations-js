@@ -75,7 +75,7 @@
     return [left, right, function(values) {
       var result = values.map(function(value, i) {
         // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
-        return value.toFixed(3).replace('.000', '') + units[i];
+        return scope.numberToString(value) + units[i];
       }).join(' + ');
       return values.length > 1 ? 'calc(' + result + ')' : result;
     }];

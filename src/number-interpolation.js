@@ -14,17 +14,35 @@
 
 (function(scope, testing) {
 
+  function numberToString(x) {
+    return x.toFixed(3).replace('.000', '');
+  }
+
+  function clamp(min, max, x) {
+    return Math.min(max, Math.max(min, x));
+  }
+
   function parseNumber(string) {
     if (/^\s*[-+]?(\d*\.)?\d+\s*$/.test(string))
       return Number(string);
   }
 
-  // FIXME: We will need to support clamping for opacity, etc.
   function mergeNumbers(left, right) {
-    return [left, right, function(x) { return x.toFixed(3).replace('.000', ''); }];
+    return [left, right, numberToString];
   }
+
+  function clampedMergeNumbers(min, max) {
+    return function(left, right) {
+      return [left, right, function(x) {
+        return numberToString(clamp(min, max, x));
+      }];
+    };
+  }
+
+  scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity']);
 
   scope.parseNumber = parseNumber;
   scope.mergeNumbers = mergeNumbers;
+  scope.numberToString = numberToString;
 
 })(webAnimations, testing);
