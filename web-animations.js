@@ -20,9 +20,9 @@ var TESTING = false;
     'src/scope.js', // This must be first.
     'src/interpolation.js',
     'src/property-interpolation.js',
-    'src/dimension-interpolation.js',
-    'src/number-interpolation.js',
-    'src/transform-interpolation.js',
+    'src/dimension-handler.js',
+    'src/number-handler.js',
+    'src/transform-handler.js',
     'src/element-animate.js',
     'src/animation-node.js',
     'src/animation.js',

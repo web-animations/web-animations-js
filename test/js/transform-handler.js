@@ -1,4 +1,4 @@
-suite('transform-interpolation parsing', function() {
+suite('transform-handler parsing', function() {
   test('parse skew values', function() {
     assert.deepEqual(parseTransform('skew(10deg) skew(12deg,45deg) skewX(0) skewY(1.5rad)'),
         [['skew', [{deg: 10}, {deg: 0}]],
@@ -61,7 +61,7 @@ suite('transform-interpolation parsing', function() {
   });
 });
 
-suite('transform-interpolation interpolation', function() {
+suite('transform-handler interpolation', function() {
   test('simple transform interpolations', function() {
     assert.equal(propertyInterpolation('transform', 'translateX(10px)', 'translateX(20px)')(0.2), 'translatex(12px)');
     assert.equal(propertyInterpolation('transform', 'rotateY(1000deg)', 'rotateY(3000deg)')(0.4), 'rotatey(1800deg)');

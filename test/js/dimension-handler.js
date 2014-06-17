@@ -1,4 +1,4 @@
-suite('dimension-interpolation', function() {
+suite('dimension-handler', function() {
   test('parse simple length values', function() {
     assert.deepEqual(parseLength(' 0 '), {px: 0});
     assert.deepEqual(parseLength('10px'), {px: 10});
