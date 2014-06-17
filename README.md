@@ -7,12 +7,11 @@ Soon to replace web-animations-js
 building
 ========
 
-* install grunt (npm install -g grunt-cli)
-* LOCALLY install grunt-contrib-uglify and grunt-gjslint (npm install grunt-contrib-uglify grunt-gjslint)
-* run grunt (grunt)
+* Install grunt: `npm install -g grunt-cli`
+* Install dev dependencies: `npm install`
+* Run grunt: `grunt`
 
 testing
 =======
 
-* LOCALLY install mocha and chai (npm install mocha chai)
-* open test/runner.html
+* Open test/runner.html
