@@ -17,7 +17,7 @@
   global.Animation = function(target, effect, source) {
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
-    this.specified = source;
+    this.timing = source;
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
     this._effect = effect;
@@ -26,8 +26,8 @@
 
   var play = global.document.timeline.play.bind(global.document.timeline);
   global.document.timeline.play = function(source) {
-    if (source.constructor == global.Animation) {
-      var player = source.target.animate(source._effect, source.specified);
+    if (source instanceof global.Animation) {
+      var player = source.target.animate(source._effect, source.timing);
       // TODO: make source setter call cancel.
       player.source = source;
       var cancel = player.cancel.bind(player);
