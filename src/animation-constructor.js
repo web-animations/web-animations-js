@@ -32,7 +32,7 @@
       player.source = source;
       var cancel = player.cancel.bind(player);
       player.cancel = function() {
-        player.source = undefined;
+        player.source = null;
         cancel();
       };
       return player;

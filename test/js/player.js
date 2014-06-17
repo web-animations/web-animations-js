@@ -149,4 +149,14 @@ suite('player', function() {
     assert.equal(p.currentTime, 0);
     assert.equal(p.startTime, 1000);
   });
+  test('cancelling does what it does', function() {
+    tick(1100);
+    var p = document.body.animate([], 1000);
+    tick(1600);
+    assert.equal(p.currentTime, 500);
+    p.cancel();
+    assert.equal(p.currentTime, 0);
+    tick(2000);
+    assert.equal(p.currentTime, 0);
+  });
 });
