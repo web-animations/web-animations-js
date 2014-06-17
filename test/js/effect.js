@@ -375,11 +375,19 @@ suite('effect', function() {
       assert.equal(interpolations[1].property, 'left');
       assert.equal(typeof interpolations[1].interpolation, 'function');
     });
+});
 
-  // Test convertEffectInput
+suite('effect-convertEffectInput', function() {
+  setup(function() {
+    this.target = document.createElement('div');
+    document.documentElement.appendChild(this.target);
+  });
+  teardown(function() {
+    this.target.remove();
+  });
+
   test('Convert effect input for a simple effect with one property.',
     function() {
-      var target = document.createElement('div');
       var effectFunction;
       assert.doesNotThrow(function() {
         effectFunction = convertEffectInput(
@@ -391,27 +399,27 @@ suite('effect', function() {
         );
       });
 
-      function targetLeftAsNumber() {
-        return Number(target.style.left.substring(0, target.style.left.length - 2));
-      }
+      var targetLeftAsNumber = (function() {
+        var left = getComputedStyle(this.target).left;
+        return Number(left.substring(0, left.length - 2));
+      }).bind(this);
 
-      effectFunction(target, 0);
+      effectFunction(this.target, 0);
       assert.closeTo(targetLeftAsNumber(), 0, 0.001);
-      effectFunction(target, 0.075);
+      effectFunction(this.target, 0.075);
       assert.closeTo(targetLeftAsNumber(), 50, 0.001);
-      effectFunction(target, 0.15);
+      effectFunction(this.target, 0.15);
       assert.closeTo(targetLeftAsNumber(), 100, 0.001);
-      effectFunction(target, 0.65);
+      effectFunction(this.target, 0.65);
       assert.closeTo(targetLeftAsNumber(), 150, 0.001);
-      effectFunction(target, 1);
+      effectFunction(this.target, 1);
       assert.closeTo(targetLeftAsNumber(), 100, 0.001);
-      effectFunction(target, 2);
+      effectFunction(this.target, 2);
       assert.closeTo(targetLeftAsNumber(), 100, 0.001);
     });
 
   test('Convert effect input where one property is animated and the property has two keyframes at offset 1.',
     function() {
-      var target = document.createElement('div');
       var effectFunction;
       assert.doesNotThrow(function() {
         effectFunction = convertEffectInput(
@@ -422,15 +430,14 @@ suite('effect', function() {
           ]
         );
       });
-      effectFunction(target, 1);
-      assert.equal(target.style.left, '20px');
-      effectFunction(target, 2);
-      assert.equal(target.style.left, '20px');
+      effectFunction(this.target, 1);
+      assert.equal(getComputedStyle(this.target).left, '20px');
+      effectFunction(this.target, 2);
+      assert.equal(getComputedStyle(this.target).left, '20px');
     });
 
   test('Convert effect input and apply effect at fraction null.',
     function() {
-      var target = document.createElement('div');
       var effectFunction;
       assert.doesNotThrow(function() {
         effectFunction = convertEffectInput(
@@ -441,9 +448,9 @@ suite('effect', function() {
         );
       });
 
-      effectFunction(target, 1);
-      assert.equal(target.style.left, '100px');
-      effectFunction(target, null);
-      assert.equal(target.style.left, '');
+      effectFunction(this.target, 1);
+      assert.equal(getComputedStyle(this.target).left, '100px');
+      effectFunction(this.target, null);
+      assert.equal(getComputedStyle(this.target).left, 'auto');
     });
 });
