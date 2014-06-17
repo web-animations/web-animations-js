@@ -12,5 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-var webAnimations = {};
+var shared = {};
+var minifill = {};
+var maxifill = {};
 var testing = {};
