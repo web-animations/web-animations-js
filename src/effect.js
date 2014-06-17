@@ -168,4 +168,4 @@
     testing.makeInterpolations = makeInterpolations;
   }
 
-})(webAnimations, testing);
+})(minifill, testing);

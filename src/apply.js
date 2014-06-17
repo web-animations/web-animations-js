@@ -22,4 +22,4 @@
     element.style[property] = '';
   };
 
-})(webAnimations, testing);
+})(minifill, testing);

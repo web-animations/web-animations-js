@@ -63,4 +63,4 @@
     global.document.timeline = timeline;
   } catch (e) { }
 
-})(webAnimations, testing);
+})(minifill, testing);

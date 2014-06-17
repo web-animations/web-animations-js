@@ -45,4 +45,4 @@
   scope.mergeNumbers = mergeNumbers;
   scope.numberToString = numberToString;
 
-})(webAnimations, testing);
+})(minifill, testing);

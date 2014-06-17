@@ -12,7 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
   var fills = 'backwards|forwards|both'.split('|');
   var directions = 'reverse|alternate|alternate-reverse'.split('|');
@@ -206,6 +206,13 @@
     return calculateTransformedTime(currentIteration, timingInput.duration, iterationTime, timingInput) / timingInput.duration;
   }
 
+  shared.localTimeToTimeFraction = function(localTime, timingInput) {
+    var input = normalizeTimingInput(timingInput);
+    var timeFraction = 0;
+    var activeDuration = calculateActiveDuration(input);
+    return calculateTimeFraction(activeDuration, localTime, input);
+  };
+
   scope.AnimationNode = function(timingInput) {
     var input = normalizeTimingInput(timingInput);
     var timeFraction = 0;
@@ -233,4 +240,4 @@
     testing.calculateTransformedTime = calculateTransformedTime;
   }
 
-})(webAnimations, testing);
+})(shared, minifill, testing);

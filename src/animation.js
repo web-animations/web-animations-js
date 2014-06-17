@@ -25,4 +25,4 @@
     return f;
   };
 
-})(webAnimations, testing);
+})(minifill, testing);

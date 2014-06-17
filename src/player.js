@@ -76,4 +76,4 @@
     }
   };
 
-})(webAnimations, testing);
+})(minifill, testing);
