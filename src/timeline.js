@@ -20,7 +20,7 @@
   };
 
   scope.Timeline.prototype = {
-    play: function(source) {
+    _play: function(source) {
       var player = new scope.Player(source);
       if (this.currentTime !== undefined) {
         player._startTime = this.currentTime;
