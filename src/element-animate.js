@@ -14,6 +14,6 @@
 
 (function(scope) {
   global.Element.prototype.animate = function(effectInput, timingInput) {
-    return scope.timeline.play(scope.Animation(this, effectInput, timingInput));
+    return scope.timeline._play(scope.Animation(this, effectInput, timingInput));
   };
 })(webAnimations);

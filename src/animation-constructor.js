@@ -24,20 +24,16 @@
     return this;
   };
 
-  var play = global.document.timeline.play.bind(global.document.timeline);
   global.document.timeline.play = function(source) {
-    if (source instanceof global.Animation) {
-      var player = source.target.animate(source._effect, source.timing);
-      // TODO: make source setter call cancel.
-      player.source = source;
-      var cancel = player.cancel.bind(player);
-      player.cancel = function() {
-        player.source = null;
-        cancel();
-      };
-      return player;
-    }
-    return play(source);
+    var player = source.target.animate(source._effect, source.timing);
+    // TODO: make source setter call cancel.
+    player.source = source;
+    var cancel = player.cancel.bind(player);
+    player.cancel = function() {
+      player.source = null;
+      cancel();
+    };
+    return player;
   };
 
 }(null, testing));
