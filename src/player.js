@@ -74,6 +74,9 @@
     },
     finish: function() {
       this.currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
+    },
+    cancel: function() {
+      this._source = function() { };
     }
   };
 
