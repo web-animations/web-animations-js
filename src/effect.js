@@ -12,7 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
   scope.convertEffectInput = function(effectInput) {
     var keyframeEffect = normalize(effectInput);
@@ -114,6 +114,7 @@
     return keyframeEffect;
   }
 
+  shared.normalizeKeyframes = normalize;
 
   function makePropertySpecificKeyframeGroups(keyframeEffect) {
     var propertySpecificKeyframeGroups = {};
@@ -168,4 +169,4 @@
     testing.makeInterpolations = makeInterpolations;
   }
 
-})(minifill, testing);
+})(shared, minifill, testing);
