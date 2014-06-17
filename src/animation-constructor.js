@@ -12,7 +12,16 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, testing) {
+
+  function KeyframeEffect(effect) {
+    this._input = effect;
+    this._frames = shared.normalizeKeyframes(effect);
+  }
+
+  KeyframeEffect.prototype = {
+    getFrames: function() { return this._frames; }
+  };
 
   global.Animation = function(target, effect, source) {
     this.target = target;
@@ -20,12 +29,12 @@
     this.timing = source;
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
-    this._effect = effect;
+    this.effect = new KeyframeEffect(effect);
     return this;
   };
 
   global.document.timeline.play = function(source) {
-    var player = source.target.animate(source._effect, source.timing);
+    var player = source.target.animate(source.effect._input, source.timing);
     // TODO: make source setter call cancel.
     player.source = source;
     var cancel = player.cancel.bind(player);
@@ -36,5 +45,5 @@
     return player;
   };
 
-}(null, testing));
+}(shared, testing));
 
