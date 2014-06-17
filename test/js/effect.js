@@ -178,16 +178,20 @@ suite('effect', function() {
 
   test('Normalize an empty array.',
     function() {
+      var normalizedKeyframes;
       assert.doesNotThrow(function() {
-        normalize([]);
+        normalizedKeyframes = normalize([]);
       });
+      assert.deepEqual(normalizedKeyframes, []);
     });
 
   test('Normalize null.',
     function() {
+      var normalizedKeyframes;
       assert.doesNotThrow(function() {
-        normalize(null);
+        normalizedKeyframes = normalize(null);
       });
+      assert.deepEqual(normalizedKeyframes, []);
     });
 
   // Test makePropertySpecificKeyframeGroups.
