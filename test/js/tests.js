@@ -1,12 +1,13 @@
 (function() {
   var sources = [
-    'element-animate.js',
-    'effect.js',
-    'dimension-interpolation.js',
-    'interpolation.js',
-    'property-interpolation.js',
     'animation-node.js',
+    'dimension-interpolation.js',
+    'effect.js',
+    'element-animate.js',
+    'interpolation.js',
+    'number-interpolation.js',
     'player.js',
+    'property-interpolation.js',
     'transform-interpolation.js',
   ];
 
