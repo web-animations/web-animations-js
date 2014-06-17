@@ -30,6 +30,8 @@ var TESTING = false;
     'src/apply.js',
     'src/player.js',
     'src/timeline.js',
+    // --- maxifill below here --- //
+    'src/animation-constructor.js',
   ];
 
   if (typeof module != 'undefined') {
