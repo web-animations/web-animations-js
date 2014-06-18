@@ -11,6 +11,7 @@
     'player.js',
     'property-interpolation.js',
     'transform-handler.js',
+    'group-player.js',
   ];
 
   var scripts = document.getElementsByTagName('script');

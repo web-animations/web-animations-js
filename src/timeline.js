@@ -12,7 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
   scope.Timeline = function() {
     this.players = [];
@@ -21,13 +21,13 @@
 
   scope.Timeline.prototype = {
     _play: function(source) {
-      var player = new scope.Player(source);
+      var player = new shared.Player(source);
       if ((TESTING || ticking) && this.currentTime !== undefined) {
         player._startTime = this.currentTime;
       }
       player._timeline = this;
       this.players.push(player);
-      scope.restart();
+      shared.restart();
       scope.invalidateEffects();
       return player;
     }
@@ -35,7 +35,7 @@
 
   var ticking = true;
 
-  scope.restart = function() {
+  shared.restart = function() {
     if (!ticking) {
       ticking = true;
       if (!TESTING)
@@ -135,4 +135,4 @@
     global.document.timeline = timeline;
   } catch (e) { }
 
-})(minifill, testing);
+})(shared, minifill, testing);

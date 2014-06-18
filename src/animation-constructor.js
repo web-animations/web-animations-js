@@ -12,7 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(shared, testing) {
+(function(shared, scope, testing) {
 
   function KeyframeEffect(effect) {
     this._frames = shared.normalizeKeyframes(effect);
@@ -33,20 +33,51 @@
     else
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
+    this.__player = null;
+    this._player = null;
     return this;
+    };
+
+  global.Animation.prototype = {
+    get player() { return this._player; },
   };
 
   global.document.timeline.play = function(source) {
-    var player = source.target.animate(source._effect, source.timing);
-    // TODO: make source setter call cancel.
-    player.source = source;
-    var cancel = player.cancel.bind(player);
-    player.cancel = function() {
-      player.source = null;
-      cancel();
-    };
-    return player;
-  };
+    if (source instanceof global.Animation) {
+      var player = source.target.animate(source._effect, source.timing);
+      source.__player = player;
+      source._player = source._player || player;
+      // TODO: make source setter call cancel.
+      player.source = source;
+      var cancel = player.cancel.bind(player);
+      player.cancel = function() {
+        player.source = null;
+        cancel();
+      };
+      return player;
+    }
+    // FIXME: Move this code out of this module
+    if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
+      var oldPlayerProto = shared.Player.prototype;
+      shared.Player.prototype = maxifill.groupPlayerProto;
+      var player = global.document.timeline.play(new Animation(document.documentElement, []));
+      shared.Player.prototype = oldPlayerProto;
+      player.cancel();
+      player.source = source;
+      source.__player = player;
+      source._player = source._player || player;
+      player.childPlayers = [];
+      for (var i = 0; i < source.children.length; i++) {
+        source.children[i]._player = source._player;
+        var childPlayer = global.document.timeline.play(source.children[i]);
+        childPlayer._parent = player;
+        player.childPlayers.push(childPlayer);
+      }
+      player.setChildOffsets();
+      return player;
+    }
+    return play(source);
+  }
 
-}(shared, testing));
+}(shared, maxifill, testing));
 

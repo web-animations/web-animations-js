@@ -12,9 +12,9 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
-  function AnimationPlayerEvent(target, currentTime, timelineTime) {
+  shared.AnimationPlayerEvent = function(target, currentTime, timelineTime) {
     this.target = target;
     this.currentTime = currentTime;
     this.timelineTime = timelineTime;
@@ -30,7 +30,7 @@
 
   var sequenceNumber = 0;
 
-  scope.Player = function(source) {
+  shared.Player = function(source) {
     this.__currentTime = 0;
     this._startTime = null;
     this._source = source;
@@ -42,16 +42,18 @@
     this.onfinish = null;
     this._finishHandlers = [];
     this._hasTicked = false;
+    this._startOffset = 0;
+    this._parent = null;
   };
 
-  scope.Player.prototype = {
+  shared.Player.prototype = {
     get currentTime() { return this.__currentTime; },
     set _currentTime(newTime) {
       if (newTime != this.__currentTime || !this._hasTicked) {
         this._hasTicked = true;
         this.__currentTime = newTime;
         if (this.finished)
-          this.__currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
+          this.__currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
         this._inEffect = this._source.update(this.__currentTime);
         if (!this._inTimeline && this._inEffect) {
           this._inTimeline = true;
@@ -60,16 +62,24 @@
       }
     },
     get playbackRate() { return this._playbackRate; },
+    set playbackRate(newRate) {
+      var previousTime = this.currentTime;
+      this._playbackRate = newRate;
+      this.currentTime = previousTime;
+    },
     set currentTime(newTime) {
       this._currentTime = newTime;
-      scope.invalidateEffects();
       if (!this.paused) {
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       }
+      if (!this.paused)
+        this.startTime += (this.currentTime - newTime) / this.playbackRate;
+      this._currentTime = newTime - this.offset;
+      scope.invalidateEffects();
     },
     get finished() {
-      return this._playbackRate > 0 && this.__currentTime >= this._source.totalDuration ||
-             this._playbackRate < 0 && this.__currentTime <= 0;
+      return this._playbackRate > 0 && this.__currentTime >= this.totalDuration ||
+        this._playbackRate < 0 && this.__currentTime <= 0;
     },
     get startTime() {
       if (!this.paused && this._startTime == null)
@@ -77,12 +87,23 @@
       return this._startTime;
     },
     set startTime(newTime) {
-      if (this.paused) {
+      if (this.paused)
         return;
-      }
-      this._startTime = newTime;
-      this._currentTime = this._timeline.currentTime - newTime;
+      this._startTime = newTime + this.offset;
+      this._currentTime = this._timeline.currentTime - this._startTime;
       scope.invalidateEffects();
+    },
+    get totalDuration() {  return this._source.totalDuration; },
+    // FIXME: This walks the animation tree to calculate offsets.
+    // It makes offsets resilient to tree surgery, except removing animations from a sequence.
+    // Do we want to pre-compute this, and re-compute upon surgery? Do we want to go further
+    // In this direction and calculate all offsets every time (i.e. calculate offsets within a sequence).
+    // TODO: Try to move this out of here.
+    get offset() { 
+      if (this._parent)
+        return this._startOffset + this._parent._startOffset;
+      else
+        return this._startOffset;
     },
     pause: function() {
       this.paused = true;
@@ -90,19 +111,18 @@
     },
     play: function() {
       this.paused = false;
-      if (this.finished) {
-        this._currentTime = this._playbackRate > 0 ? 0 : this._source.totalDuration;
+      if (this.finished)
+        this.__currentTime = this._playbackRate > 0 ? 0 : this.totalDuration;
         scope.invalidateEffects();
-      }
       this._finishedFlag = false;
-      if (!scope.restart())
+      if (!shared.restart())
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       else
         this._startTime = null;
     },
     reverse: function() {
       this._playbackRate *= -1;
-      if (!scope.restart())
+      if (!shared.restart())
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       else
         this._startTime = null;
@@ -113,7 +133,7 @@
       this._finishedFlag = false;
     },
     finish: function() {
-      this.currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
+      this.currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
     },
     cancel: function() {
       this._source = scope.nullAnimation;
@@ -133,7 +153,7 @@
     _fireEvents: function() {
       var finished = this.finished;
       if (finished && !this._finishedFlag) {
-        var event = new AnimationPlayerEvent(this, this.currentTime, document.timeline.currentTime);
+        var event = new shared.AnimationPlayerEvent(this, this.currentTime, document.timeline.currentTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {
@@ -145,4 +165,4 @@
     },
   };
 
-})(minifill, testing);
+})(shared, minifill, testing);
