@@ -1,6 +1,7 @@
 (function() {
   var sources = [
     'animation-node.js',
+    'color-handler.js',
     'dimension-handler.js',
     'effect.js',
     'element-animate.js',
