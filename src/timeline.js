@@ -22,12 +22,22 @@
   scope.Timeline.prototype = {
     _play: function(source) {
       var player = new scope.Player(source);
-      if (this.currentTime !== undefined) {
+      if (ticking && this.currentTime !== undefined) {
         player._startTime = this.currentTime;
       }
       player._timeline = this;
       this.players.push(player);
+      scope.restart();
       return player;
+    }
+  };
+
+  var ticking = true;
+
+  scope.restart = function() {
+    if (ticking == false) {
+      requestAnimationFrame(tick);
+      ticking = true;
     }
   };
 
@@ -37,8 +47,10 @@
     timeline.players.sort(function(leftPlayer, rightPlayer) {
       return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
     });
+    ticking = false;
     timeline.players.forEach(function(player) {
       if (!(player.paused || player.finished)) {
+        ticking = true;
         if (player.startTime === null)
           player.startTime = t;
         player._currentTime = (t - player.startTime) * player.playbackRate;
@@ -52,7 +64,8 @@
       return false;
     });
     if (!TESTING) {
-      requestAnimationFrame(tick);
+      if (ticking)
+        requestAnimationFrame(tick);
     }
   };
 
