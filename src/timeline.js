@@ -45,9 +45,10 @@
       }
     });
     timeline.players = timeline.players.filter(function(player) {
-      if (!player._inEffect)
-        player._inTimeline = false;
-      return player._inEffect;
+      if (!player.finished || player._inEffect)
+        return true;
+      player._inTimeline = false;
+      return false;
     });
     if (!TESTING) {
       requestAnimationFrame(tick);
