@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var global = this;
-if (window.TESTING === undefined) {
+if (this.TESTING === undefined) {
   var TESTING = false;
 }
 
