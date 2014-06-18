@@ -1,5 +1,6 @@
 suite('player-finish-event', function() {
   setup(function() {
+    document.timeline.currentTime = undefined;
     this.element = document.createElement('div');
     document.documentElement.appendChild(this.element);
     this.player = this.element.animate([], 1000);
@@ -29,6 +30,19 @@ suite('player-finish-event', function() {
     ready = true;
   });
 
+  test('fire when reversed player completes', function(done) {
+    this.player.onfinish = function(event) {
+      console.log(event);
+      assert.equal(event.currentTime, 0);
+      assert.equal(event.timelineTime, 1000);
+      done();
+    };
+    tick(0);
+    tick(500);
+    this.player.reverse();
+    tick(1000);
+  });
+
   test('fire after player is cancelled', function(done) {
     this.player.onfinish = function(event) {
       assert.equal(event.currentTime, 0);
@@ -40,7 +54,26 @@ suite('player-finish-event', function() {
     tick(1);
   });
 
-  // TODO:
-  // Test firing in reverse.
-  // Test firing multiple event listeners.
+  test('multiple event listeners', function(done) {
+    var count = 0;
+    function createHandler(expectedCount) {
+      return function() {
+        count++;
+        assert.equal(count, expectedCount);
+      };
+    }
+    var toRemove = createHandler(0);
+    this.player.addEventListener('finish', createHandler(1));
+    this.player.addEventListener('finish', createHandler(2));
+    this.player.addEventListener('finish', toRemove);
+    this.player.addEventListener('finish', createHandler(3));
+    this.player.removeEventListener('finish', toRemove);
+    this.player.onfinish = function() {
+      assert.equal(count, 3);
+      done();
+    };
+    tick(0);
+    this.player.cancel();
+    tick(1000);
+  });
 });
