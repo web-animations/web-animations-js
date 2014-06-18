@@ -43,6 +43,7 @@
           player.startTime = t;
         player._currentTime = (t - player.startTime) * player.playbackRate;
       }
+      player._fireEvents();
     });
     timeline.players = timeline.players.filter(function(player) {
       if (!player.finished || player._inEffect)

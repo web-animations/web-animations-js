@@ -14,6 +14,21 @@
 
 (function(scope, testing) {
 
+  function AnimationPlayerEvent(target, currentTime, timelineTime) {
+    this.target = target;
+    this.currentTime = currentTime;
+    this.timelineTime = timelineTime;
+
+    this.type = 'finish';
+    this.bubbles = false;
+    this.cancelable = false;
+    this.currentTarget = target;
+    this.defaultPrevented = false;
+    this.eventPhase = Event.AT_TARGET;
+    this.timeStamp = Date.now();
+  };
+  AnimationPlayerEvent.prototype = window.Event.prototype;
+
   var sequenceNumber = 0;
 
   scope.Player = function(source) {
@@ -24,6 +39,9 @@
     this._playbackRate = 1;
     this._sequenceNumber = sequenceNumber++;
     this._inTimeline = true;
+    this._finishedFlag = false;
+    this.onfinish = null;
+    this._finishHandlers = [];
     source(0);
   };
 
@@ -39,6 +57,7 @@
           this._inTimeline = true;
           timeline.players.push(this);
         }
+        this._source(this.__currentTime);
       }
     },
     get playbackRate() { return this._playbackRate; },
@@ -69,6 +88,7 @@
       if (this.finished)
         this.__currentTime = this._playbackRate > 0 ? 0 : this._source.totalDuration;
       this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      this._finishedFlag = false;
     },
     reverse: function() {
       this._playbackRate *= -1;
@@ -77,6 +97,7 @@
         this._inTimeline = true;
         timeline.players.push(this);
       }
+      this._finishedFlag = false;
     },
     finish: function() {
       this.currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
@@ -85,7 +106,31 @@
       this._source = function() { };
       this._source.totalDuration = 0;
       this.currentTime = 0;
-    }
+    },
+    addEventListener: function(type, handler) {
+      if (typeof handler == 'function' && type == 'finish')
+        this._finishHandlers.push(handler);
+    },
+    removeEventListener: function(type, handler) {
+      if (type != 'finish')
+        return;
+      var index = this._finishHandlers.indexOf(handler);
+      if (index >= 0)
+        this._finishHandlers.splice(index, 1);
+    },
+    _fireEvents: function() {
+      var finished = this.finished;
+      if (finished && !this._finishedFlag) {
+        var event = new AnimationPlayerEvent(this, this.currentTime, document.timeline.currentTime);
+        var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
+        setTimeout(function() {
+          handlers.forEach(function(handler) {
+            handler.call(event.target, event);
+          });
+        }, 0);
+      }
+      this._finishedFlag = finished;
+    },
   };
 
 })(minifill, testing);
