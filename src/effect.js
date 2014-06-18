@@ -15,6 +15,11 @@
 (function(shared, scope, testing) {
 
   scope.convertEffectInput = function(effectInput) {
+    if (typeof effectInput == 'function') {
+      return function(target, fraction) {
+        effectInput(fraction, target);
+      };
+    }
     var keyframeEffect = normalize(effectInput);
     var propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframeEffect);
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);

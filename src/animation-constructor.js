@@ -15,7 +15,6 @@
 (function(shared, testing) {
 
   function KeyframeEffect(effect) {
-    this._input = effect;
     this._frames = shared.normalizeKeyframes(effect);
   }
 
@@ -29,12 +28,16 @@
     this.timing = source;
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
-    this.effect = new KeyframeEffect(effect);
+    if (typeof effect == 'function')
+      this.effect = effect;
+    else
+      this.effect = new KeyframeEffect(effect);
+    this._effect = effect;
     return this;
   };
 
   global.document.timeline.play = function(source) {
-    var player = source.target.animate(source.effect._input, source.timing);
+    var player = source.target.animate(source._effect, source.timing);
     // TODO: make source setter call cancel.
     player.source = source;
     var cancel = player.cancel.bind(player);
