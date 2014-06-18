@@ -32,13 +32,22 @@
   };
 
   function tick(t) {
-    global.document.timeline.currentTime = t;
-    global.document.timeline.players.forEach(function(player) {
+    var timeline = global.document.timeline;
+    timeline.currentTime = t;
+    timeline.players.sort(function(leftPlayer, rightPlayer) {
+      return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
+    });
+    timeline.players.forEach(function(player) {
       if (!(player.paused || player.finished)) {
         if (player.startTime === null)
           player.startTime = t;
         player._currentTime = (t - player.startTime) * player.playbackRate;
       }
+    });
+    timeline.players = timeline.players.filter(function(player) {
+      if (!player._inEffect)
+        player._inTimeline = false;
+      return player._inEffect;
     });
     if (!TESTING) {
       requestAnimationFrame(tick);
