@@ -22,7 +22,7 @@
   scope.Timeline.prototype = {
     _play: function(source) {
       var player = new scope.Player(source);
-      if (ticking && this.currentTime !== undefined) {
+      if ((TESTING || ticking) && this.currentTime !== undefined) {
         player._startTime = this.currentTime;
       }
       player._timeline = this;
@@ -35,7 +35,7 @@
   var ticking = true;
 
   scope.restart = function() {
-    if (ticking == false) {
+    if (!ticking) {
       requestAnimationFrame(tick);
       ticking = true;
     }
@@ -63,10 +63,8 @@
       player._inTimeline = false;
       return false;
     });
-    if (!TESTING) {
-      if (ticking)
-        requestAnimationFrame(tick);
-    }
+    if (ticking && !TESTING)
+      requestAnimationFrame(tick);
   };
 
   if (!TESTING) {
