@@ -108,12 +108,11 @@
       this.currentTime = 0;
     },
     addEventListener: function(type, handler) {
-      if (typeof handler !== 'function' || type != 'finish')
-        return;
-      this._finishHandlers.push(handler);
+      if (typeof handler == 'function' && type == 'finish')
+        this._finishHandlers.push(handler);
     },
     removeEventListener: function(type, handler) {
-      if (typeof handler !== 'function' || type != 'finish')
+      if (type != 'finish')
         return;
       var index = this._finishHandlers.indexOf(handler);
       if (index >= 0)
