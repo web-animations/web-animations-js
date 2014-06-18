@@ -14,6 +14,21 @@
 
 (function(scope, testing) {
 
+  function AnimationPlayerEvent(target, currentTime, timelineTime) {
+    this.target = target;
+    this.currentTime = currentTime;
+    this.timelineTime = timelineTime;
+
+    this.type = 'finish';
+    this.bubbles = false;
+    this.cancelable = false;
+    this.currentTarget = target;
+    this.defaultPrevented = false;
+    this.eventPhase = Event.AT_TARGET;
+    this.timeStamp = Date.now();
+  };
+  AnimationPlayerEvent.prototype = window.Event.prototype;
+
   var sequenceNumber = 0;
 
   scope.Player = function(source) {
@@ -26,6 +41,7 @@
     this._inTimeline = true;
     this._finishedFlag = false;
     this.onfinish = null;
+    this._finishHandlers = [];
     source(0);
   };
 
@@ -91,14 +107,31 @@
       this._source.totalDuration = 0;
       this.currentTime = 0;
     },
+    addEventListener: function(type, handler) {
+      if (typeof handler !== 'function' || type != 'finish')
+        return;
+      this._finishHandlers.push(handler);
+    },
+    removeEventListener: function(type, handler) {
+      if (typeof handler !== 'function' || type != 'finish')
+        return;
+      var index = this._finishHandlers.indexOf(handler);
+      if (index >= 0)
+        this._finishHandlers.splice(index, 1);
+    },
     _fireEvents: function() {
-      // TODO: Support addEventListener.
-      // TODO: Pass a finish event in to the callbacks.
       var finished = this.finished;
-      if (this.onfinish && !this._finishedFlag && finished)
-        setTimeout(this.onfinish, 0);
+      if (finished && !this._finishedFlag) {
+        var event = new AnimationPlayerEvent(this, this.currentTime, document.timeline.currentTime);
+        var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
+        setTimeout(function() {
+          handlers.forEach(function(handler) {
+            handler.call(event.target, event);
+          });
+        }, 0);
+      }
       this._finishedFlag = finished;
-    }
+    },
   };
 
 })(minifill, testing);

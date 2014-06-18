@@ -8,20 +8,39 @@ suite('player-finish-event', function() {
     this.element.remove();
   });
 
-
-  test('finish event fires when player completes', function(done) {
+  test('fire when player completes', function(done) {
     var ready = false;
     var fired = false;
-    this.player.onfinish = function() {
+    var player = this.player;
+    player.onfinish = function(event) {
       assert(ready, 'must not be called synchronously');
+      assert.equal(this, player);
+      assert.equal(event.target, player);
+      assert.equal(event.currentTime, 1000);
+      assert.equal(event.timelineTime, 1100);
       if (fired)
         assert(false, 'must not get fired twice');
       fired = true;
       done();
     };
-    tick(0);
-    tick(1000);
-    tick(2000);
+    tick(100);
+    tick(1100);
+    tick(2100);
     ready = true;
   });
+
+  test('fire after player is cancelled', function(done) {
+    this.player.onfinish = function(event) {
+      assert.equal(event.currentTime, 0);
+      assert.equal(event.timelineTime, 1, 'event must be fired on next sample');
+      done();
+    };
+    tick(0);
+    this.player.cancel();
+    tick(1);
+  });
+
+  // TODO:
+  // Test firing in reverse.
+  // Test firing multiple event listeners.
 });
