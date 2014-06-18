@@ -2,6 +2,7 @@
   var sources = [
     'player-finish-event.js',
     'animation-node.js',
+    'color-handler.js',
     'dimension-handler.js',
     'effect.js',
     'element-animate.js',

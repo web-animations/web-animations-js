@@ -22,6 +22,7 @@ var TESTING = false;
     'src/property-interpolation.js',
     'src/dimension-handler.js',
     'src/number-handler.js',
+    'src/color-handler.js',
     'src/transform-handler.js',
     'src/element-animate.js',
     'src/animation-node.js',
