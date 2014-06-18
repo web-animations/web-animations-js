@@ -1,4 +1,7 @@
 suite('player', function() {
+  setup(function() {
+    document.timeline.players = [];
+  });
   test('playing works as expected', function() {
     tick(100);
     var p = document.body.animate([], 2000);
@@ -165,5 +168,28 @@ suite('player', function() {
     tick(0);
     tick(100);
     assert.equal(p.startTime, 0);
+  });
+  test('players which are finished and not filling get discarded', function() {
+    tick(100);
+    var nofill = document.body.animate([], 100);
+    var fill = document.body.animate([], {duration: 100, fill: 'forwards'});
+    assert.deepEqual(document.timeline.players, [nofill, fill]);
+    tick(400);
+    assert.deepEqual(document.timeline.players, [fill]);
+  });
+  test('discarded players get re-added on modification', function() {
+    tick(100);
+    var player = document.body.animate([], 100);
+    tick(400);
+    assert.deepEqual(document.timeline.players, []);
+    player.currentTime = 0;
+    assert.deepEqual(document.timeline.players, [player]);
+  });
+  test('players in the before phase are not discarded', function() {
+    tick(100);
+    var player = document.body.animate([], 100);
+    player.currentTime = -50;
+    tick(110);
+    assert.deepEqual(document.timeline.players, [player]);
   });
 });

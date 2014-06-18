@@ -17,9 +17,11 @@
   scope.Animation = function(target, effectInput, timingInput) {
     var animationNode = scope.AnimationNode(timingInput);
     var effect = scope.convertEffectInput(effectInput);
+    // Returns whether the Animation is in effect
     var f = function(localTime) {
       var timeFraction = animationNode(localTime);
       effect(target, timeFraction);
+      return timeFraction != null;
     };
     f.totalDuration = animationNode.totalDuration;
     return f;

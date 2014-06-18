@@ -14,12 +14,16 @@
 
 (function(scope, testing) {
 
+  var sequenceNumber = 0;
+
   scope.Player = function(source) {
     this.__currentTime = 0;
     this._startTime = null;
     this._source = source;
     this.paused = false;
     this._playbackRate = 1;
+    this._sequenceNumber = sequenceNumber++;
+    this._inTimeline = true;
     source(0);
   };
 
@@ -30,7 +34,11 @@
         this.__currentTime = newTime;
         if (this.finished)
           this.__currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
-        this._source(this.__currentTime);
+        this._inEffect = this._source(this.__currentTime);
+        if (!this._inTimeline && this._inEffect) {
+          this._inTimeline = true;
+          timeline.players.push(this);
+        }
       }
     },
     get playbackRate() { return this._playbackRate; },
@@ -65,6 +73,10 @@
     reverse: function() {
       this._playbackRate *= -1;
       this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      if (!this._inTimeline) {
+        this._inTimeline = true;
+        timeline.players.push(this);
+      }
     },
     finish: function() {
       this.currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
