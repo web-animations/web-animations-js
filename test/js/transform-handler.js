@@ -63,29 +63,29 @@ suite('transform-handler parsing', function() {
 
 suite('transform-handler interpolation', function() {
   test('simple transform interpolations', function() {
-    assert.equal(propertyInterpolation('transform', 'translateX(10px)', 'translateX(20px)')(0.2), 'translatex(12px)');
-    assert.equal(propertyInterpolation('transform', 'rotateY(1000deg)', 'rotateY(3000deg)')(0.4), 'rotatey(1800deg)');
-    assert.equal(propertyInterpolation('transform', 'scale(6)', 'scale(1,-4)')(0.2), 'scale(5,4)');
-    assert.equal(propertyInterpolation('transform', 'skewX(5deg) translateY(5px)', 'skewX(-35deg) translateY(45px)')(0.25), 'skewx(-5deg) translatey(15px)');
+    assert.equal(minifill.propertyInterpolation('transform', 'translateX(10px)', 'translateX(20px)')(0.2), 'translatex(12px)');
+    assert.equal(minifill.propertyInterpolation('transform', 'rotateY(1000deg)', 'rotateY(3000deg)')(0.4), 'rotatey(1800deg)');
+    assert.equal(minifill.propertyInterpolation('transform', 'scale(6)', 'scale(1,-4)')(0.2), 'scale(5,4)');
+    assert.equal(minifill.propertyInterpolation('transform', 'skewX(5deg) translateY(5px)', 'skewX(-35deg) translateY(45px)')(0.25), 'skewx(-5deg) translatey(15px)');
   });
 
   test('transform interpolations with conversion to primitives', function() {
-    assert.equal(propertyInterpolation('transform', 'translateX(10px)', 'translate(20px, 10px)')(0.2), 'translate(12px,2px)');
-    assert.equal(propertyInterpolation('transform', 'translateX(10px)', 'translateY(10px)')(0.2), 'translate(8px,2px)');
-    assert.equal(propertyInterpolation('transform', 'translateX(10px)', 'translateZ(10px)')(0.2), 'translate3d(8px,0px,2px)');
-    assert.equal(propertyInterpolation('transform', 'scalex(6)', 'scale(1,6)')(0.2), 'scale(5,2)');
-    assert.equal(propertyInterpolation('transform', 'skew(10deg)', 'skewy(30deg)')(0.2), 'skew(8deg,6deg)');
+    assert.equal(minifill.propertyInterpolation('transform', 'translateX(10px)', 'translate(20px, 10px)')(0.2), 'translate(12px,2px)');
+    assert.equal(minifill.propertyInterpolation('transform', 'translateX(10px)', 'translateY(10px)')(0.2), 'translate(8px,2px)');
+    assert.equal(minifill.propertyInterpolation('transform', 'translateX(10px)', 'translateZ(10px)')(0.2), 'translate3d(8px,0px,2px)');
+    assert.equal(minifill.propertyInterpolation('transform', 'scalex(6)', 'scale(1,6)')(0.2), 'scale(5,2)');
+    assert.equal(minifill.propertyInterpolation('transform', 'skew(10deg)', 'skewy(30deg)')(0.2), 'skew(8deg,6deg)');
   });
 
   test('transform interpolations with none', function() {
-    assert.equal(propertyInterpolation('transform', 'none', 'scale(5) translateX(100px) rotate(1000deg)')(0.25), 'scale(2,2) translatex(25px) rotate(250deg)');
-    assert.equal(propertyInterpolation('transform', 'scale(5) translateX(100px) rotate(1000deg)', 'none')(0.75), 'scale(2,2) translatex(25px) rotate(250deg)');
-    assert.equal(propertyInterpolation('transform', 'none', 'scaleX(5) skewY(100grad)')(0.25), 'scalex(2) skewy(25grad)');
-    assert.equal(propertyInterpolation('transform', 'none', 'none')(0.4), 'none');
+    assert.equal(minifill.propertyInterpolation('transform', 'none', 'scale(5) translateX(100px) rotate(1000deg)')(0.25), 'scale(2,2) translatex(25px) rotate(250deg)');
+    assert.equal(minifill.propertyInterpolation('transform', 'scale(5) translateX(100px) rotate(1000deg)', 'none')(0.75), 'scale(2,2) translatex(25px) rotate(250deg)');
+    assert.equal(minifill.propertyInterpolation('transform', 'none', 'scaleX(5) skewY(100grad)')(0.25), 'scalex(2) skewy(25grad)');
+    assert.equal(minifill.propertyInterpolation('transform', 'none', 'none')(0.4), 'none');
   });
 
   test('currently unsupported transform interpolations', function() {
-    assert.equal(propertyInterpolation('transform', 'translate(10px)', 'scale(2)')(0.4), 'translate(10px)');
-    assert.equal(propertyInterpolation('transform', 'rotateX(10deg)', 'rotateY(20deg)')(0.4), 'rotateX(10deg)');
+    assert.equal(minifill.propertyInterpolation('transform', 'translate(10px)', 'scale(2)')(0.4), 'translate(10px)');
+    assert.equal(minifill.propertyInterpolation('transform', 'rotateX(10deg)', 'rotateY(20deg)')(0.4), 'rotateX(10deg)');
   });
 });

@@ -390,7 +390,7 @@ suite('effect-convertEffectInput', function() {
     function() {
       var effectFunction;
       assert.doesNotThrow(function() {
-        effectFunction = convertEffectInput(
+        effectFunction = minifill.convertEffectInput(
           [
           {left: '0px'},
           {left: '200px', offset: 0.3},
@@ -422,7 +422,7 @@ suite('effect-convertEffectInput', function() {
     function() {
       var effectFunction;
       assert.doesNotThrow(function() {
-        effectFunction = convertEffectInput(
+        effectFunction = minifill.convertEffectInput(
           [
           {left: '0px', offset: 0},
           {left: '20px', offset: 1},
@@ -440,7 +440,7 @@ suite('effect-convertEffectInput', function() {
     function() {
       var effectFunction;
       assert.doesNotThrow(function() {
-        effectFunction = convertEffectInput(
+        effectFunction = minifill.convertEffectInput(
           [
           {left: '0px'},
           {left: '100px'}

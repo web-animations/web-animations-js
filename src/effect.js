@@ -168,7 +168,6 @@
 
 
   if (TESTING) {
-    testing.convertEffectInput = convertEffectInput;
     testing.normalize = normalize;
     testing.makePropertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups;
     testing.makeInterpolations = makeInterpolations;

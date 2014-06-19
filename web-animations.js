@@ -13,7 +13,9 @@
 // limitations under the License.
 
 var global = this;
-var TESTING = false;
+if (TESTING === undefined) {
+  var TESTING = false;
+}
 
 (function() {
   var sources = [

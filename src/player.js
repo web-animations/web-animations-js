@@ -55,7 +55,7 @@
         this._inEffect = this._source(this.__currentTime);
         if (!this._inTimeline && this._inEffect) {
           this._inTimeline = true;
-          timeline.players.push(this);
+          document.timeline.players.push(this);
         }
         this._source(this.__currentTime);
       }
@@ -97,7 +97,7 @@
       scope.restart();
       if (!this._inTimeline) {
         this._inTimeline = true;
-        timeline.players.push(this);
+        document.timeline.players.push(this);
       }
       this._finishedFlag = false;
     },
