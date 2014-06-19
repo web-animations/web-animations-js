@@ -25,14 +25,15 @@
 
   maxifill.groupPlayerProto = createObject(shared.Player.prototype,
       {
+        init: function() {
+          this.childPlayers = [];
+        },
         set currentTime(newTime) {
           if (!this.paused) {
             this.startTime += (this.currentTime - newTime) / this.playbackRate;
           }
-          else if (this.hasOwnProperty('childPlayers')) {
-            for (var i = 0; i < this.childPlayers.length; i++)
-              this.childPlayers[i].currentTime = newTime;
-          }
+          for (var i = 0; i < this.childPlayers.length; i++)
+            this.childPlayers[i].currentTime = newTime;
           this._currentTime = newTime - this.offset;
         },
         get currentTime() {
@@ -40,27 +41,24 @@
         },
         get totalDuration() {
           var total = 0;
-          if (this.hasOwnProperty('childPlayers')) {
-            if (this.source instanceof global.AnimationSequence) {
-              for (var child in this.childPlayers)
-                total += this.childPlayers[child].totalDuration;
-              return total;
-            }
+          if (this.source instanceof global.AnimationSequence) {
             for (var child in this.childPlayers)
-              total = Math.max(total, this.childPlayers[child].totalDuration);
+              total += this.childPlayers[child].totalDuration;
+            return total;
           }
+          for (var child in this.childPlayers)
+            total = Math.max(total, this.childPlayers[child].totalDuration);
           return total;
         },
         set startTime(newTime) {
           if (!this.paused) {
             this._startTime = newTime + this.offset;
-            if (this.hasOwnProperty('childPlayers'))
-              for (var i = 0; i < this.childPlayers.length; i++)
-                this.childPlayers[i].startTime = newTime;
+            for (var i = 0; i < this.childPlayers.length; i++)
+              this.childPlayers[i].startTime = newTime;
           }
         },
         get startTime() {
-          if (this._startTime == null && this.hasOwnProperty('childPlayers') && this.childPlayers.length > 0) {
+          if (this._startTime == null && this.childPlayers.length > 0) {
             this._startTime = this.childPlayers[0]._startTime;
           }
           return this._startTime;
@@ -68,9 +66,8 @@
         pause: function() {
           this.paused = true;
           this._startTime = null;
-          if (this.hasOwnProperty('childPlayers'))
-            for (var i = 0; i < this.childPlayers.length; i++)
-              this.childPlayers[i].pause();
+          for (var i = 0; i < this.childPlayers.length; i++)
+            this.childPlayers[i].pause();
         },
         play: function() {
           this.paused = false;
@@ -83,10 +80,9 @@
             this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
           else
             this._startTime = null;
-          if (this.hasOwnProperty('childPlayers'))
-            for (var i = 0; i < this.childPlayers.length; i++)
-              if (!this.childPlayers[i].finished)
-                this.childPlayers[i].play();
+          for (var i = 0; i < this.childPlayers.length; i++)
+            if (!this.childPlayers[i].finished)
+              this.childPlayers[i].play();
         },
         reverse: function() {
           this._playbackRate *= -1;
@@ -98,27 +94,24 @@
           else
             this._startTime = null;
           this._finishedFlag = false;
-          if (this.hasOwnProperty('childPlayers'))
-            for (var i = 0; i < this.childPlayers.length; i++)
-              this.childPlayers[i].reverse();
+          for (var i = 0; i < this.childPlayers.length; i++)
+            this.childPlayers[i].reverse();
         },
         setChildOffsets: function() {
-          if (this.hasOwnProperty('childPlayers')) {
-            if (this.playbackRate >= 0) {
-              if (this.source instanceof global.AnimationSequence) {
-                this.childPlayers[0]._startOffset = 0;
-                for (var i = 1; i < this.childPlayers.length; i++)
-                  this.childPlayers[i]._startOffset = (this.childPlayers[i - 1]._startOffset + this.childPlayers[i - 1].totalDuration);
-              }
+          if (this.playbackRate >= 0) {
+            if (this.source instanceof global.AnimationSequence) {
+              this.childPlayers[0]._startOffset = 0;
+              for (var i = 1; i < this.childPlayers.length; i++)
+                this.childPlayers[i]._startOffset = (this.childPlayers[i - 1]._startOffset + this.childPlayers[i - 1].totalDuration);
+            }
+          } else {
+            if (this.source instanceof global.AnimationSequence) {
+              this.childPlayers[this.childPlayers.length - 1]._startOffset = this.totalDuration;
+              for (var i = this.childPlayers.length - 2; i >= 0; i--)
+                this.childPlayers[i]._startOffset = this.totalDuration - (this.childPlayers[i + 1]._startOffset + this.childPlayers[i + 1].totalDuration);
             } else {
-              if (this.source instanceof global.AnimationSequence) {
-                this.childPlayers[this.childPlayers.length - 1]._startOffset = this.totalDuration;
-                for (var i = this.childPlayers.length - 2; i >= 0; i--)
-                  this.childPlayers[i]._startOffset = this.totalDuration - (this.childPlayers[i + 1]._startOffset + this.childPlayers[i + 1].totalDuration);
-              } else {
-                for (var i = this.childPlayers.length - 1; i >= 0; i--)
-                  this.childPlayers[i]._startOffset = this.totalDuration - this.childPlayers[i].totalDuration;
-              }
+              for (var i = this.childPlayers.length - 1; i >= 0; i--)
+                this.childPlayers[i]._startOffset = this.totalDuration - this.childPlayers[i].totalDuration;
             }
           }
         },

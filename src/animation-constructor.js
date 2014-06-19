@@ -61,12 +61,12 @@
       var oldPlayerProto = shared.Player.prototype;
       shared.Player.prototype = maxifill.groupPlayerProto;
       var player = global.document.timeline.play(new Animation(document.documentElement, []));
+      player.init();
       shared.Player.prototype = oldPlayerProto;
       player.cancel();
       player.source = source;
       source._internalPlayer = player;
       source._player = source._player || player;
-      player.childPlayers = [];
       for (var i = 0; i < source.children.length; i++) {
         source.children[i]._player = source._player;
         var childPlayer = global.document.timeline.play(source.children[i]);
