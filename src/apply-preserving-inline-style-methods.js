@@ -82,6 +82,7 @@
     }
   };
 
-  testing.ensureStyleIsPatched = ensureStyleIsPatched;
+  if (TESTING)
+    testing.ensureStyleIsPatched = ensureStyleIsPatched;
 
 })(webAnimations, testing);
