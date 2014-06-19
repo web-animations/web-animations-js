@@ -377,7 +377,7 @@ suite('effect', function() {
     });
 });
 
-suite('effect-minifill.convertEffectInput', function() {
+suite('effect-convertEffectInput', function() {
   setup(function() {
     this.target = document.createElement('div');
     document.documentElement.appendChild(this.target);
