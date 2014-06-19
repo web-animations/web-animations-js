@@ -192,4 +192,14 @@ suite('player', function() {
     tick(110);
     assert.deepEqual(document.timeline.players, [player]);
   });
+  test('animations starting in the future are not in effect', function() {
+    var fractions = [];
+    tick(100);
+    var player = document.body.animate(function(fraction) { fractions.push(fraction); }, 1000);
+    player.startTime = 1000;
+    tick(200);
+    tick(1000);
+    tick(1100);
+    assert.deepEqual(fractions, [null, null, 0, 0.1]);
+  });
 });
