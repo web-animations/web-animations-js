@@ -42,7 +42,6 @@
     this._finishedFlag = false;
     this.onfinish = null;
     this._finishHandlers = [];
-    source(0);
   };
 
   scope.Player.prototype = {
@@ -57,7 +56,6 @@
           this._inTimeline = true;
           document.timeline.players.push(this);
         }
-        this._source(this.__currentTime);
       }
     },
     get playbackRate() { return this._playbackRate; },
