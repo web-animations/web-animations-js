@@ -14,7 +14,6 @@
 
 var global = this;
 if (TESTING === undefined) {
-  console.log('overriding testing');
   var TESTING = false;
 }
 
