@@ -70,6 +70,7 @@
   if (!TESTING) {
     requestAnimationFrame(tick);
   } else {
+    console.log(testing);
     testing.tick = tick;
   }
 

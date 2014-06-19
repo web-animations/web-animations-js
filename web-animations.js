@@ -13,7 +13,10 @@
 // limitations under the License.
 
 var global = this;
-var TESTING = false;
+if (TESTING === undefined) {
+  console.log('overriding testing');
+  var TESTING = false;
+}
 
 (function() {
   var sources = [
