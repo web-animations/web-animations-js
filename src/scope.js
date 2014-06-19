@@ -15,3 +15,5 @@
 var shared = {};
 var minifill = {};
 var maxifill = {};
+if (!TESTING)
+  var testing = null;
