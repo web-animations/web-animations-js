@@ -4,19 +4,11 @@
 <script src="../node_modules/mocha/mocha.js"></script>
 <script src="../node_modules/chai/chai.js"></script>
 <script>
-var target = 'minifill';
-
-
-window.TESTING = true;
-window.testing = window;
-mocha.setup({
-  ui: 'tdd',
-});
-window.assert = chai.assert;
-
-window.onload = function() {
-  mocha.run();
-};
+var TESTING = true;
+var testing = window;
+var assert = chai.assert;
+mocha.setup({ ui: 'tdd' });
+addEventListener('load', function() { mocha.run(); });
 </script>
 <% _.forEach(src, function(sourceFile) { print('<script src="../src/' + sourceFile + '"></script>\n'); }); %>
 <% _.forEach(test, function(testFile) { print('<script src="js/' + testFile + '"></script>\n'); }); %>
