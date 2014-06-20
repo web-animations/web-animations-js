@@ -53,7 +53,8 @@
     'transform-handler.js',
   ];
 
-  var config = {
+  // This object specifies the source and test files for different Web Animation build targets.
+  var targetConfig = {
     minifill: {
       src: minifillSrc,
       test: minifillTest,
@@ -87,7 +88,7 @@
   };
 
   if (typeof module != 'undefined')
-    module.exports = config;
+    module.exports = targetConfig;
   else
-    window.targetConfig = config;
+    window.targetConfig = targetConfig;
 })();
