@@ -85,4 +85,4 @@
   if (TESTING)
     testing.ensureStyleIsPatched = ensureStyleIsPatched;
 
-})(webAnimations, testing);
+})(minifill, testing);
