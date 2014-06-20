@@ -62,7 +62,7 @@ module.exports = function(grunt) {
   grunt.task.registerMultiTask('gendev', 'Generate web-animations-<target>.dev.js', function() {
     var template = grunt.file.read('templates/web-animations.dev.js')
     var filename = 'web-animations-' + this.target + '.dev.js';
-    var contents = grunt.template.process(template, {data: {sources: this.data}});
+    var contents = grunt.template.process(template, {data: {target: this.target}});
     grunt.file.write(filename, contents);
     grunt.log.writeln('File ' + filename + ' created');
   });
@@ -70,7 +70,7 @@ module.exports = function(grunt) {
   grunt.task.registerMultiTask('gentest', 'Generate test/runner-<target>.html', function() {
     var template = grunt.file.read('templates/runner.html')
     var filename = 'test/runner-' + this.target + '.html';
-    var contents = grunt.template.process(template, this);
+    var contents = grunt.template.process(template, {data: {target: this.target}});
     grunt.file.write(filename, contents);
     grunt.log.writeln('File ' + filename + ' created');
   });
