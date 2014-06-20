@@ -5,16 +5,17 @@
     if (changes.replace) {
       for (file in changes.replace) {
         var index = newFiles.indexOf(file);
-        if (index == -1)
-          throw file + ' not found when replacing ' + file + ' with ' + changes.replace[file];
+        if (index === -1)
+          throw 'targetConfig: Cannot find file ' + file + ' to replace with ' + changes.replace[file] + ' in config.';
         newFiles[index] = changes.replace[file];
       }
     }
     if (changes.remove) {
       changes.remove.forEach(function(file) {
         var index = newFiles.indexOf(file);
-        if (index >= 0)
-          newFiles.splice(index, 1);
+        if (index === -1)
+          throw 'targetConfig: Cannot find file ' + file + ' to remove from config.';
+        newFiles.splice(index, 1);
       });
     }
     if (changes.add)
