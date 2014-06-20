@@ -1,20 +1,17 @@
 var global = this;
-if (typeof this.TESTING === 'undefined') {
-  var TESTING = false;
-}
+var TESTING = false;
 
 (function() {
-  var sources = [
-<% _.forEach(sources, function(source) { print('    \'' + source + '\',\n'); }); %>  ];
-
-  if (typeof module != 'undefined') {
-    module.exports = sources;
-    return;
+  function lastScriptElement() {
+    var scripts = document.getElementsByTagName('script');
+    return scripts[scripts.length - 1];
   }
 
-  var scripts = document.getElementsByTagName('script');
-  var location = scripts[scripts.length - 1].src.replace(/[^\/]+$/, '');
-  sources.forEach(function(src) {
-    document.write('<script src="' + location + 'src/' + src + '"></script>');
+  var location = lastScriptElement().src.replace(/[^\/]+$/, '');
+  document.write('<script src="' + location + 'target-config.js"></script>');
+  lastScriptElement().addEventListener('load', function() {
+    targetConfig['<%= target %>'].src.forEach(function(sourceFile) {
+      document.write('<script src="' + location + 'src/' + sourceFile + '"></script>');
+    });
   });
 })();
