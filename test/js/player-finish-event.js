@@ -32,7 +32,6 @@ suite('player-finish-event', function() {
 
   test('fire when reversed player completes', function(done) {
     this.player.onfinish = function(event) {
-      console.log(event);
       assert.equal(event.currentTime, 0);
       assert.equal(event.timelineTime, 1000);
       done();
