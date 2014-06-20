@@ -23,34 +23,34 @@
   }
 
   minifillSrc = [
-    'scope.js',
-    'animation-node.js',
-    'animation.js',
-    'apply.js',
-    'property-interpolation.js',
-    'color-handler.js',
-    'dimension-handler.js',
-    'effect.js',
-    'element-animate.js',
-    'interpolation.js',
-    'number-handler.js',
-    'player.js',
-    'timeline.js',
-    'transform-handler.js',
+    'src/scope.js',
+    'src/animation-node.js',
+    'src/animation.js',
+    'src/apply.js',
+    'src/property-interpolation.js',
+    'src/color-handler.js',
+    'src/dimension-handler.js',
+    'src/effect.js',
+    'src/element-animate.js',
+    'src/interpolation.js',
+    'src/number-handler.js',
+    'src/player.js',
+    'src/timeline.js',
+    'src/transform-handler.js',
   ];
 
   minifillTest = [
-    'animation-node.js',
-    'color-handler.js',
-    'dimension-handler.js',
-    'effect.js',
-    'element-animate.js',
-    'interpolation.js',
-    'number-handler.js',
-    'player-finish-event.js',
-    'player.js',
-    'property-interpolation.js',
-    'transform-handler.js',
+    'test/js/animation-node.js',
+    'test/js/color-handler.js',
+    'test/js/dimension-handler.js',
+    'test/js/effect.js',
+    'test/js/element-animate.js',
+    'test/js/interpolation.js',
+    'test/js/number-handler.js',
+    'test/js/player-finish-event.js',
+    'test/js/player.js',
+    'test/js/property-interpolation.js',
+    'test/js/transform-handler.js',
   ];
 
   // This object specifies the source and test files for different Web Animation build targets.
@@ -63,26 +63,26 @@
 
     maxifill: {
       src: tweak(minifillSrc, {
-        add: ['animation-constructor.js'],
+        add: ['src/animation-constructor.js'],
       }),
       test: minifillTest,
     },
 
     // 'minifill-inline-style': {
     //   src: tweak(minifillSrc, {
-    //     replace: {'apply.js': 'apply-preserving-inline-style.js'},
+    //     replace: {'src/apply.js': 'src/apply-preserving-inline-style.js'},
     //   }),
     //   test: tweak(minifillTest, {
-    //     add: ['apply-preserving-inline-style.js'],
+    //     add: ['src/apply-preserving-inline-style.js'],
     //   }),
     // },
 
     // 'minifill-inline-style-methods': {
     //   src: tweak(minifillSrc, {
-    //     replace: {'apply.js': 'apply-preserving-inline-style-methods.js'},
+    //     replace: {'src/apply.js': 'src/apply-preserving-inline-style-methods.js'},
     //   }),
     //   test: tweak(minifillTest, {
-    //     add: ['apply-preserving-inline-style-methods.js'],
+    //     add: ['src/apply-preserving-inline-style-methods.js'],
     //   }),
     // },
   };

@@ -26,7 +26,7 @@ module.exports = function(grunt) {
       },
       nonull: true,
       dest: 'web-animations-' + target + '.min.js',
-      src: targetConfig[target].src.map(function(file) {return 'src/' + file;}),
+      src: targetConfig[target].src,
     };
     gentestTargets[target] = targetConfig[target];
     gendevTargets[target] = targetConfig[target].src;

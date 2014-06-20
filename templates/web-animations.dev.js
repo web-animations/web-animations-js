@@ -11,7 +11,7 @@ var TESTING = false;
   document.write('<script src="' + location + 'target-config.js"></script>');
   lastScriptElement().addEventListener('load', function() {
     targetConfig['<%= target %>'].src.forEach(function(sourceFile) {
-      document.write('<script src="' + location + 'src/' + sourceFile + '"></script>');
+      document.write('<script src="' + location + sourceFile + '"></script>');
     });
   });
 })();
