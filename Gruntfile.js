@@ -5,8 +5,8 @@ module.exports = function(grunt) {
   var targetConfig = require('./target-config.js');
 
   uglifyTargets = {};
-  gentestTargets = {};
   gendevTargets = {};
+  gentestTargets = {};
   for (var target in targetConfig) {
     uglifyTargets[target] = {
       options: {
@@ -28,8 +28,8 @@ module.exports = function(grunt) {
       dest: 'web-animations-' + target + '.min.js',
       src: targetConfig[target].src,
     };
-    gentestTargets[target] = targetConfig[target];
     gendevTargets[target] = targetConfig[target].src;
+    gentestTargets[target] = targetConfig[target];
   }
 
   grunt.initConfig({
