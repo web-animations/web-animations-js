@@ -3,11 +3,11 @@
   function tweak(files, changes) {
     var newFiles = files.slice();
     if (changes.replace) {
-      changes.add = changes.add || [];
-      changes.remove = changes.remove || [];
       for (file in changes.replace) {
-        changes.remove.push(file);
-        changes.add.push(changes.replace[file]);
+        var index = newFiles.indexOf(file);
+        if (index == -1)
+          throw file + ' not found when replacing ' + file + ' with ' + changes.replace[file];
+        newFiles[index] = changes.replace[file];
       }
     }
     if (changes.remove) {
@@ -24,23 +24,22 @@
 
   minifillSrc = [
     'scope.js',
-    'interpolation.js',
-    'property-interpolation.js',
-    'dimension-handler.js',
-    'number-handler.js',
-    'color-handler.js',
-    'transform-handler.js',
-    'element-animate.js',
     'animation-node.js',
     'animation.js',
-    'effect.js',
     'apply.js',
+    'property-interpolation.js',
+    'color-handler.js',
+    'dimension-handler.js',
+    'effect.js',
+    'element-animate.js',
+    'interpolation.js',
+    'number-handler.js',
     'player.js',
     'timeline.js',
+    'transform-handler.js',
   ];
 
   minifillTest = [
-    'player-finish-event.js',
     'animation-node.js',
     'color-handler.js',
     'dimension-handler.js',
@@ -48,6 +47,7 @@
     'element-animate.js',
     'interpolation.js',
     'number-handler.js',
+    'player-finish-event.js',
     'player.js',
     'property-interpolation.js',
     'transform-handler.js',
