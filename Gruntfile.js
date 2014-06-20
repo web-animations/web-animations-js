@@ -31,9 +31,10 @@ module.exports = function(grunt) {
       options: {
         flags: [
           '--nojsdoc',
-          '--nostrict',
-          '--disable 121,110', // 121: Illegal comma at end of object literal
-                               // 110: Line too long
+          '--strict',
+          '--disable 7,121,110', //   7: Wrong blank line count
+                                 // 121: Illegal comma at end of object literal
+                                 // 110: Line too long
         ],
         reporter: {
           name: 'console'
