@@ -1,5 +1,5 @@
 node_modules
-web-animations.dev.js
-web-animations.min.js
-web-animations.min.js.map
+web-animations*.dev.js
+web-animations*.min.js
+web-animations*.min.js.map
 *~

@@ -2,31 +2,35 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-gjslint');
 
-  var sources = require('./web-animations.js');
-  grunt.log.write(sources);
-  grunt.initConfig({
-    uglify: {
-      webanim: {
-        options: {
-          sourceMap: true,
-          sourceMapName: 'web-animations.min.js.map',
-          banner: grunt.file.read('src/boilerplate'),
-          wrap: true,
-          compress: {
-            global_defs: {
-              "TESTING": false
-            },
-            dead_code: true
+  var targetConfig = require('./target-config.js');
+
+  uglifyConfig = {};
+  for (var target in targetConfig) {
+    console.log(targetConfig[target].src);
+    uglifyConfig[target] = {
+      options: {
+        sourceMap: true,
+        sourceMapName: 'web-animations-' + target + '.min.js.map',
+        banner: grunt.file.read('src/boilerplate'),
+        wrap: true,
+        compress: {
+          global_defs: {
+            "TESTING": false
           },
-          mangle: {
-            eval: true
-          },
+          dead_code: true
         },
-        nonull: true,
-        dest: 'web-animations.min.js',
-        src: sources,
-      }
-    },
+        mangle: {
+          eval: true
+        },
+      },
+      nonull: true,
+      dest: 'web-animations-' + target + '.min.js',
+      src: targetConfig[target].src.map(function(file) {return 'src/' + file;}),
+    };
+  }
+
+  grunt.initConfig({
+    uglify: uglifyConfig,
     gjslint: {
       options: {
         flags: [
@@ -42,9 +46,9 @@ module.exports = function(grunt) {
       },
       all: {
         src: [
-          'web-animations.js',
           'src/*.js',
-          'test/js/*.js'
+          'test/*.js',
+          'test/js/*.js',
         ],
       }
     },
