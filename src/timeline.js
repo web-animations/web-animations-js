@@ -96,9 +96,9 @@
 
         // Execute effect clearing before effect applying.
         if (!player._inEffect)
-          player._source.effect();
+          player._source();
         else
-          pendingEffects.push(player._source.effect);
+          pendingEffects.push(player._source);
       }
 
       player._fireEvents();

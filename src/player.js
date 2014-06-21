@@ -52,7 +52,7 @@
         this.__currentTime = newTime;
         if (this.finished)
           this.__currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
-        this._inEffect = this._source(this.__currentTime);
+        this._inEffect = this._source.update(this.__currentTime);
         if (!this._inTimeline && this._inEffect) {
           this._inTimeline = true;
           document.timeline.players.push(this);

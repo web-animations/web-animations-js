@@ -18,12 +18,13 @@
     var animationNode = scope.AnimationNode(timingInput);
     var effect = scope.convertEffectInput(effectInput);
     var timeFraction;
-    var animation = function(localTime) {
+    var animation = function() {
+      TESTING && console.assert(typeof timeFraction !== 'undefined');
+      effect(target, timeFraction);
+    };
+    animation.update = function(localTime) {
       timeFraction = animationNode(localTime);
       return timeFraction !== null;
-    };
-    animation.effect = function() {
-      effect(target, timeFraction);
     };
     animation.totalDuration = animationNode.totalDuration;
     return animation;
@@ -31,7 +32,7 @@
 
   var nullAnimation = function() { };
   nullAnimation.totalDuration = 0;
-  nullAnimation.effect = nullAnimation;
+  nullAnimation.update = nullAnimation;
   scope.nullAnimation = nullAnimation;
 
 })(minifill, testing);
