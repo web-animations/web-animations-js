@@ -144,6 +144,7 @@ suite('player', function() {
     assert.equal(p.startTime, 500);
     assert.equal(p.finished, true);
     assert.equal(p.playbackRate, 1);
+    setTicking(true);
     p.play();
     assert.equal(p.startTime, 2600);
     assert.equal(p.currentTime, 0);
@@ -160,6 +161,7 @@ suite('player', function() {
     assert.equal(p.currentTime, 0);
     assert.equal(p.finished, true);
     assert.equal(p.playbackRate, -1);
+    setTicking(true);
     p.play();
     assert.equal(p.startTime, 3900);
     assert.equal(p.currentTime, 3000);

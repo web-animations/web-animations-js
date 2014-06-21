@@ -88,17 +88,17 @@
     var pendingEffects = [];
     timeline.players = timeline.players.filter(function(player) {
       if (!(player.paused || player.finished)) {
-        ticking = true;
         if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
         player._currentTime = (t - player.startTime) * player.playbackRate;
-
-        // Execute effect clearing before effect applying.
-        if (!player._inEffect)
-          player._source();
-        else
-          pendingEffects.push(player._source);
+        if (!player.finished)
+          ticking = true;
       }
+      // Execute effect clearing before effect applying.
+      if (!player._inEffect)
+        player._source();
+      else
+        pendingEffects.push(player._source);
 
       player._fireEvents();
 
