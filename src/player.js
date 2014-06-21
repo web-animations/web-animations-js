@@ -97,11 +97,15 @@
       this._finishedFlag = false;
       if (!scope.restart())
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      else
+        this._startTime = null;
     },
     reverse: function() {
       this._playbackRate *= -1;
-      this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
-      scope.restart();
+      if (!scope.restart())
+        this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      else
+        this._startTime = null;
       if (!this._inTimeline) {
         this._inTimeline = true;
         document.timeline.players.push(this);
