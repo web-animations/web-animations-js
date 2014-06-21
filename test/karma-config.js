@@ -6,7 +6,7 @@ module.exports = {
     'karma-chrome-launcher',
     'karma-firefox-launcher'
   ],
-  browsers: ['Chrome', 'Firefox'],
+  browsers: ['Firefox'],
   // browsers: ['Safari', 'Chrome', 'ChromeCanary', 'Firefox', 'IE'],
   basePath: '.',
   files: [
@@ -14,7 +14,7 @@ module.exports = {
   ],
   singleRun: true,
   port: 9876,
-  reporters: ['progress'],
+  reporters: ['dots'],
   colors: true,
   autoWatch: false,
 };

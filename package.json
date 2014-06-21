@@ -18,5 +18,8 @@
     "karma-firefox-launcher": "~0.1.3",
     "karma-ie-launcher": "~0.1.5",
     "karma-safari-launcher": "~0.1.1"
+  },
+  "scripts": {
+    "test": "grunt test"
   }
 }
