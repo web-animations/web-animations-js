@@ -8,10 +8,11 @@ module.exports = function(grunt) {
   gendevTargets = {};
   gentestTargets = {};
   for (var target in targetConfig) {
+    var suffix = target === targetConfig.defaultTarget ? '' : '-' + target;
     uglifyTargets[target] = {
       options: {
         sourceMap: true,
-        sourceMapName: 'web-animations-' + target + '.min.js.map',
+        sourceMapName: 'web-animations' + suffix + '.min.js.map',
         banner: grunt.file.read('templates/boilerplate'),
         wrap: true,
         compress: {
@@ -25,7 +26,7 @@ module.exports = function(grunt) {
         },
       },
       nonull: true,
-      dest: 'web-animations-' + target + '.min.js',
+      dest: 'web-animations' + suffix + '.min.js',
       src: targetConfig[target].src,
     };
     gendevTargets[target] = targetConfig[target].src;

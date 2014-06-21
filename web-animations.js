@@ -10,7 +10,7 @@ var TESTING = false;
   var location = lastScriptElement().src.replace(/[^\/]+$/, '');
   document.write('<script src="' + location + 'target-config.js"></script>');
   lastScriptElement().addEventListener('load', function() {
-    targetConfig['minifill'].src.forEach(function(sourceFile) {
+    targetConfig[targetConfig.defaultTarget].src.forEach(function(sourceFile) {
       document.write('<script src="' + location + sourceFile + '"></script>');
     });
   });

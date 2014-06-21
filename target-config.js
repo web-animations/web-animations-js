@@ -5,17 +5,16 @@
     if (changes.replace) {
       for (file in changes.replace) {
         var index = newFiles.indexOf(file);
-        if (index === -1)
-          throw 'targetConfig: Cannot find file ' + file + ' to replace with ' + changes.replace[file] + ' in config.';
+        if (index == -1)
+          throw file + ' not found when replacing ' + file + ' with ' + changes.replace[file];
         newFiles[index] = changes.replace[file];
       }
     }
     if (changes.remove) {
       changes.remove.forEach(function(file) {
         var index = newFiles.indexOf(file);
-        if (index === -1)
-          throw 'targetConfig: Cannot find file ' + file + ' to remove from config.';
-        newFiles.splice(index, 1);
+        if (index >= 0)
+          newFiles.splice(index, 1);
       });
     }
     if (changes.add)
@@ -68,25 +67,17 @@
       }),
       test: minifillTest,
     },
-
-    // 'minifill-inline-style': {
-    //   src: tweak(minifillSrc, {
-    //     replace: {'src/apply.js': 'src/apply-preserving-inline-style.js'},
-    //   }),
-    //   test: tweak(minifillTest, {
-    //     add: ['src/apply-preserving-inline-style.js'],
-    //   }),
-    // },
-
-    // 'minifill-inline-style-methods': {
-    //   src: tweak(minifillSrc, {
-    //     replace: {'src/apply.js': 'src/apply-preserving-inline-style-methods.js'},
-    //   }),
-    //   test: tweak(minifillTest, {
-    //     add: ['src/apply-preserving-inline-style-methods.js'],
-    //   }),
-    // },
   };
+
+  // The default target will be used for files without target suffixes:
+  // - test/runner.html
+  // - web-animations.js
+  // - web-animations.min.js
+  Object.defineProperty(targetConfig, 'defaultTarget', {
+    configurable: true,
+    enumerable: false,
+    value: 'minifill',
+  });
 
   if (typeof module != 'undefined')
     module.exports = targetConfig;
