@@ -36,11 +36,10 @@
   var ticking = true;
 
   scope.restart = function() {
-    if (TESTING)
-      return;
     if (!ticking) {
-      requestAnimationFrame(tick);
       ticking = true;
+      if (!TESTING)
+        requestAnimationFrame(tick);
       return true;
     }
   };
@@ -120,6 +119,8 @@
     requestAnimationFrame(tick);
   } else {
     testing.tick = tick;
+    testing.isTicking = function() { return ticking; };
+    testing.setTicking = function(newVal) { ticking = newVal; };
   }
 
   var timeline = new scope.Timeline();
