@@ -76,7 +76,7 @@
   Object.defineProperty(targetConfig, 'defaultTarget', {
     configurable: true,
     enumerable: false,
-    value: 'minifill',
+    value: 'maxifill',
   });
 
   if (typeof module != 'undefined')
