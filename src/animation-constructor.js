@@ -36,7 +36,7 @@
     this.__player = null;
     this._player = null;
     return this;
-    };
+  };
 
   global.Animation.prototype = {
     get player() { return this._player; },
@@ -77,7 +77,7 @@
       return player;
     }
     return play(source);
-  }
+  };
 
 }(shared, maxifill, testing));
 

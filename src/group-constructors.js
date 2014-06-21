@@ -20,8 +20,7 @@
     this.timing = timing;
     this._player = null;
     return this;
-    // return new scope.Group('seq', children, timing);
-  }
+  };
 
   global.AnimationGroup = function(children, timing) {
     this._type = 'par';
@@ -29,8 +28,7 @@
     this.timing = timing;
     this._player = null;
     return this;
-    // return new scope.Group('par', children, timing);
-  }
+  };
 
   global.AnimationSequence.prototype = {
     get player() { return this._player; },

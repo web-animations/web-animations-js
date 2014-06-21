@@ -82,7 +82,7 @@
     },
     get finished() {
       return this._playbackRate > 0 && this.__currentTime >= this.totalDuration ||
-        this._playbackRate < 0 && this.__currentTime <= 0;
+          this._playbackRate < 0 && this.__currentTime <= 0;
     },
     get startTime() {
       if (!this.paused && this._startTime == null)
@@ -96,13 +96,13 @@
       this._currentTime = this._timeline.currentTime - this._startTime;
       scope.invalidateEffects();
     },
-    get totalDuration() {  return this._source.totalDuration; },
+    get totalDuration() { return this._source.totalDuration; },
     // FIXME: This walks the animation tree to calculate offsets.
     // It makes offsets resilient to tree surgery, except removing animations from a sequence.
     // Do we want to pre-compute this, and re-compute upon surgery? Do we want to go further
     // In this direction and calculate all offsets every time (i.e. calculate offsets within a sequence).
     // TODO: Try to move this out of here.
-    get offset() { 
+    get offset() {
       if (this._parent)
         return this._startOffset + this._parent._startOffset;
       else
@@ -114,9 +114,10 @@
     },
     play: function() {
       this.paused = false;
-      if (this.finished)
+      if (this.finished) {
         this.__currentTime = this._playbackRate > 0 ? 0 : this.totalDuration;
         scope.invalidateEffects();
+      }
       this._finishedFlag = false;
       if (!shared.restart())
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
