@@ -44,6 +44,10 @@
     }
   };
 
+  scope.tickNow = function() {
+    tick(performance.now());
+  };
+
   function tick(t) {
     var timeline = global.document.timeline;
     timeline.currentTime = t;
@@ -54,7 +58,7 @@
     timeline.players.forEach(function(player) {
       if (!(player.paused || player.finished)) {
         ticking = true;
-        if (player.startTime === null)
+        if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
         player._currentTime = (t - player.startTime) * player.playbackRate;
       }

@@ -68,7 +68,11 @@
       return this._playbackRate > 0 && this.__currentTime >= this._source.totalDuration ||
              this._playbackRate < 0 && this.__currentTime <= 0;
     },
-    get startTime() { return this._startTime; },
+    get startTime() {
+      if (!this.paused && this._startTime == null)
+        scope.tickNow();
+      return this._startTime;
+    },
     set startTime(newTime) {
       if (this.paused) {
         return;
