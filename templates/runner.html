@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
-<script src="../web-animations.min.js"></script>
 <script src="../node_modules/mocha/mocha.js"></script>
 <script src="../node_modules/chai/chai.js"></script>
-<div id="mocha"></div>
+<script src="../target-config.js"></script>
+<script src="runner.js"></script>
 <script>
-mocha.setup({
-  ui: 'tdd',
-});
-
-assert = chai.assert;
+loadWebAnimationsBuildTarget('<%= target %>');
 </script>
-<script src="js/tests.js"></script>
-<script>mocha.run();</script>
+<div id="mocha"></div>
