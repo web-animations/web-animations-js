@@ -230,12 +230,12 @@ suite('player', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
     tick(0);
-    var playerBehind = target.animate([{width: '111px'}, {width: '111px'}], 200);
-    var playerInfront = target.animate([{width: '222px'}, {width: '222px'}], 100);
+    var playerBehind = target.animate([{width: '200px'}, {width: '200px'}], 200);
+    var playerInfront = target.animate([{width: '100px'}, {width: '100px'}], 100);
     tick(50);
-    assert.equal(getComputedStyle(target).width, '222px', 't = 50');
+    assert.equal(getComputedStyle(target).width, '100px', 't = 50');
     tick(150);
-    assert.equal(getComputedStyle(target).width, '111px', 't = 150');
+    assert.equal(getComputedStyle(target).width, '200px', 't = 150');
     target.remove();
   });
   test('player modifications should update CSS effects immediately', function() {
