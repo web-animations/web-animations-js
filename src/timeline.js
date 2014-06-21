@@ -55,7 +55,7 @@
       if (!(player.paused || player.finished)) {
         ticking = true;
         if (player.startTime === null)
-          player.startTime = t - player.__currentTime;
+          player.startTime = t - player.__currentTime / player.playbackRate;
         player._currentTime = (t - player.startTime) * player.playbackRate;
       }
       player._fireEvents();
