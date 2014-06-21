@@ -27,7 +27,6 @@
     this.eventPhase = Event.AT_TARGET;
     this.timeStamp = Date.now();
   };
-  AnimationPlayerEvent.prototype = window.Event.prototype;
 
   var sequenceNumber = 0;
 
