@@ -41,12 +41,14 @@
     this._finishedFlag = false;
     this.onfinish = null;
     this._finishHandlers = [];
+    this._hasTicked = false;
   };
 
   scope.Player.prototype = {
     get currentTime() { return this.__currentTime; },
     set _currentTime(newTime) {
-      if (newTime != this.__currentTime) {
+      if (newTime != this.__currentTime || !this._hasTicked) {
+        this._hasTicked = true;
         this.__currentTime = newTime;
         if (this.finished)
           this.__currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
@@ -60,6 +62,7 @@
     get playbackRate() { return this._playbackRate; },
     set currentTime(newTime) {
       this._currentTime = newTime;
+      scope.invalidateEffects();
       if (!this.paused) {
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       }
@@ -79,6 +82,7 @@
       }
       this._startTime = newTime;
       this._currentTime = this._timeline.currentTime - newTime;
+      scope.invalidateEffects();
     },
     pause: function() {
       this.paused = true;
@@ -86,8 +90,10 @@
     },
     play: function() {
       this.paused = false;
-      if (this.finished)
-        this.__currentTime = this._playbackRate > 0 ? 0 : this._source.totalDuration;
+      if (this.finished) {
+        this._currentTime = this._playbackRate > 0 ? 0 : this._source.totalDuration;
+        scope.invalidateEffects();
+      }
       this._finishedFlag = false;
       if (!scope.restart())
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;

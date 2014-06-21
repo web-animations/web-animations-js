@@ -242,13 +242,17 @@ suite('player', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
     tick(0);
-    var playerBehind = target.animate([{width: '1234px'}, {width: '1234px'}], {fill: 'both'});
+    var playerBehind = target.animate([{width: '1234px'}, {width: '1234px'}], {duration: 1, fill: 'both'});
     var playerInfront = target.animate([{width: '0px'}, {width: '100px'}], 100);
     assert.equal(getComputedStyle(target).width, '0px');
     playerInfront.currentTime = 50;
     assert.equal(getComputedStyle(target).width, '50px');
     playerInfront.currentTime = 100;
     assert.equal(getComputedStyle(target).width, '1234px');
+    playerInfront.play();
+    assert.equal(getComputedStyle(target).width, '0px');
+    playerInfront.startTime = -50;
+    assert.equal(getComputedStyle(target).width, '50px');
     target.remove();
   });
 });

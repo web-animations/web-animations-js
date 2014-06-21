@@ -28,6 +28,7 @@
       player._timeline = this;
       this.players.push(player);
       scope.restart();
+      scope.invalidateEffects();
       return player;
     }
   };
@@ -41,6 +42,36 @@
       requestAnimationFrame(tick);
       ticking = true;
       return true;
+    }
+  };
+
+  var getComputedStylePatched = false;
+  var originalGetComputedStyle = global.getComputedStyle;
+
+  function retickBeforeGetComputedStyle() {
+    tick(timeline.currentTime);
+    return global.getComputedStyle.apply(this, arguments);
+  }
+
+  function setGetComputedStyle(newGetComputedStyle) {
+    Object.defineProperty(global, 'getComputedStyle', {
+      configurable: true,
+      enumerable: true,
+      value: newGetComputedStyle,
+    });
+  }
+
+  function ensureOriginalGetComputedStyle() {
+    if (getComputedStylePatched) {
+      setGetComputedStyle(originalGetComputedStyle);
+      getComputedStylePatched = false;
+    }
+  }
+
+  scope.invalidateEffects = function() {
+    if (!getComputedStylePatched) {
+      setGetComputedStyle(retickBeforeGetComputedStyle);
+      getComputedStylePatched = true;
     }
   };
 
@@ -77,7 +108,9 @@
       player._inTimeline = false;
       return false;
     });
-    pendingEffects.forEach(function(effect) { effect(); })
+    pendingEffects.forEach(function(effect) { effect(); });
+
+    ensureOriginalGetComputedStyle();
 
     if (ticking && !TESTING)
       requestAnimationFrame(tick);

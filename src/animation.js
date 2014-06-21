@@ -22,7 +22,9 @@
       timeFraction = animationNode(localTime);
       return timeFraction !== null;
     };
-    animation.effect = function() { effect(target, timeFraction); }
+    animation.effect = function() {
+      effect(target, timeFraction);
+    };
     animation.totalDuration = animationNode.totalDuration;
     return animation;
   };
