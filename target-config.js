@@ -69,7 +69,12 @@
           'src/group-player.js',
         ],
       }),
-      test: minifillTest,
+      test: tweak(minifillTest, {
+        add: [
+          'test/js/group-player.js',
+          'test/js/group-player-finish-event.js',
+        ],
+      }),
     },
   };
 
