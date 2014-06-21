@@ -22,6 +22,7 @@
       TESTING && console.assert(typeof timeFraction !== 'undefined');
       effect(target, timeFraction);
     };
+    // Returns whether the animation is in effect or not after the timing update.
     animation.update = function(localTime) {
       timeFraction = animationNode(localTime);
       return timeFraction !== null;
