@@ -54,11 +54,14 @@
         this.__currentTime = newTime;
         if (this.finished)
           this.__currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
-        this._inEffect = this._source.update(this.__currentTime);
-        if (!this._inTimeline && this._inEffect) {
-          this._inTimeline = true;
-          document.timeline.players.push(this);
-        }
+        this.ensureAlive();
+      }
+    },
+    ensureAlive: function() {
+      this._inEffect = this._source.update(this.__currentTime);
+      if (!this._inTimeline && this._inEffect) {
+        this._inTimeline = true;
+        document.timeline.players.push(this);
       }
     },
     get playbackRate() { return this._playbackRate; },
@@ -119,6 +122,7 @@
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       else
         this._startTime = null;
+      this.ensureAlive();
     },
     reverse: function() {
       this._playbackRate *= -1;
@@ -131,6 +135,7 @@
         document.timeline.players.push(this);
       }
       this._finishedFlag = false;
+      this.ensureAlive();
     },
     finish: function() {
       this.currentTime = this._playbackRate > 0 ? this.totalDuration : 0;

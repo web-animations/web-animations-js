@@ -30,10 +30,10 @@
             scope.apply(target,
               interpolations[i].property,
               interpolations[i].interpolation((fraction - interpolations[i].startTime) / (interpolations[i].endTime - interpolations[i].startTime)));
-      // } else {
-      //   for (var property in propertySpecificKeyframeGroups)
-      //     if (property != 'offset')
-      //       scope.clear(target, property);
+      } else {
+        for (var property in propertySpecificKeyframeGroups)
+          if (property != 'offset')
+            scope.clear(target, property);
       }
     };
   };
