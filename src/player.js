@@ -65,11 +65,6 @@
       }
     },
     get playbackRate() { return this._playbackRate; },
-    set playbackRate(newRate) {
-      var previousTime = this.currentTime;
-      this._playbackRate = newRate;
-      this.currentTime = previousTime;
-    },
     set currentTime(newTime) {
       this._currentTime = newTime;
       if (!this.paused) {
