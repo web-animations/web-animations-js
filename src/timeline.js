@@ -28,6 +28,7 @@
       player._timeline = this;
       this.players.push(player);
       scope.restart();
+      scope.invalidateEffects();
       return player;
     }
   };
@@ -44,6 +45,36 @@
     }
   };
 
+  var getComputedStylePatched = false;
+  var originalGetComputedStyle = global.getComputedStyle;
+
+  function retickBeforeGetComputedStyle() {
+    tick(timeline.currentTime);
+    return global.getComputedStyle.apply(this, arguments);
+  }
+
+  function setGetComputedStyle(newGetComputedStyle) {
+    Object.defineProperty(global, 'getComputedStyle', {
+      configurable: true,
+      enumerable: true,
+      value: newGetComputedStyle,
+    });
+  }
+
+  function ensureOriginalGetComputedStyle() {
+    if (getComputedStylePatched) {
+      setGetComputedStyle(originalGetComputedStyle);
+      getComputedStylePatched = false;
+    }
+  }
+
+  scope.invalidateEffects = function() {
+    if (!getComputedStylePatched) {
+      setGetComputedStyle(retickBeforeGetComputedStyle);
+      getComputedStylePatched = true;
+    }
+  };
+
   scope.tickNow = function() {
     tick(performance.now());
   };
@@ -55,21 +86,32 @@
       return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
     });
     ticking = false;
-    timeline.players.forEach(function(player) {
+    var pendingEffects = [];
+    timeline.players = timeline.players.filter(function(player) {
       if (!(player.paused || player.finished)) {
         ticking = true;
         if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
         player._currentTime = (t - player.startTime) * player.playbackRate;
+
+        // Execute effect clearing before effect applying.
+        if (!player._inEffect)
+          player._source();
+        else
+          pendingEffects.push(player._source);
       }
+
       player._fireEvents();
-    });
-    timeline.players = timeline.players.filter(function(player) {
+
       if (!player.finished || player._inEffect)
         return true;
       player._inTimeline = false;
       return false;
     });
+    pendingEffects.forEach(function(effect) { effect(); });
+
+    ensureOriginalGetComputedStyle();
+
     if (ticking && !TESTING)
       requestAnimationFrame(tick);
   };

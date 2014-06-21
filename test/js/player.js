@@ -224,6 +224,37 @@ suite('player', function() {
     tick(200);
     tick(1000);
     tick(1100);
-    assert.deepEqual(fractions, [null, null, 0, 0.1]);
+    assert.deepEqual(fractions, [null, 0, 0.1]);
+  });
+  test('players that go out of effect should not clear the effect of players that are in effect', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    tick(0);
+    var playerBehind = target.animate([{marginLeft: '200px'}, {marginLeft: '200px'}], 200);
+    var playerInfront = target.animate([{marginLeft: '100px'}, {marginLeft: '100px'}], 100);
+    tick(50);
+    assert.equal(getComputedStyle(target).marginLeft, '100px', 't = 50');
+    tick(150);
+    assert.equal(getComputedStyle(target).marginLeft, '200px', 't = 150');
+    tick(250);
+    assert.equal(getComputedStyle(target).marginLeft, '0px', 't = 250');
+    target.remove();
+  });
+  test('player modifications should update CSS effects immediately', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    tick(0);
+    var playerBehind = target.animate([{width: '1234px'}, {width: '1234px'}], {duration: 1, fill: 'both'});
+    var playerInfront = target.animate([{width: '0px'}, {width: '100px'}], 100);
+    assert.equal(getComputedStyle(target).width, '0px');
+    playerInfront.currentTime = 50;
+    assert.equal(getComputedStyle(target).width, '50px');
+    playerInfront.currentTime = 100;
+    assert.equal(getComputedStyle(target).width, '1234px');
+    playerInfront.play();
+    assert.equal(getComputedStyle(target).width, '0px');
+    playerInfront.startTime = -50;
+    assert.equal(getComputedStyle(target).width, '50px');
+    target.remove();
   });
 });
