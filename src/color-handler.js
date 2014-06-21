@@ -40,9 +40,10 @@
       function clamp(v) {
         return Math.max(0, Math.min(255, v));
       }
-      if (x[3])
+      if (x[3]) {
         for (var i = 0; i < 3; i++)
           x[i] = Math.round(clamp(x[i] / x[3]));
+      }
       x[3] = scope.numberToString(clamp(x[3]));
       return 'rgba(' + x.join(',') + ')';
     }];

@@ -25,23 +25,24 @@
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
     return function(target, fraction) {
       if (fraction != null) {
-        for (var i = 0; i < interpolations.length && interpolations[i].startTime <= fraction; i++)
+        for (var i = 0; i < interpolations.length && interpolations[i].startTime <= fraction; i++) {
           if (interpolations[i].endTime >= fraction && interpolations[i].endTime != interpolations[i].startTime)
             scope.apply(target,
-              interpolations[i].property,
-              interpolations[i].interpolation((fraction - interpolations[i].startTime) / (interpolations[i].endTime - interpolations[i].startTime)));
-        } else {
-          for (var property in propertySpecificKeyframeGroups)
-            if (property != 'offset')
-              scope.clear(target, property);
+                interpolations[i].property,
+                interpolations[i].interpolation((fraction - interpolations[i].startTime) / (interpolations[i].endTime - interpolations[i].startTime)));
         }
+      } else {
+        for (var property in propertySpecificKeyframeGroups)
+          if (property != 'offset')
+            scope.clear(target, property);
+      }
     };
   };
 
 
   function normalize(effectInput) {
     if (!Array.isArray(effectInput) && effectInput !== null)
-        throw new TypeError('Keyframe effect must be null or an array of keyframes');
+      throw new TypeError('Keyframe effect must be null or an array of keyframes');
 
     if (effectInput == null)
       return [];
@@ -88,10 +89,9 @@
       if (!everyFrameHasOffset) {
         throw 'Keyframes are not loosely sorted by offset. Sort or specify offsets.';
       }
-      keyframeEffect.sort(
-        function(leftKeyframe, rightKeyframe) {
-          return leftKeyframe.offset - rightKeyframe.offset;
-        });
+      keyframeEffect.sort(function(leftKeyframe, rightKeyframe) {
+        return leftKeyframe.offset - rightKeyframe.offset;
+      });
     }
 
     function spaceKeyframes() {
@@ -159,10 +159,9 @@
         });
       }
     }
-    interpolations.sort(
-      function(leftInterpolation, rightInterpolation) {
-        return leftInterpolation.startTime - rightInterpolation.startTime;
-      });
+    interpolations.sort(function(leftInterpolation, rightInterpolation) {
+      return leftInterpolation.startTime - rightInterpolation.startTime;
+    });
     return interpolations;
   }
 

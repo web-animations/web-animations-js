@@ -66,9 +66,10 @@
     var units = [], unit;
     for (unit in left)
       units.push(unit);
-    for (unit in right)
+    for (unit in right) {
       if (units.indexOf(unit) < 0)
         units.push(unit);
+    }
 
     left = units.map(function(unit) { return left[unit] || 0; });
     right = units.map(function(unit) { return right[unit] || 0; });
@@ -92,6 +93,6 @@
   scope.mergeDimensions = mergeDimensions;
 
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions,
-    'left|right|top|bottom|width|height'.split('|'));
+      'left|right|top|bottom|width|height'.split('|'));
 
 })(minifill, testing);
