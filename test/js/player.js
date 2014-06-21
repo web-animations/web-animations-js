@@ -19,15 +19,14 @@ suite('player', function() {
     tick(300);
     p.play();
     assert.equal(p.currentTime, 0);
-    tick(400);
-    assert.equal(p.currentTime, 100);
-    assert.equal(p.startTime, 300);
+    tick(310);
+    assert.equal(p.currentTime, 0);
+    assert.equal(p.startTime, 310);
 
     var p = document.body.animate([], 2000);
     p.startTime -= 1000;
     p.pause();
     assert.equal(p.currentTime, 1000);
-    return;
     tick(700);
     p.play();
     assert.equal(p.currentTime, 1000);
@@ -48,11 +47,12 @@ suite('player', function() {
     assert.equal(p.startTime, null);
     assert.equal(p.currentTime, 1300);
     p.play();
-    assert.equal(p.startTime, 1200);
+    tick(2510);
+    assert.equal(p.startTime, 1210);
     assert.equal(p.currentTime, 1300);
     tick(3500);
-    assert.equal(p.startTime, 1200);
-    assert.equal(p.currentTime, 2300);
+    assert.equal(p.startTime, 1210);
+    assert.equal(p.currentTime, 2290);
   });
   test('reversing works as expected', function() {
     tick(300);
@@ -76,14 +76,34 @@ suite('player', function() {
     var p = document.body.animate([], 1000);
     tick(1200);
     assert.equal(p.finished, true);
-    assert.equal(p.startTime, 100);
+    assert.equal(p._startTime, 100);
     assert.equal(p.currentTime, 1000);
     tick(1500);
     assert.equal(p.currentTime, 1000);
+    assert.equal(isTicking(), false);
     p.reverse();
+    assert.equal(p._startTime, null);
     assert.equal(p.currentTime, 1000);
     tick(1600);
-    assert.equal(p.currentTime, 900);
+    assert.equal(p._startTime, 2600);
+    assert.equal(p.currentTime, 1000);
+  });
+  test('playing after finishing works as expected', function() {
+    tick(100);
+    var p = document.body.animate([], 1000);
+    tick(1200);
+    assert.equal(p.finished, true);
+    assert.equal(p._startTime, 100);
+    assert.equal(p.currentTime, 1000);
+    tick(1500);
+    assert.equal(p.currentTime, 1000);
+    assert.equal(isTicking(), false);
+    p.play();
+    assert.equal(p._startTime, null);
+    assert.equal(p.currentTime, 0);
+    tick(1600);
+    assert.equal(p._startTime, 1600);
+    assert.equal(p.currentTime, 0);
   });
   test('limiting works as expected', function() {
     tick(400);
@@ -102,16 +122,19 @@ suite('player', function() {
     p.reverse();
     assert.equal(p.playbackRate, -1);
     assert.equal(p.currentTime, 1000);
-    assert.equal(p.startTime, 2500);
+    assert.equal(p._startTime, null);
     tick(2000);
-    assert.equal(p.currentTime, 500);
-    assert.equal(p.startTime, 2500);
-    tick(2500);
+    assert.equal(p.currentTime, 1000);
+    assert.equal(p.startTime, 3000);
+    tick(2200);
+    assert.equal(p.currentTime, 800);
+    assert.equal(p.startTime, 3000);
+    tick(3200);
     assert.equal(p.currentTime, 0);
-    assert.equal(p.startTime, 2500);
-    tick(2600);
+    assert.equal(p.startTime, 3000);
+    tick(3500);
     assert.equal(p.currentTime, 0);
-    assert.equal(p.startTime, 2500);
+    assert.equal(p.startTime, 3000);
   });
   test('play after limit works as expected', function() {
     tick(500);
