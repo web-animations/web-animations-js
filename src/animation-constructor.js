@@ -33,7 +33,7 @@
     else
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
-    this.__player = null;
+    this._internalPlayer = null;
     this._player = null;
     return this;
   };
@@ -45,7 +45,7 @@
   global.document.timeline.play = function(source) {
     if (source instanceof global.Animation) {
       var player = source.target.animate(source._effect, source.timing);
-      source.__player = player;
+      source._internalPlayer = player;
       source._player = source._player || player;
       // TODO: make source setter call cancel.
       player.source = source;
@@ -64,7 +64,7 @@
       shared.Player.prototype = oldPlayerProto;
       player.cancel();
       player.source = source;
-      source.__player = player;
+      source._internalPlayer = player;
       source._player = source._player || player;
       player.childPlayers = [];
       for (var i = 0; i < source.children.length; i++) {
