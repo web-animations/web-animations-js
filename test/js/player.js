@@ -71,6 +71,20 @@ suite('player', function() {
     assert.equal(p.startTime, 900);
     assert.equal(p.currentTime, 200);
   });
+  test('reversing after finishing works as expected', function() {
+    tick(100);
+    var p = document.body.animate([], 1000);
+    tick(1200);
+    assert.equal(p.finished, true);
+    assert.equal(p.startTime, 100);
+    assert.equal(p.currentTime, 1000);
+    tick(1500);
+    assert.equal(p.currentTime, 1000);
+    p.reverse();
+    assert.equal(p.currentTime, 1000);
+    tick(1600);
+    assert.equal(p.currentTime, 900);
+  });
   test('limiting works as expected', function() {
     tick(400);
     var p = document.body.animate([], 1000);
