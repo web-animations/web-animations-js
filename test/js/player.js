@@ -11,6 +11,30 @@ suite('player', function() {
     assert.equal(p.startTime, 100);
     assert.equal(p.currentTime, 200);
   });
+  test('pause at start of play', function() {
+    tick(100);
+    var p = document.body.animate([], 2000);
+    p.pause();
+    assert.equal(p.currentTime, 0);
+    tick(300);
+    p.play();
+    assert.equal(p.currentTime, 0);
+    tick(400);
+    assert.equal(p.currentTime, 100);
+    assert.equal(p.startTime, 300);
+
+    var p = document.body.animate([], 2000);
+    p.startTime -= 1000;
+    p.pause();
+    assert.equal(p.currentTime, 1000);
+    return;
+    tick(700);
+    p.play();
+    assert.equal(p.currentTime, 1000);
+    tick(800);
+    assert.equal(p.currentTime, 1100);
+    assert.equal(p.startTime, -300);
+  });
   test('pausing works as expected', function() {
     tick(200);
     var p = document.body.animate([], 3000);

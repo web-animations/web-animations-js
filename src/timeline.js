@@ -70,12 +70,6 @@
       requestAnimationFrame(tick);
   };
 
-  if (!TESTING) {
-    requestAnimationFrame(tick);
-  } else {
-    testing.tick = tick;
-  }
-
   var timeline = new scope.Timeline();
   scope.timeline = timeline;
   try {
@@ -88,4 +82,9 @@
     global.document.timeline = timeline;
   } catch (e) { }
 
+  if (!TESTING) {
+    tick(performance.now());
+  } else {
+    testing.tick = tick;
+  }
 })(minifill, testing);
