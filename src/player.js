@@ -85,9 +85,9 @@
       this.paused = false;
       if (this.finished)
         this.__currentTime = this._playbackRate > 0 ? 0 : this._source.totalDuration;
-      this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       this._finishedFlag = false;
-      scope.restart();
+      if (!scope.restart())
+        this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
     },
     reverse: function() {
       this._playbackRate *= -1;

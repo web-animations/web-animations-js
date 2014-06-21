@@ -35,9 +35,12 @@
   var ticking = true;
 
   scope.restart = function() {
+    if (TESTING)
+      return;
     if (!ticking) {
       requestAnimationFrame(tick);
       ticking = true;
+      return true;
     }
   };
 
@@ -52,7 +55,7 @@
       if (!(player.paused || player.finished)) {
         ticking = true;
         if (player.startTime === null)
-          player.startTime = t;
+          player.startTime = t - player.__currentTime / player.playbackRate;
         player._currentTime = (t - player.startTime) * player.playbackRate;
       }
       player._fireEvents();
