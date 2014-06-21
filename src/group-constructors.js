@@ -18,6 +18,7 @@
     this._type = 'seq';
     this.children = children;
     this.timing = timing;
+    this._internalPlayer = null;
     this._player = null;
     return this;
   };
@@ -26,6 +27,7 @@
     this._type = 'par';
     this.children = children;
     this.timing = timing;
+    this._internalPlayer = null;
     this._player = null;
     return this;
   };
