@@ -51,6 +51,7 @@
     'test/js/player.js',
     'test/js/property-interpolation.js',
     'test/js/transform-handler.js',
+    'test/js/timeline.js'
   ];
 
   // This object specifies the source and test files for different Web Animation build targets.
