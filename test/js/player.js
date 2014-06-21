@@ -226,4 +226,19 @@ suite('player', function() {
     tick(1100);
     assert.deepEqual(fractions, [null, null, 0, 0.1]);
   });
+  test('players that go out of effect should not clear the effect of players that are in effect', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var playerBelow = target.animate([{marginLeft: '111px'}, {marginLeft: '111px'}], 2000);
+    var playerAbove = target.animate([{marginLeft: '222px'}, {marginLeft: '222px'}], 1000);
+    playerBelow.startTime = 0;
+    playerAbove.startTime = 0;
+    playerBelow.name = 'below';
+    playerAbove.name = 'above';
+    tick(500);
+    assert.equal(getComputedStyle(target).marginLeft, '222px', 't = 500');
+    tick(1500);
+    assert.equal(getComputedStyle(target).marginLeft, '111px', 't = 1500');
+    target.remove();
+  });
 });
