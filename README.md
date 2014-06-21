@@ -14,4 +14,4 @@ building
 testing
 =======
 
-* Open test/runner-<target name>.html
+* Open test/runner.html
