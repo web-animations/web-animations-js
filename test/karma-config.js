@@ -3,10 +3,10 @@ module.exports = {
   plugins: [
     'karma-mocha',
     'karma-chai',
-    'karma-chrome-launcher'
-    // 'karma-firefox-launcher'
+    'karma-chrome-launcher',
+    'karma-firefox-launcher'
   ],
-  browsers: ['Chrome'],
+  browsers: ['Chrome', 'Firefox'],
   // browsers: ['Safari', 'Chrome', 'ChromeCanary', 'Firefox', 'IE'],
   basePath: '.',
   files: [
