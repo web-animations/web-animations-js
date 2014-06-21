@@ -106,8 +106,7 @@
       this.currentTime = this._playbackRate > 0 ? this._source.totalDuration : 0;
     },
     cancel: function() {
-      this._source = function() { };
-      this._source.totalDuration = 0;
+      this._source = scope.nullAnimation;
       this.currentTime = 0;
     },
     addEventListener: function(type, handler) {

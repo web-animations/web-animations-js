@@ -17,14 +17,19 @@
   scope.Animation = function(target, effectInput, timingInput) {
     var animationNode = scope.AnimationNode(timingInput);
     var effect = scope.convertEffectInput(effectInput);
-    // Returns whether the Animation is in effect
-    var f = function(localTime) {
-      var timeFraction = animationNode(localTime);
-      effect(target, timeFraction);
-      return timeFraction != null;
+    var timeFraction;
+    var animation = function(localTime) {
+      timeFraction = animationNode(localTime);
+      return timeFraction !== null;
     };
-    f.totalDuration = animationNode.totalDuration;
-    return f;
+    animation.effect = function() { effect(target, timeFraction); }
+    animation.totalDuration = animationNode.totalDuration;
+    return animation;
   };
+
+  var nullAnimation = function() { };
+  nullAnimation.totalDuration = 0;
+  nullAnimation.effect = nullAnimation;
+  scope.nullAnimation = nullAnimation;
 
 })(minifill, testing);

@@ -55,21 +55,30 @@
       return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
     });
     ticking = false;
-    timeline.players.forEach(function(player) {
+    var pendingEffects = [];
+    timeline.players = timeline.players.filter(function(player) {
       if (!(player.paused || player.finished)) {
         ticking = true;
         if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
         player._currentTime = (t - player.startTime) * player.playbackRate;
+
+        // Execute effect clearing before effect applying.
+        if (!player._inEffect)
+          player._source.effect();
+        else
+          pendingEffects.push(player._source.effect);
       }
+
       player._fireEvents();
-    });
-    timeline.players = timeline.players.filter(function(player) {
+
       if (!player.finished || player._inEffect)
         return true;
       player._inTimeline = false;
       return false;
     });
+    pendingEffects.forEach(function(effect) { effect(); })
+
     if (ticking && !TESTING)
       requestAnimationFrame(tick);
   };
