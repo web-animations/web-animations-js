@@ -76,7 +76,6 @@
       player.setChildOffsets();
       return player;
     }
-    return play(source);
   };
 
 }(shared, maxifill, testing));
