@@ -74,28 +74,24 @@
           if (this.finished)
             this.__currentTime = this._playbackRate > 0 ? 0 : this.totalDuration;
           this._finishedFlag = false;
-          // FIXME: Instead of calling restart and calculating startTime, use the startTime of the first childPlayer after playing it.
-          // Or something. This is wrong.
-          if (!shared.restart())
-            this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
-          else
-            this._startTime = null;
           for (var i = 0; i < this.childPlayers.length; i++)
             if (!this.childPlayers[i].finished)
               this.childPlayers[i].play();
+          if (this.childPlayers.length > 0)
+            this._startTime = this.childPlayers[0].startTime;
+          else
+            this._startTime = null;
         },
         reverse: function() {
           this._playbackRate *= -1;
           this.setChildOffsets();
-          // FIXME: Instead of calling restart and calculating startTime, use the startTime of the first childPlayer after playing it.
-          // Or something. This is wrong.
-          if (!shared.restart())
-            this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
-          else
-            this._startTime = null;
           this._finishedFlag = false;
           for (var i = 0; i < this.childPlayers.length; i++)
             this.childPlayers[i].reverse();
+          if (this.childPlayers.length > 0)
+            this._startTime = this.childPlayers[0].startTime;
+          else
+            this._startTime = null;
         },
         setChildOffsets: function() {
           if (this.playbackRate >= 0) {
