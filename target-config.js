@@ -36,6 +36,7 @@
     'src/element-animate.js',
     'src/interpolation.js',
     'src/number-handler.js',
+    'src/shared-player.js',
     'src/player.js',
     'src/timeline.js',
     'src/transform-handler.js',
@@ -67,9 +68,9 @@
     maxifill: {
       src: tweak(minifillSrc, {
         add: [
+          'src/group-player.js',
           'src/animation-constructor.js',
           'src/group-constructors.js',
-          'src/group-player.js',
         ],
       }),
       test: tweak(minifillTest, {

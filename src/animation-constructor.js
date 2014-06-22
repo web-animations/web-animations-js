@@ -58,13 +58,7 @@
     }
     // FIXME: Move this code out of this module
     if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
-      var oldPlayerProto = shared.Player.prototype;
-      shared.Player.prototype = maxifill.groupPlayerProto;
-      var player = global.document.timeline.play(new Animation(document.documentElement, []));
-      player.init();
-      shared.Player.prototype = oldPlayerProto;
-      player.cancel();
-      player.source = source;
+      var player = new scope.Player(source);
       source._internalPlayer = player;
       source._player = source._player || player;
       for (var i = 0; i < source.children.length; i++) {
@@ -74,9 +68,13 @@
         player.childPlayers.push(childPlayer);
       }
       player.setChildOffsets();
+      if (player.childPlayers.length > 0)
+        player.startTime = player.childPlayers[0]._startTime;
+      /*
       if (player._startTime !== null) {
         player.startTime = player._startTime;
       }
+      */
       return player;
     }
   };
