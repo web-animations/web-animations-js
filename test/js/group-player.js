@@ -21,9 +21,6 @@ suite('group-player', function() {
           ],
           500);
     };
-    var staticAnimation = function(target, value, duration) {
-      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
-    };
 
     var sequenceEmpty = function() {
       return new AnimationSequence();
@@ -31,7 +28,6 @@ suite('group-player', function() {
     var groupEmpty = function() {
       return new AnimationGroup();
     };
-
     var sequenceWithEffects = function(target) {
       return new AnimationSequence(
           [
@@ -47,14 +43,14 @@ suite('group-player', function() {
           ]);
     };
 
-    this.seqEmpty_source = sequenceEmpty();
+    var seqEmpty_source = sequenceEmpty();
 
     var seqSimple_target = document.createElement('div');
-    this.seqSimple_source = sequenceWithEffects(seqSimple_target);
+    var seqSimple_source = sequenceWithEffects(seqSimple_target);
 
     var seqWithSeq_target = document.createElement('div');
     this.elements.push(seqWithSeq_target);
-    this.seqWithSeq_source = new AnimationSequence(
+    var seqWithSeq_source = new AnimationSequence(
         [
          animationMargin(seqWithSeq_target),
          animationColor(seqWithSeq_target),
@@ -63,25 +59,24 @@ suite('group-player', function() {
 
     var seqWithGroup_target = document.createElement('div');
     this.elements.push(seqWithGroup_target);
-    this.seqWithGroup_source = new AnimationSequence(
+    var seqWithGroup_source = new AnimationSequence(
         [
          animationMargin(seqWithGroup_target),
          animationColor(seqWithGroup_target),
          groupWithEffects(seqWithGroup_target)
         ]);
 
-    this.seqWithEmptyGroup_source = new AnimationSequence([groupEmpty()]);
-    this.seqWithEmptySeq_source = new AnimationSequence([sequenceEmpty()]);
+    var seqWithEmptyGroup_source = new AnimationSequence([groupEmpty()]);
+    var seqWithEmptySeq_source = new AnimationSequence([sequenceEmpty()]);
 
-
-    this.groupEmpty_source = groupEmpty();
+    var groupEmpty_source = groupEmpty();
 
     var groupSimple_target = document.createElement('div');
-    this.groupSimple_source = groupWithEffects(groupSimple_target);
+    var groupSimple_source = groupWithEffects(groupSimple_target);
 
     var groupWithSeq_target = document.createElement('div');
     this.elements.push(groupWithSeq_target);
-    this.groupWithSeq_source = new AnimationGroup(
+    var groupWithSeq_source = new AnimationGroup(
         [
          animationMargin(groupWithSeq_target),
          animationColor(groupWithSeq_target),
@@ -90,16 +85,33 @@ suite('group-player', function() {
 
     var groupWithGroup_target = document.createElement('div');
     this.elements.push(groupWithGroup_target);
-    this.groupWithGroup_source = new AnimationGroup(
+    var groupWithGroup_source = new AnimationGroup(
         [
          animationMargin(groupWithGroup_target),
          animationColor(groupWithGroup_target),
          groupWithEffects(groupWithGroup_target)
         ]);
 
-    this.groupWithEmptyGroup_source = new AnimationGroup([groupEmpty()]);
-    this.groupWithEmptySeq_source = new AnimationGroup([sequenceEmpty()]);
+    var groupWithEmptyGroup_source = new AnimationGroup([groupEmpty()]);
+    var groupWithEmptySeq_source = new AnimationGroup([sequenceEmpty()]);
 
+    this.seqEmpty_source = seqEmpty_source;
+    this.seqSimple_source = seqSimple_source;
+    this.seqWithSeq_source = seqWithSeq_source;
+    this.seqWithGroup_source = seqWithGroup_source;
+    this.seqWithEmptyGroup_source = seqWithEmptyGroup_source;
+    this.seqWithEmptySeq_source = seqWithEmptySeq_source;
+
+    this.groupEmpty_source = groupEmpty_source;
+    this.groupSimple_source = groupSimple_source;
+    this.groupWithSeq_source = groupWithSeq_source;
+    this.groupWithGroup_source = groupWithGroup_source;
+    this.groupWithEmptyGroup_source = groupWithEmptyGroup_source;
+    this.groupWithEmptySeq_source = groupWithEmptySeq_source;
+
+    var staticAnimation = function(target, value, duration) {
+      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
+    };
     // The following animation structure looks like:
     // 44444
     // 11
@@ -238,6 +250,64 @@ suite('group-player', function() {
     player.cancel();
     assert.equal(player.currentTime, 0);
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
+  });
+
+  // FIXME: This test can be removed when this suite is finished.
+  test('test sources are working for basic operations', function() {
+    var player_a = document.timeline.play(this.seqEmpty_source);
+    var player_b = document.timeline.play(this.seqSimple_source);
+    var player_c = document.timeline.play(this.seqWithSeq_source);
+    var player_d = document.timeline.play(this.seqWithGroup_source);
+    var player_e = document.timeline.play(this.seqWithEmptyGroup_source);
+    var player_f = document.timeline.play(this.seqWithEmptySeq_source);
+
+    var player_g = document.timeline.play(this.groupEmpty_source);
+    var player_h = document.timeline.play(this.groupSimple_source);
+    var player_i = document.timeline.play(this.groupWithSeq_source);
+    var player_j = document.timeline.play(this.groupWithGroup_source);
+    var player_k = document.timeline.play(this.groupWithEmptyGroup_source);
+    var player_l = document.timeline.play(this.groupWithEmptySeq_source);
+
+    tick(200);
+    player_a.pause();
+    player_b.pause();
+    player_c.pause();
+    player_d.pause();
+    player_e.pause();
+    player_f.pause();
+    player_g.pause();
+    player_h.pause();
+    player_i.pause();
+    player_j.pause();
+    player_k.pause();
+    player_l.pause();
+
+    player_a.play();
+    player_b.play();
+    player_c.play();
+    player_d.play();
+    player_e.play();
+    player_f.play();
+    player_g.play();
+    player_h.play();
+    player_i.play();
+    player_j.play();
+    player_k.play();
+    player_l.play();
+    tick(300);
+
+    player_a.currentTime += 1;
+    player_b.currentTime += 1;
+    player_c.currentTime += 1;
+    player_d.currentTime += 1;
+    player_e.currentTime += 1;
+    player_f.currentTime += 1;
+    player_g.currentTime += 1;
+    player_h.currentTime += 1;
+    player_i.currentTime += 1;
+    player_j.currentTime += 1;
+    player_k.currentTime += 1;
+    player_l.currentTime += 1;
   });
 
 });
