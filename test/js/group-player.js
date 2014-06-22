@@ -26,23 +26,22 @@ suite('group-player', function() {
     tick(0);
     // The following animation structure looks like:
     // 44444
-    // 11   
-    //   33 
-    //   2  
-    // 0    
+    // 11
+    //   33
+    //   2
+    // 0
     var player = document.timeline.play(
-      new AnimationGroup([
-        createAnimation('4px', 5),
-        new AnimationSequence([
-          createAnimation('1px', 2),
-          new AnimationGroup([
-            createAnimation('3px', 2),
-            createAnimation('2px', 1),
+        new AnimationGroup([
+          createAnimation('4px', 5),
+          new AnimationSequence([
+            createAnimation('1px', 2),
+            new AnimationGroup([
+              createAnimation('3px', 2),
+              createAnimation('2px', 1)
+            ]),
           ]),
-        ]),
-        createAnimation('0px', 1)
-      ])
-    );
+          createAnimation('0px', 1)
+        ]));
     player.currentTime = 0;
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     player.currentTime = 1;
