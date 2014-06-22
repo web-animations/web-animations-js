@@ -23,11 +23,8 @@
   };
 
   scope.Player.prototype = {
-    invoke: function(f) {
-      f.bind(this)();
-    },
     init: function() {
-      this.invoke(superclass.init);
+      superclass.init.call(this);
       this.childPlayers = [];
     },
     set currentTime(newTime) {
@@ -63,7 +60,7 @@
       return this._startTime;
     },
     pause: function() {
-      this.invoke(superclass.pause);
+      superclass.pause.call(this);
       for (var i = 0; i < this.childPlayers.length; i++)
         this.childPlayers[i].pause();
     },
