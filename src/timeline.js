@@ -93,7 +93,7 @@
         player._currentTime = (t - player._startTime) * player.playbackRate;
         if (!player.finished)
           ticking = true;
-      } else if (!player._hasTicked) {
+      } else if (player._updateEffect) {
         // Force an effect update.
         player._currentTime = player.__currentTime;
       }

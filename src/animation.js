@@ -27,13 +27,25 @@
       timeFraction = animationNode(localTime);
       return timeFraction !== null;
     };
+    animation.clear = function() {
+      effect(target, null);
+    };
     animation.totalDuration = animationNode.totalDuration;
     return animation;
   };
 
-  var nullAnimation = function() { };
-  nullAnimation.totalDuration = 0;
-  nullAnimation.update = nullAnimation;
-  scope.nullAnimation = nullAnimation;
+  scope.NullAnimation = function(clear) {
+    var nullAnimation = function() {
+      if (clear) {
+        clear();
+        clear = null;
+      }
+    };
+    nullAnimation.update = function() {
+      return null;
+    };
+    nullAnimation.totalDuration = 0;
+    return nullAnimation;
+  };
 
 })(minifill, testing);

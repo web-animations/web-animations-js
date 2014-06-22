@@ -41,7 +41,7 @@
     this._finishedFlag = false;
     this.onfinish = null;
     this._finishHandlers = [];
-    this._hasTicked = false;
+    this._updateEffect = true;
     this._startOffset = 0;
     this._parent = null;
   };
@@ -49,8 +49,8 @@
   shared.Player.prototype = {
     get currentTime() { return this.__currentTime; },
     set _currentTime(newTime) {
-      if (newTime != this.__currentTime || !this._hasTicked) {
-        this._hasTicked = true;
+      if (newTime != this.__currentTime || this._updateEffect) {
+        this._updateEffect = false;
         this.__currentTime = newTime;
         if (this.finished)
           this.__currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
@@ -137,7 +137,8 @@
       this.currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
     },
     cancel: function() {
-      this._source = scope.nullAnimation;
+      this._source = scope.NullAnimation(this._source.clear);
+      this._updateEffect = true;
       this.currentTime = 0;
     },
     addEventListener: function(type, handler) {

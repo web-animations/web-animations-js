@@ -215,15 +215,18 @@ suite('player', function() {
     assert.equal(p.currentTime, 0);
     assert.equal(p.startTime, 1000);
   });
-  test('cancelling does what it does', function() {
-    tick(1100);
-    var p = document.body.animate([], 1000);
-    tick(1600);
-    assert.equal(p.currentTime, 500);
-    p.cancel();
-    assert.equal(p.currentTime, 0);
-    tick(2000);
-    assert.equal(p.currentTime, 0);
+  test('cancelling clears all effects', function() {
+    tick(0);
+    var target = document.createElement('div');
+    document.documentElement.appendChild(target);
+    var player = target.animate([{marginLeft: '50px'}, {marginLeft: '50px'}], 1000);
+    tick(100);
+    assert.equal(getComputedStyle(target).marginLeft, '50px');
+    player.cancel();
+    // getComputedStyle forces a tick.
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
+    assert.deepEqual(document.timeline.players, []);
+    target.remove();
   });
   test('startTime is set on first tick if timeline hasn\'t started', function() {
     document.timeline.currentTime = undefined;
