@@ -107,12 +107,12 @@ suite('group-player', function() {
     return new AnimationSequence([new Animation(document.body, [], 2000), new Animation(document.body, [], 1000), new Animation(document.body, [], 3000)]);
   }
 
-  // topTimes and restOfTimes contain duplets (startTime, currentTime)
-  // and triplets (startTime, currentTime, startOffset)
-  function checkTimes(player, topTimes, restOfTimes, description) {
+  // playerState is [startTime, currentTime, _startOffset?, offset?]
+  // innerPlayerStates is a nested array tree of playerStates e.g. [[0, 0], [[1, -1], [2, -2]]]
+  function checkTimes(player, playerState, innerPlayerStates, description) {
     description = description ? (description + ' ') : '';
-    _checkTimes(player, topTimes, 0, description + 'toplevel');
-    _checkTimes(player, restOfTimes, 0, description + 'internals');
+    _checkTimes(player, playerState, 0, description + 'top player');
+    _checkTimes(player, innerPlayerStates, 0, description + 'inner player');
   }
 
   function _checkTimes(player, timingList, index, trace) {
@@ -124,6 +124,8 @@ suite('group-player', function() {
       assert.equal(player.currentTime, timingList[1], trace + ' currentTime');
       if (timingList.length == 3)
         assert.equal(player._startOffset, timingList[2], trace + ' startOffset');
+      if (timingList.length == 4)
+        assert.equal(player.offset, timingList[3], trace + ' offset');
     } else {
       _checkTimes(player.childPlayers[index], timingList[0], 0, trace + ' ' + index);
       _checkTimes(player, timingList.slice(1), index + 1, trace);
@@ -229,4 +231,51 @@ suite('group-player', function() {
     target.remove();
   });
 
+  test('redundant animation node wrapping', function() {
+    var target = document.createElement('div');
+    document.documentElement.appendChild(target);
+    function createAnimation(value, duration) {
+      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
+    }
+    tick(100);
+    var animation = new AnimationSequence([
+      createAnimation('0px', 1),
+      new AnimationGroup([
+        new AnimationSequence([
+          createAnimation('1px', 1),
+          createAnimation('2px', 1),
+        ]),
+      ]),
+    ]);
+    var player = document.timeline.play(animation);
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
+    checkTimes(player, [100, 0], [
+      [100, 0, 0, 0], [[ // 0
+        [101, -1, 0, 1], // 1
+        [102, -2, 1, 2]]] // 2
+    ], 't = 100');
+    tick(101);
+    assert.equal(getComputedStyle(target).marginLeft, '1px');
+    checkTimes(player, [100, 1], [
+      [100, 1, 0, 0], [[ // 0
+        [101, 0, 0, 1], // 1
+        [102, -1, 1, 2]]] // 2
+    ], 't = 101');
+    tick(102);
+    assert.equal(getComputedStyle(target).marginLeft, '2px');
+    assert.equal(document.timeline.currentTime, 102);
+    checkTimes(player, [100, 2], [ // FIXME: Implement limiting on group players
+      [100, 1, 0, 0], [[ // 0
+        [101, 1, 0, 1], // 1
+        [102, 0, 1, 2]]] // 2
+    ], 't = 102');
+    tick(103);
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
+    checkTimes(player, [100, 3], [ // FIXME: Implement limiting on group players
+      [100, 1, 0, 0], [[ // 0
+        [101, 1, 0, 1], // 1
+        [102, 1, 1, 2]]] // 2
+    ], 't = 103');
+    target.remove();
+  });
 });

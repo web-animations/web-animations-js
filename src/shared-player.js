@@ -76,7 +76,7 @@
     // TODO: Try to move this out of here.
     get offset() {
       if (this._parent)
-        return this._startOffset + this._parent._startOffset;
+        return this._startOffset + this._parent.offset;
       else
         return this._startOffset;
     },
