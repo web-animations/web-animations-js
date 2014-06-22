@@ -41,44 +41,10 @@
       this._updateEffect = true;
       this._parent = null;
     },
-    set _currentTime(newTime) {
-      if (newTime != this.__currentTime || this._updateEffect) {
-        this._updateEffect = false;
-        this.__currentTime = newTime;
-        if (this.finished)
-          this.__currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
-        this.ensureAlive();
-      }
-    },
-    ensureAlive: function() { },
     get playbackRate() { return this._playbackRate; },
-    setCurrentTime: function(newTime, baseTime) {
-      if (!this.paused) {
-        this._startTime = baseTime - newTime / this._playbackRate + this.offset;
-      }
-      this._currentTime = newTime - this.offset;
-    },
     get finished() {
       return this._playbackRate > 0 && this.__currentTime >= this.totalDuration ||
           this._playbackRate < 0 && this.__currentTime <= 0;
-    },
-    setStartTime: function(newTime, baseTime) {
-      if (this.paused)
-        return;
-      this._startTime = newTime + this.offset;
-      this._currentTime = baseTime - this._startTime;
-      return true;
-    },
-    // FIXME: This walks the animation tree to calculate offsets.
-    // It makes offsets resilient to tree surgery, except removing animations from a sequence.
-    // Do we want to pre-compute this, and re-compute upon surgery? Do we want to go further
-    // In this direction and calculate all offsets every time (i.e. calculate offsets within a sequence).
-    // TODO: Try to move this out of here.
-    get offset() {
-      if (this._parent)
-        return this._startOffset + this._parent.offset;
-      else
-        return this._startOffset;
     },
     pause: function() {
       this.paused = true;

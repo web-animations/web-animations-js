@@ -86,20 +86,22 @@
     });
     ticking = false;
     var pendingEffects = [];
+    var pendingClears = [];
     timeline.players = timeline.players.filter(function(player) {
       if (!(player.paused || player.finished)) {
         if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
-        player._currentTime = (t - player._startTime) * player.playbackRate;
+        player.setCurrentTimeInternal((t - player._startTime) * player.playbackRate);
+        //console.log(player.source.name, player.currentTime);
         if (!player.finished)
           ticking = true;
       } else if (player._updateEffect) {
         // Force an effect update.
-        player._currentTime = player.__currentTime;
+        player.setCurrentTimeInternal(player.__currentTime);
       }
       // Execute effect clearing before effect applying.
       if (!player._inEffect)
-        player._source();
+        pendingClears.push(player._source);
       else
         pendingEffects.push(player._source);
 
@@ -110,6 +112,7 @@
       player._inTimeline = false;
       return false;
     });
+    pendingClears.forEach(function(effect) { effect(); });
     pendingEffects.forEach(function(effect) { effect(); });
 
     ensureOriginalGetComputedStyle();

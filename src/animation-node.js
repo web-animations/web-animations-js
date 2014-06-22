@@ -214,6 +214,10 @@
     return calculateTimeFraction(activeDuration, localTime, input);
   };
 
+  shared.activeDuration = function(timingInput) {
+    return calculateActiveDuration(normalizeTimingInput(timingInput));
+  };
+
   scope.AnimationNode = function(timingInput) {
     var input = normalizeTimingInput(timingInput);
     var timeFraction = 0;

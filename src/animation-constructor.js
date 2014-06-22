@@ -22,10 +22,10 @@
     getFrames: function() { return this._frames; }
   };
 
-  global.Animation = function(target, effect, source) {
+  global.Animation = function(target, effect, timing) {
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
-    this.timing = source;
+    this.timing = timing;
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
     if (typeof effect == 'function')
@@ -35,6 +35,7 @@
     this._effect = effect;
     this._internalPlayer = null;
     this._player = null;
+    this.activeDuration = shared.activeDuration(timing);
     return this;
   };
 
@@ -58,18 +59,69 @@
     }
     // FIXME: Move this code out of this module
     if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
-      var player = new scope.Player(source);
-      source._internalPlayer = player;
-      source._player = source._player || player;
-      for (var i = 0; i < source.children.length; i++) {
-        source.children[i]._player = source._player;
-        var childPlayer = global.document.timeline.play(source.children[i]);
-        childPlayer._parent = player;
-        player.childPlayers.push(childPlayer);
+      var div = document.createElement('div')
+      var newTiming = {}
+      for (var property in source.timing)
+        newTiming[property] = source.timing[property];
+      newTiming.duration = source.activeDuration;
+      var ticker = function(tf) {
+        var offset = 0;
+        for (var i = 0; i < player.source.children.length; i++) {
+          var child = player.source.children[i];
+
+          function newPlayer(source) {
+            var newPlayer = global.document.timeline.play(source);
+            newPlayer.startTime = player.startTime + offset;
+            source._internalPlayer = newPlayer;
+            player._childPlayers.push(newPlayer);
+          }
+
+          if (i >= player._childPlayers.length)
+            newPlayer(child);
+
+          var childPlayer = player._childPlayers[i];
+          console.log(player.playbackRate, player.currentTime, offset);
+          if (player.playbackRate == -1 && player.currentTime < offset && childPlayer.currentTime !== -1) {
+            childPlayer.currentTime = -1;
+          }
+
+          /*
+          else {
+            if (childPlayer !== child._internalPlayer && shouldBePlayed) {
+              player._childPlayers.slice(i).map(function(player) { player.cancel(); });
+              player._childPlayers = player._childPlayers.slice(0, i);
+              newPlayer(child);
+            } else if (childPlayer == child._internalPlayer && !shouldBePlayed) {
+              childPlayer.cancel();
+              console.log(player._childPlayers.map(function(a) { return a.currentTime; }));
+              player._childPlayers.splice(i, 1);
+              console.log(player._childPlayers.map(function(a) { return a.currentTime; }));
+            }
+          }
+          */
+
+          if (source instanceof global.AnimationSequence)
+            offset += child.activeDuration;
+        }
+      };
+      var player = div.animate(ticker, newTiming);
+      player._childPlayers = [];
+      player.source = source;
+      player.startTime;
+      //ticker(0);
+
+      var _reverse = player.reverse.bind(player);
+      player.reverse = function() {
+        _reverse();
+        var offset = 0;
+        player._childPlayers.forEach(function(child) {
+          child.reverse();
+          child.startTime = player.startTime + offset * player.playbackRate;
+          child.currentTime = player.currentTime + offset * player.playbackRate;
+          if (source instanceof global.AnimationSequence)
+            offset += child.source.activeDuration;
+        });
       }
-      player.setChildOffsets();
-      if (player.childPlayers.length > 0)
-        player.startTime = player.childPlayers[0]._startTime;
       return player;
     }
   };
