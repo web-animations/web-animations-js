@@ -254,60 +254,38 @@ suite('group-player', function() {
 
   // FIXME: This test can be removed when this suite is finished.
   test('sources are working for basic operations', function() {
-    var player_a = document.timeline.play(this.seqEmpty_source);
-    var player_b = document.timeline.play(this.seqSimple_source);
-    var player_c = document.timeline.play(this.seqWithSeq_source);
-    var player_d = document.timeline.play(this.seqWithGroup_source);
-    var player_e = document.timeline.play(this.seqWithEmptyGroup_source);
-    var player_f = document.timeline.play(this.seqWithEmptySeq_source);
+    var players = [];
+    players.push(document.timeline.play(this.seqEmpty_source));
+    players.push(document.timeline.play(this.seqSimple_source));
+    players.push(document.timeline.play(this.seqWithSeq_source));
+    players.push(document.timeline.play(this.seqWithGroup_source));
+    players.push(document.timeline.play(this.seqWithEmptyGroup_source));
+    players.push(document.timeline.play(this.seqWithEmptySeq_source));
 
-    var player_g = document.timeline.play(this.groupEmpty_source);
-    var player_h = document.timeline.play(this.groupSimple_source);
-    var player_i = document.timeline.play(this.groupWithSeq_source);
-    var player_j = document.timeline.play(this.groupWithGroup_source);
-    var player_k = document.timeline.play(this.groupWithEmptyGroup_source);
-    var player_l = document.timeline.play(this.groupWithEmptySeq_source);
+    players.push(document.timeline.play(this.groupEmpty_source));
+    players.push(document.timeline.play(this.groupSimple_source));
+    players.push(document.timeline.play(this.groupWithSeq_source));
+    players.push(document.timeline.play(this.groupWithGroup_source));
+    players.push(document.timeline.play(this.groupWithEmptyGroup_source));
+    players.push(document.timeline.play(this.groupWithEmptySeq_source));
+
+    var length = players.length;
+
+    tick(100);
+    for (var i = 0; i < length; i++)
+      players[i].pause();
 
     tick(200);
-    player_a.pause();
-    player_b.pause();
-    player_c.pause();
-    player_d.pause();
-    player_e.pause();
-    player_f.pause();
-    player_g.pause();
-    player_h.pause();
-    player_i.pause();
-    player_j.pause();
-    player_k.pause();
-    player_l.pause();
+    for (var i = 0; i < length; i++)
+      players[i].pause();
 
-    player_a.play();
-    player_b.play();
-    player_c.play();
-    player_d.play();
-    player_e.play();
-    player_f.play();
-    player_g.play();
-    player_h.play();
-    player_i.play();
-    player_j.play();
-    player_k.play();
-    player_l.play();
     tick(300);
+    for (var i = 0; i < length; i++)
+      players[i].currentTime += 1;
 
-    player_a.currentTime += 1;
-    player_b.currentTime += 1;
-    player_c.currentTime += 1;
-    player_d.currentTime += 1;
-    player_e.currentTime += 1;
-    player_f.currentTime += 1;
-    player_g.currentTime += 1;
-    player_h.currentTime += 1;
-    player_i.currentTime += 1;
-    player_j.currentTime += 1;
-    player_k.currentTime += 1;
-    player_l.currentTime += 1;
+    tick(400);
+    for (var i = 0; i < length; i++)
+      players[i].startTime += 1;
   });
 
 });
