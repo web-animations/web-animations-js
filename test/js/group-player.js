@@ -13,9 +13,10 @@ suite('group-player', function() {
 
   // topTimes and restOfTimes contain duplets (startTime, currentTime)
   // and triplets (startTime, currentTime, startOffset)
-  function checkTimes(player, topTimes, restOfTimes) {
-    _checkTimes(player, topTimes, 0, 'toplevel');
-    _checkTimes(player, restOfTimes, 0, 'internals');
+  function checkTimes(player, topTimes, restOfTimes, description) {
+    description = description ? (description + ' ') : '';
+    _checkTimes(player, topTimes, 0, description + 'toplevel');
+    _checkTimes(player, restOfTimes, 0, description + 'internals');
   }
 
   function _checkTimes(player, timingList, index, trace) {
@@ -83,25 +84,28 @@ suite('group-player', function() {
     tick(100);
     var player = document.timeline.play(complexAnimationTree(createLeaf));
     checkTimes(player, [100, 0], [
-      [100, 0, 0], [// 4
-        [100, 0, 0], [// 1
+      [100, 0, 0], [ // 4
+        [100, 0, 0], [ // 1
           [102, -2, 0], // 3
           [102, -2, 0]]], // 2
-      [100, 0, 0]]); // 0
+      [100, 0, 0], // 0
+    ], 't = 100');
     tick(101);
     checkTimes(player, [100, 1], [
-      [100, 1, 0], [// 4
-        [100, 1, 0], [// 1
+      [100, 1, 0], [ // 4
+        [100, 1, 0], [ // 1
           [102, -1, 0], // 3
           [102, -1, 0]]], // 2
-      [100, 1, 0]]); // 0
+      [100, 1, 0], // 0
+    ], 't = 101');
     tick(102);
     checkTimes(player, [100, 2], [
-      [100, 2, 0], [// 4
-        [100, 2, 0], [// 1
+      [100, 2, 0], [ // 4
+        [100, 2, 0], [ // 1
           [102, 0, 0], // 3
           [102, 0, 0]]], // 2
-      [100, 2, 0]]); // 0
+      [100, 1, 0], // 0
+    ], 't = 102');
   });
 
   test('effects apply in the correct order', function() {
