@@ -43,7 +43,7 @@
     };
     nullAnimation.update = function() {
       return null;
-    }
+    };
     nullAnimation.totalDuration = 0;
     return nullAnimation;
   };
