@@ -28,6 +28,7 @@
         init: function() {
           this.childPlayers = [];
         },
+        ensureAlive: function() { },
         set currentTime(newTime) {
           if (!this.paused) {
             this.startTime += (this.currentTime - newTime) / this.playbackRate;
@@ -37,7 +38,9 @@
           this._currentTime = newTime - this.offset;
         },
         get currentTime() {
-          return this.__currentTime;
+          if (this._startTime !== null)
+            return global.document.timeline.currentTime - this._startTime;
+          return 0;
         },
         get totalDuration() {
           var total = 0;

@@ -74,6 +74,9 @@
         player.childPlayers.push(childPlayer);
       }
       player.setChildOffsets();
+      if (player._startTime !== null) {
+        player.startTime = player._startTime;
+      }
       return player;
     }
   };
