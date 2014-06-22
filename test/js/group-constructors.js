@@ -9,8 +9,8 @@ suite('group-constructors', function() {
       new AnimationGroup([
         new Animation(document.body, [], 2000),
         new Animation(document.body, [], 1000)
-        ])
-      ]);
+      ])
+    ]);
   }
 
   test('player getter for children in groups, and __internalPlayer, work as expected', function() {
