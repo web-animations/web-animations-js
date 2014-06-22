@@ -74,9 +74,9 @@
       }),
       test: tweak(minifillTest, {
         addTop: [
+          'test/js/group-constructors.js',
           'test/js/group-player.js',
           'test/js/group-player-finish-event.js',
-          'test/js/group-constructors.js',
         ],
       }),
     },
