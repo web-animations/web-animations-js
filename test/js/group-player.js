@@ -47,56 +47,58 @@ suite('group-player', function() {
           ]);
     };
 
-    this.sequenceSource_1 = sequenceEmpty();
-    var sequenceTarget_2 = document.createElement('div');
-    this.sequenceSource_2 = sequenceWithEffects(sequenceTarget_2);
+    this.seqEmpty_source = sequenceEmpty();
 
-    var sequenceTarget_3 = document.createElement('div');
-    this.elements.push(sequenceTarget_3);
-    this.sequenceSource_3 = new AnimationSequence(
+    var seqSimple_target = document.createElement('div');
+    this.seqSimple_source = sequenceWithEffects(seqSimple_target);
+
+    var seqWithSeq_target = document.createElement('div');
+    this.elements.push(seqWithSeq_target);
+    this.seqWithSeq_source = new AnimationSequence(
         [
-         animationMargin(sequenceTarget_3),
-         animationColor(sequenceTarget_3),
-         sequenceWithEffects(sequenceTarget_3)
+         animationMargin(seqWithSeq_target),
+         animationColor(seqWithSeq_target),
+         sequenceWithEffects(seqWithSeq_target)
         ]);
 
-    var sequenceTarget_4 = document.createElement('div');
-    this.elements.push(sequenceTarget_4);
-    this.sequenceSource_4 = new AnimationSequence(
+    var seqWithGroup_target = document.createElement('div');
+    this.elements.push(seqWithGroup_target);
+    this.seqWithGroup_source = new AnimationSequence(
         [
-         animationMargin(sequenceTarget_4),
-         animationColor(sequenceTarget_4),
-         groupWithEffects(sequenceTarget_4)
+         animationMargin(seqWithGroup_target),
+         animationColor(seqWithGroup_target),
+         groupWithEffects(seqWithGroup_target)
         ]);
 
-    this.sequenceSource_5 = new AnimationSequence([groupEmpty()]);
-    this.sequenceSource_6 = new AnimationSequence([sequenceEmpty()]);
+    this.seqWithEmptyGroup_source = new AnimationSequence([groupEmpty()]);
+    this.seqWithEmptySeq_source = new AnimationSequence([sequenceEmpty()]);
 
 
-    this.groupSource_1 = groupEmpty();
-    var groupTarget_2 = document.createElement('div');
-    this.groupSource_2 = groupWithEffects(groupTarget_2);
+    this.groupEmpty_source = groupEmpty();
 
-    var groupTarget_3 = document.createElement('div');
-    this.elements.push(groupTarget_3);
-    this.groupSource_3 = new AnimationGroup(
+    var groupSimple_target = document.createElement('div');
+    this.groupSimple_source = groupWithEffects(groupSimple_target);
+
+    var groupWithSeq_target = document.createElement('div');
+    this.elements.push(groupWithSeq_target);
+    this.groupWithSeq_source = new AnimationGroup(
         [
-         animationMargin(groupTarget_3),
-         animationColor(groupTarget_3),
-         sequenceWithEffects(groupTarget_3)
+         animationMargin(groupWithSeq_target),
+         animationColor(groupWithSeq_target),
+         sequenceWithEffects(groupWithSeq_target)
         ]);
 
-    var groupTarget_4 = document.createElement('div');
-    this.elements.push(groupTarget_4);
-    this.groupSource_4 = new AnimationGroup(
+    var groupWithGroup_target = document.createElement('div');
+    this.elements.push(groupWithGroup_target);
+    this.groupWithGroup_source = new AnimationGroup(
         [
-         animationMargin(groupTarget_4),
-         animationColor(groupTarget_4),
-         groupWithEffects(groupTarget_4)
+         animationMargin(groupWithGroup_target),
+         animationColor(groupWithGroup_target),
+         groupWithEffects(groupWithGroup_target)
         ]);
 
-    this.groupSource_5 = new AnimationGroup([groupEmpty()]);
-    this.groupSource_6 = new AnimationGroup([sequenceEmpty()]);
+    this.groupWithEmptyGroup_source = new AnimationGroup([groupEmpty()]);
+    this.groupWithEmptySeq_source = new AnimationGroup([sequenceEmpty()]);
 
     // The following animation structure looks like:
     // 44444
