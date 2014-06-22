@@ -271,21 +271,34 @@ suite('group-player', function() {
 
     var length = players.length;
 
+    tick(50);
+    for (var i = 0; i < length; i++)
+      players[i].pause();
+
     tick(100);
     for (var i = 0; i < length; i++)
       players[i].pause();
 
     tick(200);
     for (var i = 0; i < length; i++)
-      players[i].pause();
+      players[i].currentTime += 1;
 
     tick(300);
     for (var i = 0; i < length; i++)
-      players[i].currentTime += 1;
+      players[i].startTime += 1;
+
+    tick(350);
+    for (var i = 0; i < length; i++)
+      players[i].reverse();
 
     tick(400);
     for (var i = 0; i < length; i++)
-      players[i].startTime += 1;
+      players[i].cancel();
+    
+    tick(500);
+    tick(600);
+    for (var i = 0; i < length; i++)
+      players[i].play();
   });
 
 });
