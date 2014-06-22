@@ -76,6 +76,7 @@
         addTop: [
           'test/js/group-player.js',
           'test/js/group-player-finish-event.js',
+          'test/js/group-constructors.js',
         ],
       }),
     },
