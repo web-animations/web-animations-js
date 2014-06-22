@@ -20,6 +20,6 @@
     "karma-safari-launcher": "~0.1.1"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test gjslint"
   }
 }
