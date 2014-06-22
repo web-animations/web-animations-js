@@ -21,6 +21,9 @@ suite('group-player', function() {
           ],
           500);
     };
+    var staticAnimation = function(target, value, duration) {
+      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
+    };
 
     var sequenceEmpty = function() {
       return new AnimationSequence();
@@ -94,6 +97,29 @@ suite('group-player', function() {
 
     this.groupSource_5 = new AnimationGroup([groupEmpty()]);
     this.groupSource_6 = new AnimationGroup([sequenceEmpty()]);
+
+    // The following animation structure looks like:
+    // 44444
+    // 11
+    //   33
+    //   2
+    // 0
+    this.complexTarget = document.createElement('div');
+    this.elements.push(this.complexTarget);
+    this.complexSource = new AnimationGroup([
+      staticAnimation(this.complexTarget, '4px', 5),
+      new AnimationSequence([
+        staticAnimation(this.complexTarget, '1px', 2),
+        new AnimationGroup([
+          staticAnimation(this.complexTarget, '3px', 2),
+          staticAnimation(this.complexTarget, '2px', 1),
+        ]),
+      ]),
+      staticAnimation(this.complexTarget, '0px', 1),
+    ]);
+
+    for (var i = 0; i < this.elements.length; i++)
+      document.documentElement.appendChild(this.elements[i]);
   });
 
   teardown(function() {
@@ -155,32 +181,9 @@ suite('group-player', function() {
     checkTimes(p, [110, 100], [[110, 100], [2110, -1900, 2000], [3110, -2900, 3000]]);
   });
 
-  function complexAnimationTree(createLeaf) {
-    // The following animation structure looks like:
-    // 44444
-    // 11
-    //   33
-    //   2
-    // 0
-    return new AnimationGroup([
-      createLeaf('4px', 5),
-      new AnimationSequence([
-        createLeaf('1px', 2),
-        new AnimationGroup([
-          createLeaf('3px', 2),
-          createLeaf('2px', 1),
-        ]),
-      ]),
-      createLeaf('0px', 1),
-    ]);
-  }
-
   test('complex animation tree timing while playing', function() {
-    function createLeaf(value, duration) {
-      return new Animation(document.body, [], duration);
-    }
     tick(100);
-    var player = document.timeline.play(complexAnimationTree(createLeaf));
+    var player = document.timeline.play(this.complexSource);
     checkTimes(player, [100, 0], [
       [100, 0, 0], [ // 4
         [100, 0, 0], [ // 1
@@ -207,28 +210,32 @@ suite('group-player', function() {
   });
 
   test('effects apply in the correct order', function() {
-    var target = document.createElement('div');
-    document.documentElement.appendChild(target);
-    function createLeaf(value, duration) {
-      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
-    }
     tick(0);
-    var player = document.timeline.play(complexAnimationTree(createLeaf));
+    var player = document.timeline.play(this.complexSource);
     player.currentTime = 0;
-    assert.equal(getComputedStyle(target).marginLeft, '0px');
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
     player.currentTime = 1;
     checkTimes(player, [-1, 1], [[-1, 1, 0], [[-1, 1, 0], [[1, -1, 0], [1, -1, 0]]], [-1, 1, 0]]);
-    assert.equal(getComputedStyle(target).marginLeft, '1px');
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '1px');
     player.currentTime = 2;
     checkTimes(player, [-2, 2], [[-2, 2, 0], [[-2, 2, 0], [[0, 0, 0], [0, 0, 0]]], [-2, 1, 0]]);
-    assert.equal(getComputedStyle(target).marginLeft, '2px');
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '2px');
     player.currentTime = 3;
-    assert.equal(getComputedStyle(target).marginLeft, '3px');
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '3px');
     player.currentTime = 4;
-    assert.equal(getComputedStyle(target).marginLeft, '4px');
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '4px');
     player.currentTime = 5;
-    assert.equal(getComputedStyle(target).marginLeft, '0px');
-    target.remove();
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
+  });
+
+  test('cancelling group players', function() {
+    tick(0);
+    var player = document.timeline.play(this.complexSource);
+    tick(3);
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '3px');
+    player.cancel();
+    assert.equal(player.currentTime, 0);
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
   });
 
 });
