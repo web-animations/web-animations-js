@@ -277,7 +277,7 @@ suite('group-player', function() {
 
     tick(100);
     for (var i = 0; i < length; i++)
-      players[i].pause();
+      players[i].play();
 
     tick(200);
     for (var i = 0; i < length; i++)
@@ -291,12 +291,25 @@ suite('group-player', function() {
     for (var i = 0; i < length; i++)
       players[i].reverse();
 
+    var readOffsets = function(player) {
+      player.offset;
+      if (player.hasOwnProperty('childPlayers'))
+        for (var i = 0; i < player.childPlayers.length; i++)
+          readOffsets(player.childPlayers[i]);
+    };
+    tick(380);
+    for (var i = 0; i < length; i++)
+      readOffsets(players[i]);
+
     tick(400);
     for (var i = 0; i < length; i++)
-      players[i].cancel();
+      players[i].finish();
     
     tick(500);
     tick(600);
+    for (var i = 0; i < length; i++)
+      players[i].cancel();
+
     for (var i = 0; i < length; i++)
       players[i].play();
   });
