@@ -78,7 +78,6 @@
             if (!this.childPlayers[i].finished)
               this.childPlayers[i].play();
           }
-
           if (this.childPlayers.length > 0)
             this._startTime = this.childPlayers[0].startTime;
           else
