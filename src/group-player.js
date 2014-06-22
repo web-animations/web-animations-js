@@ -100,7 +100,7 @@
           for (var i = 0; i < this.childPlayers.length; i++)
             this.childPlayers[i].reverse();
         },
-        setChildOffsets: function(firstTime) {
+        setChildOffsets: function() {
           if (this.playbackRate >= 0) {
             if (this.source instanceof global.AnimationSequence) {
               this.childPlayers[0]._startOffset = 0;
@@ -117,8 +117,6 @@
                 this.childPlayers[i]._startOffset = this.totalDuration - this.childPlayers[i].totalDuration;
             }
           }
-          if (firstTime)
-            this.childPlayers.forEach(function(player) { player._startTime = null; }); // HACK
         },
       });
 })(shared, maxifill, testing);

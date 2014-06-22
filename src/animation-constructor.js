@@ -73,8 +73,10 @@
         childPlayer._parent = player;
         player.childPlayers.push(childPlayer);
       }
-      player.setChildOffsets(true);
-      player._startTime = null;
+      player.setChildOffsets();
+      if (player._startTime !== null) {
+        player.startTime = player._startTime;
+      }
       return player;
     }
   };

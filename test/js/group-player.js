@@ -11,6 +11,8 @@ suite('group-player', function() {
     return new AnimationSequence([new Animation(document.body, [], 2000), new Animation(document.body, [], 1000), new Animation(document.body, [], 3000)]);
   }
 
+  // topTimes and restOfTimes contain duplets (startTime, currentTime)
+  // and triplets (startTime, currentTime, startOffset)
   function checkTimes(player, topTimes, restOfTimes) {
     _checkTimes(player, topTimes, 0, 'toplevel');
     _checkTimes(player, restOfTimes, 0, 'internals');
@@ -32,10 +34,8 @@ suite('group-player', function() {
   }
 
   test('playing an animationGroup works as expected', function() {
-    tick(90);
-    var p = document.timeline.play(simpleAnimationGroup());
     tick(100);
-    p.startTime;
+    var p = document.timeline.play(simpleAnimationGroup());
     checkTimes(p, [100, 0], [[100, 0, 0], [100, 0, 0], [100, 0, 0]]);
     tick(300);
     checkTimes(p, [100, 200], [[100, 200], [100, 200], [100, 200]]);
@@ -49,11 +49,8 @@ suite('group-player', function() {
   });
 
   test('playing an animationSequence works as expected', function() {
-    tick(100);
-    var p = document.timeline.play(simpleAnimationSequence());
-    checkTimes(p, [null, 0], [[null, 0], [null, 0, 2000], [null, 0, 3000]]);
     tick(110);
-    p.startTime;
+    var p = document.timeline.play(simpleAnimationSequence());
     checkTimes(p, [110, 0], [[110, 0], [2110, -2000, 2000], [3110, -3000, 3000]]);
     tick(210);
     checkTimes(p, [110, 100], [[110, 100], [2110, -1900, 2000], [3110, -2900, 3000]]);
