@@ -19,6 +19,8 @@
     }
     if (changes.add)
       newFiles = newFiles.concat(changes.add);
+    if (changes.addTop)
+      newFiles = changes.addTop.concat(newFiles);
     return newFiles;
   }
 
@@ -71,7 +73,7 @@
         ],
       }),
       test: tweak(minifillTest, {
-        add: [
+        addTop: [
           'test/js/group-player.js',
           'test/js/group-player-finish-event.js',
         ],
