@@ -74,9 +74,11 @@
           if (this.finished)
             this.__currentTime = this._playbackRate > 0 ? 0 : this.totalDuration;
           this._finishedFlag = false;
-          for (var i = 0; i < this.childPlayers.length; i++)
+          for (var i = 0; i < this.childPlayers.length; i++) {
             if (!this.childPlayers[i].finished)
               this.childPlayers[i].play();
+          }
+
           if (this.childPlayers.length > 0)
             this._startTime = this.childPlayers[0].startTime;
           else
