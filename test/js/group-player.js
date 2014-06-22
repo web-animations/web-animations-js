@@ -45,7 +45,8 @@ suite('group-player', function() {
     };
 
     this.sequenceSource_1 = sequenceEmpty();
-    this.sequenceSource_2 = sequenceWithEffects();
+    var sequenceTarget_2 = document.createElement('div');
+    this.sequenceSource_2 = sequenceWithEffects(sequenceTarget_2);
 
     var sequenceTarget_3 = document.createElement('div');
     this.elements.push(sequenceTarget_3);
@@ -70,7 +71,8 @@ suite('group-player', function() {
 
 
     this.groupSource_1 = groupEmpty();
-    this.groupSource_2 = groupWithEffects();
+    var groupTarget_2 = document.createElement('div');
+    this.groupSource_2 = groupWithEffects(groupTarget_2);
 
     var groupTarget_3 = document.createElement('div');
     this.elements.push(groupTarget_3);

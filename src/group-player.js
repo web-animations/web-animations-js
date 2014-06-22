@@ -92,13 +92,15 @@
     setChildOffsets: function() {
       if (this.playbackRate >= 0) {
         if (this.source instanceof global.AnimationSequence) {
-          this.childPlayers[0]._startOffset = 0;
+          if (this.childPlayers.length > 0)
+            this.childPlayers[0]._startOffset = 0;
           for (var i = 1; i < this.childPlayers.length; i++)
             this.childPlayers[i]._startOffset = (this.childPlayers[i - 1]._startOffset + this.childPlayers[i - 1].totalDuration);
         }
       } else {
         if (this.source instanceof global.AnimationSequence) {
-          this.childPlayers[this.childPlayers.length - 1]._startOffset = this.totalDuration;
+          if (this.childPlayers.length > 0)
+            this.childPlayers[this.childPlayers.length - 1]._startOffset = this.totalDuration;
           for (var i = this.childPlayers.length - 2; i >= 0; i--)
             this.childPlayers[i]._startOffset = this.totalDuration - (this.childPlayers[i + 1]._startOffset + this.childPlayers[i + 1].totalDuration);
         } else {

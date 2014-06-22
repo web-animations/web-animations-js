@@ -16,7 +16,7 @@
 
   global.AnimationSequence = function(children, timing) {
     this._type = 'seq';
-    this.children = children;
+    this.children = children || [];
     this.timing = timing;
     this._internalPlayer = null;
     this._player = null;
@@ -25,7 +25,7 @@
 
   global.AnimationGroup = function(children, timing) {
     this._type = 'par';
-    this.children = children;
+    this.children = children || [];
     this.timing = timing;
     this._internalPlayer = null;
     this._player = null;
