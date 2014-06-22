@@ -253,7 +253,7 @@ suite('group-player', function() {
   });
 
   // FIXME: This test can be removed when this suite is finished.
-  test('test sources are working for basic operations', function() {
+  test('sources are working for basic operations', function() {
     var player_a = document.timeline.play(this.seqEmpty_source);
     var player_b = document.timeline.play(this.seqSimple_source);
     var player_c = document.timeline.play(this.seqWithSeq_source);
