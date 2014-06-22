@@ -223,7 +223,9 @@ suite('player', function() {
     tick(100);
     assert.equal(getComputedStyle(target).marginLeft, '50px');
     player.cancel();
+    // getComputedStyle forces a tick.
     assert.equal(getComputedStyle(target).marginLeft, '0px');
+    assert.deepEqual(document.timeline.players, []);
     target.remove();
   });
   test('startTime is set on first tick if timeline hasn\'t started', function() {
