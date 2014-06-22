@@ -21,13 +21,13 @@
 
   scope.Timeline.prototype = {
     _play: function(source) {
-      var player = new shared.Player(source);
+      var player = new scope.Player(source);
       if ((TESTING || ticking) && this.currentTime !== undefined) {
         player._startTime = this.currentTime;
       }
       player._timeline = this;
       this.players.push(player);
-      shared.restart();
+      scope.restart();
       scope.invalidateEffects();
       return player;
     }
@@ -35,7 +35,7 @@
 
   var ticking = true;
 
-  shared.restart = function() {
+  scope.restart = function() {
     if (!ticking) {
       ticking = true;
       if (!TESTING)
@@ -103,7 +103,7 @@
       else
         pendingEffects.push(player._source);
 
-      player._fireEvents();
+      player._fireEvents(timeline.currentTime);
 
       if (!player.finished || player._inEffect)
         return true;

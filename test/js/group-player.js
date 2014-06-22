@@ -119,8 +119,10 @@ suite('group-player', function() {
     player.currentTime = 0;
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     player.currentTime = 1;
+    checkTimes(player, [-1, 1], [[-1, 1, 0], [[-1, 1, 0], [[1, -1, 0], [1, -1, 0]]], [-1, 1, 0]]);
     assert.equal(getComputedStyle(target).marginLeft, '1px');
     player.currentTime = 2;
+    checkTimes(player, [-2, 2], [[-2, 2, 0], [[-2, 2, 0], [[0, 0, 0], [0, 0, 0]]], [-2, 1, 0]]);
     assert.equal(getComputedStyle(target).marginLeft, '2px');
     player.currentTime = 3;
     assert.equal(getComputedStyle(target).marginLeft, '3px');
