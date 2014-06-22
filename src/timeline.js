@@ -35,13 +35,16 @@
 
   var ticking = true;
 
+  var hasRestartedThisFrame = false;
+
   scope.restart = function() {
     if (!ticking) {
       ticking = true;
       if (!TESTING)
         requestAnimationFrame(tick);
-      return true;
+      hasRestartedThisFrame = true;
     }
+    return hasRestartedThisFrame;
   };
 
   var getComputedStylePatched = false;
@@ -79,6 +82,7 @@
   };
 
   function tick(t) {
+    hasRestartedThisFrame = false;
     var timeline = global.document.timeline;
     timeline.currentTime = t;
     timeline.players.sort(function(leftPlayer, rightPlayer) {

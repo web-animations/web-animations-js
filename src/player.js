@@ -42,12 +42,11 @@
     },
     get currentTime() { return this.__currentTime; },
     set currentTime(newTime) {
-      if (!this.paused) {
+      if (!this.paused && this._startTime !== null) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
       if (this.__currentTime == newTime)
         return;
-      console.log(Object.getOwnPropertyDescriptor(this, '_currentTime'));
       this.setCurrentTimeInternal(newTime, true);
       scope.invalidateEffects();
       scope.restart();
@@ -60,6 +59,9 @@
     set startTime(newTime) {
       if (this.paused)
         return;
+      if (this._startTime == null) {
+        console.log('set startTime of', this.source.name, 'to', newTime);
+      }
       this._startTime = newTime;
       this.setCurrentTimeInternal(this._timeline.currentTime - this._startTime);
       scope.invalidateEffects();
@@ -68,12 +70,16 @@
     play: function() {
       this.paused = false;
       if (this.finished) {
+        console.log('finished');
         this.__currentTime = this._playbackRate > 0 ? 0 : this.totalDuration;
         scope.invalidateEffects();
       }
       this._finishedFlag = false;
-      if (!scope.restart())
+      if (!scope.restart()) {
+        console.log('setting startTime');
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+        console.log(this._startTime);
+      }
       else
         this._startTime = null;
       this.ensureAlive();

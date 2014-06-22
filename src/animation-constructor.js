@@ -64,7 +64,13 @@
       for (var property in source.timing)
         newTiming[property] = source.timing[property];
       newTiming.duration = source.activeDuration;
+      newTiming.fill = 'both';
       var ticker = function(tf) {
+        if (tf == null) {
+          player._childPlayers.map(function(p) { p.cancel(); });
+          player._childPlayers = [];
+          return;
+        }
         var offset = 0;
         for (var i = 0; i < player.source.children.length; i++) {
           var child = player.source.children[i];
@@ -80,7 +86,6 @@
             newPlayer(child);
 
           var childPlayer = player._childPlayers[i];
-          console.log(player.playbackRate, player.currentTime, offset);
           if (player.playbackRate == -1 && player.currentTime < offset && childPlayer.currentTime !== -1) {
             childPlayer.currentTime = -1;
           }
@@ -122,6 +127,26 @@
             offset += child.source.activeDuration;
         });
       }
+
+      var _pause = player.pause.bind(player);
+      player.pause = function() {
+        _pause();
+        player._childPlayers.forEach(function(child) {
+          child.pause();
+        });
+      };
+
+      var _play = player.play.bind(player);
+      player.play = function() {
+        _play();
+        player._childPlayers.forEach(function(child) {
+          console.log(child.source.name, child.currentTime);
+          var time = child.currentTime;
+          child.play();
+          child.currentTime = time;
+        });
+      };
+
       return player;
     }
   };
