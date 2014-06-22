@@ -56,31 +56,62 @@ suite('group-player', function() {
     checkTimes(p, [110, 100], [[110, 100], [2110, -1900, 2000], [3110, -2900, 3000]]);
   });
 
-  test('effects apply in the correct order', function() {
-    var target = document.createElement('div');
-    document.documentElement.appendChild(target);
-    function createAnimation(value, duration) {
-      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
-    }
-    tick(0);
+  function complexAnimationTree(createLeaf) {
     // The following animation structure looks like:
     // 44444
     // 11
     //   33
     //   2
     // 0
-    var player = document.timeline.play(
+    return new AnimationGroup([
+      createLeaf('4px', 5),
+      new AnimationSequence([
+        createLeaf('1px', 2),
         new AnimationGroup([
-          createAnimation('4px', 5),
-          new AnimationSequence([
-            createAnimation('1px', 2),
-            new AnimationGroup([
-              createAnimation('3px', 2),
-              createAnimation('2px', 1)
-            ]),
-          ]),
-          createAnimation('0px', 1)
-        ]));
+          createLeaf('3px', 2),
+          createLeaf('2px', 1),
+        ]),
+      ]),
+      createLeaf('0px', 1),
+    ]);
+  }
+
+  test('complex animation tree timing while playing', function() {
+    function createLeaf(value, duration) {
+      return new Animation(document.body, [], duration);
+    }
+    tick(100);
+    var player = document.timeline.play(complexAnimationTree(createLeaf));
+    checkTimes(player, [100, 0], [
+      [100, 0, 0], [// 4
+        [100, 0, 0], [// 1
+          [102, -2, 0], // 3
+          [102, -2, 0]]], // 2
+      [100, 0, 0]]); // 0
+    tick(101);
+    checkTimes(player, [100, 1], [
+      [100, 1, 0], [// 4
+        [100, 1, 0], [// 1
+          [102, -1, 0], // 3
+          [102, -1, 0]]], // 2
+      [100, 1, 0]]); // 0
+    tick(102);
+    checkTimes(player, [100, 2], [
+      [100, 2, 0], [// 4
+        [100, 2, 0], [// 1
+          [102, 0, 0], // 3
+          [102, 0, 0]]], // 2
+      [100, 2, 0]]); // 0
+  });
+
+  test('effects apply in the correct order', function() {
+    var target = document.createElement('div');
+    document.documentElement.appendChild(target);
+    function createLeaf(value, duration) {
+      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
+    }
+    tick(0);
+    var player = document.timeline.play(complexAnimationTree(createLeaf));
     player.currentTime = 0;
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     player.currentTime = 1;
@@ -93,5 +124,6 @@ suite('group-player', function() {
     assert.equal(getComputedStyle(target).marginLeft, '4px');
     player.currentTime = 5;
     assert.equal(getComputedStyle(target).marginLeft, '0px');
+    target.remove();
   });
 });
