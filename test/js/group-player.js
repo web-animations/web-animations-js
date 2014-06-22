@@ -3,7 +3,7 @@ suite('group-player', function() {
     document.timeline.players = [];
     this.elements = [];
 
-    var animation_1 = function(target) {
+    var animationMargin = function(target) {
       return new Animation(
           target,
           [
@@ -12,7 +12,7 @@ suite('group-player', function() {
           ],
           500);
     };
-    var animation_2 = function(target) {
+    var animationColor = function(target) {
       return new Animation(
           target,
           [
@@ -21,98 +21,79 @@ suite('group-player', function() {
           ],
           500);
     };
+
     var sequenceEmpty = function() {
       return new AnimationSequence();
-    };
-    var sequenceWithEffects = function(target) {
-      return new AnimationSequence(
-          target,
-          [
-           animation_1(target),
-           animation_2(target)
-          ],
-          500);
     };
     var groupEmpty = function() {
       return new AnimationGroup();
     };
+
+    var sequenceWithEffects = function(target) {
+      return new AnimationSequence(
+          [
+           animationMargin(target),
+           animationColor(target)
+          ]);
+    };
     var groupWithEffects = function(target) {
       return new AnimationGroup(
-          target,
           [
-           animation_1(target),
-           animation_2(target)
-          ],
-          500);
+           animationMargin(target),
+           animationColor(target)
+          ]);
     };
-
 
     this.sequenceSource_1 = sequenceEmpty();
     this.sequenceSource_2 = sequenceWithEffects();
 
     var sequenceTarget_3 = document.createElement('div');
+    this.elements.push(sequenceTarget_3);
     this.sequenceSource_3 = new AnimationSequence(
-        sequenceTarget_3,
         [
-         animation_1(sequenceTarget_3),
-         animation_2(sequenceTarget_3),
+         animationMargin(sequenceTarget_3),
+         animationColor(sequenceTarget_3),
          sequenceWithEffects(sequenceTarget_3)
         ]);
 
     var sequenceTarget_4 = document.createElement('div');
+    this.elements.push(sequenceTarget_4);
     this.sequenceSource_4 = new AnimationSequence(
-        sequenceTarget_4,
         [
-         animation_1(sequenceTarget_4),
-         animation_2(sequenceTarget_4),
+         animationMargin(sequenceTarget_4),
+         animationColor(sequenceTarget_4),
          groupWithEffects(sequenceTarget_4)
         ]);
 
-    var sequenceTarget_5 = document.createElement('div');
-    this.sequenceSource_5 = new AnimationSequence(
-        sequenceTarget_5,
-        [groupEmpty()]
-        );
+    this.sequenceSource_5 = new AnimationSequence([groupEmpty()]);
+    this.sequenceSource_6 = new AnimationSequence([sequenceEmpty()]);
 
-    var sequenceTarget_6 = document.createElement('div');
-    this.sequenceSource_6 = new AnimationSequence(
-        sequenceTarget_6,
-        [sequenceEmpty()]
-        );
 
     this.groupSource_1 = groupEmpty();
     this.groupSource_2 = groupWithEffects();
 
     var groupTarget_3 = document.createElement('div');
+    this.elements.push(groupTarget_3);
     this.groupSource_3 = new AnimationGroup(
-        groupTarget_3,
         [
-         animation_1(groupTarget_3),
-         animation_2(groupTarget_3),
+         animationMargin(groupTarget_3),
+         animationColor(groupTarget_3),
          sequenceWithEffects(groupTarget_3)
         ]);
 
     var groupTarget_4 = document.createElement('div');
+    this.elements.push(groupTarget_4);
     this.groupSource_4 = new AnimationGroup(
-        groupTarget_4,
         [
-         animation_1(groupTarget_4),
-         animation_2(groupTarget_4),
+         animationMargin(groupTarget_4),
+         animationColor(groupTarget_4),
          groupWithEffects(groupTarget_4)
         ]);
 
-    var groupTarget_5 = document.createElement('div');
-    this.groupSource_5 = new AnimationGroup(
-        groupTarget_5,
-        [groupEmpty()]
-        );
-
-    var groupTarget_6 = document.createElement('div');
-    this.groupSource_6 = new AnimationGroup(
-        groupTarget_6,
-        [sequenceEmpty()]
-        );
+    this.groupSource_5 = new AnimationGroup([groupEmpty()]);
+    this.groupSource_6 = new AnimationGroup([sequenceEmpty()]);
   });
+
   teardown(function() {
     for (var i = 0; i < this.elements.length; i++)
       this.elements[i].remove();
@@ -244,46 +225,6 @@ suite('group-player', function() {
     player.currentTime = 5;
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     target.remove();
-  });
-
-  test('pausing works as expected', function() {
-    tick(100);
-    var p = document.timeline.play(simpleAnimationGroup());
-    assert.equal(p.startTime, 100);
-    assert.equal(p.currentTime, 0);
-    tick(300);
-    assert.equal(p.startTime, 100);
-    assert.equal(p.currentTime, 200);
-  });
-
-  test('reverse works as expected', function() {
-    tick(100);
-    var p = document.timeline.play(simpleAnimationGroup());
-    assert.equal(p.startTime, 100);
-    assert.equal(p.currentTime, 0);
-    tick(300);
-    assert.equal(p.startTime, 100);
-    assert.equal(p.currentTime, 200);
-  });
-
-  test('set startTime works as expected', function() {
-    tick(100);
-    var p = document.timeline.play(simpleAnimationGroup());
-    assert.equal(p.startTime, 100);
-    assert.equal(p.currentTime, 0);
-    tick(300);
-    assert.equal(p.startTime, 100);
-    assert.equal(p.currentTime, 200);
-  });
-
-  test('set currentTime works as expected', function() {
-    tick(100);
-    var p = document.timeline.play(simpleAnimationGroup());
-    assert.equal(p.startTime, 100);
-    assert.equal(p.currentTime, 0);
-    tick(300);
-    assert.equal(p.startTime, 100);
-    assert.equal(p.currentTime, 200);
   });
 
 });
