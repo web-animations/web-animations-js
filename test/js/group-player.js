@@ -102,7 +102,7 @@ suite('group-player', function() {
     //   33
     //   2
     // 0
-    this.complexTarget = document.createElement('div')
+    this.complexTarget = document.createElement('div');
     this.elements.push(this.complexTarget);
     this.complexSource = new AnimationGroup([
       staticAnimation(this.complexTarget, '4px', 5),

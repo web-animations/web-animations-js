@@ -80,7 +80,7 @@
     },
     cancel: function() {
       while (this.childPlayers.length)
-        this.childPlayers.splice(-1)[0].cancel();
+        this.childPlayers.pop().cancel();
       this.source = null;
       this.currentTime = 0;
     },
