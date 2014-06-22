@@ -229,4 +229,20 @@ suite('group-player', function() {
     target.remove();
   });
 
+  test('cancelling group players', function() {
+    var target = document.createElement('div');
+    document.documentElement.appendChild(target);
+    function createLeaf(value, duration) {
+      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
+    }
+    tick(0);
+    var player = document.timeline.play(complexAnimationTree(createLeaf));
+    tick(3);
+    assert.equal(getComputedStyle(target).marginLeft, '3px');
+    player.cancel();
+    assert.equal(player.currentTime, 0);
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
+    target.remove();
+  });
+
 });

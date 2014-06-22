@@ -78,6 +78,12 @@
       else
         this._startTime = null;
     },
+    cancel: function() {
+      while (this.childPlayers.length)
+        this.childPlayers.splice(-1)[0].cancel();
+      this.source = null;
+      this.currentTime = 0;
+    },
     reverse: function() {
       this._playbackRate *= -1;
       this.setChildOffsets();
