@@ -1,6 +1,102 @@
 suite('group-player', function() {
   setup(function() {
     document.timeline.players = [];
+    this.elements = [];
+
+    var animationMargin = function(target) {
+      return new Animation(
+          target,
+          [
+           {marginLeft: '0px'},
+           {marginLeft: '100px'}
+          ],
+          500);
+    };
+    var animationColor = function(target) {
+      return new Animation(
+          target,
+          [
+           {backgroundColor: 'black'},
+           {backgroundColor: 'white'}
+          ],
+          500);
+    };
+
+    var sequenceEmpty = function() {
+      return new AnimationSequence();
+    };
+    var groupEmpty = function() {
+      return new AnimationGroup();
+    };
+
+    var sequenceWithEffects = function(target) {
+      return new AnimationSequence(
+          [
+           animationMargin(target),
+           animationColor(target)
+          ]);
+    };
+    var groupWithEffects = function(target) {
+      return new AnimationGroup(
+          [
+           animationMargin(target),
+           animationColor(target)
+          ]);
+    };
+
+    this.sequenceSource_1 = sequenceEmpty();
+    this.sequenceSource_2 = sequenceWithEffects();
+
+    var sequenceTarget_3 = document.createElement('div');
+    this.elements.push(sequenceTarget_3);
+    this.sequenceSource_3 = new AnimationSequence(
+        [
+         animationMargin(sequenceTarget_3),
+         animationColor(sequenceTarget_3),
+         sequenceWithEffects(sequenceTarget_3)
+        ]);
+
+    var sequenceTarget_4 = document.createElement('div');
+    this.elements.push(sequenceTarget_4);
+    this.sequenceSource_4 = new AnimationSequence(
+        [
+         animationMargin(sequenceTarget_4),
+         animationColor(sequenceTarget_4),
+         groupWithEffects(sequenceTarget_4)
+        ]);
+
+    this.sequenceSource_5 = new AnimationSequence([groupEmpty()]);
+    this.sequenceSource_6 = new AnimationSequence([sequenceEmpty()]);
+
+
+    this.groupSource_1 = groupEmpty();
+    this.groupSource_2 = groupWithEffects();
+
+    var groupTarget_3 = document.createElement('div');
+    this.elements.push(groupTarget_3);
+    this.groupSource_3 = new AnimationGroup(
+        [
+         animationMargin(groupTarget_3),
+         animationColor(groupTarget_3),
+         sequenceWithEffects(groupTarget_3)
+        ]);
+
+    var groupTarget_4 = document.createElement('div');
+    this.elements.push(groupTarget_4);
+    this.groupSource_4 = new AnimationGroup(
+        [
+         animationMargin(groupTarget_4),
+         animationColor(groupTarget_4),
+         groupWithEffects(groupTarget_4)
+        ]);
+
+    this.groupSource_5 = new AnimationGroup([groupEmpty()]);
+    this.groupSource_6 = new AnimationGroup([sequenceEmpty()]);
+  });
+
+  teardown(function() {
+    for (var i = 0; i < this.elements.length; i++)
+      this.elements[i].remove();
   });
 
   function simpleAnimationGroup() {
@@ -132,4 +228,5 @@ suite('group-player', function() {
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     target.remove();
   });
+
 });
