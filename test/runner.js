@@ -10,4 +10,27 @@ function loadWebAnimationsBuildTarget(target) {
   });
 }
 
-addEventListener('load', function() { mocha.run(); });
+(function() {
+
+  var pageError = null;
+
+  addEventListener('error', function(event) {
+    console.log(event);
+    pageError = event.filename + ':' + event.lineno + ' ' + event.message;
+  });
+
+  addEventListener('load', function() {
+
+    // Inject test suite for page errors if any encountered.
+    if (pageError) {
+      suite('page-script-errors', function() {
+        test('no script errors on page', function() {
+          assert.fail(null, null, pageError);
+        });
+      });
+    }
+
+    mocha.run();
+  });
+
+})();
