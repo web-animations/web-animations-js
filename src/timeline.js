@@ -90,9 +90,12 @@
       if (!(player.paused || player.finished)) {
         if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
-        player._currentTime = (t - player.startTime) * player.playbackRate;
+        player._currentTime = (t - player._startTime) * player.playbackRate;
         if (!player.finished)
           ticking = true;
+      } else if (!player._hasTicked) {
+        // Force an effect update.
+        player._currentTime = player.__currentTime;
       }
       // Execute effect clearing before effect applying.
       if (!player._inEffect)

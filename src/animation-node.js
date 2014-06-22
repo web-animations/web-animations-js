@@ -196,9 +196,10 @@
   function calculateTimeFraction(activeDuration, localTime, timingInput) {
     var phase = calculatePhase(activeDuration, localTime, timingInput);
     var activeTime = calculateActiveTime(activeDuration, timingInput.fill, localTime, phase, timingInput.delay);
-    if (activeTime === null) {
+    if (activeTime === null)
       return null;
-    }
+    if (activeDuration === 0)
+      return phase === PhaseBefore ? 0 : 1;
     var startOffset = timingInput.iterationStart * timingInput.duration;
     var scaledActiveTime = calculateScaledActiveTime(activeDuration, activeTime, startOffset, timingInput);
     var iterationTime = calculateIterationTime(timingInput.duration, repeatedDuration(timingInput), scaledActiveTime, startOffset, timingInput);

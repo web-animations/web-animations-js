@@ -11,4 +11,14 @@ suite('timeline-tests', function() {
     assert.equal(document.timeline.players.length, 1);
     assert.equal(isTicking(), false);
   });
+  test('duration 0 players get sampled at least once', function() {
+    var timeFraction;
+    tick(0);
+    var player = document.body.animate(function(t) {
+      timeFraction = t;
+    }, {duration: 0, fill: 'both'});
+    tick(100);
+    assert.equal(timeFraction, 1);
+    assert.equal(isTicking(), false);
+  });
 });
