@@ -70,11 +70,6 @@
       player.setChildOffsets();
       if (player.childPlayers.length > 0)
         player.startTime = player.childPlayers[0]._startTime;
-      /*
-      if (player._startTime !== null) {
-        player.startTime = player._startTime;
-      }
-      */
       return player;
     }
   };
