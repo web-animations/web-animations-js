@@ -304,7 +304,7 @@ suite('group-player', function() {
     tick(400);
     for (var i = 0; i < length; i++)
       players[i].finish();
-    
+
     tick(500);
     tick(600);
     for (var i = 0; i < length; i++)
