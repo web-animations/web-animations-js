@@ -2,6 +2,13 @@ suite('player', function() {
   setup(function() {
     document.timeline.players = [];
   });
+  test('zero duration animation works', function() {
+    tick(90);
+    var p = document.body.animate([], 0);
+    tick(100);
+    assert.equal(p.startTime, 100);
+    assert.equal(p.currentTime, 0);
+  });
   test('playing works as expected', function() {
     tick(90);
     var p = document.body.animate([], 2000);
