@@ -33,7 +33,7 @@
   scope.Player = function(source) {
     this._sequenceNumber = sequenceNumber++;
     this.__currentTime = 0;
-    this._startTime = null;
+    this._startTime = NaN;
     this.paused = false;
     this._playbackRate = 1;
     this._inTimeline = true;
@@ -64,8 +64,8 @@
     get currentTime() { return this.__currentTime; },
     set currentTime(newTime) {
       if (scope.restart())
-        this._startTime = null;
-      if (!this.paused && this._startTime !== null) {
+        this._startTime = NaN;
+      if (!this.paused && !isNaN(this._startTime)) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
       if (this.__currentTime == newTime)
@@ -74,9 +74,7 @@
       scope.invalidateEffects();
     },
     get startTime() {
-      if (!this.paused && this._startTime == null)
-        scope.tickNow();
-      return this._startTime;
+     return this._startTime;
     },
     set startTime(newTime) {
       if (this.paused)
@@ -102,7 +100,7 @@
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       }
       else
-        this._startTime = null;
+        this._startTime = NaN;
       this.ensureAlive();
     },
     pause: function() {
@@ -122,7 +120,7 @@
       if (!scope.restart())
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
       else
-        this._startTime = null;
+        this._startTime = NaN;
       if (!this._inTimeline) {
         this._inTimeline = true;
         document.timeline.players.push(this);

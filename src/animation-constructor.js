@@ -39,17 +39,13 @@
     return this;
   };
 
-  global.Animation.prototype = {
-    get player() { return this.originalPlayer; },
-  };
-
   global.document.timeline.play = function(source) {
     if (source instanceof global.Animation) {
       var player = source.target.animate(source._effect, source.timing);
-      source._internalPlayer = player;
-      source.originalPlayer = source.originalPlayer || player;
       // TODO: make source setter call cancel.
       player.source = source;
+      source.player = player;
+      source._nativePlayer = player;
       var cancel = player.cancel.bind(player);
       player.cancel = function() {
         player.source = null;
@@ -59,7 +55,7 @@
     }
     // FIXME: Move this code out of this module
     if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
-      var newTiming = {}
+      var newTiming = {fill: 'both'}
       for (var property in source.timing)
         newTiming[property] = source.timing[property];
       newTiming.duration = source.activeDuration;
@@ -71,7 +67,7 @@
             player._childPlayers.pop().cancel();
           return;
         }
-        if (player._startTime == null)
+        if (isNaN(player._startTime))
           return;
 
         updateChildPlayers(player);
@@ -88,7 +84,7 @@
           function newPlayer(source) {
             var newPlayer = global.document.timeline.play(source);
             newPlayer.startTime = updatingPlayer.startTime + offset;
-            source._internalPlayer = newPlayer;
+            source.player = updatingPlayer.source.player;
             updatingPlayer._childPlayers.push(newPlayer);
             if (!source instanceof global.Animation)
               updateChildPlayers(newPlayer);
@@ -111,6 +107,8 @@
       var player = document.createElement('div').animate(ticker, newTiming);
       player._childPlayers = [];
       player.source = source;
+      source._nativePlayer = player;
+      source.player = player;
 
       var _reverse = player.reverse.bind(player);
       player.reverse = function() {

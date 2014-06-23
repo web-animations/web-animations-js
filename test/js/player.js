@@ -3,8 +3,9 @@ suite('player', function() {
     document.timeline.players = [];
   });
   test('playing works as expected', function() {
-    tick(100);
+    tick(90);
     var p = document.body.animate([], 2000);
+    tick(100);
     assert.equal(p.startTime, 100);
     assert.equal(p.currentTime, 0);
     tick(300);
@@ -12,9 +13,10 @@ suite('player', function() {
     assert.equal(p.currentTime, 200);
   });
   test('pause at start of play', function() {
-    tick(100);
+    tick(90);
     var p = document.body.animate([], 2000);
     p.pause();
+    tick(100);
     assert.equal(p.currentTime, 0);
     tick(300);
     p.play();
@@ -24,7 +26,7 @@ suite('player', function() {
     assert.equal(p.startTime, 310);
 
     var p = document.body.animate([], 2000);
-    p.startTime -= 1000;
+    p.startTime = -690;
     p.pause();
     assert.equal(p.currentTime, 1000);
     tick(700);
@@ -35,16 +37,17 @@ suite('player', function() {
     assert.equal(p.startTime, -300);
   });
   test('pausing works as expected', function() {
-    tick(200);
+    tick(190);
     var p = document.body.animate([], 3000);
+    tick(200);
     tick(1500);
     assert.equal(p.startTime, 200);
     assert.equal(p.currentTime, 1300);
     p.pause();
-    assert.equal(p.startTime, null);
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.currentTime, 1300);
     tick(2500);
-    assert.equal(p.startTime, null);
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.currentTime, 1300);
     p.play();
     tick(2510);
@@ -55,8 +58,9 @@ suite('player', function() {
     assert.equal(p.currentTime, 2290);
   });
   test('reversing works as expected', function() {
-    tick(300);
+    tick(290);
     var p = document.body.animate([], 1000);
+    tick(300);
     assert.equal(p.startTime, 300);
     assert.equal(p.currentTime, 0);
     tick(600);
@@ -72,8 +76,9 @@ suite('player', function() {
     assert.equal(p.currentTime, 200);
   });
   test('reversing after finishing works as expected', function() {
-    tick(100);
+    tick(90);
     var p = document.body.animate([], 1000);
+    tick(100);
     tick(1200);
     assert.equal(p.finished, true);
     assert.equal(p._startTime, 100);
@@ -82,15 +87,16 @@ suite('player', function() {
     assert.equal(p.currentTime, 1000);
     assert.equal(isTicking(), false);
     p.reverse();
-    assert.equal(p._startTime, null);
+    assert.ok(isNaN(p._startTime));
     assert.equal(p.currentTime, 1000);
     tick(1600);
     assert.equal(p._startTime, 2600);
     assert.equal(p.currentTime, 1000);
   });
   test('playing after finishing works as expected', function() {
-    tick(100);
+    tick(90);
     var p = document.body.animate([], 1000);
+    tick(100);
     tick(1200);
     assert.equal(p.finished, true);
     assert.equal(p._startTime, 100);
@@ -99,15 +105,16 @@ suite('player', function() {
     assert.equal(p.currentTime, 1000);
     assert.equal(isTicking(), false);
     p.play();
-    assert.equal(p._startTime, null);
+    assert.ok(isNaN(p._startTime));
     assert.equal(p.currentTime, 0);
     tick(1600);
     assert.equal(p._startTime, 1600);
     assert.equal(p.currentTime, 0);
   });
   test('limiting works as expected', function() {
-    tick(400);
+    tick(390);
     var p = document.body.animate([], 1000);
+    tick(400);
     assert.equal(p.startTime, 400);
     assert.equal(p.currentTime, 0);
     tick(900);
@@ -122,7 +129,7 @@ suite('player', function() {
     p.reverse();
     assert.equal(p.playbackRate, -1);
     assert.equal(p.currentTime, 1000);
-    assert.equal(p._startTime, null);
+    assert.ok(isNaN(p._startTime));
     tick(2000);
     assert.equal(p.currentTime, 1000);
     assert.equal(p.startTime, 3000);
@@ -137,8 +144,9 @@ suite('player', function() {
     assert.equal(p.startTime, 3000);
   });
   test('play after limit works as expected', function() {
-    tick(500);
+    tick(490);
     var p = document.body.animate([], 2000);
+    tick(500);
     tick(2600);
     assert.equal(p.currentTime, 2000);
     assert.equal(p.startTime, 500);
@@ -152,8 +160,9 @@ suite('player', function() {
     assert.equal(p.playbackRate, 1);
   });
   test('play after limit works as expected (reversed)', function() {
-    tick(600);
+    tick(590);
     var p = document.body.animate([], 3000);
+    tick(600);
     tick(700);
     p.reverse();
     tick(900);
@@ -169,8 +178,9 @@ suite('player', function() {
     assert.equal(p.playbackRate, -1);
   });
   test('seeking works as expected', function() {
-    tick(700);
+    tick(690);
     var p = document.body.animate([], 2000);
+    tick(700);
     tick(900);
     assert.equal(p.currentTime, 200);
     p.currentTime = 600;
@@ -183,37 +193,38 @@ suite('player', function() {
     assert.equal(p.startTime, 1200);
   });
   test('seeking while paused works as expected', function() {
-    tick(800);
+    tick(790);
     var p = document.body.animate([], 1000);
+    tick(800);
     tick(1000);
     p.pause();
     assert.equal(p.currentTime, 200);
-    assert.equal(p.startTime, null);
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.paused, true);
     p.currentTime = 500;
-    assert.equal(p.startTime, null);
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.paused, true);
   });
   test('setting start time while paused is ignored', function() {
     tick(900);
     var p = document.body.animate([], 1234);
     p.pause();
-    assert.equal(p.startTime, null);
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.currentTime, 0);
     p.startTime = 2232;
-    assert.equal(p.startTime, null);
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.currentTime, 0);
   });
   test('finishing works as expected', function() {
     tick(1000);
     var p = document.body.animate([], 2000);
     p.finish();
-    assert.equal(p.startTime, null);
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.currentTime, 2000);
     p.reverse();
     p.finish();
     assert.equal(p.currentTime, 0);
-    assert.equal(p.startTime, null);
+    assert.ok(isNaN(p.startTime));
     tick(2000);
   });
   test('cancelling clears all effects', function() {
@@ -221,7 +232,8 @@ suite('player', function() {
     var target = document.createElement('div');
     document.documentElement.appendChild(target);
     var player = target.animate([{marginLeft: '50px'}, {marginLeft: '50px'}], 1000);
-    tick(100);
+    tick(10);
+    tick(110);
     assert.equal(getComputedStyle(target).marginLeft, '50px');
     player.cancel();
     // getComputedStyle forces a tick.
@@ -237,16 +249,19 @@ suite('player', function() {
     assert.equal(p.startTime, 0);
   });
   test('players which are finished and not filling get discarded', function() {
-    tick(100);
+    tick(90);
     var nofill = document.body.animate([], 100);
     var fill = document.body.animate([], {duration: 100, fill: 'forwards'});
+    assert.deepEqual(document.timeline.players, [nofill, fill]);
+    tick(100);
     assert.deepEqual(document.timeline.players, [nofill, fill]);
     tick(400);
     assert.deepEqual(document.timeline.players, [fill]);
   });
   test('discarded players get re-added on modification', function() {
-    tick(100);
+    tick(90);
     var player = document.body.animate([], 100);
+    tick(100);
     tick(400);
     assert.deepEqual(document.timeline.players, []);
     player.currentTime = 0;
