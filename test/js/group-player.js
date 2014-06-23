@@ -762,4 +762,34 @@ suite('group-player', function() {
             [NaN, 500]]],
         't = 2020');
   });
+
+  test('pausing works as expected with an empty AnimationSequence inside an AnimationSequence', function() {
+    var player = document.timeline.play(this.seqWithEmptySeq_source);
+    tick(0);
+    checkTimes(
+        player,
+        [0, 0], [],
+        't = 0');
+
+    player.pause();
+    checkTimes(
+        player,
+        [NaN, 0], [],
+        't = 0 after pause');
+  });
+
+  test('pausing works as expected with an empty AnimationGroup inside an AnimationSequence', function() {
+    var player = document.timeline.play(this.seqWithEmptyGroup_source);
+    tick(0);
+    checkTimes(
+        player,
+        [0, 0], [0, 0],
+        't = 0');
+
+    player.pause();
+    checkTimes(
+        player,
+        [NaN, 0], [NaN, 0],
+        't = 0 after pause');
+  });
 });
