@@ -96,7 +96,6 @@
         if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
         player._tickCurrentTime((t - player._startTime) * player.playbackRate);
-        //console.log(player.source.name, player.currentTime);
         if (!player.finished)
           ticking = true;
       } else if (player._updateEffect) {
