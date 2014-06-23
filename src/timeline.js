@@ -22,9 +22,6 @@
   scope.Timeline.prototype = {
     _play: function(source) {
       var player = new scope.Player(source);
-      if ((TESTING || ticking) && this.currentTime !== undefined) {
-        player._startTime = this.currentTime;
-      }
       player._timeline = this;
       this.players.push(player);
       scope.restart();
@@ -77,10 +74,6 @@
     }
   };
 
-  scope.tickNow = function() {
-    tick(performance.now());
-  };
-
   function tick(t) {
     hasRestartedThisFrame = false;
     var timeline = global.document.timeline;
@@ -97,7 +90,7 @@
       var pendingEffects = [];
       updatingPlayers = updatingPlayers.filter(function(player) {
         if (!(player.paused || player.finished)) {
-          if (player._startTime === null)
+          if (isNaN(player._startTime))
             player.startTime = t - player.__currentTime / player.playbackRate;
           player._tickCurrentTime((t - player._startTime) * player.playbackRate);
           if (!player.finished)
@@ -126,7 +119,6 @@
       updatingPlayers = timeline.players;
     }
     timeline.players = finalPlayers;
-
     ensureOriginalGetComputedStyle();
 
     if (ticking && !TESTING)

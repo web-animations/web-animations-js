@@ -19,7 +19,6 @@
     this.children = children || [];
     this.timing = timing;
     this._internalPlayer = null;
-    this._player = null;
     return this;
   };
 
@@ -28,19 +27,16 @@
     this.children = children || [];
     this.timing = timing;
     this._internalPlayer = null;
-    this._player = null;
     return this;
   };
 
   global.AnimationSequence.prototype = {
-    get player() { return this._player; },
     get activeDuration() {
       return this.children.map(function(a) { return a.activeDuration; }).reduce(function(a, b) { return a + b; }, 0);
     }
   };
 
   global.AnimationGroup.prototype = {
-    get player() { return this._player; },
     get activeDuration() {
       return Math.max.apply(this, this.children.map(function(a) { return a.activeDuration; }));
     }
