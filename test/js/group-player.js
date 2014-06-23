@@ -21,7 +21,6 @@ suite('group-player', function() {
           ],
           500);
     };
-
     var sequenceEmpty = function() {
       return new AnimationSequence();
     };
@@ -165,8 +164,8 @@ suite('group-player', function() {
       return;
     }
     if (typeof timingList[0] == 'number') {
-      if (isNaN(player._startTime))
-        assert.ok(isNaN(timingList[0]));
+      if (isNaN(timingList[0]))
+        assert.ok(isNaN(player._startTime), trace + 'expected NaN startTime');
       else
         assert.equal(player._startTime, timingList[0], trace + ' startTime');
       assert.equal(player.currentTime, timingList[1], trace + ' currentTime');
@@ -327,68 +326,6 @@ suite('group-player', function() {
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
   });
 
-  // FIXME: This test can be removed when this suite is finished.
-  test('sources are working for basic operations', function() {
-    var players = [];
-    players.push(document.timeline.play(this.seqEmpty_source));
-    players.push(document.timeline.play(this.seqSimple_source));
-    players.push(document.timeline.play(this.seqWithSeq_source));
-    players.push(document.timeline.play(this.seqWithGroup_source));
-    players.push(document.timeline.play(this.seqWithEmptyGroup_source));
-    players.push(document.timeline.play(this.seqWithEmptySeq_source));
-
-    players.push(document.timeline.play(this.groupEmpty_source));
-    players.push(document.timeline.play(this.groupSimple_source));
-    players.push(document.timeline.play(this.groupWithSeq_source));
-    players.push(document.timeline.play(this.groupWithGroup_source));
-    players.push(document.timeline.play(this.groupWithEmptyGroup_source));
-    players.push(document.timeline.play(this.groupWithEmptySeq_source));
-
-    var length = players.length;
-
-    tick(50);
-    for (var i = 0; i < length; i++)
-      players[i].pause();
-
-    tick(100);
-    for (var i = 0; i < length; i++)
-      players[i].play();
-
-    tick(200);
-    for (var i = 0; i < length; i++)
-      players[i].currentTime += 1;
-
-    tick(300);
-    for (var i = 0; i < length; i++)
-      players[i].startTime += 1;
-
-    tick(350);
-    for (var i = 0; i < length; i++)
-      players[i].reverse();
-
-    var readOffsets = function(player) {
-      player.offset;
-      if (player.hasOwnProperty('childPlayers'))
-        for (var i = 0; i < player.childPlayers.length; i++)
-          readOffsets(player.childPlayers[i]);
-    };
-    tick(380);
-    for (var i = 0; i < length; i++)
-      readOffsets(players[i]);
-
-    tick(400);
-    for (var i = 0; i < length; i++)
-      players[i].finish();
-
-    tick(500);
-    tick(600);
-    for (var i = 0; i < length; i++)
-      players[i].cancel();
-
-    for (var i = 0; i < length; i++)
-      players[i].play();
-  });
-
   test('redundant animation node wrapping', function() {
     var target = document.createElement('div');
     document.documentElement.appendChild(target);
@@ -435,5 +372,247 @@ suite('group-player', function() {
         [102, 1, 1, 2]]] // 2
     ], 't = 103');
     target.remove();
+  });
+
+  // FIXME: This test can be removed when this suite is finished.
+  test('sources are working for basic operations', function() {
+    var players = [];
+    players.push(document.timeline.play(this.seqEmpty_source));
+    players.push(document.timeline.play(this.seqSimple_source));
+    players.push(document.timeline.play(this.seqWithSeq_source));
+    players.push(document.timeline.play(this.seqWithGroup_source));
+    players.push(document.timeline.play(this.seqWithEmptyGroup_source));
+    players.push(document.timeline.play(this.seqWithEmptySeq_source));
+
+    players.push(document.timeline.play(this.groupEmpty_source));
+    players.push(document.timeline.play(this.groupSimple_source));
+    players.push(document.timeline.play(this.groupWithSeq_source));
+    players.push(document.timeline.play(this.groupWithGroup_source));
+    players.push(document.timeline.play(this.groupWithEmptyGroup_source));
+    players.push(document.timeline.play(this.groupWithEmptySeq_source));
+
+    var length = players.length;
+
+    tick(50);
+    for (var i = 0; i < length; i++)
+      players[i].pause();
+
+    tick(100);
+    for (var i = 0; i < length; i++)
+      players[i].play();
+
+    tick(200);
+    for (var i = 0; i < length; i++)
+      players[i].currentTime += 1;
+
+    tick(300);
+    for (var i = 0; i < length; i++)
+      players[i].startTime += 1;
+
+    tick(350);
+    for (var i = 0; i < length; i++)
+      players[i].reverse();
+
+    tick(400);
+    for (var i = 0; i < length; i++)
+      players[i].finish();
+
+    tick(500);
+    tick(600);
+    for (var i = 0; i < length; i++)
+      players[i].cancel();
+
+    for (var i = 0; i < length; i++)
+      players[i].play();
+  });
+
+  test('pausing works as expected with an empty AnimationSequence', function() {
+    var player = document.timeline.play(this.seqEmpty_source);
+    tick(0);
+    assert.equal(player.startTime, 0);
+    assert.equal(player.currentTime, 0);
+
+    player.pause();
+    assert(isNaN(player.startTime));
+    assert.equal(player.currentTime, 0);
+  });
+
+  test('pausing works as expected with a simple AnimationSequence', function() {
+    var player = document.timeline.play(this.seqSimple_source);
+    tick(0);
+    checkTimes(player, [0, 0], [[0, 0], [500, -500]], 't = 0');
+
+    tick(200);
+    checkTimes(player, [0, 200], [[0, 200], [500, -300]], 't = 200');
+
+    player.pause();
+    checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 200');
+
+    tick(300);
+    checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
+
+    player.play();
+    checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
+
+    tick(301);
+    checkTimes(player, [101, 200], [[101, 200], [601, -300]], 't = 301');
+
+    tick(700);
+    checkTimes(player, [101, 599], [[101, 500], [601, 99]], 't = 700');
+  });
+
+  test('pausing works as expected with an AnimationSequence inside an AnimationSequence', function() {
+    var player = document.timeline.play(this.seqWithSeq_source);
+    tick(0);
+    checkTimes(
+        player,
+        [0, 0], [
+          [0, 0],
+          [500, -500], [
+            [1000, -1000],
+            [1500, -1500]]],
+        't = 0');
+
+    tick(200);
+    checkTimes(
+        player,
+        [0, 200], [
+          [0, 200],
+          [500, -300], [
+            [1000, -800],
+            [1500, -1300]]],
+        't = 200');
+
+    player.pause();
+    checkTimes(
+        player,
+        [NaN, 200], [
+          [NaN, 200],
+          [NaN, -300], [
+            [NaN, -800],
+            [NaN, -1300]]],
+        't = 200');
+
+    tick(300);
+    checkTimes(
+        player,
+        [NaN, 200], [
+          [NaN, 200],
+          [NaN, -300], [
+            [NaN, -800],
+            [NaN, -1300]]],
+        't = 300');
+
+    player.play();
+    tick(310);
+    checkTimes(
+        player,
+        [110, 200], [
+          [110, 200],
+          [610, -300], [
+            [1110, -800],
+            [1610, -1300]]],
+        't = 310');
+
+    tick(1300);
+    checkTimes(
+        player,
+        [110, 1190], [
+          [110, 500],
+          [610, 500], [
+            [1110, 190],
+            [1610, -310]]],
+        't = 1300');
+
+    player.pause();
+    checkTimes(
+        player,
+        [NaN, 1190], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 190],
+            [NaN, -310]]],
+        't = 1300');
+
+    tick(1400);
+    checkTimes(
+        player,
+        [NaN, 1190], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 190],
+            [NaN, -310]]],
+        't = 1400');
+
+    player.play();
+    checkTimes(
+        player,
+        [NaN, 1190], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 190],
+            [NaN, -310]]],
+        't = 1400');
+
+    tick(1410);
+    checkTimes(
+        player,
+        [220, 1190], [
+          [220, 500],
+          [520, 500], [
+            [1220, 190],
+            [1720, -310]]],
+        't = 1410');
+
+    tick(1600);
+    checkTimes(
+        player,
+        [220, 1380], [
+          [220, 500],
+          [720, 500], [
+            [1220, 380],
+            [1720, -120]]],
+        't = 1600');
+
+    player.pause();
+    checkTimes(
+        player,
+        [NaN, 1380], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 380],
+            [NaN, -120]]],
+        't = 1600');
+
+    tick(1700);
+    checkTimes(
+        player,
+        [NaN, 1380], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 380],
+            [NaN, -120]]],
+        't = 1700');
+
+    player.play();
+    tick(1710);
+    checkTimes(
+        player,
+        [330, 1380], [
+          [330, 500],
+          [830, 500], [
+            [1330, 380],
+            [1830, -120]]],
+        't = 1710');
+
+    tick(2400);
+    checkTimes(
+        player,
+        [330, 2000], [
+          [330, 500],
+          [830, 500], [
+            [1330, 500],
+            [1830, 500]]],
+        't = 2400');
   });
 });
