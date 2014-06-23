@@ -168,8 +168,10 @@ suite('group-player', function() {
       return;
     }
     if (typeof timingList[0] == 'number') {
-      if (isNaN(player._startTime))
-        assert.ok(isNaN(timingList[0]));
+      // if (isNaN(player._startTime))
+      //   assert.ok(isNaN(timingList[0]));
+      if (isNaN(timingList[0]))
+        assert.ok(isNaN(player._startTime), trace + 'expected NaN startTime');
       else
         assert.equal(player._startTime, timingList[0], trace + ' startTime');
       assert.equal(player.currentTime, timingList[1], trace + ' currentTime');
@@ -365,60 +367,37 @@ suite('group-player', function() {
   });
 
   test('pausing works as expected with an empty AnimationSequence', function() {
-    tick(0);
     var player = document.timeline.play(this.seqEmpty_source);
     tick(0);
     assert.equal(player.startTime, 0);
     assert.equal(player.currentTime, 0);
     player.pause();
-    assert.equal(player.startTime, null);
-    assert.equal(player.currentTime, 0);  });
+    assert(isNaN(player.startTime));
+    assert.equal(player.currentTime, 0);
+  });
 
   test('pausing works as expected with a simple AnimationSequence', function() {
-    tick(0);
     var player = document.timeline.play(this.seqSimple_source);
     tick(0);
     checkTimes(player, [0, 0], [[0, 0], [500, -500]], 't = 0');
     tick(200);
     checkTimes(player, [0, 200], [[0, 200], [500, -300]], 't = 200');
     player.pause();
-    // checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 200');
-    checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 200');
+    checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 200');
     tick(300);
-    // checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
-    checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 300');
+    checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
     player.play();
-    // checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
-    checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 300');
-    tick(300);
-    checkTimes(player, [100, 200], [[100, 200], [600, -300]], 't = 300');
+    checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
+    tick(301);
+    checkTimes(player, [101, 200], [[101, 200], [601, -300]], 't = 301');
     tick(700);
-    checkTimes(player, [100, 600], [[100, 500], [600, 100]], 't = 700');
+    checkTimes(player, [101, 599], [[101, 500], [601, 99]], 't = 700');
   });
 
   test('pausing works as expected with an AnimationSequence inside an AnimationSequence', function() {
-    tick(0);
     var player = document.timeline.play(this.seqWithSeq_source);
     console.log(player);
     tick(0);
-    // check: player,
-    //        player.childPlayers[0],
-    //        player.childPlayers[1],
-    //        player.childPlayers[2],
-    //        player.childPlayers[2].childPlayers[0],
-    //        player.childPlayers[2].childPlayers[1]
-    // assert.equal(player.startTime, X);
-    // assert.equal(player.currentTime, X);
-    // assert.equal(player.childPlayers[0].startTime, X);
-    // assert.equal(player.childPlayers[0].currentTime, X);
-    // assert.equal(player.childPlayers[1].startTime, X);
-    // assert.equal(player.childPlayers[1].currentTime, X);
-    // assert.equal(player.childPlayers[2].startTime, X);
-    // assert.equal(player.childPlayers[2].currentTime, X);
-    // assert.equal(player.childPlayers[2].childPlayers[0].startTime, X);
-    // assert.equal(player.childPlayers[2].childPlayers[0].currentTime, X);
-    // assert.equal(player.childPlayers[2].childPlayers[1].startTime, X);
-    // assert.equal(player.childPlayers[2].childPlayers[1].currentTime, X);
     checkTimes(
         player,
         [0, 0], [
@@ -439,121 +418,121 @@ suite('group-player', function() {
     player.pause();
     checkTimes(
         player,
-        [null, 200], [
-          [null, 200],
-          [null, -300], [
-            [null, -800],
-            [null, -1300]]],
+        [NaN, 200], [
+          [NaN, 200],
+          [NaN, -300], [
+            [NaN, -800],
+            [NaN, -1300]]],
         't = 200');
     tick(300);
     checkTimes(
         player,
-        [null, 200], [
-          [null, 200],
-          [null, -300], [
-            [null, -800],
-            [null, -1300]]],
+        [NaN, 200], [
+          [NaN, 200],
+          [NaN, -300], [
+            [NaN, -800],
+            [NaN, -1300]]],
         't = 300');
     player.play();
-    tick(300);
+    tick(310);
     checkTimes(
         player,
-        [100, 200], [
-          [100, 200],
-          [600, -300], [
-            [1100, -800],
-            [1600, -1300]]],
-        't = 300');
+        [110, 200], [
+          [110, 200],
+          [610, -300], [
+            [1110, -800],
+            [1610, -1300]]],
+        't = 310');
     tick(1300);
     checkTimes(
         player,
-        [100, 1200], [
-          [100, 500],
-          [600, 500], [
-            [1100, 200],
-            [1600, -300]]],
+        [110, 1190], [
+          [110, 500],
+          [610, 500], [
+            [1110, 190],
+            [1610, -310]]],
         't = 1300');
     player.pause();
     checkTimes(
         player,
-        [null, 1200], [
-          [null, 500],
-          [null, 500], [
-            [null, 200],
-            [null, -300]]],
+        [NaN, 1190], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 190],
+            [NaN, -310]]],
         't = 1300');
     tick(1400);
     checkTimes(
         player,
-        [null, 1200], [
-          [null, 500],
-          [null, 500], [
-            [null, 200],
-            [null, -300]]],
+        [NaN, 1190], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 190],
+            [NaN, -310]]],
         't = 1400');
     player.play();
     checkTimes(
       player,
-      [null, 1200], [
-        [null, 500],
-        [null, 500], [
-          [null, 200],
-          [null, -300]]],
+      [NaN, 1190], [
+        [NaN, 500],
+        [NaN, 500], [
+          [NaN, 190],
+          [NaN, -310]]],
       't = 1400');
-    tick(1400);
+    tick(1410);
     checkTimes(
       player,
-      [200, 1200], [
-        [200, 500],
-        [700, 500], [
-          [1200, 200],
-          [1700, -300]]],
-      't = 1400');
+      [220, 1190], [
+        [220, 500],
+        [520, 500], [
+          [1220, 190],
+          [1720, -310]]],
+      't = 1410');
     tick(1600);
     checkTimes(
       player,
-      [200, 1400], [
-        [200, 500],
-        [700, 500], [
-          [1200, 400],
-          [1700, -100]]],
+      [220, 1380], [
+        [220, 500],
+        [720, 500], [
+          [1220, 380],
+          [1720, -120]]],
       't = 1600');
     player.pause();
     checkTimes(
       player,
-      [null, 1400], [
-        [null, 500],
-        [null, 500], [
-          [null, 400],
-          [null, -100]]],
+      [NaN, 1380], [
+        [NaN, 500],
+        [NaN, 500], [
+          [NaN, 380],
+          [NaN, -120]]],
       't = 1600');
     tick(1700);
     checkTimes(
       player,
-      [null, 1400], [
-        [null, 500],
-        [null, 500], [
-          [null, 400],
-          [null, -100]]],
+      [NaN, 1380], [
+        [NaN, 500],
+        [NaN, 500], [
+          [NaN, 380],
+          [NaN, -120]]],
       't = 1700');
     player.play();
-    tick(1700);
+    tick(1710);
     checkTimes(
       player,
-      [300, 1400], [
-        [300, 500],
-        [800, 500], [
-          [1300, 500],
-          [1800, -100]]],
-      't = 1700');
+      [330, 1380], [
+        [330, 500],
+        [830, 500], [
+          [1330, 380],
+          [1830, -120]]],
+      't = 1710');
     tick(2400);
     checkTimes(
       player,
-      [300, 2000], [
-        [300, 500],
-        [800, 500], [
-          [1300, 500],
-          [1800, 500]]],
+      [330, 2000], [
+        [330, 500],
+        [830, 500], [
+          [1330, 500],
+          [1830, 500]]],
       't = 2400');
   });
 
