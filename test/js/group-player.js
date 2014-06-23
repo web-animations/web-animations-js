@@ -149,6 +149,7 @@ suite('group-player', function() {
     return new AnimationSequence([new Animation(document.body, [], 2000), new Animation(document.body, [], 1000), new Animation(document.body, [], 3000)]);
   }
 
+  // FIXME: Remove _startOffset.
   // playerState is [startTime, currentTime, _startOffset?, offset?]
   // innerPlayerStates is a nested array tree of playerStates e.g. [[0, 0], [[1, -1], [2, -2]]]
   function checkTimes(player, playerState, innerPlayerStates, description) {
@@ -164,9 +165,7 @@ suite('group-player', function() {
     if (timingList[0] == null || typeof timingList[0] == 'number') {
       assert.equal(player._startTime, timingList[0], trace + ' startTime');
       assert.equal(player.currentTime, timingList[1], trace + ' currentTime');
-      if (timingList.length == 3)
-        assert.equal(player._startOffset, timingList[2], trace + ' startOffset');
-      if (timingList.length == 4)
+      if (timingList.length >= 4)
         assert.equal(player.offset, timingList[3], trace + ' offset');
     } else {
       _checkTimes(player.childPlayers[index], timingList[0], 0, trace + ' ' + index);

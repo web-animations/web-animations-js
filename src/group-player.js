@@ -17,7 +17,6 @@
   var superclass = shared.PlayerProto;
 
   scope.Player = function(source) {
-    this._startOffset = 0;
     this.init();
     this.source = source;
   };
@@ -86,7 +85,6 @@
     },
     reverse: function() {
       this._playbackRate *= -1;
-      this.setChildOffsets();
       this._finishedFlag = false;
       for (var i = 0; i < this.childPlayers.length; i++)
         this.childPlayers[i].reverse();
@@ -94,26 +92,6 @@
         this._startTime = this.childPlayers[0].startTime;
       else
         this._startTime = null;
-    },
-    setChildOffsets: function() {
-      if (this.playbackRate >= 0) {
-        if (this.source instanceof global.AnimationSequence) {
-          if (this.childPlayers.length > 0)
-            this.childPlayers[0]._startOffset = 0;
-          for (var i = 1; i < this.childPlayers.length; i++)
-            this.childPlayers[i]._startOffset = (this.childPlayers[i - 1]._startOffset + this.childPlayers[i - 1].totalDuration);
-        }
-      } else {
-        if (this.source instanceof global.AnimationSequence) {
-          if (this.childPlayers.length > 0)
-            this.childPlayers[this.childPlayers.length - 1]._startOffset = this.totalDuration;
-          for (var i = this.childPlayers.length - 2; i >= 0; i--)
-            this.childPlayers[i]._startOffset = this.totalDuration - (this.childPlayers[i + 1]._startOffset + this.childPlayers[i + 1].totalDuration);
-        } else {
-          for (var i = this.childPlayers.length - 1; i >= 0; i--)
-            this.childPlayers[i]._startOffset = this.totalDuration - this.childPlayers[i].totalDuration;
-        }
-      }
     },
     __proto__: shared.PlayerProto,
   };

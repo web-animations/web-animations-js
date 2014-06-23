@@ -18,7 +18,6 @@
 
   scope.Player = function(source) {
     this._sequenceNumber = sequenceNumber++;
-    this._startOffset = 0;
     this.init();
     this._source = source;
   };
