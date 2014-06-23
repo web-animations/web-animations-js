@@ -74,7 +74,7 @@
       scope.invalidateEffects();
     },
     get startTime() {
-     return this._startTime;
+      return this._startTime;
     },
     set startTime(newTime) {
       if (this.paused)
@@ -105,7 +105,7 @@
     },
     pause: function() {
       this.paused = true;
-      this._startTime = null;
+      this._startTime = NaN;
     },
     finish: function() {
       this.currentTime = this._playbackRate > 0 ? this.totalDuration : 0;

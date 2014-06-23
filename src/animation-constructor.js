@@ -55,7 +55,7 @@
     }
     // FIXME: Move this code out of this module
     if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
-      var newTiming = {fill: 'both'}
+      var newTiming = {fill: 'both'};
       for (var property in source.timing)
         newTiming[property] = source.timing[property];
       newTiming.duration = source.activeDuration;
@@ -71,7 +71,7 @@
           return;
 
         updateChildPlayers(player);
-      }
+      };
 
       var updateChildPlayers = function(updatingPlayer) {
         var offset = 0;
@@ -121,7 +121,7 @@
           if (source instanceof global.AnimationSequence)
             offset += child.source.activeDuration;
         });
-      }
+      };
 
       var originalPause = player.pause.bind(player);
       player.pause = function() {
