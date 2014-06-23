@@ -60,8 +60,6 @@
     set startTime(newTime) {
       if (this.paused)
         return;
-      if (this._startTime == null) {
-      }
       this._startTime = newTime;
       this._tickCurrentTime(this._timeline.currentTime - this._startTime);
       scope.invalidateEffects();
