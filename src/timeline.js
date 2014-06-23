@@ -12,8 +12,8 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(shared, scope, testing) {
 
+(function(shared, scope, testing) {
   scope.Timeline = function() {
     this.players = [];
     this.currentTime = undefined;
@@ -35,13 +35,16 @@
 
   var ticking = true;
 
+  var hasRestartedThisFrame = false;
+
   scope.restart = function() {
     if (!ticking) {
       ticking = true;
       if (!TESTING)
         requestAnimationFrame(tick);
-      return true;
+      hasRestartedThisFrame = true;
     }
+    return hasRestartedThisFrame;
   };
 
   var getComputedStylePatched = false;
@@ -79,6 +82,7 @@
   };
 
   function tick(t) {
+    hasRestartedThisFrame = false;
     var timeline = global.document.timeline;
     timeline.currentTime = t;
     timeline.players.sort(function(leftPlayer, rightPlayer) {
@@ -86,20 +90,21 @@
     });
     ticking = false;
     var pendingEffects = [];
+    var pendingClears = [];
     timeline.players = timeline.players.filter(function(player) {
       if (!(player.paused || player.finished)) {
         if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
-        player._currentTime = (t - player._startTime) * player.playbackRate;
+        player._tickCurrentTime((t - player._startTime) * player.playbackRate);
         if (!player.finished)
           ticking = true;
       } else if (player._updateEffect) {
         // Force an effect update.
-        player._currentTime = player.__currentTime;
+        player._tickCurrentTime(player.__currentTime);
       }
       // Execute effect clearing before effect applying.
       if (!player._inEffect)
-        player._source();
+        pendingClears.push(player._source);
       else
         pendingEffects.push(player._source);
 
@@ -110,6 +115,7 @@
       player._inTimeline = false;
       return false;
     });
+    pendingClears.forEach(function(effect) { effect(); });
     pendingEffects.forEach(function(effect) { effect(); });
 
     ensureOriginalGetComputedStyle();

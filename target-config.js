@@ -68,7 +68,6 @@
     maxifill: {
       src: tweak(minifillSrc, {
         add: [
-          'src/group-player.js',
           'src/animation-constructor.js',
           'src/group-constructors.js',
         ],

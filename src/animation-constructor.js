@@ -22,10 +22,10 @@
     getFrames: function() { return this._frames; }
   };
 
-  global.Animation = function(target, effect, source) {
+  global.Animation = function(target, effect, timing) {
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
-    this.timing = source;
+    this.timing = timing;
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
     if (typeof effect == 'function')
@@ -34,19 +34,20 @@
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
     this._internalPlayer = null;
-    this._player = null;
+    this.originalPlayer = null;
+    this.activeDuration = shared.activeDuration(timing);
     return this;
   };
 
   global.Animation.prototype = {
-    get player() { return this._player; },
+    get player() { return this.originalPlayer; },
   };
 
   global.document.timeline.play = function(source) {
     if (source instanceof global.Animation) {
       var player = source.target.animate(source._effect, source.timing);
       source._internalPlayer = player;
-      source._player = source._player || player;
+      source.originalPlayer = source.originalPlayer || player;
       // TODO: make source setter call cancel.
       player.source = source;
       var cancel = player.cancel.bind(player);
@@ -58,18 +59,106 @@
     }
     // FIXME: Move this code out of this module
     if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
-      var player = new scope.Player(source);
-      source._internalPlayer = player;
-      source._player = source._player || player;
-      for (var i = 0; i < source.children.length; i++) {
-        source.children[i]._player = source._player;
-        var childPlayer = global.document.timeline.play(source.children[i]);
-        childPlayer._parent = player;
-        player.childPlayers.push(childPlayer);
+      var newTiming = {}
+      for (var property in source.timing)
+        newTiming[property] = source.timing[property];
+      newTiming.duration = source.activeDuration;
+      if (newTiming.fill == 'auto')
+        newTiming.fill = 'both';
+      var ticker = function(tf) {
+        if (tf == null) {
+          while (player._childPlayers.length)
+            player._childPlayers.pop().cancel();
+          return;
+        }
+        if (player._startTime == null)
+          return;
+
+        updateChildPlayers(player);
       }
-      player.setChildOffsets();
-      if (player.childPlayers.length > 0)
-        player.startTime = player.childPlayers[0]._startTime;
+
+      var updateChildPlayers = function(updatingPlayer) {
+        var offset = 0;
+
+        // TODO: Call into this less frequently.
+
+        for (var i = 0; i < updatingPlayer.source.children.length; i++) {
+          var child = updatingPlayer.source.children[i];
+
+          function newPlayer(source) {
+            var newPlayer = global.document.timeline.play(source);
+            newPlayer.startTime = updatingPlayer.startTime + offset;
+            source._internalPlayer = newPlayer;
+            updatingPlayer._childPlayers.push(newPlayer);
+            if (!source instanceof global.Animation)
+              updateChildPlayers(newPlayer);
+          }
+
+          if (i >= updatingPlayer._childPlayers.length)
+            newPlayer(child);
+
+          var childPlayer = updatingPlayer._childPlayers[i];
+          if (updatingPlayer.playbackRate == -1 && updatingPlayer.currentTime < offset && childPlayer.currentTime !== -1) {
+            console.log(updatingPlayer.currentTime, document.timeline.currentTime);
+            childPlayer.currentTime = -1;
+          }
+
+          if (source instanceof global.AnimationSequence)
+            offset += child.activeDuration;
+        }
+      };
+
+      // TODO: Use a single static element rather than one per group.
+      var player = document.createElement('div').animate(ticker, newTiming);
+      player._childPlayers = [];
+      player.source = source;
+
+      var _reverse = player.reverse.bind(player);
+      player.reverse = function() {
+        _reverse();
+        var offset = 0;
+        player._childPlayers.forEach(function(child) {
+          child.reverse();
+          child.startTime = player.startTime + offset * player.playbackRate;
+          child.currentTime = player.currentTime + offset * player.playbackRate;
+          if (source instanceof global.AnimationSequence)
+            offset += child.source.activeDuration;
+        });
+      }
+
+      var originalPause = player.pause.bind(player);
+      player.pause = function() {
+        originalPause();
+        player._childPlayers.forEach(function(child) {
+          child.pause();
+        });
+      };
+
+      var originalPlay = player.play.bind(player);
+      player.play = function() {
+        originalPlay();
+        player._childPlayers.forEach(function(child) {
+          var time = child.currentTime;
+          child.play();
+          child.currentTime = time;
+        });
+      };
+
+      var originalCurrentTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'currentTime');
+      Object.defineProperty(player, 'currentTime',
+          { enumerable: true,
+            get: function() { return originalCurrentTime.get.bind(this)(); },
+            set: function(v) {
+              var offset = 0;
+              originalCurrentTime.set.bind(this)(v);
+              this._childPlayers.forEach(function(child) {
+                child.currentTime = v - offset;
+                if (this.source instanceof global.AnimationSequence)
+                  offset += child.source.activeDuration;
+              }.bind(this));
+            }
+          });
+
       return player;
     }
   };

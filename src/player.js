@@ -31,9 +31,25 @@
         document.timeline.players.push(this);
       }
     },
+    _tickCurrentTime: function(newTime, ignoreLimit) {
+      if (newTime != this.__currentTime || this._updateEffect) {
+        this._updateEffect = false;
+        this.__currentTime = newTime;
+        if (this.finished && !ignoreLimit)
+          this.__currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
+        this.ensureAlive();
+      }
+    },
     get currentTime() { return this.__currentTime; },
     set currentTime(newTime) {
-      this.setCurrentTime(newTime, this._timeline.currentTime);
+      if (scope.restart())
+        this._startTime = null;
+      if (!this.paused && this._startTime !== null) {
+        this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
+      }
+      if (this.__currentTime == newTime)
+        return;
+      this._tickCurrentTime(newTime, true);
       scope.invalidateEffects();
     },
     get startTime() {
@@ -42,8 +58,11 @@
       return this._startTime;
     },
     set startTime(newTime) {
-      if (this.setStartTime(newTime, this._timeline.currentTime))
-        scope.invalidateEffects();
+      if (this.paused)
+        return;
+      this._startTime = newTime;
+      this._tickCurrentTime(this._timeline.currentTime - this._startTime);
+      scope.invalidateEffects();
     },
     get totalDuration() { return this._source.totalDuration; },
     play: function() {
@@ -53,8 +72,9 @@
         scope.invalidateEffects();
       }
       this._finishedFlag = false;
-      if (!scope.restart())
+      if (!scope.restart()) {
         this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+      }
       else
         this._startTime = null;
       this.ensureAlive();
