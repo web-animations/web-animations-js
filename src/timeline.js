@@ -122,7 +122,7 @@
       pendingClears.forEach(function(effect) { effect(); });
       pendingEffects.forEach(function(effect) { effect(); });
 
-      finalPlayers = finalPlayers.concat(updatingPlayers);
+      finalPlayers.push.apply(finalPlayers, updatingPlayers);
       updatingPlayers = timeline.players;
     }
     timeline.players = finalPlayers;
