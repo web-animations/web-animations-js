@@ -16,9 +16,31 @@
 
   var sequenceNumber = 0;
 
+  var AnimationPlayerEvent = function(target, currentTime, timelineTime) {
+    this.target = target;
+    this.currentTime = currentTime;
+    this.timelineTime = timelineTime;
+
+    this.type = 'finish';
+    this.bubbles = false;
+    this.cancelable = false;
+    this.currentTarget = target;
+    this.defaultPrevented = false;
+    this.eventPhase = Event.AT_TARGET;
+    this.timeStamp = Date.now();
+  };
+
   scope.Player = function(source) {
     this._sequenceNumber = sequenceNumber++;
-    this.init();
+    this.__currentTime = 0;
+    this._startTime = null;
+    this.paused = false;
+    this._playbackRate = 1;
+    this._inTimeline = true;
+    this._finishedFlag = false;
+    this.onfinish = null;
+    this._finishHandlers = [];
+    this._updateEffect = true;
     this._source = source;
   };
 
@@ -63,6 +85,11 @@
       this._tickCurrentTime(this._timeline.currentTime - this._startTime);
       scope.invalidateEffects();
     },
+    get playbackRate() { return this._playbackRate; },
+    get finished() {
+      return this._playbackRate > 0 && this.__currentTime >= this.totalDuration ||
+          this._playbackRate < 0 && this.__currentTime <= 0;
+    },
     get totalDuration() { return this._source.totalDuration; },
     play: function() {
       this.paused = false;
@@ -77,6 +104,13 @@
       else
         this._startTime = null;
       this.ensureAlive();
+    },
+    pause: function() {
+      this.paused = true;
+      this._startTime = null;
+    },
+    finish: function() {
+      this.currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
     },
     cancel: function() {
       this._source = scope.NullAnimation(this._source.clear);
@@ -96,7 +130,30 @@
       this._finishedFlag = false;
       this.ensureAlive();
     },
-    __proto__: shared.PlayerProto,
+    addEventListener: function(type, handler) {
+      if (typeof handler == 'function' && type == 'finish')
+        this._finishHandlers.push(handler);
+    },
+    removeEventListener: function(type, handler) {
+      if (type != 'finish')
+        return;
+      var index = this._finishHandlers.indexOf(handler);
+      if (index >= 0)
+        this._finishHandlers.splice(index, 1);
+    },
+    _fireEvents: function(baseTime) {
+      var finished = this.finished;
+      if (finished && !this._finishedFlag) {
+        var event = new AnimationPlayerEvent(this, this.currentTime, baseTime);
+        var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
+        setTimeout(function() {
+          handlers.forEach(function(handler) {
+            handler.call(event.target, event);
+          });
+        }, 0);
+      }
+      this._finishedFlag = finished;
+    },
   };
 
 })(shared, minifill, testing);
