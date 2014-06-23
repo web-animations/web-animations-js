@@ -399,6 +399,7 @@ suite('group-player', function() {
   test('pausing works as expected with an AnimationSequence inside an AnimationSequence', function() {
     tick(0);
     var player = document.timeline.play(this.seqWithSeq_source);
+    console.log(player);
     tick(0);
     // check: player,
     //        player.childPlayers[0],
@@ -423,7 +424,6 @@ suite('group-player', function() {
         [0, 0], [
           [0, 0],
           [500, -500], [
-          [1000, -1000],
             [1000, -1000],
             [1500, -1500]]],
         't = 0');
@@ -433,35 +433,128 @@ suite('group-player', function() {
         [0, 200], [
           [0, 200],
           [500, -300], [
-          [1000, -800],
             [1000, -800],
             [1500, -1300]]],
         't = 200');
     player.pause();
-    // check
+    checkTimes(
+        player,
+        [null, 200], [
+          [null, 200],
+          [null, -300], [
+            [null, -800],
+            [null, -1300]]],
+        't = 200');
     tick(300);
-    // check
+    checkTimes(
+        player,
+        [null, 200], [
+          [null, 200],
+          [null, -300], [
+            [null, -800],
+            [null, -1300]]],
+        't = 300');
     player.play();
     tick(300);
-    // check
+    checkTimes(
+        player,
+        [100, 200], [
+          [100, 200],
+          [600, -300], [
+            [1100, -800],
+            [1600, -1300]]],
+        't = 300');
     tick(1300);
-    // check
+    checkTimes(
+        player,
+        [100, 1200], [
+          [100, 500],
+          [600, 500], [
+            [1100, 200],
+            [1600, -300]]],
+        't = 1300');
     player.pause();
-    // check
+    checkTimes(
+        player,
+        [null, 1200], [
+          [null, 500],
+          [null, 500], [
+            [null, 200],
+            [null, -300]]],
+        't = 1300');
     tick(1400);
-    // check
+    checkTimes(
+        player,
+        [null, 1200], [
+          [null, 500],
+          [null, 500], [
+            [null, 200],
+            [null, -300]]],
+        't = 1400');
     player.play();
+    checkTimes(
+      player,
+      [null, 1200], [
+        [null, 500],
+        [null, 500], [
+          [null, 200],
+          [null, -300]]],
+      't = 1400');
     tick(1400);
-    // check
+    checkTimes(
+      player,
+      [200, 1200], [
+        [200, 500],
+        [700, 500], [
+          [1200, 200],
+          [1700, -300]]],
+      't = 1400');
     tick(1600);
-    // check
+    checkTimes(
+      player,
+      [200, 1400], [
+        [200, 500],
+        [700, 500], [
+          [1200, 400],
+          [1700, -100]]],
+      't = 1600');
     player.pause();
-    // check
+    checkTimes(
+      player,
+      [null, 1400], [
+        [null, 500],
+        [null, 500], [
+          [null, 400],
+          [null, -100]]],
+      't = 1600');
     tick(1700);
-    // check
+    checkTimes(
+      player,
+      [null, 1400], [
+        [null, 500],
+        [null, 500], [
+          [null, 400],
+          [null, -100]]],
+      't = 1700');
     player.play();
     tick(1700);
-    // check
+    checkTimes(
+      player,
+      [300, 1400], [
+        [300, 500],
+        [800, 500], [
+          [1300, 500],
+          [1800, -100]]],
+      't = 1700');
+    tick(2400);
+    checkTimes(
+      player,
+      [300, 2000], [
+        [300, 500],
+        [800, 500], [
+          [1300, 500],
+          [1800, 500]]],
+      't = 2400');
   });
 
   test('pausing works as expected with an AnimationGroup inside an AnimationSequence', function() {
