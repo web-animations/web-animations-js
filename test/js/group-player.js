@@ -768,13 +768,13 @@ suite('group-player', function() {
     tick(0);
     checkTimes(
         player,
-        [0, 0], [],
+        [0, 0], [0, 0],
         't = 0');
 
     player.pause();
     checkTimes(
         player,
-        [NaN, 0], [],
+        [NaN, 0], [NaN, 0],
         't = 0 after pause');
   });
 
