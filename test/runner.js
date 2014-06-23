@@ -15,7 +15,6 @@ function loadWebAnimationsBuildTarget(target) {
   var pageError = null;
 
   addEventListener('error', function(event) {
-    console.log(event);
     pageError = event.filename + ':' + event.lineno + ' ' + event.message;
   });
 

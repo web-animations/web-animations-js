@@ -99,7 +99,6 @@
 
           var childPlayer = updatingPlayer._childPlayers[i];
           if (updatingPlayer.playbackRate == -1 && updatingPlayer.currentTime < offset && childPlayer.currentTime !== -1) {
-            console.log(updatingPlayer.currentTime, document.timeline.currentTime);
             childPlayer.currentTime = -1;
           }
 
