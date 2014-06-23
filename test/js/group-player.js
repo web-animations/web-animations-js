@@ -351,16 +351,6 @@ suite('group-player', function() {
     for (var i = 0; i < length; i++)
       players[i].reverse();
 
-    var readOffsets = function(player) {
-      player.offset;
-      if (player.hasOwnProperty('childPlayers'))
-        for (var i = 0; i < player.childPlayers.length; i++)
-          readOffsets(player.childPlayers[i]);
-    };
-    tick(380);
-    for (var i = 0; i < length; i++)
-      readOffsets(players[i]);
-
     tick(400);
     for (var i = 0; i < length; i++)
       players[i].finish();
@@ -377,41 +367,39 @@ suite('group-player', function() {
   test('pausing works as expected with an empty AnimationSequence', function() {
     tick(0);
     var player = document.timeline.play(this.seqEmpty_source);
-    // check: player
-    // assert.equal(player.startTime, X);
-    // assert.equal(player.currentTime, X);
+    tick(0);
+    assert.equal(player.startTime, 0);
+    assert.equal(player.currentTime, 0);
     player.pause();
-    // check
-  });
+    assert.equal(player.startTime, null);
+    assert.equal(player.currentTime, 0);  });
 
   test('pausing works as expected with a simple AnimationSequence', function() {
     tick(0);
     var player = document.timeline.play(this.seqSimple_source);
-    // check: player,
-    //        player.childPlayers[0],
-    //        player.childPlayers[1]
-    // assert.equal(player.startTime, X);
-    // assert.equal(player.currentTime, X);
-    // assert.equal(player.childPlayers[0].startTime, X);
-    // assert.equal(player.childPlayers[0].currentTime, X);
-    // assert.equal(player.childPlayers[1].startTime, X);
-    // assert.equal(player.childPlayers[1].currentTime, X);
+    tick(0);
+    checkTimes(player, [0, 0], [[0, 0], [500, -500]], 't = 0');
     tick(200);
-    // check
+    checkTimes(player, [0, 200], [[0, 200], [500, -300]], 't = 200');
     player.pause();
-    // check
+    // checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 200');
+    checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 200');
     tick(300);
-    // check
+    // checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
+    checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 300');
     player.play();
+    // checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
+    checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 300');
     tick(300);
-    // check
+    checkTimes(player, [100, 200], [[100, 200], [600, -300]], 't = 300');
     tick(700);
-    // check
+    checkTimes(player, [100, 600], [[100, 500], [600, 100]], 't = 700');
   });
 
   test('pausing works as expected with an AnimationSequence inside an AnimationSequence', function() {
     tick(0);
     var player = document.timeline.play(this.seqWithSeq_source);
+    tick(0);
     // check: player,
     //        player.childPlayers[0],
     //        player.childPlayers[1],
@@ -430,8 +418,25 @@ suite('group-player', function() {
     // assert.equal(player.childPlayers[2].childPlayers[0].currentTime, X);
     // assert.equal(player.childPlayers[2].childPlayers[1].startTime, X);
     // assert.equal(player.childPlayers[2].childPlayers[1].currentTime, X);
+    checkTimes(
+        player,
+        [0, 0], [
+          [0, 0],
+          [500, -500], [
+          [1000, -1000],
+            [1000, -1000],
+            [1500, -1500]]],
+        't = 0');
     tick(200);
-    // check
+    checkTimes(
+        player,
+        [0, 200], [
+          [0, 200],
+          [500, -300], [
+          [1000, -800],
+            [1000, -800],
+            [1500, -1300]]],
+        't = 200');
     player.pause();
     // check
     tick(300);
