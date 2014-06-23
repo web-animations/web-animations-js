@@ -192,6 +192,36 @@ suite('group-player', function() {
     checkTimes(p, [100, 3000], [[100, 2000], [100, 1000], [100, 3000]]);
   });
 
+  test('can seek an animationGroup', function() {
+    tick(90);
+    var p = document.timeline.play(simpleAnimationGroup());
+    tick(100);
+    checkTimes(p, [100, 0], [[100, 0], [100, 0], [100, 0]]);
+    p.currentTime = 200;
+    checkTimes(p, [-100, 200], [[-100, 200], [-100, 200], [-100, 200]]);
+    p.currentTime = 1100;
+    checkTimes(p, [-1000, 1100], [[-1000, 1100], [-1000, 1100], [-1000, 1100]]);
+    p.currentTime = 2100;
+    checkTimes(p, [-2000, 2100], [[-2000, 2100], [-2000, 2100], [-2000, 2100]]);
+    p.currentTime = 3100;
+    checkTimes(p, [-3000, 3100], [[-3000, 3100], [-3000, 3100], [-3000, 3100]]);
+  });
+
+  test('can startTime seek an animationGroup', function() {
+    tick(90);
+    var p = document.timeline.play(simpleAnimationGroup());
+    tick(100);
+    checkTimes(p, [100, 0], [[100, 0], [100, 0], [100, 0]]);
+    p.startTime = -100;
+    checkTimes(p, [-100, 200], [[-100, 200], [-100, 200], [-100, 200]]);
+    p.startTime = -1000;
+    checkTimes(p, [-1000, 1100], [[-1000, 1100], [-1000, 1000], [-1000, 1100]]);
+    p.startTime = -2000;
+    checkTimes(p, [-2000, 2100], [[-2000, 2000], [-2000, 1000], [-2000, 2100]]);
+    p.startTime = -3000;
+    checkTimes(p, [-3000, 3000], [[-3000, 2000], [-3000, 1000], [-3000, 3000]]);
+  });
+
   test('playing an animationSequence works as expected', function() {
     tick(100);
     var p = document.timeline.play(simpleAnimationSequence());
@@ -199,6 +229,42 @@ suite('group-player', function() {
     checkTimes(p, [110, 0], [[110, 0], [2110, -2000], [3110, -3000]]);
     tick(210);
     checkTimes(p, [110, 100], [[110, 100], [2110, -1900], [3110, -2900]]);
+    tick(2210);
+    checkTimes(p, [110, 2100], [[110, 2000], [2110, 100], [3110, -900]]);
+    tick(3210);
+    checkTimes(p, [110, 3100], [[110, 2000], [2110, 1000], [3110, 100]]);
+    tick(6210);
+    checkTimes(p, [110, 6000], [[110, 2000], [2110, 1000], [3110, 3000]]);
+  });
+
+  test('can seek an animationSequence', function() {
+    tick(100);
+    var p = document.timeline.play(simpleAnimationSequence());
+    tick(110);
+    checkTimes(p, [110, 0], [[110, 0], [2110, -2000], [3110, -3000]]);
+    p.currentTime = 100;
+    checkTimes(p, [10, 100], [[10, 100], [2010, -1900], [3010, -2900]]);
+    p.currentTime = 2100;
+    checkTimes(p, [-1990, 2100], [[-1990, 2100], [10, 100], [1010, -900]]);
+    p.currentTime = 3100;
+    checkTimes(p, [-2990, 3100], [[-2990, 3100], [-990, 1100], [10, 100]]);
+    p.currentTime = 6100;
+    checkTimes(p, [-5990, 6100], [[-5990, 6100], [-3990, 4100], [-2990, 3100]]);
+  });
+
+  test('can startTime seek an animationSequence', function() {
+    tick(100);
+    var p = document.timeline.play(simpleAnimationSequence());
+    tick(110);
+    checkTimes(p, [110, 0], [[110, 0], [2110, -2000], [3110, -3000]]);
+    p.startTime = 10;
+    checkTimes(p, [10, 100], [[10, 100], [2010, -1900], [3010, -2900]]);
+    p.startTime = -1990;
+    checkTimes(p, [-1990, 2100], [[-1990, 2000], [10, 100], [1010, -900]]);
+    p.startTime = -2990;
+    checkTimes(p, [-2990, 3100], [[-2990, 2000], [-990, 1000], [10, 100]]);
+    p.startTime = -5990;
+    checkTimes(p, [-5990, 6000], [[-5990, 2000], [-3990, 1000], [-2990, 3000]]);
   });
 
   test('complex animation tree timing while playing', function() {

@@ -164,6 +164,21 @@
             }
           });
 
+      var originalStartTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'startTime');
+      Object.defineProperty(player, 'startTime',
+          { enumerable: true,
+            get: function() { return originalStartTime.get.bind(this)(); },
+            set: function(v) {
+              var offset = 0;
+              originalStartTime.set.bind(this)(v);
+              this._childPlayers.forEach(function(child) {
+                child.startTime = v + offset;
+                if (this.source instanceof global.AnimationSequence)
+                  offset += child.source.activeDuration;
+              }.bind(this));
+            }
+          });
+
       player._removePlayers = function() {
         while (this._childPlayers.length)
           this._childPlayers.pop().cancel();
