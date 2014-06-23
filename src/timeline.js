@@ -12,8 +12,8 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(shared, scope, testing) {
 
+(function(shared, scope, testing) {
   scope.Timeline = function() {
     this.players = [];
     this.currentTime = undefined;
@@ -95,13 +95,13 @@
       if (!(player.paused || player.finished)) {
         if (player._startTime === null)
           player.startTime = t - player.__currentTime / player.playbackRate;
-        player.setCurrentTimeInternal((t - player._startTime) * player.playbackRate);
+        player._tickCurrentTime((t - player._startTime) * player.playbackRate);
         //console.log(player.source.name, player.currentTime);
         if (!player.finished)
           ticking = true;
       } else if (player._updateEffect) {
         // Force an effect update.
-        player.setCurrentTimeInternal(player.__currentTime);
+        player._tickCurrentTime(player.__currentTime);
       }
       // Execute effect clearing before effect applying.
       if (!player._inEffect)

@@ -34,20 +34,20 @@
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
     this._internalPlayer = null;
-    this._player = null;
+    this.originalPlayer = null;
     this.activeDuration = shared.activeDuration(timing);
     return this;
   };
 
   global.Animation.prototype = {
-    get player() { return this._player; },
+    get player() { return this.originalPlayer; },
   };
 
   global.document.timeline.play = function(source) {
     if (source instanceof global.Animation) {
       var player = source.target.animate(source._effect, source.timing);
       source._internalPlayer = player;
-      source._player = source._player || player;
+      source.originalPlayer = source.originalPlayer || player;
       // TODO: make source setter call cancel.
       player.source = source;
       var cancel = player.cancel.bind(player);
@@ -59,61 +59,59 @@
     }
     // FIXME: Move this code out of this module
     if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
-      var div = document.createElement('div')
       var newTiming = {}
       for (var property in source.timing)
         newTiming[property] = source.timing[property];
       newTiming.duration = source.activeDuration;
-      newTiming.fill = 'both';
+      if (newTiming.fill == 'auto')
+        newTiming.fill = 'both';
       var ticker = function(tf) {
         if (tf == null) {
-          player._childPlayers.map(function(p) { p.cancel(); });
-          player._childPlayers = [];
+          while (player._childPlayers.length)
+            player._childPlayers.pop().cancel();
           return;
         }
+        if (player._startTime == null)
+          return;
+
+        updateChildPlayers(player);
+      }
+
+      var updateChildPlayers = function(updatingPlayer) {
         var offset = 0;
-        for (var i = 0; i < player.source.children.length; i++) {
-          var child = player.source.children[i];
+
+        // TODO: Call into this less frequently.
+
+        for (var i = 0; i < updatingPlayer.source.children.length; i++) {
+          var child = updatingPlayer.source.children[i];
 
           function newPlayer(source) {
             var newPlayer = global.document.timeline.play(source);
-            newPlayer.startTime = player.startTime + offset;
+            newPlayer.startTime = updatingPlayer.startTime + offset;
             source._internalPlayer = newPlayer;
-            player._childPlayers.push(newPlayer);
+            updatingPlayer._childPlayers.push(newPlayer);
+            if (!source instanceof global.Animation)
+              updateChildPlayers(newPlayer);
           }
 
-          if (i >= player._childPlayers.length)
+          if (i >= updatingPlayer._childPlayers.length)
             newPlayer(child);
 
-          var childPlayer = player._childPlayers[i];
-          if (player.playbackRate == -1 && player.currentTime < offset && childPlayer.currentTime !== -1) {
+          var childPlayer = updatingPlayer._childPlayers[i];
+          if (updatingPlayer.playbackRate == -1 && updatingPlayer.currentTime < offset && childPlayer.currentTime !== -1) {
+            console.log(updatingPlayer.currentTime, document.timeline.currentTime);
             childPlayer.currentTime = -1;
           }
-
-          /*
-          else {
-            if (childPlayer !== child._internalPlayer && shouldBePlayed) {
-              player._childPlayers.slice(i).map(function(player) { player.cancel(); });
-              player._childPlayers = player._childPlayers.slice(0, i);
-              newPlayer(child);
-            } else if (childPlayer == child._internalPlayer && !shouldBePlayed) {
-              childPlayer.cancel();
-              console.log(player._childPlayers.map(function(a) { return a.currentTime; }));
-              player._childPlayers.splice(i, 1);
-              console.log(player._childPlayers.map(function(a) { return a.currentTime; }));
-            }
-          }
-          */
 
           if (source instanceof global.AnimationSequence)
             offset += child.activeDuration;
         }
       };
-      var player = div.animate(ticker, newTiming);
+
+      // TODO: Use a single static element rather than one per group.
+      var player = document.createElement('div').animate(ticker, newTiming);
       player._childPlayers = [];
       player.source = source;
-      player.startTime;
-      //ticker(0);
 
       var _reverse = player.reverse.bind(player);
       player.reverse = function() {
@@ -128,24 +126,38 @@
         });
       }
 
-      var _pause = player.pause.bind(player);
+      var originalPause = player.pause.bind(player);
       player.pause = function() {
-        _pause();
+        originalPause();
         player._childPlayers.forEach(function(child) {
           child.pause();
         });
       };
 
-      var _play = player.play.bind(player);
+      var originalPlay = player.play.bind(player);
       player.play = function() {
-        _play();
+        originalPlay();
         player._childPlayers.forEach(function(child) {
-          console.log(child.source.name, child.currentTime);
           var time = child.currentTime;
           child.play();
           child.currentTime = time;
         });
       };
+
+      var originalCurrentTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'currentTime');
+      Object.defineProperty(player, 'currentTime',
+          { enumerable: true,
+            get: function() { return originalCurrentTime.get.bind(this)(); },
+            set: function(v) {
+              var offset = 0;
+              originalCurrentTime.set.bind(this)(v);
+              this._childPlayers.forEach(function(child) {
+                child.currentTime = v - offset;
+                if (this.source instanceof global.AnimationSequence)
+                  offset += child.source.activeDuration;
+              }.bind(this));
+            }
+          });
 
       return player;
     }
