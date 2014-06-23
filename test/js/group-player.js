@@ -365,6 +365,7 @@ suite('group-player', function() {
     tick(0);
     assert.equal(player.startTime, 0);
     assert.equal(player.currentTime, 0);
+
     player.pause();
     assert(isNaN(player.startTime));
     assert.equal(player.currentTime, 0);
@@ -374,16 +375,22 @@ suite('group-player', function() {
     var player = document.timeline.play(this.seqSimple_source);
     tick(0);
     checkTimes(player, [0, 0], [[0, 0], [500, -500]], 't = 0');
+
     tick(200);
     checkTimes(player, [0, 200], [[0, 200], [500, -300]], 't = 200');
+
     player.pause();
     checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 200');
+
     tick(300);
     checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
+
     player.play();
     checkTimes(player, [NaN, 200], [[NaN, 200], [NaN, -300]], 't = 300');
+
     tick(301);
     checkTimes(player, [101, 200], [[101, 200], [601, -300]], 't = 301');
+
     tick(700);
     checkTimes(player, [101, 599], [[101, 500], [601, 99]], 't = 700');
   });
@@ -399,6 +406,7 @@ suite('group-player', function() {
             [1000, -1000],
             [1500, -1500]]],
         't = 0');
+
     tick(200);
     checkTimes(
         player,
@@ -408,6 +416,7 @@ suite('group-player', function() {
             [1000, -800],
             [1500, -1300]]],
         't = 200');
+
     player.pause();
     checkTimes(
         player,
@@ -417,6 +426,7 @@ suite('group-player', function() {
             [NaN, -800],
             [NaN, -1300]]],
         't = 200');
+
     tick(300);
     checkTimes(
         player,
@@ -426,6 +436,7 @@ suite('group-player', function() {
             [NaN, -800],
             [NaN, -1300]]],
         't = 300');
+
     player.play();
     tick(310);
     checkTimes(
@@ -436,6 +447,7 @@ suite('group-player', function() {
             [1110, -800],
             [1610, -1300]]],
         't = 310');
+
     tick(1300);
     checkTimes(
         player,
@@ -445,6 +457,7 @@ suite('group-player', function() {
             [1110, 190],
             [1610, -310]]],
         't = 1300');
+
     player.pause();
     checkTimes(
         player,
@@ -454,6 +467,7 @@ suite('group-player', function() {
             [NaN, 190],
             [NaN, -310]]],
         't = 1300');
+
     tick(1400);
     checkTimes(
         player,
@@ -463,6 +477,7 @@ suite('group-player', function() {
             [NaN, 190],
             [NaN, -310]]],
         't = 1400');
+
     player.play();
     checkTimes(
         player,
@@ -472,6 +487,7 @@ suite('group-player', function() {
             [NaN, 190],
             [NaN, -310]]],
         't = 1400');
+
     tick(1410);
     checkTimes(
         player,
@@ -481,6 +497,7 @@ suite('group-player', function() {
             [1220, 190],
             [1720, -310]]],
         't = 1410');
+
     tick(1600);
     checkTimes(
         player,
@@ -490,6 +507,7 @@ suite('group-player', function() {
             [1220, 380],
             [1720, -120]]],
         't = 1600');
+
     player.pause();
     checkTimes(
         player,
@@ -499,6 +517,7 @@ suite('group-player', function() {
             [NaN, 380],
             [NaN, -120]]],
         't = 1600');
+
     tick(1700);
     checkTimes(
         player,
@@ -508,6 +527,7 @@ suite('group-player', function() {
             [NaN, 380],
             [NaN, -120]]],
         't = 1700');
+
     player.play();
     tick(1710);
     checkTimes(
@@ -518,6 +538,7 @@ suite('group-player', function() {
             [1330, 380],
             [1830, -120]]],
         't = 1710');
+
     tick(2400);
     checkTimes(
         player,
@@ -528,5 +549,4 @@ suite('group-player', function() {
             [1830, 500]]],
         't = 2400');
   });
-
 });
