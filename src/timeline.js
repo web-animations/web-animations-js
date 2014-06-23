@@ -89,9 +89,16 @@
       var pendingClears = [];
       var pendingEffects = [];
       updatingPlayers = updatingPlayers.filter(function(player) {
-        player._update(t, pendingClears, pendingEffects);
+        player._tick(t);
+
+        if (!player._inEffect)
+          pendingClears.push(player._source);
+        else
+          pendingEffects.push(player._source);
+
         if (!player.finished && !player.paused)
           ticking = true;
+
         return !player.finished || player._inEffect;
       });
       pendingClears.forEach(function(effect) { effect(); });

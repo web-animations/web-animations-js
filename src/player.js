@@ -152,22 +152,17 @@
       }
       this._finishedFlag = finished;
     },
-    _update: function(t, pendingClears, pendingEffects) {
+    _tick: function(timelineTime) {
       if (!(this.paused || this.finished)) {
         if (isNaN(this._startTime))
-          this.startTime = t - this.__currentTime / this.playbackRate;
-        this._tickCurrentTime((t - this._startTime) * this.playbackRate);
+          this.startTime = timelineTime - this.__currentTime / this.playbackRate;
+        this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
       } else if (this._updateEffect) {
         // Force an effect update.
         this._tickCurrentTime(this.__currentTime);
       }
 
-      if (!this._inEffect)
-        pendingClears.push(this._source);
-      else
-        pendingEffects.push(this._source);
-
-      this._fireEvents(t);
+      this._fireEvents(timelineTime);
 
       if (this.finished && !this._inEffect)
         this._inTimeline = false;
