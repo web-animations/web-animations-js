@@ -62,9 +62,10 @@
       if (newTiming.fill == 'auto')
         newTiming.fill = 'both';
       var ticker = function(tf) {
+        if (!player.source)
+          return;
         if (tf == null) {
-          while (player._childPlayers.length)
-            player._childPlayers.pop().cancel();
+          player._removePlayers();
           return;
         }
         if (isNaN(player._startTime))
@@ -141,6 +142,13 @@
         });
       };
 
+      var originalCancel = player.cancel.bind(player);
+      player.cancel = function() {
+        this.source = null;
+        originalCancel();
+        this._removePlayers();
+      };
+
       var originalCurrentTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'currentTime');
       Object.defineProperty(player, 'currentTime',
           { enumerable: true,
@@ -155,6 +163,11 @@
               }.bind(this));
             }
           });
+
+      player._removePlayers = function() {
+        while (this._childPlayers.length)
+          this._childPlayers.pop().cancel();
+      };
 
       return player;
     }
