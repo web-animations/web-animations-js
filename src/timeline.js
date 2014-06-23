@@ -89,34 +89,43 @@
       return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
     });
     ticking = false;
-    var pendingEffects = [];
-    var pendingClears = [];
-    timeline.players = timeline.players.filter(function(player) {
-      if (!(player.paused || player.finished)) {
-        if (player._startTime === null)
-          player.startTime = t - player.__currentTime / player.playbackRate;
-        player._tickCurrentTime((t - player._startTime) * player.playbackRate);
-        if (!player.finished)
-          ticking = true;
-      } else if (player._updateEffect) {
-        // Force an effect update.
-        player._tickCurrentTime(player.__currentTime);
-      }
-      // Execute effect clearing before effect applying.
-      if (!player._inEffect)
-        pendingClears.push(player._source);
-      else
-        pendingEffects.push(player._source);
+    var finalPlayers = [];
+    var updatingPlayers = timeline.players;
+    while (updatingPlayers.length) {
+      timeline.players = [];
+      var pendingClears = [];
+      var pendingEffects = [];
+      updatingPlayers = updatingPlayers.filter(function(player) {
+        if (!(player.paused || player.finished)) {
+          if (player._startTime === null)
+            player.startTime = t - player.__currentTime / player.playbackRate;
+          player._tickCurrentTime((t - player._startTime) * player.playbackRate);
+          if (!player.finished)
+            ticking = true;
+        } else if (player._updateEffect) {
+          // Force an effect update.
+          player._tickCurrentTime(player.__currentTime);
+        }
+        // Execute effect clearing before effect applying.
+        if (!player._inEffect)
+          pendingClears.push(player._source);
+        else
+          pendingEffects.push(player._source);
 
-      player._fireEvents(timeline.currentTime);
+        player._fireEvents(timeline.currentTime);
 
-      if (!player.finished || player._inEffect)
-        return true;
-      player._inTimeline = false;
-      return false;
-    });
-    pendingClears.forEach(function(effect) { effect(); });
-    pendingEffects.forEach(function(effect) { effect(); });
+        if (!player.finished || player._inEffect)
+          return true;
+        player._inTimeline = false;
+        return false;
+      });
+      pendingClears.forEach(function(effect) { effect(); });
+      pendingEffects.forEach(function(effect) { effect(); });
+
+      finalPlayers.push.apply(finalPlayers, updatingPlayers);
+      updatingPlayers = timeline.players;
+    }
+    timeline.players = finalPlayers;
 
     ensureOriginalGetComputedStyle();
 
