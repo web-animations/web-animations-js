@@ -40,8 +40,8 @@
     this._finishedFlag = false;
     this.onfinish = null;
     this._finishHandlers = [];
-    this._updateEffect = true;
     this._source = source;
+    this._inEffect = this._source.update(0);
   };
 
   scope.Player.prototype = {
@@ -53,8 +53,7 @@
       }
     },
     _tickCurrentTime: function(newTime, ignoreLimit) {
-      if (newTime != this.__currentTime || this._updateEffect) {
-        this._updateEffect = false;
+      if (newTime != this.__currentTime) {
         this.__currentTime = newTime;
         if (this.finished && !ignoreLimit)
           this.__currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
@@ -80,7 +79,7 @@
       if (this.paused)
         return;
       this._startTime = newTime;
-      this._tickCurrentTime(this._timeline.currentTime - this._startTime);
+      this._tickCurrentTime((this._timeline.currentTime - this._startTime) * this.playbackRate);
       scope.invalidateEffects();
     },
     get playbackRate() { return this._playbackRate; },
@@ -112,7 +111,7 @@
     },
     cancel: function() {
       this._source = scope.NullAnimation(this._source.clear);
-      this._updateEffect = true;
+      this._inEffect = false;
       this.currentTime = 0;
     },
     reverse: function() {
@@ -153,19 +152,15 @@
       this._finishedFlag = finished;
     },
     _tick: function(timelineTime) {
-      if (!(this.paused || this.finished)) {
-        if (isNaN(this._startTime))
-          this.startTime = timelineTime - this.__currentTime / this.playbackRate;
+      if (!this.paused && isNaN(this._startTime)) {
+        this.startTime = timelineTime - this.__currentTime / this.playbackRate;
+      } else if (!(this.paused || this.finished)) {
         this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
-      } else if (this._updateEffect) {
-        // Force an effect update.
-        this._tickCurrentTime(this.__currentTime);
       }
 
       this._fireEvents(timelineTime);
 
-      if (this.finished && !this._inEffect)
-        this._inTimeline = false;
+      return !this.finished || this._inEffect;
     },
   };
 
