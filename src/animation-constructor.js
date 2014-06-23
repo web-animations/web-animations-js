@@ -152,12 +152,27 @@
       var originalCurrentTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'currentTime');
       Object.defineProperty(player, 'currentTime',
           { enumerable: true,
-            get: function() { return originalCurrentTime.get.bind(this)(); },
+            get: function() { return originalCurrentTime.get.call(this); },
             set: function(v) {
               var offset = 0;
-              originalCurrentTime.set.bind(this)(v);
+              originalCurrentTime.set.call(this, v);
               this._childPlayers.forEach(function(child) {
                 child.currentTime = v - offset;
+                if (this.source instanceof global.AnimationSequence)
+                  offset += child.source.activeDuration;
+              }.bind(this));
+            }
+          });
+
+      var originalStartTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'startTime');
+      Object.defineProperty(player, 'startTime',
+          { enumerable: true,
+            get: function() { return originalStartTime.get.call(this); },
+            set: function(v) {
+              var offset = 0;
+              originalStartTime.set.call(this, v);
+              this._childPlayers.forEach(function(child) {
+                child.startTime = v + offset;
                 if (this.source instanceof global.AnimationSequence)
                   offset += child.source.activeDuration;
               }.bind(this));
