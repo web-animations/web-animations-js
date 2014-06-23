@@ -24,7 +24,7 @@
     return newFiles;
   }
 
-  minifillSrc = [
+  var minifillSrc = [
     'src/scope.js',
     'src/animation-node.js',
     'src/animation.js',
@@ -42,7 +42,7 @@
     'src/transform-handler.js',
   ];
 
-  minifillTest = [
+  var minifillTest = [
     'test/js/animation-node.js',
     'test/js/color-handler.js',
     'test/js/dimension-handler.js',
