@@ -13,13 +13,15 @@
 // limitations under the License.
 
 (function(scope, testing) {
+  var aliased = {};
 
-  scope.apply = function(element, property, value) {
-    element.style[scope.propertyName(property)] = value;
+  ['webkitTransform', 'msTransform', 'transform'].forEach(function(candidate) {
+    if (candidate in document.documentElement.style) {
+      aliased['transform'] = candidate;
+    }
+  });
+
+  scope.propertyName = function(property) {
+    return aliased[property] || property;
   };
-
-  scope.clear = function(element, property) {
-    element.style[scope.propertyName(property)] = '';
-  };
-
 })(minifill, testing);

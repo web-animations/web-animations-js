@@ -26,6 +26,7 @@
 
   minifillSrc = [
     'src/scope.js',
+    'src/aliased-properties.js',
     'src/animation-node.js',
     'src/animation.js',
     'src/apply.js',
