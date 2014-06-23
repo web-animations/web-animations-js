@@ -89,28 +89,10 @@
       var pendingClears = [];
       var pendingEffects = [];
       updatingPlayers = updatingPlayers.filter(function(player) {
-        if (!(player.paused || player.finished)) {
-          if (isNaN(player._startTime))
-            player.startTime = t - player.__currentTime / player.playbackRate;
-          player._tickCurrentTime((t - player._startTime) * player.playbackRate);
-          if (!player.finished)
-            ticking = true;
-        } else if (player._updateEffect) {
-          // Force an effect update.
-          player._tickCurrentTime(player.__currentTime);
-        }
-        // Execute effect clearing before effect applying.
-        if (!player._inEffect)
-          pendingClears.push(player._source);
-        else
-          pendingEffects.push(player._source);
-
-        player._fireEvents(timeline.currentTime);
-
-        if (!player.finished || player._inEffect)
-          return true;
-        player._inTimeline = false;
-        return false;
+        player._update(t, pendingClears, pendingEffects);
+        if (!player.finished && !player.paused)
+          ticking = true;
+        return !player.finished || player._inEffect;
       });
       pendingClears.forEach(function(effect) { effect(); });
       pendingEffects.forEach(function(effect) { effect(); });

@@ -152,6 +152,26 @@
       }
       this._finishedFlag = finished;
     },
+    _update: function(t, pendingClears, pendingEffects) {
+      if (!(this.paused || this.finished)) {
+        if (isNaN(this._startTime))
+          this.startTime = t - this.__currentTime / this.playbackRate;
+        this._tickCurrentTime((t - this._startTime) * this.playbackRate);
+      } else if (this._updateEffect) {
+        // Force an effect update.
+        this._tickCurrentTime(this.__currentTime);
+      }
+
+      if (!this._inEffect)
+        pendingClears.push(this._source);
+      else
+        pendingEffects.push(this._source);
+
+      this._fireEvents(t);
+
+      if (this.finished && !this._inEffect)
+        this._inTimeline = false;
+    },
   };
 
 })(shared, minifill, testing);
