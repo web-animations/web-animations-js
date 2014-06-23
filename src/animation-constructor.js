@@ -66,10 +66,10 @@
       if (newTiming.fill == 'auto')
         newTiming.fill = 'both';
       var ticker = function(tf) {
-        if (!this.source)
+        if (!player.source)
           return;
         if (tf == null) {
-          this._removePlayers();
+          player._removePlayers();
           return;
         }
         if (player._startTime == null)
