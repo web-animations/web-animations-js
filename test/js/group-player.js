@@ -615,4 +615,151 @@ suite('group-player', function() {
             [1830, 500]]],
         't = 2400');
   });
+
+  test('pausing works as expected with an AnimationGroup inside an AnimationSequence', function() {
+    var player = document.timeline.play(this.seqWithGroup_source);
+    tick(0);
+    checkTimes(
+        player,
+        [0, 0], [
+          [0, 0],
+          [500, -500], [
+            [1000, -1000],
+            [1000, -1000]]],
+        't = 0');
+
+    tick(200);
+    checkTimes(
+        player,
+        [0, 200], [
+          [0, 200],
+          [500, -300], [
+            [1000, -800],
+            [1000, -800]]],
+        't = 200');
+
+    player.pause();
+    checkTimes(
+        player,
+        [NaN, 200], [
+          [NaN, 200],
+          [NaN, -300], [
+            [NaN, -800],
+            [NaN, -800]]],
+        't = 200');
+
+    tick(300);
+    checkTimes(
+        player,
+        [NaN, 200], [
+          [NaN, 200],
+          [NaN, -300], [
+            [NaN, -800],
+            [NaN, -800]]],
+        't = 300');
+
+    player.play();
+    tick(310);
+    checkTimes(
+        player,
+        [110, 200], [
+          [110, 200],
+          [610, -300], [
+            [1110, -800],
+            [1110, -800]]],
+        't = 310');
+
+    tick(1310);
+    checkTimes(
+        player,
+        [110, 1200], [
+          [110, 500],
+          [610, 500], [
+            [1110, 200],
+            [1110, 200]]],
+        't = 1310');
+
+    player.pause();
+    checkTimes(
+        player,
+        [NaN, 1200], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 200],
+            [NaN, 200]]],
+        't = 1310');
+
+    tick(1400);
+    checkTimes(
+        player,
+        [NaN, 1200], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 200],
+            [NaN, 200]]],
+        't = 1410');
+
+    player.play();
+    tick(1410);
+    checkTimes(
+        player,
+        [210, 1200], [
+          [210, 500],
+          [710, 500], [
+            [1210, 200],
+            [1210, 200]]],
+        't = 1410');
+
+    tick(1610);
+    checkTimes(
+        player,
+        [210, 1400], [
+          [210, 500],
+          [710, 500], [
+            [1210, 400],
+            [1210, 400]]],
+        't = 1610');
+
+    player.pause();
+    tick(1810);
+    checkTimes(
+        player,
+        [NaN, 1400], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 400],
+            [NaN, 400]]],
+        't = 1810');
+
+    player.play();
+    tick(1820);
+    checkTimes(
+        player,
+        [420, 1400], [
+          [420, 500],
+          [920, 500], [
+            [1420, 400],
+            [1420, 400]]],
+        't = 1820');
+
+    tick(2020);
+    checkTimes(
+        player,
+        [420, 1500], [
+          [420, 500],
+          [920, 500], [
+            [1420, 500],
+            [1420, 500]]],
+        't = 2020');
+
+    player.pause();
+    checkTimes(
+        player,
+        [NaN, 1500], [
+          [NaN, 500],
+          [NaN, 500], [
+            [NaN, 500],
+            [NaN, 500]]],
+        't = 2020');
+  });
 });
