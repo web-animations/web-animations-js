@@ -396,7 +396,6 @@ suite('group-player', function() {
 
   test('pausing works as expected with an AnimationSequence inside an AnimationSequence', function() {
     var player = document.timeline.play(this.seqWithSeq_source);
-    console.log(player);
     tick(0);
     checkTimes(
         player,
@@ -615,7 +614,6 @@ suite('group-player', function() {
 
   test('pausing works as expected with a simple AnimationGroup', function() {
     tick(0);
-    console.log(this.groupSimple_source);
     var player = document.timeline.play(this.groupSimple_source);
     // check: player,
     //        player.childPlayers[0],
@@ -976,7 +974,6 @@ suite('group-player', function() {
 
   test('reversing works as expected with a simple AnimationGroup', function() {
     tick(0);
-    console.log(this.groupSimple_source);
     var player = document.timeline.play(this.groupSimple_source);
     // check: player,
     //        player.childPlayers[0],
