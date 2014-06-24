@@ -335,7 +335,7 @@ suite('effect-convertEffectInput', function() {
     document.documentElement.appendChild(this.target);
   });
   teardown(function() {
-    this.target.remove();
+    document.documentElement.removeChild(this.target);
   });
 
   test('Convert effect input for a simple effect with one property.', function() {
