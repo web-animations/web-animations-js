@@ -246,7 +246,7 @@ suite('player', function() {
     // getComputedStyle forces a tick.
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     assert.deepEqual(document.timeline.players, []);
-    target.remove();
+    document.documentElement.removeChild(target);
   });
   test('startTime is set on first tick if timeline hasn\'t started', function() {
     document.timeline.currentTime = undefined;
@@ -303,7 +303,7 @@ suite('player', function() {
     assert.equal(getComputedStyle(target).marginLeft, '200px', 't = 150');
     tick(250);
     assert.equal(getComputedStyle(target).marginLeft, '0px', 't = 250');
-    target.remove();
+    document.body.removeChild(target);
   });
   test('player modifications should update CSS effects immediately', function() {
     var target = document.createElement('div');
@@ -320,6 +320,6 @@ suite('player', function() {
     assert.equal(getComputedStyle(target).width, '0px');
     playerInfront.startTime = -50;
     assert.equal(getComputedStyle(target).width, '50px');
-    target.remove();
+    document.body.removeChild(target);
   });
 });

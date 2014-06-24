@@ -137,7 +137,7 @@ suite('group-player', function() {
 
   teardown(function() {
     for (var i = 0; i < this.elements.length; i++)
-      this.elements[i].remove();
+      document.documentElement.removeChild(this.elements[i]);
   });
 
   function simpleAnimationGroup() {
@@ -371,7 +371,7 @@ suite('group-player', function() {
         [101, 1, 0, 1], // 1
         [102, 1, 1, 2]]] // 2
     ], 't = 103');
-    target.remove();
+    document.documentElement.removeChild(target);
   });
 
   // FIXME: This test can be removed when this suite is finished.
