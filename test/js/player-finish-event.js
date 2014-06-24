@@ -6,7 +6,8 @@ suite('player-finish-event', function() {
     this.player = this.element.animate([], 1000);
   });
   teardown(function() {
-    document.documentElement.removeChild(this.element);
+    if (this.element.parent)
+      this.element.removeChild(this.target);
   });
 
   test('fire when player completes', function(done) {
