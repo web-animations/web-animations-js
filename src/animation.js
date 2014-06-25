@@ -15,7 +15,7 @@
 (function(scope, testing) {
 
   scope.Animation = function(target, effectInput, timingInput) {
-    var animationNode = scope.AnimationNode(timingInput);
+    var animationNode = scope.AnimationNode(shared.normalizeTimingInput(timingInput));
     var effect = scope.convertEffectInput(effectInput);
     var timeFraction;
     var animation = function() {

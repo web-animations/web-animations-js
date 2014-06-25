@@ -91,8 +91,10 @@ suite('animation-node', function() {
     assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 360, 0.0001);
   });
   test('Animation Node', function() {
-    var node = minifill.AnimationNode({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});
-    var node2 = minifill.AnimationNode({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'ease', direction: 'alternate', delay: 100, fill: 'forwards'});
+    var timing = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});
+    var timing2 = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'ease', direction: 'alternate', delay: 100, fill: 'forwards'});
+    var node = minifill.AnimationNode(timing);
+    var node2 = minifill.AnimationNode(timing2);
     assert.equal(node(0), null);
     assert.equal(node(100), 0.5);
     assert.closeTo(node2(100), 0.8, 0.005);

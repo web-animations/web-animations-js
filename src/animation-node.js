@@ -17,25 +17,25 @@
   var fills = 'backwards|forwards|both'.split('|');
   var directions = 'reverse|alternate|alternate-reverse'.split('|');
 
-  function normalizeTimingInput(timingInput) {
-    var input = {
+  function normalizeTimingInput(timingInput, forGroup) {
+    var timing = {
       delay: 0,
       endDelay: 0,
-      fill: 'none',
+      fill: forGroup ? 'both' : 'none',
       iterationStart: 0,
       iterations: 1,
-      duration: 0,
+      duration: forGroup ? 'auto' : 0,
       playbackRate: 1,
       direction: 'normal',
-      easing: 'linear'
+      easing: 'linear',
     };
 
     if (typeof timingInput == 'number') {
-      input.duration = timingInput;
+      timing.duration = timingInput;
     } else if (timingInput !== undefined) {
       Object.getOwnPropertyNames(timingInput).forEach(function(property) {
-        if (timingInput[property] !== 'auto') {
-          if (typeof input[property] == 'number' && typeof timingInput[property] != 'number') {
+        if (timingInput[property] != 'auto') {
+          if (typeof timing[property] == 'number' && typeof timingInput[property] != 'number' && property != 'duration') {
             return;
           }
           if ((property == 'fill') && (fills.indexOf(timingInput[property]) == -1)) {
@@ -44,12 +44,12 @@
           if ((property == 'direction') && (directions.indexOf(timingInput[property]) == -1)) {
             return;
           }
-          input[property] = timingInput[property];
+          timing[property] = timingInput[property];
         }
       });
     }
-    input.easing = toTimingFunction(input.easing);
-    return input;
+    timing.easing = toTimingFunction(timing.easing);
+    return timing;
   }
 
   function cubic(a, b, c, d) {
@@ -120,12 +120,12 @@
     return linear;
   };
 
-  function calculateActiveDuration(timingInput) {
-    return Math.abs(repeatedDuration(timingInput) / timingInput.playbackRate);
+  function calculateActiveDuration(timing) {
+    return Math.abs(repeatedDuration(timing) / timing.playbackRate);
   }
 
-  function repeatedDuration(timingInput) {
-    return timingInput.duration * timingInput.iterations;
+  function repeatedDuration(timing) {
+    return timing.duration * timing.iterations;
   }
 
   var PhaseNone = 0;
@@ -133,14 +133,14 @@
   var PhaseAfter = 2;
   var PhaseActive = 3;
 
-  function calculatePhase(activeDuration, localTime, timingInput) {
+  function calculatePhase(activeDuration, localTime, timing) {
     if (localTime == null) {
       return PhaseNone;
     }
-    if (localTime < timingInput.delay) {
+    if (localTime < timing.delay) {
       return PhaseBefore;
     }
-    if (localTime >= timingInput.delay + activeDuration) {
+    if (localTime >= timing.delay + activeDuration) {
       return PhaseAfter;
     }
     return PhaseActive;
@@ -163,69 +163,63 @@
     }
   }
 
-  function calculateScaledActiveTime(activeDuration, activeTime, startOffset, timingInput) {
-    return (timingInput.playbackRate < 0 ? activeTime - activeDuration : activeTime) * timingInput.playbackRate + startOffset;
+  function calculateScaledActiveTime(activeDuration, activeTime, startOffset, timing) {
+    return (timing.playbackRate < 0 ? activeTime - activeDuration : activeTime) * timing.playbackRate + startOffset;
   }
 
-  function calculateIterationTime(iterationDuration, repeatedDuration, scaledActiveTime, startOffset, timingInput) {
-    if (scaledActiveTime === Infinity || scaledActiveTime === -Infinity || (scaledActiveTime - startOffset == repeatedDuration && timingInput.iterations && ((timingInput.iterations + timingInput.iterationStart) % 1 == 0))) {
+  function calculateIterationTime(iterationDuration, repeatedDuration, scaledActiveTime, startOffset, timing) {
+    if (scaledActiveTime === Infinity || scaledActiveTime === -Infinity || (scaledActiveTime - startOffset == repeatedDuration && timing.iterations && ((timing.iterations + timing.iterationStart) % 1 == 0))) {
       return iterationDuration;
     }
 
     return scaledActiveTime % iterationDuration;
   }
 
-  function calculateCurrentIteration(iterationDuration, iterationTime, scaledActiveTime, timingInput) {
+  function calculateCurrentIteration(iterationDuration, iterationTime, scaledActiveTime, timing) {
     if (scaledActiveTime === 0) {
       return 0;
     }
     if (iterationTime == iterationDuration) {
-      return timingInput.iterationStart + timingInput.iterations - 1;
+      return timing.iterationStart + timing.iterations - 1;
     }
     return Math.floor(scaledActiveTime / iterationDuration);
   }
 
-  function calculateTransformedTime(currentIteration, iterationDuration, iterationTime, timingInput) {
+  function calculateTransformedTime(currentIteration, iterationDuration, iterationTime, timing) {
     var currentIterationIsOdd = currentIteration % 2 >= 1;
-    var currentDirectionIsForwards = timingInput.direction == 'normal' || timingInput.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
+    var currentDirectionIsForwards = timing.direction == 'normal' || timing.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
     var directedTime = currentDirectionIsForwards ? iterationTime : iterationDuration - iterationTime;
     var timeFraction = directedTime / iterationDuration;
-    return iterationDuration * timingInput.easing(timeFraction);
+    return iterationDuration * timing.easing(timeFraction);
   }
 
-  function calculateTimeFraction(activeDuration, localTime, timingInput) {
-    var phase = calculatePhase(activeDuration, localTime, timingInput);
-    var activeTime = calculateActiveTime(activeDuration, timingInput.fill, localTime, phase, timingInput.delay);
+  function calculateTimeFraction(activeDuration, localTime, timing) {
+    var phase = calculatePhase(activeDuration, localTime, timing);
+    var activeTime = calculateActiveTime(activeDuration, timing.fill, localTime, phase, timing.delay);
     if (activeTime === null)
       return null;
     if (activeDuration === 0)
       return phase === PhaseBefore ? 0 : 1;
-    var startOffset = timingInput.iterationStart * timingInput.duration;
-    var scaledActiveTime = calculateScaledActiveTime(activeDuration, activeTime, startOffset, timingInput);
-    var iterationTime = calculateIterationTime(timingInput.duration, repeatedDuration(timingInput), scaledActiveTime, startOffset, timingInput);
-    var currentIteration = calculateCurrentIteration(timingInput.duration, iterationTime, scaledActiveTime, timingInput);
-    return calculateTransformedTime(currentIteration, timingInput.duration, iterationTime, timingInput) / timingInput.duration;
+    var startOffset = timing.iterationStart * timing.duration;
+    var scaledActiveTime = calculateScaledActiveTime(activeDuration, activeTime, startOffset, timing);
+    var iterationTime = calculateIterationTime(timing.duration, repeatedDuration(timing), scaledActiveTime, startOffset, timing);
+    var currentIteration = calculateCurrentIteration(timing.duration, iterationTime, scaledActiveTime, timing);
+    return calculateTransformedTime(currentIteration, timing.duration, iterationTime, timing) / timing.duration;
   }
 
-  shared.localTimeToTimeFraction = function(localTime, timingInput) {
-    var input = normalizeTimingInput(timingInput);
-    var timeFraction = 0;
-    var activeDuration = calculateActiveDuration(input);
-    return calculateTimeFraction(activeDuration, localTime, input);
+  shared.normalizeTimingInput = normalizeTimingInput;
+
+  shared.activeDuration = function(timing) {
+    return calculateActiveDuration(timing);
   };
 
-  shared.activeDuration = function(timingInput) {
-    return calculateActiveDuration(normalizeTimingInput(timingInput));
-  };
-
-  scope.AnimationNode = function(timingInput) {
-    var input = normalizeTimingInput(timingInput);
+  scope.AnimationNode = function(timing) {
     var timeFraction = 0;
-    var activeDuration = calculateActiveDuration(input);
+    var activeDuration = calculateActiveDuration(timing);
     var f = function(localTime) {
-      return calculateTimeFraction(activeDuration, localTime, input);
+      return calculateTimeFraction(activeDuration, localTime, timing);
     };
-    f.totalDuration = activeDuration + input.delay + input.endDelay;
+    f.totalDuration = timing.delay + activeDuration + timing.endDelay;
     return f;
   };
 
