@@ -31,7 +31,7 @@
     var last = undefined;
     timing = shared.normalizeTimingInput(timing);
     var callback = function() {
-      var t = callback._player.currentTime;
+      var t = callback._player ? callback._player.currentTime : NaN;
       if (isNaN(t)) {
         t = null;
       } else {
@@ -59,6 +59,7 @@
     player.cancel = function() {
       originalCancel.call(this);
       register(callback);
+      callback._player = null;
     };
 
     var originalReverse = player.reverse;

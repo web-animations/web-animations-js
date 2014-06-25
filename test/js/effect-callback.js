@@ -36,4 +36,14 @@ suite('effect-callback', function() {
     assert.isFalse(isNaN(player.startTime));
     assert.isFalse(called);
   });
+
+  test('custom effect should be called after cancel', function() {
+    var fractions = [];
+    var player = document.body.animate(function(fraction) { fractions.push(fraction); }, 1000);
+    tick(0);
+    tick(500);
+    player.cancel();
+    tick(501);
+    assert.deepEqual(fractions, [0, 0.5, null]);
+  });
 });
