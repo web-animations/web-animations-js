@@ -26,14 +26,16 @@ suite('timeline-tests', function() {
   });
 
   test('players added during custom effect callbacks get updated in the same tick', function() {
-    var pass = false;
+    var player;
+    var called = false;
     tick(0);
     document.body.animate(function() {
-      document.body.animate(function() {
+      player = document.body.animate(function() {
         pass = true;
       }, 1);
     }, 2);
     tick(1);
-    assert.equal(pass, true);
+    assert.isFalse(isNaN(player.startTime));
+    assert.isFalse(called);
   });
 });

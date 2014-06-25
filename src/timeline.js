@@ -14,6 +14,25 @@
 
 
 (function(shared, scope, testing) {
+  var originalRequestAnimationFrame = global.requestAnimationFrame;
+  var rafCallbacks = [];
+  global.requestAnimationFrame = function(f) {
+    if (rafCallbacks.length == 0 && !TESTING) {
+      originalRequestAnimationFrame(processRafCallbacks);
+    }
+    rafCallbacks.push(f);
+  };
+
+  function processRafCallbacks(t) {
+    var processing = rafCallbacks;
+    rafCallbacks = [];
+    tick(t);
+    processing.forEach(function(f) { f(t); });
+    if (needsRetick)
+      tick(t);
+    applyPendingEffects();
+  }
+
   scope.Timeline = function() {
     this.players = [];
     this.currentTime = undefined;
@@ -31,48 +50,37 @@
   };
 
   var ticking = true;
-
   var hasRestartedThisFrame = false;
 
   scope.restart = function() {
     if (!ticking) {
       ticking = true;
-      if (!TESTING)
-        requestAnimationFrame(tick);
+      requestAnimationFrame(function() {});
       hasRestartedThisFrame = true;
     }
     return hasRestartedThisFrame;
   };
 
-  var getComputedStylePatched = false;
-  var originalGetComputedStyle = global.getComputedStyle;
-
-  function retickBeforeGetComputedStyle() {
-    tick(timeline.currentTime);
-    return global.getComputedStyle.apply(this, arguments);
-  }
-
-  function setGetComputedStyle(newGetComputedStyle) {
-    Object.defineProperty(global, 'getComputedStyle', {
-      configurable: true,
-      enumerable: true,
-      value: newGetComputedStyle,
-    });
-  }
-
-  function ensureOriginalGetComputedStyle() {
-    if (getComputedStylePatched) {
-      setGetComputedStyle(originalGetComputedStyle);
-      getComputedStylePatched = false;
-    }
-  }
-
+  var needsRetick = false;
   scope.invalidateEffects = function() {
-    if (!getComputedStylePatched) {
-      setGetComputedStyle(retickBeforeGetComputedStyle);
-      getComputedStylePatched = true;
-    }
+    needsRetick = true;
   };
+
+  var pendingEffects = [];
+  function applyPendingEffects() {
+    pendingEffects.forEach(function(f) { f(); });
+  }
+
+  var originalGetComputedStyle = global.getComputedStyle;
+  Object.defineProperty(global, 'getComputedStyle', {
+    configurable: true,
+    enumerable: true,
+    value: function() {
+      if (needsRetick) tick(timeline.currentTime);
+      applyPendingEffects();
+      return originalGetComputedStyle.apply(this, arguments);
+    },
+  });
 
   function tick(t) {
     hasRestartedThisFrame = false;
@@ -82,42 +90,38 @@
       return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
     });
     ticking = false;
-    var finalPlayers = [];
     var updatingPlayers = timeline.players;
-    while (updatingPlayers.length) {
-      timeline.players = [];
-      var pendingClears = [];
-      var pendingEffects = [];
-      updatingPlayers = updatingPlayers.filter(function(player) {
-        player._inTimeline = player._tick(t);
+    timeline.players = [];
 
-        if (!player._inEffect)
-          pendingClears.push(player._source);
-        else
-          pendingEffects.push(player._source);
+    var newPendingClears = [];
+    var newPendingEffects = [];
+    updatingPlayers = updatingPlayers.filter(function(player) {
+      player._inTimeline = player._tick(t);
 
-        if (!player.finished && !player.paused)
-          ticking = true;
+      if (!player._inEffect)
+        newPendingClears.push(player._source);
+      else
+        newPendingEffects.push(player._source);
 
-        return player._inTimeline;
-      });
-      pendingClears.forEach(function(effect) { effect(); });
-      pendingEffects.forEach(function(effect) { effect(); });
+      if (!player.finished && !player.paused)
+        ticking = true;
 
-      finalPlayers.push.apply(finalPlayers, updatingPlayers);
-      updatingPlayers = timeline.players;
-    }
-    timeline.players = finalPlayers;
-    ensureOriginalGetComputedStyle();
+      return player._inTimeline;
+    });
 
-    if (ticking && !TESTING)
-      requestAnimationFrame(tick);
+    pendingEffects.length = 0;
+    pendingEffects.push.apply(pendingEffects, newPendingClears);
+    pendingEffects.push.apply(pendingEffects, newPendingEffects);
+
+    timeline.players.push.apply(timeline.players, updatingPlayers);
+    needsRetick = false;
+
+    if (ticking)
+      requestAnimationFrame(function() {});
   };
 
-  if (!TESTING) {
-    requestAnimationFrame(tick);
-  } else {
-    testing.tick = tick;
+  if (TESTING) {
+    testing.tick = processRafCallbacks;
     testing.isTicking = function() { return ticking; };
     testing.setTicking = function(newVal) { ticking = newVal; };
   }
