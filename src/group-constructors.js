@@ -14,20 +14,20 @@
 
 (function(scope, testing) {
 
-  global.AnimationSequence = function(children, timing) {
-    this._type = 'seq';
+  function constructor(children, timingInput) {
     this.children = children || [];
-    this.timing = timing;
+    this.timing = shared.normalizeTimingInput(timingInput, true);
+    if (this.timing.duration === 'auto')
+      this.timing.duration = this.activeDuration;
     this._internalPlayer = null;
-    return this;
+  }
+
+  global.AnimationSequence = function() {
+    constructor.apply(this, arguments);
   };
 
-  global.AnimationGroup = function(children, timing) {
-    this._type = 'par';
-    this.children = children || [];
-    this.timing = timing;
-    this._internalPlayer = null;
-    return this;
+  global.AnimationGroup = function() {
+    constructor.apply(this, arguments);
   };
 
   global.AnimationSequence.prototype = {

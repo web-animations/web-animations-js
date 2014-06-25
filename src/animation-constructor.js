@@ -22,10 +22,10 @@
     getFrames: function() { return this._frames; }
   };
 
-  global.Animation = function(target, effect, timing) {
+  global.Animation = function(target, effect, timingInput) {
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
-    this.timing = timing;
+    this.timing = shared.normalizeTimingInput(timingInput);
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
     if (typeof effect == 'function')
@@ -35,7 +35,7 @@
     this._effect = effect;
     this._internalPlayer = null;
     this.originalPlayer = null;
-    this.activeDuration = shared.activeDuration(timing);
+    this.activeDuration = shared.activeDuration(this.timing);
     return this;
   };
 
@@ -55,12 +55,6 @@
     }
     // FIXME: Move this code out of this module
     if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
-      var newTiming = {fill: 'both'};
-      for (var property in source.timing)
-        newTiming[property] = source.timing[property];
-      newTiming.duration = source.activeDuration;
-      if (newTiming.fill == 'auto')
-        newTiming.fill = 'both';
       var ticker = function(tf) {
         if (!player.source)
           return;
@@ -105,7 +99,7 @@
       };
 
       // TODO: Use a single static element rather than one per group.
-      var player = document.createElement('div').animate(ticker, newTiming);
+      var player = document.createElement('div').animate(ticker, source.timing);
       player._childPlayers = [];
       player.source = source;
       source._nativePlayer = player;
