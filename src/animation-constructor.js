@@ -137,7 +137,6 @@
           child.reverse();
           child.startTime = this.startTime + offset * this.playbackRate;
           child.currentTime = this.currentTime + offset * this.playbackRate;
-            console.log(offset, this.playbackRate, this.startTime, child.startTime, child.currentTime);
           if (source instanceof global.AnimationSequence)
             offset += child.source.activeDuration;
         }.bind(this));
