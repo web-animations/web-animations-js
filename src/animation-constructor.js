@@ -47,8 +47,12 @@
     pendingGroups.push(group);
   }
   function updatePendingGroups() {
-    pendingGroups.forEach(function(f) { f(); });
-    pendingGroups.length = 0;
+    var updated = false;
+    while (pendingGroups.length) {
+      pendingGroups.shift()();
+      updated = true;
+    }
+    return updated;
   }
   var originalGetComputedStyle = global.getComputedStyle;
   Object.defineProperty(global, 'getComputedStyle', {
@@ -56,7 +60,8 @@
     enumerable: true,
     value: function() {
       var result = originalGetComputedStyle.apply(this, arguments);
-      updatePendingGroups();
+      if (updatePendingGroups())
+        result = originalGetComputedStyle.apply(this, arguments);
       return result;
     },
   });
