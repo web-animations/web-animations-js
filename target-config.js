@@ -69,6 +69,7 @@
         add: [
           'src/animation-constructor.js',
           'src/group-constructors.js',
+          'src/effect-callback.js',
         ],
       }),
       test: tweak(minifillTest, {
@@ -76,6 +77,7 @@
           'test/js/group-constructors.js',
           'test/js/group-player.js',
           'test/js/group-player-finish-event.js',
+          'test/js/effect-callback.js',
         ],
       }),
     },
