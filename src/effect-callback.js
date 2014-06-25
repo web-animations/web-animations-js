@@ -29,12 +29,13 @@
   function bind(player, target, effect, timing) {
     var animation = 'fixme';
     var last = undefined;
+    timing = shared.normalizeTimingInput(timing);
     var callback = function() {
       var t = callback._player.currentTime;
       if (isNaN(t)) {
         t = null;
       } else {
-        t = shared.localTimeToTimeFraction(t, timing);
+        t = shared.calculateTimeFraction(shared.activeDuration(timing), t, timing);
         if (isNaN(t))
           t = null;
       }
