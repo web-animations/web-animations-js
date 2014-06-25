@@ -39,6 +39,8 @@
         if (isNaN(t))
           t = null;
       }
+      // FIXME: There are actually more conditions under which the effect
+      // should be called.
       if (t !== last)
         effect(t, target, animation);
       last = t;

@@ -29,7 +29,7 @@ suite('effect-callback', function() {
     tick(0);
     document.body.animate(function() {
       player = document.body.animate(function() {
-        pass = true;
+        called = true;
       }, 1);
     }, 2);
     tick(1);
