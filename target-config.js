@@ -77,6 +77,7 @@
           'test/js/group-constructors.js',
           'test/js/group-player.js',
           'test/js/group-player-finish-event.js',
+          'test/js/effect-callback.js',
         ],
       }),
     },
