@@ -136,8 +136,10 @@ suite('group-player', function() {
   });
 
   teardown(function() {
-    for (var i = 0; i < this.elements.length; i++)
-      document.documentElement.removeChild(this.elements[i]);
+    for (var i = 0; i < this.elements.length; i++) {
+      if (this.elements[i].parent)
+        this.elements[i].parent.removeChild(this.elements[i]);
+    }
   });
 
   function simpleAnimationGroup() {
@@ -371,7 +373,8 @@ suite('group-player', function() {
         [101, 1, 0, 1], // 1
         [102, 1, 1, 2]]] // 2
     ], 't = 103');
-    document.documentElement.removeChild(target);
+    if (target.parent)
+      target.parent.removeChild(target);
   });
 
   // FIXME: This test can be removed when this suite is finished.
