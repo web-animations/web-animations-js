@@ -2,6 +2,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-gjslint');
   grunt.loadNpmTasks('grunt-checkrepo');
+  grunt.loadNpmTasks('grunt-git-status');
 
   var targetConfig = require('./target-config.js');
 
@@ -40,6 +41,10 @@ module.exports = function(grunt) {
     checkrepo: {
       all: {
         clean: true,
+      },
+    },
+    'git-status': {
+      all: {
       },
     },
     gjslint: {
