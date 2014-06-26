@@ -194,8 +194,8 @@
 
   scope.addPropertiesHandler(parseTransform, mergeTransforms, ['transform']);
 
-  if (TESTING) {
+  if (WEB_ANIMATIONS_TESTING) {
     testing.parseTransform = parseTransform;
   }
 
-})(minifill, testing);
+})(webAnimationsMinifill, webAnimationsTesting);

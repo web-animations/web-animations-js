@@ -51,8 +51,8 @@
 
   scope.addPropertiesHandler(parseColor, mergeColors, ['color', 'backgroundColor']);
 
-  if (TESTING) {
+  if (WEB_ANIMATIONS_TESTING) {
     testing.parseColor = parseColor;
   }
 
-})(minifill, testing);
+})(webAnimationsMinifill, webAnimationsTesting);

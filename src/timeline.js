@@ -14,10 +14,10 @@
 
 
 (function(shared, scope, testing) {
-  var originalRequestAnimationFrame = global.requestAnimationFrame;
+  var originalRequestAnimationFrame = window.requestAnimationFrame;
   var rafCallbacks = [];
-  global.requestAnimationFrame = function(f) {
-    if (rafCallbacks.length == 0 && !TESTING) {
+  window.requestAnimationFrame = function(f) {
+    if (rafCallbacks.length == 0 && !WEB_ANIMATIONS_TESTING) {
       originalRequestAnimationFrame(processRafCallbacks);
     }
     rafCallbacks.push(f);
@@ -71,8 +71,8 @@
     pendingEffects.forEach(function(f) { f(); });
   }
 
-  var originalGetComputedStyle = global.getComputedStyle;
-  Object.defineProperty(global, 'getComputedStyle', {
+  var originalGetComputedStyle = window.getComputedStyle;
+  Object.defineProperty(window, 'getComputedStyle', {
     configurable: true,
     enumerable: true,
     value: function() {
@@ -84,7 +84,7 @@
 
   function tick(t) {
     hasRestartedThisFrame = false;
-    var timeline = global.document.timeline;
+    var timeline = window.document.timeline;
     timeline.currentTime = t;
     timeline.players.sort(function(leftPlayer, rightPlayer) {
       return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
@@ -120,7 +120,7 @@
       requestAnimationFrame(function() {});
   };
 
-  if (TESTING) {
+  if (WEB_ANIMATIONS_TESTING) {
     testing.tick = processRafCallbacks;
     testing.isTicking = function() { return ticking; };
     testing.setTicking = function(newVal) { ticking = newVal; };
@@ -129,13 +129,13 @@
   var timeline = new scope.Timeline();
   scope.timeline = timeline;
   try {
-    Object.defineProperty(global.document, 'timeline', {
+    Object.defineProperty(window.document, 'timeline', {
       configurable: true,
       get: function() { return timeline; }
     });
   } catch (e) { }
   try {
-    global.document.timeline = timeline;
+    window.document.timeline = timeline;
   } catch (e) { }
 
-})(shared, minifill, testing);
+})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);

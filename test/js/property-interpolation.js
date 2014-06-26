@@ -8,7 +8,7 @@ suite('property-interpolation', function() {
       var property = tests[i][0];
       var left = tests[i][1];
       var right = tests[i][2];
-      interpolation = minifill.propertyInterpolation(property, left, right);
+      interpolation = webAnimationsMinifill.propertyInterpolation(property, left, right);
       assert.equal(interpolation(-1), left);
       assert.equal(interpolation(0), left);
       assert.equal(interpolation(0.45), left);

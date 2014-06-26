@@ -164,4 +164,4 @@
     },
   };
 
-})(shared, minifill, testing);
+})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);

@@ -127,4 +127,4 @@
       ticking = false;
     }
   }
-})(shared, maxifill, testing);
+})(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);

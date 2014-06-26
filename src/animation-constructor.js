@@ -22,7 +22,7 @@
     getFrames: function() { return this._frames; }
   };
 
-  global.Animation = function(target, effect, timingInput) {
+  window.Animation = function(target, effect, timingInput) {
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
     this.timing = shared.normalizeTimingInput(timingInput);
@@ -54,8 +54,8 @@
     }
     return updated;
   }
-  var originalGetComputedStyle = global.getComputedStyle;
-  Object.defineProperty(global, 'getComputedStyle', {
+  var originalGetComputedStyle = window.getComputedStyle;
+  Object.defineProperty(window, 'getComputedStyle', {
     configurable: true,
     enumerable: true,
     value: function() {
@@ -66,8 +66,8 @@
     },
   });
 
-  global.document.timeline.play = function(source) {
-    if (source instanceof global.Animation) {
+  window.document.timeline.play = function(source) {
+    if (source instanceof window.Animation) {
       var player = source.target.animate(source._effect, source.timing);
       // TODO: make source setter call cancel.
       player.source = source;
@@ -81,7 +81,7 @@
       return player;
     }
     // FIXME: Move this code out of this module
-    if (source instanceof global.AnimationSequence || source instanceof global.AnimationGroup) {
+    if (source instanceof window.AnimationSequence || source instanceof window.AnimationGroup) {
       var ticker = function(tf) {
         if (!player.source)
           return;
@@ -104,11 +104,11 @@
           var child = updatingPlayer.source.children[i];
 
           if (i >= updatingPlayer._childPlayers.length) {
-            var newPlayer = global.document.timeline.play(child);
+            var newPlayer = window.document.timeline.play(child);
             newPlayer.startTime = updatingPlayer.startTime + offset;
             child.player = updatingPlayer.source.player;
             updatingPlayer._childPlayers.push(newPlayer);
-            if (!(child instanceof global.Animation))
+            if (!(child instanceof window.Animation))
               updateChildPlayers(newPlayer);
           }
 
@@ -117,7 +117,7 @@
             childPlayer.currentTime = -1;
           }
 
-          if (updatingPlayer.source instanceof global.AnimationSequence)
+          if (updatingPlayer.source instanceof window.AnimationSequence)
             offset += child.activeDuration;
         }
       };
@@ -142,7 +142,7 @@
           child.reverse();
           child.startTime = this.startTime + offset * this.playbackRate;
           child.currentTime = this.currentTime + offset * this.playbackRate;
-          if (source instanceof global.AnimationSequence)
+          if (source instanceof window.AnimationSequence)
             offset += child.source.activeDuration;
         }.bind(this));
       };
@@ -182,7 +182,7 @@
           originalCurrentTime.set.call(this, v);
           this._childPlayers.forEach(function(child) {
             child.currentTime = v - offset;
-            if (this.source instanceof global.AnimationSequence)
+            if (this.source instanceof window.AnimationSequence)
               offset += child.source.activeDuration;
           }.bind(this));
         }
@@ -198,7 +198,7 @@
           originalStartTime.set.call(this, v);
           this._childPlayers.forEach(function(child) {
             child.startTime = v + offset;
-            if (this.source instanceof global.AnimationSequence)
+            if (this.source instanceof window.AnimationSequence)
               offset += child.source.activeDuration;
           }.bind(this));
         }
@@ -212,4 +212,4 @@
       return player;
     }
   };
-}(shared, maxifill, testing));
+}(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting));

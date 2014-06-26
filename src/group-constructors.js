@@ -12,7 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
   function constructor(children, timingInput) {
     this.children = children || [];
@@ -22,23 +22,23 @@
     this._internalPlayer = null;
   }
 
-  global.AnimationSequence = function() {
+  window.AnimationSequence = function() {
     constructor.apply(this, arguments);
   };
 
-  global.AnimationGroup = function() {
+  window.AnimationGroup = function() {
     constructor.apply(this, arguments);
   };
 
-  global.AnimationSequence.prototype = {
+  window.AnimationSequence.prototype = {
     get activeDuration() {
       return this.children.map(function(a) { return a.activeDuration; }).reduce(function(a, b) { return a + b; }, 0);
     }
   };
 
-  global.AnimationGroup.prototype = {
+  window.AnimationGroup.prototype = {
     get activeDuration() {
       return Math.max.apply(this, this.children.map(function(a) { return a.activeDuration; }));
     }
   };
-})(maxifill, testing);
+})(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);

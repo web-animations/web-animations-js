@@ -4,10 +4,11 @@ module.exports = function(grunt) {
 
   var targetConfig = require('./target-config.js');
 
-  uglifyTargets = {};
-  gendevTargets = {};
-  gentestTargets = {};
-  testTargets = {};
+  var uglifyTargets = {};
+  var genimportTargets = {};
+  var gendevTargets = {};
+  var gentestTargets = {};
+  var testTargets = {};
   for (var target in targetConfig) {
     var suffix = target === targetConfig.defaultTarget ? '' : '-' + target;
     uglifyTargets[target] = {
@@ -18,7 +19,7 @@ module.exports = function(grunt) {
         wrap: true,
         compress: {
           global_defs: {
-            "TESTING": false
+            "WEB_ANIMATIONS_TESTING": false
           },
           dead_code: true
         },
@@ -30,14 +31,16 @@ module.exports = function(grunt) {
       dest: 'web-animations' + suffix + '.min.js',
       src: targetConfig[target].src,
     };
-    gendevTargets[target] = targetConfig[target].src;
     gentestTargets[target] = targetConfig[target];
+    genimportTargets[target] = targetConfig[target];
+    gendevTargets[target] = targetConfig[target];
     testTargets[target] = {};
   }
 
   grunt.initConfig({
     uglify: uglifyTargets,
     gendev: gendevTargets,
+    genimport: genimportTargets,
     gentest: gentestTargets,
     gjslint: {
       options: {
@@ -63,25 +66,37 @@ module.exports = function(grunt) {
     test: testTargets,
   });
 
-  grunt.task.registerMultiTask('gendev', 'Generate web-animations-<target>.dev.js', function() {
-    var template = grunt.file.read('templates/web-animations.dev.js')
-    var filename = 'web-animations-' + this.target + '.dev.js';
+  grunt.task.registerMultiTask('gendev', 'Generate web-animations-<target>.js', function() {
+    var template = grunt.file.read('templates/web-animations.js')
+    var filename = 'web-animations' + (this.target === targetConfig.defaultTarget ? '' : '-' + this.target) + '.js';
     var contents = grunt.template.process(template, {data: {target: this.target}});
+    grunt.file.write(filename, contents);
+    grunt.log.writeln('File ' + filename + ' created');
+  });
+
+  grunt.task.registerMultiTask('genimport', 'Generate web-animations-<target>.html', function() {
+    var template = grunt.file.read('templates/web-animations.html')
+    var filename = 'web-animations' + (this.target === targetConfig.defaultTarget ? '' : '-' + this.target) + '.html';
+    var config = targetConfig[this.target];
+    var contents = grunt.template.process(template, {data: {src: config.src}});
     grunt.file.write(filename, contents);
     grunt.log.writeln('File ' + filename + ' created');
   });
 
   grunt.task.registerMultiTask('gentest', 'Generate test/runner-<target>.html', function() {
     var template = grunt.file.read('templates/runner.html')
-    var filename = 'test/runner-' + this.target + '.html';
-    var contents = grunt.template.process(template, {data: {target: this.target}});
+    var filename = 'test/runner' + (this.target === targetConfig.defaultTarget ? '' : '-' + this.target) + '.html';
+    var config = targetConfig[this.target];
+    var contents = grunt.template.process(template, {data: {
+      src: config.src,
+      test: config.test,
+    }});
     grunt.file.write(filename, contents);
     grunt.log.writeln('File ' + filename + ' created');
   });
 
   grunt.task.registerMultiTask('test', 'Run <target> tests under Karma', function() {
     var done = this.async();
-    var config = targetConfig[this.target];
     var karmaConfig = require('./test/karma-config.js');
     karmaConfig.files = ['test/runner.js'].concat(config.src, config.test);
     var karmaServer = require('karma').server;
@@ -100,11 +115,11 @@ module.exports = function(grunt) {
   for (var target in targetConfig) {
     grunt.task.registerTask(target, [
       'uglify:' + target,
-      'gendev:' + target,
+      'genimport:' + target,
       'gentest:' + target,
       'gjslint',
     ]);
   }
 
-  grunt.task.registerTask('default', ['uglify', 'gendev', 'gentest', 'gjslint']);
+  grunt.task.registerTask('default', ['uglify', 'genimport', 'gentest', 'gjslint']);
 };

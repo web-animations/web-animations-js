@@ -96,5 +96,5 @@
   if (typeof module != 'undefined')
     module.exports = targetConfig;
   else
-    window.targetConfig = targetConfig;
+    window.webAnimationsTargetConfig = targetConfig;
 })();
