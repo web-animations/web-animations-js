@@ -86,11 +86,7 @@ module.exports = function(grunt) {
   grunt.task.registerMultiTask('gentest', 'Generate test/runner-<target>.html', function() {
     var template = grunt.file.read('templates/runner.html')
     var filename = 'test/runner' + (this.target === targetConfig.defaultTarget ? '' : '-' + this.target) + '.html';
-    var config = targetConfig[this.target];
-    var contents = grunt.template.process(template, {data: {
-      src: config.src,
-      test: config.test,
-    }});
+    var contents = grunt.template.process(template, {data: {target: this.target}});
     grunt.file.write(filename, contents);
     grunt.log.writeln('File ' + filename + ' created');
   });

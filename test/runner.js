@@ -3,6 +3,13 @@ var webAnimationsTesting = window;
 var assert = chai.assert;
 mocha.setup({ ui: 'tdd' });
 
+function loadWebAnimationsBuildTarget(target) {
+  var config = webAnimationsTargetConfig[target];
+  config.src.concat(config.test).forEach(function(file) {
+    document.write('<script src="../' + file + '"></script>\n');
+  });
+}
+
 (function() {
 
   var pageError = null;

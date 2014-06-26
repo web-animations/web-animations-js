@@ -18,9 +18,9 @@
 <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
 <script src="../node_modules/mocha/mocha.js"></script>
 <script src="../node_modules/chai/chai.js"></script>
+<script src="../target-config.js"></script>
 <script src="runner.js"></script>
-<% _.forEach(src, function(src) { %><script src="../<%= src %>"></script>
-<% }); %>
-<% _.forEach(test, function(test) { %><script src="../<%= test %>"></script>
-<% }); %>
+<script>
+loadWebAnimationsBuildTarget('<%= target %>');
+</script>
 <div id="mocha"></div>
