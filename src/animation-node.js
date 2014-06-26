@@ -221,7 +221,7 @@
     return f;
   };
 
-  if (TESTING) {
+  if (WEB_ANIMATIONS_TESTING) {
     testing.normalizeTimingInput = normalizeTimingInput;
     testing.toTimingFunction = toTimingFunction;
     testing.calculateActiveDuration = calculateActiveDuration;
@@ -237,4 +237,4 @@
     testing.calculateTransformedTime = calculateTransformedTime;
   }
 
-})(shared, minifill, testing);
+})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);

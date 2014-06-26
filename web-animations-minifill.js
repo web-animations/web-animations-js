@@ -11,10 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //     See the License for the specific language governing permissions and
 // limitations under the License.
-
-var webAnimationsShared = {};
-var webAnimationsMinifill = {};
-var webAnimationsMaxifill = {};
-
-if (!WEB_ANIMATIONS_TESTING)
-  var webAnimationsTesting = null;
+var webAnimationsSourceTarget = 'minifill';
+var WEB_ANIMATIONS_TESTING = false;
+(function() {
+  var scripts = document.getElementsByTagName('script');
+  var location = scripts[scripts.length - 1].src.replace(/[^\/]+$/, '');
+  document.write('<script src="' + location + 'target-config.js"></script>');
+  document.write('<script src="' + location + 'target-loader.js"></script>');
+})();

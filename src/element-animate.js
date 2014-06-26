@@ -13,7 +13,7 @@
 // limitations under the License.
 
 (function(scope) {
-  global.Element.prototype.animate = function(effectInput, timingInput) {
+  window.Element.prototype.animate = function(effectInput, timingInput) {
     return scope.timeline._play(scope.Animation(this, effectInput, timingInput));
   };
-})(minifill);
+})(webAnimationsMinifill);

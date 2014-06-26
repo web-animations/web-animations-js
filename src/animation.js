@@ -12,14 +12,14 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
   scope.Animation = function(target, effectInput, timingInput) {
     var animationNode = scope.AnimationNode(shared.normalizeTimingInput(timingInput));
     var effect = scope.convertEffectInput(effectInput);
     var timeFraction;
     var animation = function() {
-      TESTING && console.assert(typeof timeFraction !== 'undefined');
+      WEB_ANIMATIONS_TESTING && console.assert(typeof timeFraction !== 'undefined');
       effect(target, timeFraction);
     };
     // Returns whether the animation is in effect or not after the timing update.
@@ -48,4 +48,4 @@
     return nullAnimation;
   };
 
-})(minifill, testing);
+})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);

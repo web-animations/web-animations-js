@@ -160,10 +160,10 @@
   }
 
 
-  if (TESTING) {
+  if (WEB_ANIMATIONS_TESTING) {
     testing.normalize = normalize;
     testing.makePropertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups;
     testing.makeInterpolations = makeInterpolations;
   }
 
-})(shared, minifill, testing);
+})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);

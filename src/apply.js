@@ -34,4 +34,4 @@
     element.style[propertyName(property)] = '';
   };
 
-})(minifill, testing);
+})(webAnimationsMinifill, webAnimationsTesting);

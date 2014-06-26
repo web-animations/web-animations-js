@@ -37,8 +37,8 @@
     }
   };
 
-  if (TESTING) {
+  if (WEB_ANIMATIONS_TESTING) {
     testing.interpolate = interpolate;
   }
 
-})(minifill, testing);
+})(webAnimationsMinifill, webAnimationsTesting);

@@ -12,9 +12,5 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-var webAnimationsShared = {};
-var webAnimationsMinifill = {};
-var webAnimationsMaxifill = {};
-
-if (!WEB_ANIMATIONS_TESTING)
-  var webAnimationsTesting = null;
+var WEB_ANIMATIONS_TESTING = false;
+var webAnimationsTesting = null;

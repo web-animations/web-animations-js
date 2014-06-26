@@ -95,4 +95,4 @@
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions,
       'left|right|top|bottom|width|height'.split('|'));
 
-})(minifill, testing);
+})(webAnimationsMinifill, webAnimationsTesting);
