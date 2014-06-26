@@ -98,6 +98,7 @@ module.exports = function(grunt) {
   grunt.task.registerMultiTask('test', 'Run <target> tests under Karma', function() {
     var done = this.async();
     var karmaConfig = require('./test/karma-config.js');
+    var config = targetConfig[this.target];
     karmaConfig.files = ['test/runner.js'].concat(config.src, config.test);
     var karmaServer = require('karma').server;
     karmaServer.start(karmaConfig, function(exitCode) {
