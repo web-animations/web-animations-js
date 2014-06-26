@@ -112,11 +112,12 @@ module.exports = function(grunt) {
   for (var target in targetConfig) {
     grunt.task.registerTask(target, [
       'uglify:' + target,
+      'gendev:' + target,
       'genimport:' + target,
       'gentest:' + target,
       'gjslint',
     ]);
   }
 
-  grunt.task.registerTask('default', ['uglify', 'genimport', 'gentest', 'gjslint']);
+  grunt.task.registerTask('default', ['uglify', 'gendev', 'genimport', 'gentest', 'gjslint']);
 };
