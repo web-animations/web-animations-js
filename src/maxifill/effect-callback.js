@@ -56,7 +56,7 @@
   var callbacks = [];
   var ticking = false;
   function register(callback) {
-    if (!callback || callback._registered)
+    if (callback._registered)
       return;
     callback._registered = true;
     callbacks.push(callback);
@@ -90,14 +90,16 @@
 
   var playerProto = Object.getPrototypeOf(document.documentElement.animate([]));
   function registerHook() {
-    register(this._callback);
+    if (this._callback)
+      register(this._callback);
   };
   scope.hookMethod(playerProto, 'play', registerHook);
   scope.hookMethod(playerProto, 'reverse', registerHook);
   scope.hookMethod(playerProto, 'cancel', function() {
-    register(this._callback);
-    if (this._callback)
+    if (this._callback) {
+      register(this._callback);
       this._callback._player = null;
+    }
   });
   scope.hookSetter(playerProto, 'currentTime', registerHook);
   scope.hookSetter(playerProto, 'startTime', registerHook);

@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //     See the License for the specific language governing permissions and
 // limitations under the License.
-(function(shared) {
-  shared.hookSetter = function(proto, property, setter) {
+(function(scope) {
+  scope.hookSetter = function(proto, property, setter) {
     var original = Object.getOwnPropertyDescriptor(proto, property);
     Object.defineProperty(proto, property, {
       enumerable: true,
@@ -25,7 +25,7 @@
     });
   };
 
-  shared.hookMethod = function(proto, property, f) {
+  scope.hookMethod = function(proto, property, f) {
     var original = proto[property];
     proto[property] = function() {
       var result = original.call(this);
