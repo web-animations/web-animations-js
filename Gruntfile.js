@@ -3,6 +3,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-gjslint');
   grunt.loadNpmTasks('grunt-checkrepo');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-saucelabs');
 
   var targetConfig = require('./target-config.js');
 
@@ -65,6 +66,7 @@ module.exports = function(grunt) {
       }
     },
     test: testTargets,
+    sauce: testTargets,
   });
 
   grunt.task.registerMultiTask('gen', 'Generate web-animations-<target>.js, web-animations-<target>.html, test/runner-<target>.js', function() {
@@ -101,6 +103,18 @@ module.exports = function(grunt) {
     var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config.js'), {});
     var config = targetConfig[this.target];
     karmaConfig.files = ['test/runner.js'].concat(config.src, config.test);
+    var karmaServer = require('karma').server;
+    karmaServer.start(karmaConfig, function(exitCode) {
+      done(exitCode === 0);
+    });
+  });
+
+  grunt.task.registerMultiTask('sauce', 'Run <target> tests under Karma on Saucelabs', function() {
+    var done = this.async();
+    var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config-ci.js'), {});
+    var config = targetConfig[this.target];
+    karmaConfig.files = ['test/runner.js'].concat(config.src, config.test);
+    karmaConfig.sauceLabs.testName = 'web-animation-next ' + this.target + ' Unit tests';
     var karmaServer = require('karma').server;
     karmaServer.start(karmaConfig, function(exitCode) {
       done(exitCode === 0);
