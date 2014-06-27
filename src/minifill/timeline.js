@@ -49,7 +49,7 @@
     }
   };
 
-  var ticking = true;
+  var ticking = false;
   var hasRestartedThisFrame = false;
 
   scope.restart = function() {
