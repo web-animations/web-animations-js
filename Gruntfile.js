@@ -2,6 +2,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-gjslint');
   grunt.loadNpmTasks('grunt-checkrepo');
+  grunt.loadNpmTasks('grunt-karma');
 
   var targetConfig = require('./target-config.js');
 
@@ -97,7 +98,7 @@ module.exports = function(grunt) {
 
   grunt.task.registerMultiTask('test', 'Run <target> tests under Karma', function() {
     var done = this.async();
-    var karmaConfig = require('./test/karma-config.js');
+    var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config.js'), {});
     var config = targetConfig[this.target];
     karmaConfig.files = ['test/runner.js'].concat(config.src, config.test);
     var karmaServer = require('karma').server;
