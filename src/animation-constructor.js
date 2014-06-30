@@ -67,17 +67,13 @@
   });
 
   window.document.timeline.play = function(source) {
+    // TODO: Handle effect callback.
     if (source instanceof window.Animation) {
+      // TODO: Handle null target.
       var player = source.target.animate(source._effect, source.timing);
-      // TODO: make source setter call cancel.
       player.source = source;
       source.player = player;
       source._nativePlayer = player;
-      var cancel = player.cancel;
-      player.cancel = function() {
-        player.source = null;
-        cancel.call(this);
-      };
       return player;
     }
     // FIXME: Move this code out of this module
@@ -89,7 +85,7 @@
           player._removePlayers();
           return;
         }
-        if (isNaN(player._startTime))
+        if (isNaN(player.startTime))
           return;
 
         updateChildPlayers(player);
@@ -129,82 +125,10 @@
 
       // TODO: Use a single static element rather than one per group.
       var player = document.createElement('div').animate(ticker, source.timing);
-      player._childPlayers = [];
       player.source = source;
       source._nativePlayer = player;
       source.player = player;
-
-      player._removePlayers = function() {
-        while (this._childPlayers.length)
-          this._childPlayers.pop().cancel();
-      };
-
       return player;
     }
   };
-
-  function isGroupPlayer(player) {
-    return !!player._childPlayers;
-  }
-
-  var playerProto = Object.getPrototypeOf(document.documentElement.animate([]));
-  scope.hookMethod(playerProto, 'reverse', function() {
-    if (isGroupPlayer(this)) {
-      var offset = 0;
-      this._childPlayers.forEach(function(child) {
-        child.reverse();
-        child.startTime = this.startTime + offset * this.playbackRate;
-        child.currentTime = this.currentTime + offset * this.playbackRate;
-        if (this.source instanceof window.AnimationSequence)
-          offset += child.source.activeDuration;
-      }.bind(this));
-    }
-  });
-
-  scope.hookMethod(playerProto, 'pause', function() {
-    if (isGroupPlayer(this)) {
-      this._childPlayers.forEach(function(child) {
-        child.pause();
-      });
-    }
-  });
-
-  scope.hookMethod(playerProto, 'play', function() {
-    if (isGroupPlayer(this)) {
-      this._childPlayers.forEach(function(child) {
-        var time = child.currentTime;
-        child.play();
-        child.currentTime = time;
-      });
-    }
-  });
-
-  scope.hookMethod(playerProto, 'cancel', function() {
-    if (isGroupPlayer(this)) {
-      this.source = null;
-      this._removePlayers();
-    }
-  });
-
-  scope.hookSetter(playerProto, 'currentTime', function(v) {
-    if (isGroupPlayer(this)) {
-      var offset = 0;
-      this._childPlayers.forEach(function(child) {
-        child.currentTime = v - offset;
-        if (this.source instanceof window.AnimationSequence)
-          offset += child.source.activeDuration;
-      }.bind(this));
-    }
-  });
-
-  scope.hookSetter(playerProto, 'startTime', function(v) {
-    if (isGroupPlayer(this)) {
-      var offset = 0;
-      this._childPlayers.forEach(function(child) {
-        child.startTime = v + offset;
-        if (this.source instanceof window.AnimationSequence)
-          offset += child.source.activeDuration;
-      }.bind(this));
-    }
-  });
 }(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting));

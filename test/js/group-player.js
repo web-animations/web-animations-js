@@ -167,9 +167,9 @@ suite('group-player', function() {
     }
     if (typeof timingList[0] == 'number') {
       if (isNaN(timingList[0]))
-        assert.ok(isNaN(player._startTime), trace + 'expected NaN startTime');
+        assert.ok(isNaN(player.startTime), trace + 'expected NaN startTime');
       else
-        assert.equal(player._startTime, timingList[0], trace + ' startTime');
+        assert.equal(player.startTime, timingList[0], trace + ' startTime');
       assert.equal(player.currentTime, timingList[1], trace + ' currentTime');
     } else {
       _checkTimes(player._childPlayers[index], timingList[0], 0, trace + ' ' + index);

@@ -88,7 +88,7 @@ suite('player', function() {
     tick(100);
     tick(1200);
     assert.equal(p.finished, true);
-    assert.equal(p._startTime, 100);
+    assert.equal(p.startTime, 100);
     assert.equal(p.currentTime, 1000);
     tick(1500);
     assert.equal(p.currentTime, 1000);
@@ -97,7 +97,7 @@ suite('player', function() {
     assert.ok(isNaN(p._startTime));
     assert.equal(p.currentTime, 1000);
     tick(1600);
-    assert.equal(p._startTime, 2600);
+    assert.equal(p.startTime, 2600);
     assert.equal(p.currentTime, 1000);
   });
   test('playing after finishing works as expected', function() {
@@ -106,16 +106,16 @@ suite('player', function() {
     tick(100);
     tick(1200);
     assert.equal(p.finished, true);
-    assert.equal(p._startTime, 100);
+    assert.equal(p.startTime, 100);
     assert.equal(p.currentTime, 1000);
     tick(1500);
     assert.equal(p.currentTime, 1000);
     assert.equal(isTicking(), false);
     p.play();
-    assert.ok(isNaN(p._startTime));
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.currentTime, 0);
     tick(1600);
-    assert.equal(p._startTime, 1600);
+    assert.equal(p.startTime, 1600);
     assert.equal(p.currentTime, 0);
   });
   test('limiting works as expected', function() {
