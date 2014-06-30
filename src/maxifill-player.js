@@ -37,12 +37,9 @@
     set currentTime(v) {
       this._player.currentTime = v;
       this._register();
-      var offset = 0;
-      this._childPlayers.forEach(function(child) {
+      this._updateChildren(function(child, offset) {
         child.currentTime = v - offset;
-        if (this.source instanceof window.AnimationSequence)
-          offset += child.source.activeDuration;
-      }.bind(this));
+      });
     },
     get startTime() {
       return this._player.startTime;
@@ -50,12 +47,9 @@
     set startTime(v) {
       this._player.startTime = v;
       this._register();
-      var offset = 0;
-      this._childPlayers.forEach(function(child) {
+      this._updateChildren(function(child, offset) {
         child.startTime = v + offset;
-        if (this.source instanceof window.AnimationSequence)
-          offset += child.source.activeDuration;
-      }.bind(this));
+      });
     },
     get playbackRate() {
       return this._player.playbackRate;
@@ -66,7 +60,7 @@
     play: function() {
       this._player.play();
       this._register();
-      this._childPlayers.forEach(function(child) {
+      this._updateChildren(function(child) {
         var time = child.currentTime;
         child.play();
         child.currentTime = time;
@@ -75,7 +69,7 @@
     pause: function() {
       this._player.pause();
       this._register();
-      this._childPlayers.forEach(function(child) {
+      this._updateChildren(function(child) {
         child.pause();
       });
     },
@@ -96,14 +90,10 @@
     reverse: function() {
       this._player.reverse();
       this._register();
-      var offset = 0;
-      this._childPlayers.forEach(function(child) {
-        child.reverse();
+      this._updateChildren(function(child, offset) {
         child.startTime = this.startTime + offset * this.playbackRate;
         child.currentTime = this.currentTime + offset * this.playbackRate;
-        if (this.source instanceof window.AnimationSequence)
-          offset += child.source.activeDuration;
-      }.bind(this));
+      });
     },
     addEventListener: function(type, handler) {
       this._player.addEventListener(type, handler);
@@ -114,7 +104,15 @@
     _removePlayers: function() {
       while (this._childPlayers.length)
         this._childPlayers.pop().cancel();
-    }
+    },
+    _updateChildren: function(f) {
+      var offset = 0;
+      this._childPlayers.forEach(function(child) {
+        f.call(this, child, offset);
+        if (this.source instanceof window.AnimationSequence)
+          offset += child.source.activeDuration;
+      }.bind(this));
+    },
   };
 
 })(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);
