@@ -4,6 +4,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-checkrepo');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-saucelabs');
+  grunt.loadNpmTasks('grunt-git-status');
 
   var targetConfig = require('./target-config.js');
 
@@ -42,6 +43,10 @@ module.exports = function(grunt) {
     checkrepo: {
       all: {
         clean: true,
+      },
+    },
+    'git-status': {
+      all: {
       },
     },
     gjslint: {

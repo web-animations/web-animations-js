@@ -45,51 +45,11 @@
         effect(t, target, animation);
       last = t;
     };
+
     callback._player = player;
     callback._registered = false;
     callback._sequenceNumber = sequenceNumber++;
-
-    var originalPlay = player.play;
-    player.play = function() {
-      originalPlay.call(this);
-      register(callback);
-    };
-
-    var originalCancel = player.cancel;
-    player.cancel = function() {
-      originalCancel.call(this);
-      register(callback);
-      callback._player = null;
-    };
-
-    var originalReverse = player.reverse;
-    player.reverse = function() {
-      originalReverse.call(this);
-      register(callback);
-    };
-
-    var originalCurrentTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'currentTime');
-    Object.defineProperty(player, 'currentTime', {
-      enumerable: true,
-      configurable: true,
-      get: function() { return originalCurrentTime.get.call(this); },
-      set: function(v) {
-        originalCurrentTime.set.call(this, v);
-        register(callback);
-      }
-    });
-
-    var originalStartTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'startTime');
-    Object.defineProperty(player, 'startTime', {
-      enumerable: true,
-      configurable: true,
-      get: function() { return originalStartTime.get.call(this); },
-      set: function(v) {
-        originalStartTime.set.call(this, v);
-        register(callback);
-      }
-    });
-
+    player._callback = callback;
     register(callback);
   }
 
@@ -127,4 +87,21 @@
       ticking = false;
     }
   }
+
+  var playerProto = Object.getPrototypeOf(document.documentElement.animate([]));
+  function registerHook() {
+    if (this._callback)
+      register(this._callback);
+  };
+  scope.hookMethod(playerProto, 'play', registerHook);
+  scope.hookMethod(playerProto, 'reverse', registerHook);
+  scope.hookMethod(playerProto, 'cancel', function() {
+    if (this._callback) {
+      register(this._callback);
+      this._callback._player = null;
+    }
+  });
+  scope.hookSetter(playerProto, 'currentTime', registerHook);
+  scope.hookSetter(playerProto, 'startTime', registerHook);
+
 })(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);

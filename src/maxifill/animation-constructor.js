@@ -134,76 +134,6 @@
       source._nativePlayer = player;
       source.player = player;
 
-      var originalReverse = player.reverse;
-      player.reverse = function() {
-        originalReverse.call(this);
-        var offset = 0;
-        this._childPlayers.forEach(function(child) {
-          child.reverse();
-          child.startTime = this.startTime + offset * this.playbackRate;
-          child.currentTime = this.currentTime + offset * this.playbackRate;
-          if (source instanceof window.AnimationSequence)
-            offset += child.source.activeDuration;
-        }.bind(this));
-      };
-
-      var originalPause = player.pause;
-      player.pause = function() {
-        originalPause.call(this);
-        this._childPlayers.forEach(function(child) {
-          child.pause();
-        });
-      };
-
-      var originalPlay = player.play;
-      player.play = function() {
-        originalPlay.call(this);
-        this._childPlayers.forEach(function(child) {
-          var time = child.currentTime;
-          child.play();
-          child.currentTime = time;
-        });
-      };
-
-      var originalCancel = player.cancel;
-      player.cancel = function() {
-        this.source = null;
-        originalCancel.call(this);
-        this._removePlayers();
-      };
-
-      var originalCurrentTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'currentTime');
-      Object.defineProperty(player, 'currentTime', {
-        enumerable: true,
-        configurable: true,
-        get: function() { return originalCurrentTime.get.call(this); },
-        set: function(v) {
-          var offset = 0;
-          originalCurrentTime.set.call(this, v);
-          this._childPlayers.forEach(function(child) {
-            child.currentTime = v - offset;
-            if (this.source instanceof window.AnimationSequence)
-              offset += child.source.activeDuration;
-          }.bind(this));
-        }
-      });
-
-      var originalStartTime = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(player), 'startTime');
-      Object.defineProperty(player, 'startTime', {
-        enumerable: true,
-        configurable: true,
-        get: function() { return originalStartTime.get.call(this); },
-        set: function(v) {
-          var offset = 0;
-          originalStartTime.set.call(this, v);
-          this._childPlayers.forEach(function(child) {
-            child.startTime = v + offset;
-            if (this.source instanceof window.AnimationSequence)
-              offset += child.source.activeDuration;
-          }.bind(this));
-        }
-      });
-
       player._removePlayers = function() {
         while (this._childPlayers.length)
           this._childPlayers.pop().cancel();
@@ -212,4 +142,69 @@
       return player;
     }
   };
+
+  function isGroupPlayer(player) {
+    return !!player._childPlayers;
+  }
+
+  var playerProto = Object.getPrototypeOf(document.documentElement.animate([]));
+  scope.hookMethod(playerProto, 'reverse', function() {
+    if (isGroupPlayer(this)) {
+      var offset = 0;
+      this._childPlayers.forEach(function(child) {
+        child.reverse();
+        child.startTime = this.startTime + offset * this.playbackRate;
+        child.currentTime = this.currentTime + offset * this.playbackRate;
+        if (this.source instanceof window.AnimationSequence)
+          offset += child.source.activeDuration;
+      }.bind(this));
+    }
+  });
+
+  scope.hookMethod(playerProto, 'pause', function() {
+    if (isGroupPlayer(this)) {
+      this._childPlayers.forEach(function(child) {
+        child.pause();
+      });
+    }
+  });
+
+  scope.hookMethod(playerProto, 'play', function() {
+    if (isGroupPlayer(this)) {
+      this._childPlayers.forEach(function(child) {
+        var time = child.currentTime;
+        child.play();
+        child.currentTime = time;
+      });
+    }
+  });
+
+  scope.hookMethod(playerProto, 'cancel', function() {
+    if (isGroupPlayer(this)) {
+      this.source = null;
+      this._removePlayers();
+    }
+  });
+
+  scope.hookSetter(playerProto, 'currentTime', function(v) {
+    if (isGroupPlayer(this)) {
+      var offset = 0;
+      this._childPlayers.forEach(function(child) {
+        child.currentTime = v - offset;
+        if (this.source instanceof window.AnimationSequence)
+          offset += child.source.activeDuration;
+      }.bind(this));
+    }
+  });
+
+  scope.hookSetter(playerProto, 'startTime', function(v) {
+    if (isGroupPlayer(this)) {
+      var offset = 0;
+      this._childPlayers.forEach(function(child) {
+        child.startTime = v + offset;
+        if (this.source instanceof window.AnimationSequence)
+          offset += child.source.activeDuration;
+      }.bind(this));
+    }
+  });
 }(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting));
