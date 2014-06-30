@@ -1,29 +1,28 @@
 (function() {
 
   var src = [
-      'src/scope.js', // Must be first.
-      'src/shared/animation-node.js',
-      'src/shared/effect.js'];
+      'src/scope.js'];
 
   var minifillSrc = src.concat(
-      // FIXME: Currently property-interpolation must come before handlers.
-      'src/minifill/property-interpolation.js',
-      'src/minifill/animation.js',
-      'src/minifill/apply.js',
-      'src/minifill/color-handler.js',
-      'src/minifill/dimension-handler.js',
-      'src/minifill/element-animate.js',
-      'src/minifill/interpolation.js',
-      'src/minifill/number-handler.js',
-      'src/minifill/player.js',
-      'src/minifill/timeline.js',
-      'src/minifill/transform-handler.js');
+      'src/animation-node.js',
+      'src/effect.js',
+      'src/property-interpolation.js',
+      'src/animation.js',
+      'src/apply.js',
+      'src/color-handler.js',
+      'src/dimension-handler.js',
+      'src/element-animate.js',
+      'src/interpolation.js',
+      'src/number-handler.js',
+      'src/player.js',
+      'src/timeline.js',
+      'src/transform-handler.js');
 
   var maxifillSrc = minifillSrc.concat(
-      'src/maxifill/hooks.js',
-      'src/maxifill/animation-constructor.js',
-      'src/maxifill/effect-callback.js',
-      'src/maxifill/group-constructors.js');
+      'src/hooks.js',
+      'src/animation-constructor.js',
+      'src/effect-callback.js',
+      'src/group-constructors.js');
 
   var minifillTest = [
       'test/js/animation-node.js',
