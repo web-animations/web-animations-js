@@ -217,7 +217,7 @@
     var f = function(localTime) {
       return calculateTimeFraction(activeDuration, localTime, timing);
     };
-    f.totalDuration = timing.delay + activeDuration + timing.endDelay;
+    f._totalDuration = timing.delay + activeDuration + timing.endDelay;
     return f;
   };
 

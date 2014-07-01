@@ -23,14 +23,14 @@
       effect(target, timeFraction);
     };
     // Returns whether the animation is in effect or not after the timing update.
-    animation.update = function(localTime) {
+    animation._update = function(localTime) {
       timeFraction = animationNode(localTime);
       return timeFraction !== null;
     };
-    animation.clear = function() {
+    animation._clear = function() {
       effect(target, null);
     };
-    animation.totalDuration = animationNode.totalDuration;
+    animation._totalDuration = animationNode._totalDuration;
     return animation;
   };
 
@@ -41,10 +41,10 @@
         clear = null;
       }
     };
-    nullAnimation.update = function() {
+    nullAnimation._update = function() {
       return null;
     };
-    nullAnimation.totalDuration = 0;
+    nullAnimation._totalDuration = 0;
     return nullAnimation;
   };
 
