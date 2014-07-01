@@ -53,7 +53,7 @@
   }
 
   function cubic(a, b, c, d) {
-    if (a < 0 || a > 1 || c < a || c > 1) {
+    if (a < 0 || a > 1 || c < 0 || c > 1) {
       return linear;
     }
     return function(x) {
