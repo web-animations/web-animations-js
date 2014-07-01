@@ -10,7 +10,7 @@ suite('group-player-finish-event', function() {
         new Animation(this.element, [], 500),
       ]),
     ]);
-    this.player = this.element.animate([], 1000);
+    this.player = document.timeline.play(animation, 1000);
   });
   teardown(function() {
     if (this.element.parent)

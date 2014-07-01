@@ -22,11 +22,5 @@ suite('group-constructors', function() {
     tick(2100);
     assert.equal(p._childPlayers[1]._childPlayers[0].source.player, p);
     assert.equal(p._childPlayers[1]._childPlayers[1].source.player, p);
-
-    assert.equal(p.source._nativePlayer.source, p.source);
-    assert.equal(p._childPlayers[0].source._nativePlayer.source, p._childPlayers[0].source);
-    assert.equal(p._childPlayers[1].source._nativePlayer.source, p._childPlayers[1].source);
-    assert.equal(p._childPlayers[1]._childPlayers[0].source._nativePlayer.source, p._childPlayers[1]._childPlayers[0].source);
-    assert.equal(p._childPlayers[1]._childPlayers[1].source._nativePlayer.source, p._childPlayers[1]._childPlayers[1].source);
   });
 });

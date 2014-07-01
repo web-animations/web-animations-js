@@ -19,7 +19,7 @@
       'src/transform-handler.js');
 
   var maxifillSrc = minifillSrc.concat(
-      'src/hooks.js',
+      'src/maxifill-player.js',
       'src/animation-constructor.js',
       'src/effect-callback.js',
       'src/group-constructors.js');

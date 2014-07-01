@@ -18,11 +18,11 @@
 
   Element.prototype.animate = function(effect, timing) {
     if (typeof effect == 'function') {
-      var player = originalAnimate.call(element, [], timing);
+      var player = new scope.Player(originalAnimate.call(element, [], timing));
       bind(player, this, effect, timing);
       return player;
     }
-    return originalAnimate.call(this, effect, timing);
+    return new scope.Player(originalAnimate.call(this, effect, timing));
   };
 
   var sequenceNumber = 0;
@@ -88,20 +88,9 @@
     }
   }
 
-  var playerProto = Object.getPrototypeOf(document.documentElement.animate([]));
-  function registerHook() {
+  scope.Player.prototype._register = function() {
     if (this._callback)
       register(this._callback);
   };
-  scope.hookMethod(playerProto, 'play', registerHook);
-  scope.hookMethod(playerProto, 'reverse', registerHook);
-  scope.hookMethod(playerProto, 'cancel', function() {
-    if (this._callback) {
-      register(this._callback);
-      this._callback._player = null;
-    }
-  });
-  scope.hookSetter(playerProto, 'currentTime', registerHook);
-  scope.hookSetter(playerProto, 'startTime', registerHook);
 
 })(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);

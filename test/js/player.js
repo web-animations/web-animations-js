@@ -88,7 +88,7 @@ suite('player', function() {
     tick(100);
     tick(1200);
     assert.equal(p.finished, true);
-    assert.equal(p._startTime, 100);
+    assert.equal(p.startTime, 100);
     assert.equal(p.currentTime, 1000);
     tick(1500);
     assert.equal(p.currentTime, 1000);
@@ -97,7 +97,7 @@ suite('player', function() {
     assert.ok(isNaN(p._startTime));
     assert.equal(p.currentTime, 1000);
     tick(1600);
-    assert.equal(p._startTime, 2600);
+    assert.equal(p.startTime, 2600);
     assert.equal(p.currentTime, 1000);
   });
   test('playing after finishing works as expected', function() {
@@ -106,16 +106,16 @@ suite('player', function() {
     tick(100);
     tick(1200);
     assert.equal(p.finished, true);
-    assert.equal(p._startTime, 100);
+    assert.equal(p.startTime, 100);
     assert.equal(p.currentTime, 1000);
     tick(1500);
     assert.equal(p.currentTime, 1000);
     assert.equal(isTicking(), false);
     p.play();
-    assert.ok(isNaN(p._startTime));
+    assert.ok(isNaN(p.startTime));
     assert.equal(p.currentTime, 0);
     tick(1600);
-    assert.equal(p._startTime, 1600);
+    assert.equal(p.startTime, 1600);
     assert.equal(p.currentTime, 0);
   });
   test('limiting works as expected', function() {
@@ -259,11 +259,11 @@ suite('player', function() {
     tick(90);
     var nofill = document.body.animate([], 100);
     var fill = document.body.animate([], {duration: 100, fill: 'forwards'});
-    assert.deepEqual(document.timeline.players, [nofill, fill]);
+    assert.deepEqual(document.timeline.players, [nofill._player || nofill, fill._player || fill]);
     tick(100);
-    assert.deepEqual(document.timeline.players, [nofill, fill]);
+    assert.deepEqual(document.timeline.players, [nofill._player || nofill, fill._player || fill]);
     tick(400);
-    assert.deepEqual(document.timeline.players, [fill]);
+    assert.deepEqual(document.timeline.players, [fill._player || fill]);
   });
   test('discarded players get re-added on modification', function() {
     tick(90);
@@ -272,14 +272,14 @@ suite('player', function() {
     tick(400);
     assert.deepEqual(document.timeline.players, []);
     player.currentTime = 0;
-    assert.deepEqual(document.timeline.players, [player]);
+    assert.deepEqual(document.timeline.players, [player._player || player]);
   });
   test('players in the before phase are not discarded', function() {
     tick(100);
     var player = document.body.animate([], 100);
     player.currentTime = -50;
     tick(110);
-    assert.deepEqual(document.timeline.players, [player]);
+    assert.deepEqual(document.timeline.players, [player._player || player]);
   });
   test('players that go out of effect should not clear the effect of players that are in effect', function() {
     var target = document.createElement('div');
