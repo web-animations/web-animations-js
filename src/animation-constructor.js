@@ -40,16 +40,18 @@
   };
 
   var pendingGroups = [];
-  function addPendingGroup(group) {
+  scope.awaitStartTime = function(groupPlayer) {
+    if (!isNaN(groupPlayer.startTime) || !groupPlayer._isGroup)
+      return;
     if (pendingGroups.length == 0) {
       requestAnimationFrame(updatePendingGroups);
     }
-    pendingGroups.push(group);
-  }
+    pendingGroups.push(groupPlayer);
+  };
   function updatePendingGroups() {
     var updated = false;
     while (pendingGroups.length) {
-      pendingGroups.shift()();
+      pendingGroups.shift()._updateChildren();
       updated = true;
     }
     return updated;
@@ -66,6 +68,37 @@
     },
   });
 
+  // TODO: Call into this less frequently.
+  scope.Player.prototype._updateChildren = function() {
+    if (isNaN(this.startTime) || !this.source || !this._isGroup)
+      return;
+    var offset = 0;
+    for (var i = 0; i < this.source.children.length; i++) {
+      var child = this.source.children[i];
+      var childPlayer;
+
+      if (i >= this._childPlayers.length) {
+        childPlayer = window.document.timeline.play(child);
+        child.player = this.source.player;
+        this._childPlayers.push(childPlayer);
+      } else {
+        childPlayer = this._childPlayers[i];
+      }
+
+      if (childPlayer.startTime != this.startTime + offset) {
+        childPlayer.startTime = this.startTime + offset;
+        childPlayer._updateChildren();
+      }
+
+      if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
+        childPlayer.currentTime = -1;
+      }
+
+      if (this.source instanceof window.AnimationSequence)
+        offset += child.activeDuration;
+    }
+  };
+
   window.document.timeline.play = function(source) {
     // TODO: Handle effect callback.
     if (source instanceof window.Animation) {
@@ -73,7 +106,6 @@
       var player = source.target.animate(source._effect, source.timing);
       player.source = source;
       source.player = player;
-      source._nativePlayer = player;
       return player;
     }
     // FIXME: Move this code out of this module
@@ -88,46 +120,16 @@
         if (isNaN(player.startTime))
           return;
 
-        updateChildPlayers(player);
+        player._updateChildren();
       };
 
-      function updateChildPlayers(updatingPlayer) {
-        var offset = 0;
-
-        // TODO: Call into this less frequently.
-
-        for (var i = 0; i < updatingPlayer.source.children.length; i++) {
-          var child = updatingPlayer.source.children[i];
-
-          if (i >= updatingPlayer._childPlayers.length) {
-            var newPlayer = window.document.timeline.play(child);
-            newPlayer.startTime = updatingPlayer.startTime + offset;
-            child.player = updatingPlayer.source.player;
-            updatingPlayer._childPlayers.push(newPlayer);
-            if (!(child instanceof window.Animation))
-              updateChildPlayers(newPlayer);
-          }
-
-          var childPlayer = updatingPlayer._childPlayers[i];
-          if (updatingPlayer.playbackRate == -1 && updatingPlayer.currentTime < offset && childPlayer.currentTime !== -1) {
-            childPlayer.currentTime = -1;
-          }
-
-          if (updatingPlayer.source instanceof window.AnimationSequence)
-            offset += child.activeDuration;
-        }
-      };
-
-      addPendingGroup(function() {
-        if (player.source)
-          updateChildPlayers(player);
-      });
 
       // TODO: Use a single static element rather than one per group.
       var player = document.createElement('div').animate(ticker, source.timing);
       player.source = source;
-      source._nativePlayer = player;
+      player._isGroup = true;
       source.player = player;
+      scope.awaitStartTime(player);
       return player;
     }
   };

@@ -15,6 +15,7 @@
 (function(shared, scope, testing) {
   scope.Player = function(player) {
     this.source = null;
+    this._isGroup = false;
     this._player = player;
     this._childPlayers = [];
     this._callback = null;
@@ -26,10 +27,19 @@
       return this._player.paused;
     },
     get onfinish() {
-      return this._player.onfinish;
+      return this._onfinish;
     },
     set onfinish(v) {
-      this._player.onfinish = v;
+      if (typeof v == 'function') {
+        this._onfinish = v;
+        this._player.onfinish = (function(e) {
+          e.target = this;
+          v.call(this, e);
+        }).bind(this);
+      } else {
+        this._player.onfinish = v;
+        this.onfinish = this._player.onfinish;
+      }
     },
     get currentTime() {
       return this._player.currentTime;
@@ -37,7 +47,7 @@
     set currentTime(v) {
       this._player.currentTime = v;
       this._register();
-      this._updateChildren(function(child, offset) {
+      this._forEachChild(function(child, offset) {
         child.currentTime = v - offset;
       });
     },
@@ -47,7 +57,7 @@
     set startTime(v) {
       this._player.startTime = v;
       this._register();
-      this._updateChildren(function(child, offset) {
+      this._forEachChild(function(child, offset) {
         child.startTime = v + offset;
       });
     },
@@ -60,7 +70,8 @@
     play: function() {
       this._player.play();
       this._register();
-      this._updateChildren(function(child) {
+      scope.awaitStartTime(this);
+      this._forEachChild(function(child) {
         var time = child.currentTime;
         child.play();
         child.currentTime = time;
@@ -69,7 +80,7 @@
     pause: function() {
       this._player.pause();
       this._register();
-      this._updateChildren(function(child) {
+      this._forEachChild(function(child) {
         child.pause();
       });
     },
@@ -89,23 +100,33 @@
     },
     reverse: function() {
       this._player.reverse();
+      scope.awaitStartTime(this);
       this._register();
-      this._updateChildren(function(child, offset) {
+      this._forEachChild(function(child, offset) {
+        child.reverse();
         child.startTime = this.startTime + offset * this.playbackRate;
         child.currentTime = this.currentTime + offset * this.playbackRate;
       });
     },
     addEventListener: function(type, handler) {
-      this._player.addEventListener(type, handler);
+      var wrapped = handler;
+      if (typeof handler == 'function') {
+        wrapped = (function(e) {
+          e.target = this;
+          handler.call(this, e);
+        }).bind(this);
+        handler._wrapper = wrapped;
+      }
+      this._player.addEventListener(type, wrapped);
     },
     removeEventListener: function(type, handler) {
-      this._player.removeEventListener(type, handler);
+      this._player.removeEventListener(type, (handler && handler._wrapper) || handler);
     },
     _removePlayers: function() {
       while (this._childPlayers.length)
         this._childPlayers.pop().cancel();
     },
-    _updateChildren: function(f) {
+    _forEachChild: function(f) {
       var offset = 0;
       this._childPlayers.forEach(function(child) {
         f.call(this, child, offset);
