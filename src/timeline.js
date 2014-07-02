@@ -33,12 +33,12 @@
     applyPendingEffects();
   }
 
-  scope.Timeline = function() {
+  scope.AnimationTimeline = function() {
     this.players = [];
     this.currentTime = undefined;
   };
 
-  scope.Timeline.prototype = {
+  scope.AnimationTimeline.prototype = {
     _play: function(source) {
       var player = new scope.Player(source);
       player._timeline = this;
@@ -126,7 +126,7 @@
     testing.setTicking = function(newVal) { ticking = newVal; };
   }
 
-  var timeline = new scope.Timeline();
+  var timeline = new scope.AnimationTimeline();
   scope.timeline = timeline;
   try {
     Object.defineProperty(window.document, 'timeline', {
