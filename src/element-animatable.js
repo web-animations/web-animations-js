@@ -16,4 +16,9 @@
   window.Element.prototype.animate = function(effectInput, timingInput) {
     return scope.timeline._play(scope.Animation(this, effectInput, timingInput));
   };
+  window.Element.prototype.getAnimationPlayers = function () {
+    return document.timeline.getAnimationPlayers().filter(function (player) {
+      return player._source.isSameTarget(this);
+    }.bind(this));
+  };
 })(webAnimationsMinifill);

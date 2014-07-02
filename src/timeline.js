@@ -33,6 +33,10 @@
     applyPendingEffects();
   }
 
+  function comparePlayers(leftPlayer, rightPlayer) {
+    return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
+  }
+
   scope.AnimationTimeline = function() {
     this._players = [];
     this.currentTime = undefined;
@@ -46,6 +50,11 @@
       scope.restart();
       scope.invalidateEffects();
       return player;
+    },
+    getAnimationPlayers: function() {
+      return this.players.filter(function(player) {
+        return player._source.isCurrent(player.currentTime);
+      }).sort(comparePlayers);
     }
   };
 
@@ -89,6 +98,7 @@
     timeline._players.sort(function(leftPlayer, rightPlayer) {
       return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
     });
+    timeline._players.sort(comparePlayers);
     ticking = false;
     var updatingPlayers = timeline._players;
     timeline._players = [];

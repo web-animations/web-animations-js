@@ -214,11 +214,15 @@
   scope.AnimationNode = function(timing) {
     var timeFraction = 0;
     var activeDuration = calculateActiveDuration(timing);
-    var f = function(localTime) {
+    var animationNode = function(localTime) {
       return calculateTimeFraction(activeDuration, localTime, timing);
     };
-    f._totalDuration = timing.delay + activeDuration + timing.endDelay;
-    return f;
+    animationNode._totalDuration = timing.delay + activeDuration + timing.endDelay;
+    animationNode.isCurrent = function(localTime) {
+      var phase = calculatePhase(activeDuration, localTime, timing);
+      return phase === PhaseActive || phase === PhaseBefore;
+    };
+    return animationNode;
   };
 
   if (WEB_ANIMATIONS_TESTING) {
