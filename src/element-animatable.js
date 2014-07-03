@@ -19,7 +19,7 @@
   // FIXME: This needs to return the wrapped players in maxifill
   window.Element.prototype.getAnimationPlayers = function() {
     return document.timeline.getAnimationPlayers().filter(function(player) {
-      return player._source.isSameTarget(this);
+      return player._source.hasSameTarget(this);
     }.bind(this));
   };
 })(webAnimationsMinifill);
