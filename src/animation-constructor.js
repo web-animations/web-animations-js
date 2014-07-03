@@ -38,7 +38,6 @@
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
     this._internalPlayer = null;
-    this.originalPlayer = null;
     this.activeDuration = shared.calculateActiveDuration(this.timing);
     return this;
   };
