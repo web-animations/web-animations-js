@@ -108,8 +108,10 @@ suite('group-player', function() {
     this.groupWithEmptyGroup_source = groupWithEmptyGroup_source;
     this.groupWithEmptySeq_source = groupWithEmptySeq_source;
 
-    var staticAnimation = function(target, value, duration) {
-      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
+    this.staticAnimation = function(target, value, duration) {
+      var animation = new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
+      animation.testValue = value;
+      return animation;
     };
     // The following animation structure looks like:
     // 44444
@@ -120,16 +122,19 @@ suite('group-player', function() {
     this.complexTarget = document.createElement('div');
     this.elements.push(this.complexTarget);
     this.complexSource = new AnimationGroup([
-      staticAnimation(this.complexTarget, '4px', 5),
+      this.staticAnimation(this.complexTarget, '4px', 5),
       new AnimationSequence([
-        staticAnimation(this.complexTarget, '1px', 2),
+        this.staticAnimation(this.complexTarget, '1px', 2),
         new AnimationGroup([
-          staticAnimation(this.complexTarget, '3px', 2),
-          staticAnimation(this.complexTarget, '2px', 1),
+          this.staticAnimation(this.complexTarget, '3px', 2),
+          this.staticAnimation(this.complexTarget, '2px', 1),
         ]),
       ]),
-      staticAnimation(this.complexTarget, '0px', 1),
+      this.staticAnimation(this.complexTarget, '0px', 1),
     ]);
+
+    this.target = document.createElement('div');
+    this.elements.push(this.target);
 
     for (var i = 0; i < this.elements.length; i++)
       document.documentElement.appendChild(this.elements[i]);
@@ -329,37 +334,32 @@ suite('group-player', function() {
   });
 
   test('redundant animation node wrapping', function() {
-    var target = document.createElement('div');
-    document.documentElement.appendChild(target);
-    function createAnimation(value, duration) {
-      return new Animation(target, [{marginLeft: value}, {marginLeft: value}], duration);
-    }
     tick(100);
     var animation = new AnimationSequence([
-      createAnimation('0px', 1),
+      this.staticAnimation(this.target, '0px', 1),
       new AnimationGroup([
         new AnimationSequence([
-          createAnimation('1px', 1),
-          createAnimation('2px', 1),
+          this.staticAnimation(this.target, '1px', 1),
+          this.staticAnimation(this.target, '2px', 1),
         ]),
       ]),
     ]);
     var player = document.timeline.play(animation);
-    assert.equal(getComputedStyle(target).marginLeft, '0px');
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
     checkTimes(player, [100, 0], [
       [100, 0, 0, 0], [[ // 0
         [101, -1, 0, 1], // 1
         [102, -2, 1, 2]]] // 2
     ], 't = 100');
     tick(101);
-    assert.equal(getComputedStyle(target).marginLeft, '1px');
+    assert.equal(getComputedStyle(this.target).marginLeft, '1px');
     checkTimes(player, [100, 1], [
       [100, 1, 0, 0], [[ // 0
         [101, 0, 0, 1], // 1
         [102, -1, 1, 2]]] // 2
     ], 't = 101');
     tick(102);
-    assert.equal(getComputedStyle(target).marginLeft, '2px');
+    assert.equal(getComputedStyle(this.target).marginLeft, '2px');
     assert.equal(document.timeline.currentTime, 102);
     checkTimes(player, [100, 2], [ // FIXME: Implement limiting on group players
       [100, 1, 0, 0], [[ // 0
@@ -367,14 +367,101 @@ suite('group-player', function() {
         [102, 0, 1, 2]]] // 2
     ], 't = 102');
     tick(103);
-    assert.equal(getComputedStyle(target).marginLeft, '0px');
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
     checkTimes(player, [100, 3], [ // FIXME: Implement limiting on group players
       [100, 1, 0, 0], [[ // 0
         [101, 1, 0, 1], // 1
         [102, 1, 1, 2]]] // 2
     ], 't = 103');
-    if (target.parent)
-      target.parent.removeChild(target);
+    if (this.target.parent)
+      this.target.parent.removeChild(target);
+  });
+
+  test('delays on groups work correctly', function() {
+    //   444
+    //  1
+    // 0
+    //   33
+    //   2
+    var animation = new AnimationGroup([
+      new AnimationGroup([
+        this.staticAnimation(this.target, '4px', {duration: 3, delay: 1}),
+        this.staticAnimation(this.target, '1px', {duration: 1, delay: 0}),
+      ], {delay: 1}),
+      new AnimationSequence([
+        this.staticAnimation(this.target, '0px', {duration: 1, delay: 0}),
+        this.staticAnimation(this.target, '3px', {duration: 2, delay: 1}),
+        this.staticAnimation(this.target, '2px', {duration: 1, delay: -2}),
+      ]),
+    ]);
+    tick(100);
+    var player = document.timeline.play(animation);
+    tick(100);
+    checkTimes(player, [100, 0], [
+      [
+        [101, -1],
+        [101, -1],
+      ], [
+        [100, 0],
+        [101, -1],
+        [104, -4],
+      ]
+    ]);
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
+    tick(101);
+    assert.equal(getComputedStyle(this.target).marginLeft, '1px');
+    tick(102);
+    assert.equal(getComputedStyle(this.target).marginLeft, '2px');
+    tick(103);
+    assert.equal(getComputedStyle(this.target).marginLeft, '3px');
+    tick(104);
+    assert.equal(getComputedStyle(this.target).marginLeft, '4px');
+    tick(105);
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
+  });
+
+  test('end delays on groups work correctly', function() {
+    // 11
+    //     4
+    // 0
+    //   33
+    //   2
+    var animation = new AnimationSequence([
+      new AnimationSequence([
+        this.staticAnimation(this.target, '1px', {duration: 2, endDelay: 2}),
+        this.staticAnimation(this.target, '4px', {duration: 1, endDelay: 1}),
+      ], {endDelay: -6}),
+      new AnimationSequence([
+        this.staticAnimation(this.target, '0px', {duration: 1, endDelay: 1}),
+        this.staticAnimation(this.target, '3px', {duration: 2, endDelay: -2}),
+        this.staticAnimation(this.target, '2px', {duration: 1, endDelay: 2}),
+      ]),
+    ]);
+    tick(100);
+    var player = document.timeline.play(animation);
+    tick(100);
+    checkTimes(player, [100, 0], [
+      [
+        [100, 0],
+        [104, -4],
+      ], [
+        [100, 0],
+        [102, -2],
+        [102, -2],
+      ]
+    ]);
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
+    tick(101);
+    assert.equal(getComputedStyle(this.target).marginLeft, '1px');
+    tick(102);
+    assert.equal(getComputedStyle(this.target).marginLeft, '2px');
+    tick(103);
+    assert.equal(getComputedStyle(this.target).marginLeft, '3px');
+    tick(104);
+    // FIXME: Group child player limiting bounds should match the parent player's limiting bounds.
+    // assert.equal(getComputedStyle(this.target).marginLeft, '4px');
+    // tick(105);
+    // assert.equal(getComputedStyle(this.target).marginLeft, '0px');
   });
 
   // FIXME: This test can be removed when this suite is finished.
