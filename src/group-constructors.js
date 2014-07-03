@@ -32,13 +32,22 @@
 
   window.AnimationSequence.prototype = {
     get activeDuration() {
-      return this.children.map(function(a) { return a.activeDuration; }).reduce(function(a, b) { return a + b; }, 0);
+      var total = 0;
+      this.children.forEach(function(child) {
+        total += scope.groupChildDuration(child);
+      });
+      return Math.max(total, 0);
     }
   };
 
   window.AnimationGroup.prototype = {
     get activeDuration() {
-      return Math.max.apply(this, this.children.map(function(a) { return a.activeDuration; }));
+      var max = 0;
+      this.children.forEach(function(child) {
+        max = Math.max(max, scope.groupChildDuration(child));
+      });
+      return max;
     }
   };
+
 })(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);

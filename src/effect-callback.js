@@ -35,7 +35,7 @@
       if (isNaN(t)) {
         t = null;
       } else {
-        t = shared.calculateTimeFraction(shared.activeDuration(timing), t, timing);
+        t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
         if (isNaN(t))
           t = null;
       }
