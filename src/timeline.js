@@ -56,7 +56,7 @@
       if (needsRetick)
         tick(timeline.currentTime);
       return this._players.filter(function(player) {
-        return player._source.isCurrent(player.currentTime);
+        return player._source._isCurrent(player.currentTime);
       }).sort(comparePlayers);
     }
   };

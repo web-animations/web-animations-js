@@ -218,7 +218,7 @@
       return calculateTimeFraction(activeDuration, localTime, timing);
     };
     animationNode._totalDuration = timing.delay + activeDuration + timing.endDelay;
-    animationNode.isCurrent = function(localTime) {
+    animationNode._isCurrent = function(localTime) {
       var phase = calculatePhase(activeDuration, localTime, timing);
       return phase === PhaseActive || phase === PhaseBefore;
     };

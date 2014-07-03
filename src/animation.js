@@ -30,10 +30,10 @@
     animation._clear = function() {
       effect(target, null);
     };
-    animation.hasSameTarget = function(otherTarget) {
+    animation._hasSameTarget = function(otherTarget) {
       return target === otherTarget;
     };
-    animation.isCurrent = animationNode.isCurrent;
+    animation._isCurrent = animationNode._isCurrent;
     animation._totalDuration = animationNode._totalDuration;
     return animation;
   };
@@ -49,10 +49,10 @@
       return null;
     };
     nullAnimation._totalDuration = 0;
-    nullAnimation.isCurrent = function() {
+    nullAnimation._isCurrent = function() {
       return false;
     };
-    nullAnimation.hasSameTarget = function() {
+    nullAnimation._hasSameTarget = function() {
       return false;
     };
     return nullAnimation;
