@@ -1,6 +1,6 @@
 suite('group-constructors', function() {
   setup(function() {
-    document.timeline.players = [];
+    document.timeline._players = [];
   });
 
   function simpleAnimationGroup() {

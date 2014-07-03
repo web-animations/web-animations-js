@@ -34,7 +34,7 @@
   }
 
   scope.AnimationTimeline = function() {
-    this.players = [];
+    this._players = [];
     this.currentTime = undefined;
   };
 
@@ -42,7 +42,7 @@
     _play: function(source) {
       var player = new scope.Player(source);
       player._timeline = this;
-      this.players.push(player);
+      this._players.push(player);
       scope.restart();
       scope.invalidateEffects();
       return player;
@@ -86,12 +86,12 @@
     hasRestartedThisFrame = false;
     var timeline = window.document.timeline;
     timeline.currentTime = t;
-    timeline.players.sort(function(leftPlayer, rightPlayer) {
+    timeline._players.sort(function(leftPlayer, rightPlayer) {
       return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
     });
     ticking = false;
-    var updatingPlayers = timeline.players;
-    timeline.players = [];
+    var updatingPlayers = timeline._players;
+    timeline._players = [];
 
     var newPendingClears = [];
     var newPendingEffects = [];
@@ -113,7 +113,7 @@
     pendingEffects.push.apply(pendingEffects, newPendingClears);
     pendingEffects.push.apply(pendingEffects, newPendingEffects);
 
-    timeline.players.push.apply(timeline.players, updatingPlayers);
+    timeline._players.push.apply(timeline._players, updatingPlayers);
     needsRetick = false;
 
     if (ticking)

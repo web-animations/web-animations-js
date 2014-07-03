@@ -32,7 +32,7 @@
 
   scope.Player = function(source) {
     this._sequenceNumber = sequenceNumber++;
-    this.__currentTime = 0;
+    this._currentTime = 0;
     this._startTime = NaN;
     this.paused = false;
     this._playbackRate = 1;
@@ -41,33 +41,33 @@
     this.onfinish = null;
     this._finishHandlers = [];
     this._source = source;
-    this._inEffect = this._source.update(0);
+    this._inEffect = this._source._update(0);
   };
 
   scope.Player.prototype = {
-    ensureAlive: function() {
-      this._inEffect = this._source.update(this.__currentTime);
+    _ensureAlive: function() {
+      this._inEffect = this._source._update(this._currentTime);
       if (!this._inTimeline && this._inEffect) {
         this._inTimeline = true;
-        document.timeline.players.push(this);
+        document.timeline._players.push(this);
       }
     },
     _tickCurrentTime: function(newTime, ignoreLimit) {
-      if (newTime != this.__currentTime) {
-        this.__currentTime = newTime;
+      if (newTime != this._currentTime) {
+        this._currentTime = newTime;
         if (this.finished && !ignoreLimit)
-          this.__currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
-        this.ensureAlive();
+          this._currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
+        this._ensureAlive();
       }
     },
-    get currentTime() { return this.__currentTime; },
+    get currentTime() { return this._currentTime; },
     set currentTime(newTime) {
       if (scope.restart())
         this._startTime = NaN;
       if (!this.paused && !isNaN(this._startTime)) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
-      if (this.__currentTime == newTime)
+      if (this._currentTime == newTime)
         return;
       this._tickCurrentTime(newTime, true);
       scope.invalidateEffects();
@@ -84,48 +84,48 @@
     },
     get playbackRate() { return this._playbackRate; },
     get finished() {
-      return this._playbackRate > 0 && this.__currentTime >= this.totalDuration ||
-          this._playbackRate < 0 && this.__currentTime <= 0;
+      return this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
+          this._playbackRate < 0 && this._currentTime <= 0;
     },
-    get totalDuration() { return this._source.totalDuration; },
+    get _totalDuration() { return this._source._totalDuration; },
     play: function() {
       this.paused = false;
       if (this.finished) {
-        this.__currentTime = this._playbackRate > 0 ? 0 : this.totalDuration;
+        this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
         scope.invalidateEffects();
       }
       this._finishedFlag = false;
       if (!scope.restart()) {
-        this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+        this._startTime = this._timeline.currentTime - this._currentTime / this._playbackRate;
       }
       else
         this._startTime = NaN;
-      this.ensureAlive();
+      this._ensureAlive();
     },
     pause: function() {
       this.paused = true;
       this._startTime = NaN;
     },
     finish: function() {
-      this.currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
+      this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
     },
     cancel: function() {
-      this._source = scope.NullAnimation(this._source.clear);
+      this._source = scope.NullAnimation(this._source._clear);
       this._inEffect = false;
       this.currentTime = 0;
     },
     reverse: function() {
       this._playbackRate *= -1;
       if (!scope.restart())
-        this._startTime = this._timeline.currentTime - this.__currentTime / this._playbackRate;
+        this._startTime = this._timeline.currentTime - this._currentTime / this._playbackRate;
       else
         this._startTime = NaN;
       if (!this._inTimeline) {
         this._inTimeline = true;
-        document.timeline.players.push(this);
+        document.timeline._players.push(this);
       }
       this._finishedFlag = false;
-      this.ensureAlive();
+      this._ensureAlive();
     },
     addEventListener: function(type, handler) {
       if (typeof handler == 'function' && type == 'finish')
@@ -153,7 +153,7 @@
     },
     _tick: function(timelineTime) {
       if (!this.paused && isNaN(this._startTime)) {
-        this.startTime = timelineTime - this.__currentTime / this.playbackRate;
+        this.startTime = timelineTime - this._currentTime / this.playbackRate;
       } else if (!(this.paused || this.finished)) {
         this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
       }

@@ -1,6 +1,6 @@
 suite('group-player', function() {
   setup(function() {
-    document.timeline.players = [];
+    document.timeline._players = [];
     this.elements = [];
 
     var animationMargin = function(target) {
