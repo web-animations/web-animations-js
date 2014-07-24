@@ -14,6 +14,8 @@
 
 (function(scope) {
   window.Element.prototype.animate = function(effectInput, timingInput) {
+    console.log(this);
+    console.log(timingInput);
     return scope.timeline._play(scope.Animation(this, effectInput, timingInput));
   };
   // FIXME: This needs to return the wrapped players in maxifill
