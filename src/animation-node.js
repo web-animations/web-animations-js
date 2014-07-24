@@ -208,7 +208,7 @@
   }
 
   shared.normalizeTimingInput = normalizeTimingInput;
-  shared.activeDuration = calculateActiveDuration;
+  shared.calculateActiveDuration = calculateActiveDuration;
   shared.calculateTimeFraction = calculateTimeFraction;
 
   scope.AnimationNode = function(timing) {

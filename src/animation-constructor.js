@@ -14,6 +14,10 @@
 
 (function(shared, scope, testing) {
 
+  function groupChildDuration(node) {
+    return node.timing.delay + node.activeDuration + node.timing.endDelay;
+  };
+
   function KeyframeEffect(effect) {
     this._frames = shared.normalizeKeyframes(effect);
   }
@@ -34,8 +38,7 @@
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
     this._internalPlayer = null;
-    this.originalPlayer = null;
-    this.activeDuration = shared.activeDuration(this.timing);
+    this.activeDuration = shared.calculateActiveDuration(this.timing);
     return this;
   };
 
@@ -72,7 +75,7 @@
   scope.Player.prototype._updateChildren = function() {
     if (isNaN(this.startTime) || !this.source || !this._isGroup)
       return;
-    var offset = 0;
+    var offset = this.source.timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
       var child = this.source.children[i];
       var childPlayer;
@@ -95,7 +98,7 @@
       }
 
       if (this.source instanceof window.AnimationSequence)
-        offset += child.activeDuration;
+        offset += groupChildDuration(child);
     }
   };
 
@@ -133,4 +136,7 @@
       return player;
     }
   };
+
+  scope.groupChildDuration = groupChildDuration;
+
 }(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting));
