@@ -29,7 +29,7 @@
   window.Animation = function(target, effect, timingInput) {
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
-    // this.timing = shared.normalizeTimingInput(timingInput);
+    var _timing = shared.normalizeTimingInput(timingInput);
     this.timing = timingInput;
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
@@ -39,7 +39,7 @@
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
     this._internalPlayer = null;
-    this.activeDuration = shared.calculateActiveDuration(this.timing);
+    this.activeDuration = shared.calculateActiveDuration(_timing);
     return this;
   };
 

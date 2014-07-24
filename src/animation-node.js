@@ -49,8 +49,6 @@
       });
     }
     timing.easing = toTimingFunction(timing.easing);
-    console.log(timingInput);
-    console.log("easing: " + timing.easing);
     return timing;
   }
 
