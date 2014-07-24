@@ -394,7 +394,6 @@ suite('group-player', function() {
         this.staticAnimation(this.target, '2px', {duration: 1, delay: -2}),
       ]),
     ]);
-    tick(100);
     var player = document.timeline.play(animation);
     tick(100);
     checkTimes(player, [100, 0], [
@@ -437,7 +436,6 @@ suite('group-player', function() {
         this.staticAnimation(this.target, '2px', {duration: 1, endDelay: 2}),
       ]),
     ]);
-    tick(100);
     var player = document.timeline.play(animation);
     tick(100);
     checkTimes(player, [100, 0], [
