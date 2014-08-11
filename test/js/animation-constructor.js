@@ -17,10 +17,12 @@ suite('animation-constructor', function() {
       left = getComputedStyle(target).left;
       return Number(left.substring(0, left.length - 2));
     }
+
     var target1 = document.createElement('div');
     var target2 = document.createElement('div');
     document.body.appendChild(target1);
     document.body.appendChild(target2);
+
     var animation1 = new Animation(target1, [{left: '0px'}, {left: '50px'}], 1000);
     var animation2 = new Animation(target2, [{left: '0px'}, {left: '50px'}], {duration: 1000, easing: 'ease-in'});
 
