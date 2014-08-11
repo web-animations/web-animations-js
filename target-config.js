@@ -39,6 +39,7 @@
       'test/js/timeline.js'];
 
   var maxifillTest = minifillTest.concat(
+      'test/js/animation-constructor.js',
       'test/js/group-constructors.js',
       'test/js/group-player.js',
       'test/js/group-player-finish-event.js',
