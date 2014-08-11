@@ -15,7 +15,8 @@
 (function(shared, scope, testing) {
 
   function groupChildDuration(node) {
-    return node.timing.delay + node.activeDuration + node.timing.endDelay;
+    var _timing = shared.normalizeTimingInput(node.timing);
+    return _timing.delay + node.activeDuration + _timing.endDelay;
   };
 
   function KeyframeEffect(effect) {
