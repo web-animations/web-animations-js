@@ -15,7 +15,7 @@
 (function(shared, scope, testing) {
 
   function groupChildDuration(node) {
-    return node.timing.delay + node.activeDuration + node.timing.endDelay;
+    return node._timing.delay + node.activeDuration + node._timing.endDelay;
   };
 
   function KeyframeEffect(effect) {
@@ -29,7 +29,8 @@
   window.Animation = function(target, effect, timingInput) {
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
-    this.timing = shared.normalizeTimingInput(timingInput);
+    this._timing = shared.normalizeTimingInput(timingInput);
+    this.timing = timingInput;
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
     if (typeof effect == 'function')
@@ -38,7 +39,7 @@
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
     this._internalPlayer = null;
-    this.activeDuration = shared.calculateActiveDuration(this.timing);
+    this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
   };
 
@@ -75,7 +76,7 @@
   scope.Player.prototype._updateChildren = function() {
     if (isNaN(this.startTime) || !this.source || !this._isGroup)
       return;
-    var offset = this.source.timing.delay;
+    var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
       var child = this.source.children[i];
       var childPlayer;
@@ -128,7 +129,7 @@
 
 
       // TODO: Use a single static element rather than one per group.
-      var player = document.createElement('div').animate(ticker, source.timing);
+      var player = document.createElement('div').animate(ticker, source._timing);
       player.source = source;
       player._isGroup = true;
       source.player = player;
