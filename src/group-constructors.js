@@ -16,9 +16,11 @@
 
   function constructor(children, timingInput) {
     this.children = children || [];
-    this.timing = shared.normalizeTimingInput(timingInput, true);
-    if (this.timing.duration === 'auto')
-      this.timing.duration = this.activeDuration;
+    this.timing = timingInput;
+    this._timing = shared.normalizeTimingInput(timingInput, true);
+
+    if (this._timing.duration === 'auto')
+      this._timing.duration = this.activeDuration;
     this._internalPlayer = null;
   }
 
