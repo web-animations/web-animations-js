@@ -17,7 +17,6 @@
   var propertyHandlers = {};
 
   function addPropertiesHandler(parser, merger, properties) {
-    console.log(properties);
     for (var i = 0; i < properties.length; i++) {
       var property = properties[i];
       propertyHandlers[property] = propertyHandlers[property] || [];
@@ -27,10 +26,7 @@
   scope.addPropertiesHandler = addPropertiesHandler;
 
   function propertyInterpolation(property, left, right) {
-    console.log(property);
     var handlers = left == right ? [] : propertyHandlers[property];
-    console.log(propertyHandlers);
-    console.log(handlers);
     for (var i = 0; handlers && i < handlers.length; i++) {
       var parsedLeft = handlers[i][0](left);
       var parsedRight = handlers[i][0](right);

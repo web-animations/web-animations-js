@@ -115,7 +115,6 @@
     var flipResults = false;
     if (!left.length || !right.length) {
       if (!left.length) {
-        console.log("FLIP!");
         flipResults = true;
         left = right;
         right = [];
