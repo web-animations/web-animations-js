@@ -64,22 +64,40 @@
 
   function mergeDimensions(left, right) {
     var units = [], unit;
-    for (unit in left)
+    console.log(left);
+    console.log(right);
+    for (unit in left) {
+      console.log("Left: " + left[unit] + " unit: " + unit);
       units.push(unit);
+      console.log("Units: " + units);
+    }
     for (unit in right) {
+      console.log("Right: " + right[unit] + " unit: " + unit);
       if (units.indexOf(unit) < 0)
         units.push(unit);
+      console.log("Units: " + units);
     }
 
     left = units.map(function(unit) { return left[unit] || 0; });
     right = units.map(function(unit) { return right[unit] || 0; });
-    return [left, right, function(values) {
+    console.log(left);
+    console.log(right);
+    result = [left, right, function(values) {
       var result = values.map(function(value, i) {
         // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
         return scope.numberToString(value) + units[i];
       }).join(' + ');
       return values.length > 1 ? 'calc(' + result + ')' : result;
     }];
+    console.log(result);
+    return result;
+    // return [left, right, function(values) {
+    //   var result = values.map(function(value, i) {
+    //     // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
+    //     return scope.numberToString(value) + units[i];
+    //   }).join(' + ');
+    //   return values.length > 1 ? 'calc(' + result + ')' : result;
+    // }];
   }
 
   var lengthUnits = 'px|em|ex|ch|rem|vw|vh|vmin|vmax|cm|mm|in|pt|pc';

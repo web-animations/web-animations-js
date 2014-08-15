@@ -11,6 +11,7 @@
       'src/apply.js',
       'src/color-handler.js',
       'src/dimension-handler.js',
+      'src/box-handler.js',
       'src/element-animatable.js',
       'src/interpolation.js',
       'src/number-handler.js',
