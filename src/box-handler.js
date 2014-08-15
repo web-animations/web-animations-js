@@ -20,7 +20,6 @@
     if (!match) {
       return undefined;
     }
-    // FIXME: Change this to an array.
     var out = {
       top: scope.parseLengthOrPercent(match[1]),
       right: scope.parseLengthOrPercent(match[2]),
@@ -33,7 +32,6 @@
     return undefined;
   }
 
-  // FIXME: consider saving the boxes as arrays.
   function mergeBoxes(left, right) {
     var mergedTop = scope.mergeDimensions(left.top, right.top);
     var mergedRight = scope.mergeDimensions(left.right, right.right);
