@@ -24,7 +24,7 @@
       scope.parseLengthOrPercent(match[2]),
       scope.parseLengthOrPercent(match[3]),
       scope.parseLengthOrPercent(match[4])
-      ];
+    ];
     if (out[0] && out[1] && out[2] && out[3]) {
       return out;
     }
@@ -41,9 +41,9 @@
       [mergedTop[1], mergedRight[1], mergedBottom[1], mergedLeft[1]],
       function(rectValue) {
         return 'rect(' + mergedTop[2](rectValue[0]) + ', ' +
-          mergedRight[2](rectValue[1]) + ', ' +
-          mergedBottom[2](rectValue[2]) + ', ' +
-          mergedLeft[2](rectValue[3]) + ')';
+            mergedRight[2](rectValue[1]) + ', ' +
+            mergedBottom[2](rectValue[2]) + ', ' +
+            mergedLeft[2](rectValue[3]) + ')';
       }
     ];
   }
