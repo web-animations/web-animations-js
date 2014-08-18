@@ -40,10 +40,10 @@
       [mergedTop[0], mergedRight[0], mergedBottom[0], mergedLeft[0]],
       [mergedTop[1], mergedRight[1], mergedBottom[1], mergedLeft[1]],
       function(rectValue) {
-        return 'rect(' + mergedTop[2](rectValue[0]) + ', '
-          + mergedRight[2](rectValue[1]) + ', '
-          + mergedBottom[2](rectValue[2]) + ', '
-          + mergedLeft[2](rectValue[3]) + ')';
+        return 'rect(' + mergedTop[2](rectValue[0]) + ', ' +
+          mergedRight[2](rectValue[1]) + ', ' +
+          mergedBottom[2](rectValue[2]) + ', ' +
+          mergedLeft[2](rectValue[3]) + ')';
       }
     ];
   }
