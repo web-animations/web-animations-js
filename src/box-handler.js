@@ -43,7 +43,7 @@
         return 'rect(' + mergedTop[2](rectValue[0]) + ', '
           + mergedRight[2](rectValue[1]) + ', '
           + mergedBottom[2](rectValue[2]) + ', '
-          + mergedLeft[2](rectValue[3]) + ')'
+          + mergedLeft[2](rectValue[3]) + ')';
       }
     ];
   }
