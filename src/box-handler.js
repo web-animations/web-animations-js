@@ -13,31 +13,8 @@
 // limitations under the License.
 
 (function(scope, testing) {
-
-  // function parseBoxWithCalcLeft(string) {
-  //   var rectangleWithCalcRegExp = /rect\(([^,]+), ([^,]+), ([^,]+), (calc\(.+\))\)/
-  //   match = rectangleWithCalcRegExp.exec(string);
-  //   if (!match) {
-  //     return undefined;
-  //   }
-  //   var out = [
-  //     scope.parseLengthOrPercent(match[1]),
-  //     scope.parseLengthOrPercent(match[2]),
-  //     scope.parseLengthOrPercent(match[3]),
-  //     scope.parseLengthOrPercent(match[4])
-  //     ];
-  //   console.log(out);
-  //   if (out[0] && out[1] && out[2] && out[3]) {
-  //     console.log("returning the other one");
-  //     return out;
-  //   }
-  //   return undefined;
-  // }
-
   function parseBox(string) {
-    // var rectangleRegExp = /rect\(([^,]+),([^,]+),([^,]+),([^)]+)\)/;
-    // var rectangleRegExp = /rect\(([^,]+), ([^,]+), ([^,]+), (.+)\)/
-    var rectangleRegExp = /rect\((.+), (.+), (.+), (.+)\)/
+    var rectangleRegExp = /rect\((.+), (.+), (.+), (.+)\)/;
     var match = rectangleRegExp.exec(string);
     if (!match) {
       return undefined;
@@ -48,11 +25,9 @@
       scope.parseLengthOrPercent(match[3]),
       scope.parseLengthOrPercent(match[4])
       ];
-    console.log(out);
     if (out[0] && out[1] && out[2] && out[3]) {
       return out;
     }
-    // return parseBoxWithCalcLeft(string);
     return undefined;
   }
 
