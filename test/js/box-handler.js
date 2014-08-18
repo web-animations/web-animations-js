@@ -21,27 +21,22 @@ suite('box-handler', function() {
     assert.isUndefined(webAnimationsMinifill.parseBox('Rect(0px, 0px, 0px, 0px)'));
   });
   test('interpolate lengths and percents in rectangles', function() {
-    // Interpolate pixels
     assert.equal(
       webAnimationsMinifill.propertyInterpolation('clip', 'rect(10px, 10px, 10px, 10px)', 'rect(50px, 50px, 50px, 50px)')(0.25),
       'rect(20px, 20px, 20px, 20px)',
       'Interpolate lengths in a rect');
-    // Interpolate pixels with negative values
     assert.equal(
       webAnimationsMinifill.propertyInterpolation('clip', 'rect(-10px, -10px, -10px, -10px)', 'rect(50px, 50px, 50px, 50px)')(0.25),
       'rect(5px, 5px, 5px, 5px)',
       'Interpolate negative lengths in a rect');
-    // Interpolate percents
     assert.equal(
       webAnimationsMinifill.propertyInterpolation('clip', 'rect(10%, 10%, 10%, 10%)', 'rect(50%, 50%, 50%, 50%)')(0.25),
       'rect(20%, 20%, 20%, 20%)',
       'Interpolate percents in a rect');
-    // Interpolate mixed percents and pixels. Left and right units match.
     assert.equal(
       webAnimationsMinifill.propertyInterpolation('clip', 'rect(10px, 10%, 10px, 10%)', 'rect(50px, 50%, 50px, 50%)')(0.25),
       'rect(20px, 20%, 20px, 20%)',
       'Interpolate mixed lengths and percents in a rect, where units are aligned');
-    // Test rounding
     assert.equal(
       webAnimationsMinifill.propertyInterpolation('clip', 'rect(0px, 0px, 0px, 0px)', 'rect(0.001px, 0.001px, 0.001px, 0.001px)')(0.05),
       'rect(0px, 0px, 0px, 0px)',
@@ -54,7 +49,6 @@ suite('box-handler', function() {
       webAnimationsMinifill.propertyInterpolation('clip', 'rect(10px, 10px, 10px, 10px)', 'rect(20px, 20px, 20px, 20px)')(0.25),
       'rect(12.500px, 12.500px, 12.500px, 12.500px)',
       'Round interpolation result');
-    // Test calc interpolations in rectangles
     assert.equal(
       webAnimationsMinifill.propertyInterpolation('clip', 'rect(10px, 10%, 10px, 10%)', 'rect(10em, 10px, 10em, 10px)')(0.4),
       'rect(calc(6px + 4em), calc(6% + 4px), calc(6px + 4em), calc(6% + 4px))',
