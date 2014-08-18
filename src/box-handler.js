@@ -48,9 +48,9 @@
     ];
   }
 
-  scope.addPropertiesHandler(parseBox, mergeBoxes, ['clip']);
-
   scope.parseBox = parseBox;
   scope.mergeBoxes = mergeBoxes;
+
+  scope.addPropertiesHandler(parseBox, mergeBoxes, ['clip']);
 
 })(webAnimationsMinifill, webAnimationsTesting);

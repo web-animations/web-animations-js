@@ -20,7 +20,7 @@ suite('box-handler', function() {
     assert.isUndefined(webAnimationsMinifill.parseBox('rect (0px, 0px, 0px, 0px)'));
     assert.isUndefined(webAnimationsMinifill.parseBox('Rect(0px, 0px, 0px, 0px)'));
   });
-  test('interpolate lengths and percents in rectangles', function() {
+  test('interpolate lengths, percents and calcs in rectangles', function() {
     assert.equal(
       webAnimationsMinifill.propertyInterpolation('clip', 'rect(10px, 10px, 10px, 10px)', 'rect(50px, 50px, 50px, 50px)')(0.25),
       'rect(20px, 20px, 20px, 20px)',
