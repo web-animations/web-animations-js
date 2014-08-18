@@ -13,38 +13,37 @@
 // limitations under the License.
 
 (function(scope, testing) {
-
-  var rectangleRE = /rect\(([^,]+),([^,]+),([^,]+),([^)]+)\)/;
   function parseBox(string) {
-    var match = rectangleRE.exec(string);
+    var rectangleRegExp = /rect\(([^,]+),([^,]+),([^,]+),([^)]+)\)/;
+    var match = rectangleRegExp.exec(string);
     if (!match) {
       return undefined;
     }
-    var out = {
-      top: scope.parseLengthOrPercent(match[1]),
-      right: scope.parseLengthOrPercent(match[2]),
-      bottom: scope.parseLengthOrPercent(match[3]),
-      left: scope.parseLengthOrPercent(match[4])
-    };
-    if (out.top && out.right && out.bottom && out.left) {
+    var out = [
+      scope.parseLengthOrPercent(match[1]),
+      scope.parseLengthOrPercent(match[2]),
+      scope.parseLengthOrPercent(match[3]),
+      scope.parseLengthOrPercent(match[4])
+      ];
+    if (out[0] && out[1] && out[2] && out[3]) {
       return out;
     }
     return undefined;
   }
 
   function mergeBoxes(left, right) {
-    var mergedTop = scope.mergeDimensions(left.top, right.top);
-    var mergedRight = scope.mergeDimensions(left.right, right.right);
-    var mergedBottom = scope.mergeDimensions(left.bottom, right.bottom);
-    var mergedLeft = scope.mergeDimensions(left.left, right.left);
+    var mergedTop = scope.mergeDimensions(left[0], right[0]);
+    var mergedRight = scope.mergeDimensions(left[1], right[1]);
+    var mergedBottom = scope.mergeDimensions(left[2], right[2]);
+    var mergedLeft = scope.mergeDimensions(left[3], right[3]);
     return [
       [mergedTop[0], mergedRight[0], mergedBottom[0], mergedLeft[0]],
       [mergedTop[1], mergedRight[1], mergedBottom[1], mergedLeft[1]],
-      function(value) {
-        return 'rect(' + mergedTop[2](value[0]) + ', '
-          + mergedRight[2](value[1]) + ' ,'
-          + mergedBottom[2](value[2]) + ' ,'
-          + mergedLeft[2](value[3]) + ')'
+      function(rectValue) {
+        return 'rect(' + mergedTop[2](rectValue[0]) + ', '
+          + mergedRight[2](rectValue[1]) + ' ,'
+          + mergedBottom[2](rectValue[2]) + ' ,'
+          + mergedLeft[2](rectValue[3]) + ')'
       }
     ];
   }
