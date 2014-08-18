@@ -7,6 +7,7 @@ suite('box-handler', function() {
     assert.deepEqual(webAnimationsMinifill.parseBox('rect(10%, 100%, 500%, 10%)'), [{'%': 10}, {'%': 100}, {'%': 500}, {'%': 10}]);
     assert.deepEqual(webAnimationsMinifill.parseBox('rect(0px, calc(10px*3), 20px, 0%)'), [{px: 0}, {px: 30}, {px: 20}, {'%': 0}]);
     assert.deepEqual(webAnimationsMinifill.parseBox('rect(0px, 0%, 20px, calc(10px*3))'), [{px: 0}, {'%': 0}, {px: 20}, {px: 30}]);
+    assert.deepEqual(webAnimationsMinifill.parseBox('rect(0px, 0%, 20px, calc((10px) + (3px)))'), [{px: 0}, {'%': 0}, {px: 20}, {px: 13}]);
     assert.deepEqual(webAnimationsMinifill.parseBox('rect(calc(10px + 5em), calc(10px + 5em), calc(10px + 5em), calc(10px + 5em))'),
       [{px: 10, em: 5}, {px: 10, em: 5}, {px: 10, em: 5}, {px: 10, em: 5}]);
   });
@@ -59,7 +60,7 @@ suite('box-handler', function() {
     assert.equal(
       webAnimationsMinifill.propertyInterpolation(
         'clip',
-        'rect(calc(10px + 5em), calc(10px + 5em), calc(10px + 5em), calc(10px + 5em))',
+        'rect(calc(10px + (5em)), calc(10px + (5em)), calc(10px + (5em)), calc(10px + (5em)))',
         'rect(calc(20px + 35em), calc(20px + 35em), calc(20% + 35em), calc(20% + 35em))')(0.5),
       'rect(calc(15px + 20em), calc(15px + 20em), calc(5px + 20em + 10%), calc(5px + 20em + 10%))');
   });

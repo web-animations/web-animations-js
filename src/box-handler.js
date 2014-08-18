@@ -15,7 +15,7 @@
 (function(scope, testing) {
 
   function parseBoxWithCalcLeft(string) {
-    var rectangleWithCalcRegExp = /rect\(([^,]+), ([^,]+), ([^,]+), (calc\([^)]+\))\)/;
+    var rectangleWithCalcRegExp = /rect\(([^,]+), ([^,]+), ([^,]+), (calc\(.+\))\)/
     match = rectangleWithCalcRegExp.exec(string);
     if (!match) {
       return undefined;
