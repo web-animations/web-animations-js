@@ -14,6 +14,8 @@
 
 (function(shared, scope, testing) {
 
+  // FIXME: Not used yet.
+  var animationPlayStates = 'idle|pending|running|paused|finished'.split('|');
   var sequenceNumber = 0;
 
   var AnimationPlayerEvent = function(target, currentTime, timelineTime) {
@@ -88,6 +90,18 @@
           this._playbackRate < 0 && this._currentTime <= 0;
     },
     get _totalDuration() { return this._source._totalDuration; },
+    get playState() {
+      // FIXME: Look at the blink code and try to match it (e.g. what is currentTimePending?)
+      // FIXME: Add clause for in-idle-state here.
+      if (isNaN(this._startTime) && !this.paused && this.playbackRate != 0)
+          return 'pending';
+      // FIXME: Add idle handling here.
+      if (this.paused)
+          return 'paused';
+      if (this.finished)
+          return 'finished';
+      return 'running';
+    },
     play: function() {
       this.paused = false;
       if (this.finished) {
@@ -163,5 +177,9 @@
       return !this.finished || this._inEffect;
     },
   };
+
+  if (WEB_ANIMATIONS_TESTING) {
+    testing.Player = scope.Player;
+  }
 
 })(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);

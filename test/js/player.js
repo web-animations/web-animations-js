@@ -312,4 +312,25 @@ suite('player', function() {
     assert.equal(getComputedStyle(target).width, '50px');
     document.body.removeChild(target);
   });
+  // FIXME: Test play states with groups. Especially pending children in a group.
+  test('playState works', function() {
+    // FIXME: This isn't a good way to test this. Test with groups instead if you can.
+    var source = new minifillAnimation(document.body, [], 1000);
+    var p = new Player(source);
+    assert.equal(p.playState, 'pending');
+
+    p = document.body.animate([], 1000);
+    tick(0);
+    tick(1);
+    assert.equal(p.playState, 'running');
+    tick(100);
+    assert.equal(p.playState, 'running');
+    p.pause();
+    assert.equal(p.playState, 'paused');
+    p.play();
+    tick(101);
+    assert.equal(p.playState, 'running');
+    tick(1001);
+    assert.equal(p.playState, 'finished');
+  });
 });
