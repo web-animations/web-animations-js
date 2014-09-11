@@ -58,4 +58,8 @@
     return nullAnimation;
   };
 
+  if (WEB_ANIMATIONS_TESTING) {
+    testing.minifillAnimation = scope.Animation;
+  }
+
 })(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);

@@ -312,4 +312,23 @@ suite('player', function() {
     assert.equal(getComputedStyle(target).width, '50px');
     document.body.removeChild(target);
   });
+  test('Player that hasn\'t been played has playState \'pending\'', function() {
+    var source = new minifillAnimation(document.body, [], 1000);
+    var p = new Player(source);
+    assert.equal(p.playState, 'pending');
+  });
+  test('playState works for a simple animation', function() {
+    var p = document.body.animate([], 1000);
+    tick(0);
+    assert.equal(p.playState, 'running');
+    tick(100);
+    assert.equal(p.playState, 'running');
+    p.pause();
+    assert.equal(p.playState, 'paused');
+    p.play();
+    tick(101);
+    assert.equal(p.playState, 'running');
+    tick(1001);
+    assert.equal(p.playState, 'finished');
+  });
 });

@@ -26,6 +26,9 @@
     get paused() {
       return this._player.paused;
     },
+    get playState() {
+      return this._player.playState;
+    },
     get onfinish() {
       return this._onfinish;
     },
