@@ -47,7 +47,7 @@
   scope.Player.prototype = {
     _ensureAlive: function() {
       this._inEffect = this._source._update(this._currentTime);
-      if (!this._inTimeline && this._inEffect) {
+      if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
         document.timeline._players.push(this);
       }
@@ -57,6 +57,7 @@
         this._currentTime = newTime;
         if (this.finished && !ignoreLimit)
           this._currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
+
         this._ensureAlive();
       }
     },
@@ -140,10 +141,10 @@
       if (index >= 0)
         this._finishHandlers.splice(index, 1);
     },
-    _fireEvents: function(baseTime) {
+    _fireEvents: function(timelineTime) {
       var finished = this.finished;
       if (finished && !this._finishedFlag) {
-        var event = new AnimationPlayerEvent(this, this.currentTime, baseTime);
+        var event = new AnimationPlayerEvent(this, this.currentTime, timelineTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {
@@ -157,12 +158,12 @@
       if (!this.paused && isNaN(this._startTime)) {
         this.startTime = timelineTime - this._currentTime / this.playbackRate;
       } else if (!(this.paused || this.finished)) {
-        this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
+        this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate, false);
       }
 
       this._fireEvents(timelineTime);
 
-      return !this.finished || this._inEffect;
+      return this._inEffect || !this._finishedFlag;
     },
   };
 
