@@ -64,8 +64,6 @@
         keyframe.offset = null;
       if (keyframe.easing == undefined)
         keyframe.easing = scope.toTimingFunction('linear');
-      console.log('keyframe.easing');
-      console.log(keyframe.easing);
       return keyframe;
     });
 
