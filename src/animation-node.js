@@ -48,7 +48,11 @@
         }
       });
     }
+    console.log("timing.easing");
+    console.log(timing.easing);
     timing.easing = toTimingFunction(timing.easing);
+    console.log("timing.easing");
+    console.log(timing.easing);
     return timing;
   }
 
@@ -190,6 +194,8 @@
     var currentDirectionIsForwards = timing.direction == 'normal' || timing.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
     var directedTime = currentDirectionIsForwards ? iterationTime : iterationDuration - iterationTime;
     var timeFraction = directedTime / iterationDuration;
+    // console.log('timing.easing');
+    // console.log(timing.easing);
     return iterationDuration * timing.easing(timeFraction);
   }
 
@@ -212,6 +218,8 @@
   shared.calculateTimeFraction = calculateTimeFraction;
 
   scope.AnimationNode = function(timing) {
+    console.log("timing");
+    console.log(timing);
     var timeFraction = 0;
     var activeDuration = calculateActiveDuration(timing);
     var animationNode = function(localTime) {
@@ -224,6 +232,8 @@
     };
     return animationNode;
   };
+
+  scope.toTimingFunction = toTimingFunction;
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.normalizeTimingInput = normalizeTimingInput;
