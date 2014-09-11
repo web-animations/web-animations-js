@@ -57,7 +57,6 @@
         this._currentTime = newTime;
         if (this.finished && !ignoreLimit)
           this._currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
-
         this._ensureAlive();
       }
     },
@@ -141,10 +140,10 @@
       if (index >= 0)
         this._finishHandlers.splice(index, 1);
     },
-    _fireEvents: function(timelineTime) {
+    _fireEvents: function(baseTime) {
       var finished = this.finished;
       if (finished && !this._finishedFlag) {
-        var event = new AnimationPlayerEvent(this, this.currentTime, timelineTime);
+        var event = new AnimationPlayerEvent(this, this.currentTime, baseTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {
@@ -158,7 +157,7 @@
       if (!this.paused && isNaN(this._startTime)) {
         this.startTime = timelineTime - this._currentTime / this.playbackRate;
       } else if (!(this.paused || this.finished)) {
-        this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate, false);
+        this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
       }
 
       this._fireEvents(timelineTime);
