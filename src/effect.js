@@ -120,7 +120,7 @@
 
     for (var i = 0; i < keyframeEffect.length; i++) {
       for (var member in keyframeEffect[i]) {
-        if (member != 'offset') {
+        if (member != 'offset' && member != 'easing' && member != 'composite') {
           var propertySpecificKeyframe = {
             offset: keyframeEffect[i].offset,
             value: keyframeEffect[i][member]
