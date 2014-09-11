@@ -127,16 +127,7 @@
     },
     reverse: function() {
       this._playbackRate *= -1;
-      if (!scope.restart())
-        this._startTime = this._timeline.currentTime - this._currentTime / this._playbackRate;
-      else
-        this._startTime = NaN;
-      if (!this._inTimeline) {
-        this._inTimeline = true;
-        document.timeline._players.push(this);
-      }
-      this._finishedFlag = false;
-      this._ensureAlive();
+      this.play();
     },
     addEventListener: function(type, handler) {
       if (typeof handler == 'function' && type == 'finish')
