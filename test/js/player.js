@@ -82,6 +82,17 @@ suite('player', function() {
     assert.equal(p.startTime, 900);
     assert.equal(p.currentTime, 200);
   });
+  test('reversing after pausing', function() {
+    tick(90);
+    var p = document.body.animate([], 1000);
+    tick(100);
+    tick(600);
+    p.reverse();
+    tick(600);
+    tick(700);
+    assert.equal(p.startTime, 1100);
+    assert.equal(p.currentTime, 400);
+  });
   test('reversing after finishing works as expected', function() {
     tick(90);
     var p = document.body.animate([], 1000);
