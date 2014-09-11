@@ -155,7 +155,6 @@
         interpolations.push({
           startTime: group[i].offset,
           endTime: group[i + 1].offset,
-          // FIXME: Not sure if this is needed.
           easing: group[i].easing,
           property: groupName,
           interpolation: scope.propertyInterpolation(groupName, group[i].value, group[i + 1].value)
