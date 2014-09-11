@@ -331,7 +331,6 @@ suite('player', function() {
     tick(1001);
     assert.equal(p.playState, 'finished');
   });
-  // TODO: Finish this test.
   test('playState works for groups', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
@@ -339,14 +338,26 @@ suite('player', function() {
     var p = document.timeline.play(anim);
     tick(1);
     assert.equal(p.playState, 'running');
-    tick(100);
+    // FIXME: Not sure if this is right.
+    assert.equal(p._childPlayers[0]._player.playState, 'running');
+    assert.equal(p._childPlayers[1]._player.playState, 'running');
+    tick(102);
     assert.equal(p.playState, 'running');
+    assert.equal(p._childPlayers[0]._player.playState, 'finished');
+    assert.equal(p._childPlayers[1]._player.playState, 'running');
     p.pause();
     assert.equal(p.playState, 'paused');
+    // FIXME: Not sure if this is right.
+    assert.equal(p._childPlayers[0]._player.playState, 'paused');
+    assert.equal(p._childPlayers[1]._player.playState, 'paused');
     p.play();
-    tick(101);
+    tick(103);
     assert.equal(p.playState, 'running');
-    tick(1001);
+    assert.equal(p._childPlayers[0]._player.playState, 'finished');
+    assert.equal(p._childPlayers[1]._player.playState, 'running');
+    tick(203);
     assert.equal(p.playState, 'finished');
+    assert.equal(p._childPlayers[0]._player.playState, 'finished');
+    assert.equal(p._childPlayers[1]._player.playState, 'finished');
   });
 });
