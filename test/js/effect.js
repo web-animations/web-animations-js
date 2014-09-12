@@ -341,16 +341,14 @@ suite('effect', function() {
     document.body.appendChild(target1);
     document.body.appendChild(target2);
 
-    var animation1 = new Animation(
-      target1,
+    var player1 = target1.animate(
       [
       {left: '0px'},
       {left: '50px', offset: 0.25},
       {left: '0px'}
       ],
       {duration: 4000, fill: 'forwards'});
-    var animation2 = new Animation(
-      target2,
+    var player2 = target2.animate(
       [
       {left: '0px', easing: 'ease-in'},
       {left: '50px', offset: 0.25},
@@ -358,21 +356,15 @@ suite('effect', function() {
       ],
       {duration: 4000, fill: 'forwards'});
 
-    var player1 = document.timeline.play(animation1);
-    var player2 = document.timeline.play(animation2);
-
     tick(0);
     assert.equal(leftAsNumber(target1), 0);
     assert.equal(leftAsNumber(target2), 0);
-
     tick(250);
     assert.closeTo(leftAsNumber(target1), 12.5, 1);
     assert.closeTo(leftAsNumber(target2), 4.65, 1);
-
     tick(500);
     assert.closeTo(leftAsNumber(target1), 25, 1);
     assert.closeTo(leftAsNumber(target2), 15.25, 1);
-
     tick(1000);
     assert.equal(leftAsNumber(target1), 50);
     assert.equal(leftAsNumber(target2), 50);
@@ -380,7 +372,6 @@ suite('effect', function() {
     tick(2500);
     assert.equal(leftAsNumber(target1), 25);
     assert.equal(leftAsNumber(target2), 25);
-
     tick(4000);
     assert.equal(leftAsNumber(target1), 0);
     assert.equal(leftAsNumber(target2), 0);
