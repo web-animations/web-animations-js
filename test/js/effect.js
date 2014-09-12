@@ -1,9 +1,9 @@
 suite('effect', function() {
 
   webAnimationsTesting.leftAsNumber = function(target) {
-  var left = getComputedStyle(target).left;
-  return Number(left.substring(0, left.length - 2));
-  }
+    var left = getComputedStyle(target).left;
+    return Number(left.substring(0, left.length - 2));
+  };
 
   // Test normalize.
   test('Normalize keyframes with all offsets specified but not sorted by offset. Some offsets are out of [0, 1] range.', function() {
@@ -342,19 +342,19 @@ suite('effect', function() {
     document.body.appendChild(target2);
 
     var player1 = target1.animate(
-      [
-      {left: '0px'},
-      {left: '50px', offset: 0.25},
-      {left: '0px'}
-      ],
-      {duration: 4000, fill: 'forwards'});
+        [
+          {left: '0px'},
+          {left: '50px', offset: 0.25},
+          {left: '0px'}
+        ],
+        {duration: 4000, fill: 'forwards'});
     var player2 = target2.animate(
-      [
-      {left: '0px', easing: 'ease-in'},
-      {left: '50px', offset: 0.25},
-      {left: '0px'}
-      ],
-      {duration: 4000, fill: 'forwards'});
+        [
+          {left: '0px', easing: 'ease-in'},
+          {left: '50px', offset: 0.25},
+          {left: '0px'}
+        ],
+        {duration: 4000, fill: 'forwards'});
 
     tick(0);
     assert.equal(leftAsNumber(target1), 0);
