@@ -55,7 +55,6 @@
       }
     },
     _tickCurrentTime: function(newTime, ignoreLimit) {
-      // console.log('Tick current time');
       if (newTime != this._currentTime) {
         this._currentTime = newTime;
         if (this.finished && !ignoreLimit)
@@ -69,16 +68,13 @@
       return this._currentTime;
     },
     set currentTime(newTime) {
-      // console.log('Setting current time to: ' + newTime);
       if (scope.restart())
         this._startTime = NaN;
       if (!this.paused && !isNaN(this._startTime)) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
-      if (this._currentTime == newTime) {
-        // console.log('New time ' + newTime + ' equals current time ' + this._currentTime + ' - return');
+      if (this._currentTime == newTime)
         return;
-      }
       this._tickCurrentTime(newTime, true);
       scope.invalidateEffects();
     },
@@ -111,7 +107,6 @@
       return 'running';
     },
     play: function() {
-      // console.log('play');
       this.paused = false;
       if (this.finished) {
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
@@ -136,7 +131,6 @@
       this._idle = false;
     },
     cancel: function() {
-      // console.log('cancel');
       this._source = scope.NullAnimation(this._source._clear);
       // FIXME: Do we still need the inEffect flag when we also have idle?
       this._inEffect = false;
@@ -162,13 +156,8 @@
     _fireEvents: function(baseTime) {
       var finished = this.finished;
       var idle = this._idle;
-      // console.log('idle: ' + idle);
-      // console.log(this._startTime);
       if ((finished || idle) && !this._finishedFlag) {
-      // if (finished && !this._finishedFlag) {
         var event = new AnimationPlayerEvent(this, this.currentTime, baseTime);
-        // console.log('new event');
-        // console.log(event);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {

@@ -45,8 +45,6 @@ suite('player-finish-event', function() {
 
   test('fire after player is cancelled', function(done) {
     this.player.onfinish = function(event) {
-      // console.log('EVENT');
-      // console.log('Event current time: ' + event.currentTime);
       assert.equal(event.currentTime, 0);
       assert.equal(event.timelineTime, 1, 'event must be fired on next sample');
       done();
