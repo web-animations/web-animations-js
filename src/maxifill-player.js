@@ -67,6 +67,9 @@
     get playbackRate() {
       return this._player.playbackRate;
     },
+    set playbackRate(newRate) {
+      this._player.playbackRate = newRate;
+    },
     get finished() {
       return this._player.finished;
     },
