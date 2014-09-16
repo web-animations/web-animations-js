@@ -342,4 +342,21 @@ suite('player', function() {
     tick(1001);
     assert.equal(p.playState, 'finished');
   });
+  test('Play after cancel', function() {
+    var p = document.body.animate([], 1000);
+    assert.equal(p.playState, 'pending');
+    p.cancel();
+    assert.equal(p.playState, 'idle');
+    assert.ok(isNaN(p.currentTime));
+    assert.ok(isNaN(p.startTime));
+    tick(0);
+    p.play();
+    assert.equal(p.playState, 'pending');
+    assert.equal(p.currentTime, 0);
+    assert.ok(isNaN(p.startTime));
+    tick(10);
+    assert.equal(p.playState, 'running');
+    assert.equal(p.currentTime, 0);
+    assert.equal(p.startTime, 10);
+  });
 });

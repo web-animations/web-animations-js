@@ -49,6 +49,7 @@
      // TODO: Do we need to touch/check the idle state here?
     _ensureAlive: function() {
       this._inEffect = this._source._update(this._currentTime);
+      // if (!this._inTimeline && !this._idle && (this._inEffect || !this._finishedFlag)) {
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
         document.timeline._players.push(this);
@@ -63,8 +64,9 @@
       }
     },
     get currentTime() {
-      // if (this._idle)
-      //   return NaN;
+      // if (this.playState == 'pending' || this._idle) ???
+      if (this._idle)
+        return NaN;
       return this._currentTime;
     },
     set currentTime(newTime) {
@@ -90,7 +92,6 @@
     },
     get playbackRate() { return this._playbackRate; },
     get finished() {
-      // return (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
       return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
           this._playbackRate < 0 && this._currentTime <= 0);
     },
@@ -112,13 +113,16 @@
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
         scope.invalidateEffects();
       }
-      this._idle = false;
       this._finishedFlag = false;
       if (!scope.restart()) {
         this._startTime = this._timeline.currentTime - this._currentTime / this._playbackRate;
       }
       else
         this._startTime = NaN;
+      // FIXME: Not sure if I should set idle above or below the restart(). I
+      // think below (since if it was idle and you restart it then it was
+      // restarted this frame).
+      this._idle = false;
       this._ensureAlive();
     },
     pause: function() {
@@ -131,10 +135,17 @@
       this._idle = false;
     },
     cancel: function() {
-      this._source = scope.NullAnimation(this._source._clear);
-      // FIXME: Do we still need the inEffect flag when we also have idle?
+      // this._source = scope.NullAnimation(this._source._clear);
       this._inEffect = false;
-      // FIXME: The native impl sets startTime to null upon cancel. Do we need to do that?
+
+      // FIXME: The native impl sets startTime to null upon cancel. Do we need
+      // to do that? I don't think so. I think setting currentTime does it. See below.
+
+      // FIXME: Here we set idle = true, then we set currentTime, which calls
+      // restart() which will return true. Do we want to set idle = true
+      // before or after setting currentTime? I think setting it before
+      // setting currentTime is fine, because restart() should return true
+      // again next time anyway.
       this._idle = true;
       this.currentTime = 0;
     },
