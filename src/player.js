@@ -94,8 +94,8 @@
     },
     get playbackRate() { return this._playbackRate; },
     get finished() {
-      return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
       // return (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
+      return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
           this._playbackRate < 0 && this._currentTime <= 0);
     },
     get _totalDuration() { return this._source._totalDuration; },
@@ -187,7 +187,7 @@
 
       this._fireEvents(timelineTime);
 
-      return this._inEffect || !this._finishedFlag;
+      return !this._idle && (this._inEffect || !this._finishedFlag);
     },
   };
 
