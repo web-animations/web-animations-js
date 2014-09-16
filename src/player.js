@@ -55,6 +55,7 @@
       }
     },
     _tickCurrentTime: function(newTime, ignoreLimit) {
+      // console.log('Tick current time');
       if (newTime != this._currentTime) {
         this._currentTime = newTime;
         if (this.finished && !ignoreLimit)
@@ -63,18 +64,21 @@
       }
     },
     get currentTime() {
-      if (this._idle)
-        return NaN;
+      // if (this._idle)
+      //   return NaN;
       return this._currentTime;
     },
     set currentTime(newTime) {
+      // console.log('Setting current time to: ' + newTime);
       if (scope.restart())
         this._startTime = NaN;
       if (!this.paused && !isNaN(this._startTime)) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
-      if (this._currentTime == newTime)
+      if (this._currentTime == newTime) {
+        // console.log('New time ' + newTime + ' equals current time ' + this._currentTime + ' - return');
         return;
+      }
       this._tickCurrentTime(newTime, true);
       scope.invalidateEffects();
     },
@@ -90,9 +94,8 @@
     },
     get playbackRate() { return this._playbackRate; },
     get finished() {
-      // return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
-      //     this._playbackRate < 0 && this._currentTime <= 0);
-      return (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
+      return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
+      // return (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
           this._playbackRate < 0 && this._currentTime <= 0);
     },
     get _totalDuration() { return this._source._totalDuration; },
@@ -108,6 +111,7 @@
       return 'running';
     },
     play: function() {
+      // console.log('play');
       this.paused = false;
       if (this.finished) {
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
@@ -132,11 +136,12 @@
       this._idle = false;
     },
     cancel: function() {
-      this._idle = true;
+      // console.log('cancel');
       this._source = scope.NullAnimation(this._source._clear);
       // FIXME: Do we still need the inEffect flag when we also have idle?
       this._inEffect = false;
       // FIXME: The native impl sets startTime to null upon cancel. Do we need to do that?
+      this._idle = true;
       this.currentTime = 0;
     },
     reverse: function() {
@@ -157,8 +162,13 @@
     _fireEvents: function(baseTime) {
       var finished = this.finished;
       var idle = this._idle;
-      if (finished && !this._finishedFlag) {
+      console.log("idle: " + idle);
+      // console.log(this._startTime);
+      if ((finished || idle) && !this._finishedFlag) {
+      // if (finished && !this._finishedFlag) {
         var event = new AnimationPlayerEvent(this, this.currentTime, baseTime);
+        // console.log('new event');
+        // console.log(event);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {
@@ -171,7 +181,7 @@
     _tick: function(timelineTime) {
       if (!this.paused && isNaN(this._startTime)) {
         this.startTime = timelineTime - this._currentTime / this.playbackRate;
-      } else if (!(this.paused || this.finished)) {
+      } else if (!(this.paused || this.finished || this._idle)) {
         this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
       }
 
