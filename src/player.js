@@ -41,6 +41,7 @@
     this.onfinish = null;
     this._finishHandlers = [];
     this._source = source;
+    this._specifiedSource = source;
     this._inEffect = this._source._update(0);
     this._idle = false;
   };
@@ -84,6 +85,7 @@
       return this._startTime;
     },
     set startTime(newTime) {
+      console.log('setting start time to : ' + newTime);
       if (this.paused)
         return;
       this._startTime = newTime;
@@ -91,6 +93,10 @@
       scope.invalidateEffects();
     },
     get playbackRate() { return this._playbackRate; },
+    set playbackRate(newRate) {
+      console.log('setting playback rate to : ' + newRate);
+      this._playbackRate = newRate;
+    },
     get finished() {
       return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
           this._playbackRate < 0 && this._currentTime <= 0);
@@ -108,8 +114,14 @@
       return 'running';
     },
     play: function() {
+      if (this._source._clear == undefined) {
+        console.log('swap the source');
+        this._source = this._specifiedSource;
+      }
       this.paused = false;
-      if (this.finished) {
+      if (this.finished || this._idle) {
+        console.log('boop');
+        console.log(this._playbackRate);
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
         scope.invalidateEffects();
       }
@@ -135,7 +147,8 @@
       this._idle = false;
     },
     cancel: function() {
-      // this._source = scope.NullAnimation(this._source._clear);
+      console.log('cancel');
+      this._source = scope.NullAnimation(this._source._clear);
       this._inEffect = false;
 
       // FIXME: The native impl sets startTime to null upon cancel. Do we need
@@ -147,10 +160,12 @@
       // setting currentTime is fine, because restart() should return true
       // again next time anyway.
       this._idle = true;
+      this._startTime = NaN;
       this.currentTime = 0;
     },
     reverse: function() {
       this._playbackRate *= -1;
+      // this.playbackRate = this.playbackRate * -1;
       this.play();
     },
     addEventListener: function(type, handler) {
@@ -168,7 +183,7 @@
       var finished = this.finished;
       var idle = this._idle;
       if ((finished || idle) && !this._finishedFlag) {
-        var event = new AnimationPlayerEvent(this, this.currentTime, baseTime);
+        var event = new AnimationPlayerEvent(this, this._currentTime, baseTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {

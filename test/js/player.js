@@ -345,11 +345,12 @@ suite('player', function() {
   test('Play after cancel', function() {
     var p = document.body.animate([], 1000);
     assert.equal(p.playState, 'pending');
+    tick(0);
     p.cancel();
     assert.equal(p.playState, 'idle');
     assert.ok(isNaN(p.currentTime));
     assert.ok(isNaN(p.startTime));
-    tick(0);
+    tick(1);
     p.play();
     assert.equal(p.playState, 'pending');
     assert.equal(p.currentTime, 0);
@@ -359,4 +360,45 @@ suite('player', function() {
     assert.equal(p.currentTime, 0);
     assert.equal(p.startTime, 10);
   });
+  test('Play backwards after cancel', function() {
+    var p = document.body.animate([], 1000);
+    console.log(p.playbackRate);
+    p.playbackRate = p.playbackRate * -1;
+    // p.startTime = -7;
+    console.log(p);
+    // p.reverse();
+    p.currentTime = 150;
+    tick(0);
+    p.cancel();
+    assert.equal(p.playState, 'idle');
+    assert.ok(isNaN(p.currentTime));
+    assert.ok(isNaN(p.startTime));
+    tick(2);
+    p.play();
+    assert.equal(p.playState, 'pending');
+    assert.equal(p.currentTime, 300);
+    // assert.ok(isNaN(p.startTime));
+    // tick(10);
+    // assert.equal(p.playState, 'running');
+    // assert.equal(p.currentTime, 300);
+    // assert.equal(p.currentTime, 400);
+  });
+// TEST_F(AnimationAnimationPlayerTest, PlayBackwardsAfterCancel)
+// {
+//     // player->setPlaybackRate(-1);
+//     // player->setCurrentTime(15 * 1000);
+//     // simulateFrame(0);
+//     // player->cancel();
+//     // EXPECT_EQ(AnimationPlayer::Idle, player->playStateInternal());
+//     // EXPECT_TRUE(std::isnan(player->currentTime()));
+//     // EXPECT_TRUE(std::isnan(player->startTime()));
+//     // player->play();
+//     // EXPECT_EQ(AnimationPlayer::Pending, player->playStateInternal());
+//     // EXPECT_EQ(30 * 1000, player->currentTime());
+//     // EXPECT_TRUE(std::isnan(player->startTime()));
+//     // simulateFrame(10);
+//     // EXPECT_EQ(AnimationPlayer::Running, player->playStateInternal());
+//     EXPECT_EQ(30 * 1000, player->currentTime());
+//     EXPECT_EQ(40 * 1000, player->startTime());
+// }
 });
