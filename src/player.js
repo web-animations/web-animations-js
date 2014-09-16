@@ -90,7 +90,9 @@
     },
     get playbackRate() { return this._playbackRate; },
     get finished() {
-      return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
+      // return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
+      //     this._playbackRate < 0 && this._currentTime <= 0);
+      return (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
           this._playbackRate < 0 && this._currentTime <= 0);
     },
     get _totalDuration() { return this._source._totalDuration; },
@@ -130,8 +132,8 @@
       this._idle = false;
     },
     cancel: function() {
-      this._source = scope.NullAnimation(this._source._clear);
       this._idle = true;
+      this._source = scope.NullAnimation(this._source._clear);
       // FIXME: Do we still need the inEffect flag when we also have idle?
       this._inEffect = false;
       // FIXME: The native impl sets startTime to null upon cancel. Do we need to do that?
@@ -154,6 +156,7 @@
     },
     _fireEvents: function(baseTime) {
       var finished = this.finished;
+      var idle = this._idle;
       if (finished && !this._finishedFlag) {
         var event = new AnimationPlayerEvent(this, this.currentTime, baseTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
