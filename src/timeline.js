@@ -114,7 +114,6 @@
       else
         newPendingEffects.push(player._source);
 
-      // if (!player.finished && !player.paused)
       if (!player.finished && !player.paused && !player._idle)
         ticking = true;
 

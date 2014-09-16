@@ -362,7 +362,6 @@ suite('player', function() {
   });
   test('Play backwards after cancel', function() {
     var p = document.body.animate([], 300);
-    console.log(p.playbackRate);
     p.playbackRate = -1;
     p.currentTime = 150;
     tick(0);
