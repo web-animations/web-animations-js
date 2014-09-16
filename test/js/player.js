@@ -88,7 +88,7 @@ suite('player', function() {
     tick(100);
     tick(600);
     p.reverse();
-    tick(600);
+    tick(601);
     tick(700);
     assert.equal(p.startTime, 1100);
     assert.equal(p.currentTime, 400);
