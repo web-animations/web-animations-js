@@ -42,9 +42,11 @@
     this._finishHandlers = [];
     this._source = source;
     this._inEffect = this._source._update(0);
+    this._idle = false;
   };
 
   scope.Player.prototype = {
+     // TODO: Do we need to touch/check the idle state here?
     _ensureAlive: function() {
       this._inEffect = this._source._update(this._currentTime);
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
@@ -60,7 +62,11 @@
         this._ensureAlive();
       }
     },
-    get currentTime() { return this._currentTime; },
+    get currentTime() {
+      if (this._idle)
+        return NaN;
+      return this._currentTime;
+    },
     set currentTime(newTime) {
       if (scope.restart())
         this._startTime = NaN;
@@ -84,15 +90,15 @@
     },
     get playbackRate() { return this._playbackRate; },
     get finished() {
-      return this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
-          this._playbackRate < 0 && this._currentTime <= 0;
+      return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
+          this._playbackRate < 0 && this._currentTime <= 0);
     },
     get _totalDuration() { return this._source._totalDuration; },
     get playState() {
-      // FIXME: Add clause for in-idle-state here.
+      if (this._idle)
+        return 'idle';
       if (isNaN(this._startTime) && !this.paused && this.playbackRate != 0)
         return 'pending';
-      // FIXME: Add idle handling here.
       if (this.paused)
         return 'paused';
       if (this.finished)
@@ -105,6 +111,7 @@
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
         scope.invalidateEffects();
       }
+      this._idle = false;
       this._finishedFlag = false;
       if (!scope.restart()) {
         this._startTime = this._timeline.currentTime - this._currentTime / this._playbackRate;
@@ -118,11 +125,16 @@
       this._startTime = NaN;
     },
     finish: function() {
+      // TODO: Native impl sets startTime to 0. Do we need to do that?
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
+      this._idle = false;
     },
     cancel: function() {
       this._source = scope.NullAnimation(this._source._clear);
+      this._idle = true;
+      // FIXME: Do we still need the inEffect flag when we also have idle?
       this._inEffect = false;
+      // FIXME: The native impl sets startTime to null upon cancel. Do we need to do that?
       this.currentTime = 0;
     },
     reverse: function() {
