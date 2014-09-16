@@ -162,7 +162,7 @@
     _fireEvents: function(baseTime) {
       var finished = this.finished;
       var idle = this._idle;
-      console.log("idle: " + idle);
+      // console.log('idle: ' + idle);
       // console.log(this._startTime);
       if ((finished || idle) && !this._finishedFlag) {
       // if (finished && !this._finishedFlag) {

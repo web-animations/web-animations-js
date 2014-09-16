@@ -108,16 +108,14 @@
     var newPendingEffects = [];
     updatingPlayers = updatingPlayers.filter(function(player) {
       player._inTimeline = player._tick(t);
-      console.log('in timeline: ' + player._inTimeline);
 
-      if (!player._inEffect) {
-        console.log('clear');
+      if (!player._inEffect)
         newPendingClears.push(player._source);
-      }
       else
         newPendingEffects.push(player._source);
 
-      if (!player.finished && !player.paused && !player._idle)
+      // if (!player.finished && !player.paused && !player._idle)
+      if (!player.finished && !player.paused)
         ticking = true;
 
       return player._inTimeline;
