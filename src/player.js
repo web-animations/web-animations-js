@@ -47,7 +47,7 @@
   scope.Player.prototype = {
     _ensureAlive: function() {
       this._inEffect = this._source._update(this._currentTime);
-      if (!this._inTimeline && this._inEffect) {
+      if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
         document.timeline._players.push(this);
       }
@@ -127,16 +127,7 @@
     },
     reverse: function() {
       this._playbackRate *= -1;
-      if (!scope.restart())
-        this._startTime = this._timeline.currentTime - this._currentTime / this._playbackRate;
-      else
-        this._startTime = NaN;
-      if (!this._inTimeline) {
-        this._inTimeline = true;
-        document.timeline._players.push(this);
-      }
-      this._finishedFlag = false;
-      this._ensureAlive();
+      this.play();
     },
     addEventListener: function(type, handler) {
       if (typeof handler == 'function' && type == 'finish')
@@ -171,7 +162,7 @@
 
       this._fireEvents(timelineTime);
 
-      return !this.finished || this._inEffect;
+      return this._inEffect || !this._finishedFlag;
     },
   };
 
