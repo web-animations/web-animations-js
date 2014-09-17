@@ -365,7 +365,7 @@ suite('player', function() {
   });
   test('Reverse after cancel', function() {
     var p = document.body.animate([], 300);
-    tick(0)
+    tick(0);
     p.cancel();
     assert.equal(p.playState, 'idle');
     assert.ok(isNaN(p.currentTime));

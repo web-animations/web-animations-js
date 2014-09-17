@@ -129,7 +129,7 @@
     },
     finish: function() {
       if (this._idle)
-        return
+        return;
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
     },
     cancel: function() {
