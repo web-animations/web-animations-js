@@ -89,9 +89,6 @@
       scope.invalidateEffects();
     },
     get playbackRate() { return this._playbackRate; },
-    set playbackRate(newRate) {
-      this._playbackRate = newRate;
-    },
     get finished() {
       return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
           this._playbackRate < 0 && this._currentTime <= 0);
@@ -109,8 +106,7 @@
       return 'running';
     },
     play: function() {
-      // FIXME: Make a way to identify null animations propery.
-      if (this._source._clear == undefined) {
+      if (this._source._isNullAnimation) {
         this._source = this._specifiedSource;
       }
       this.paused = false;
@@ -173,7 +169,6 @@
       this._finishedFlag = finished;
     },
     _tick: function(timelineTime) {
-      // if (!this.paused && isNaN(this._startTime)) {
       if (!this.paused && !this._idle && isNaN(this._startTime)) {
         this.startTime = timelineTime - this._currentTime / this.playbackRate;
       } else if (!(this.paused || this.finished || this._idle)) {

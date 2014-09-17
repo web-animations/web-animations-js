@@ -66,7 +66,6 @@
   var hasRestartedThisFrame = false;
 
   scope.restart = function() {
-    // console.log(ticking);
     if (!ticking) {
       ticking = true;
       requestAnimationFrame(function() {});
@@ -97,7 +96,6 @@
   });
 
   function tick(t) {
-    // console.log('tick ' + t);
     hasRestartedThisFrame = false;
     var timeline = window.document.timeline;
     timeline.currentTime = t;
@@ -109,7 +107,6 @@
     var newPendingClears = [];
     var newPendingEffects = [];
     updatingPlayers = updatingPlayers.filter(function(player) {
-      // console.log('filtering');
       player._inTimeline = player._tick(t);
 
       if (!player._inEffect)
