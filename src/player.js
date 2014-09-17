@@ -82,7 +82,7 @@
       return this._startTime;
     },
     set startTime(newTime) {
-      if (this.paused)
+      if (this.paused || this._idle)
         return;
       this._startTime = newTime;
       this._tickCurrentTime((this._timeline.currentTime - this._startTime) * this.playbackRate);
@@ -132,9 +132,9 @@
       this._startTime = NaN;
     },
     finish: function() {
-      // TODO: Native impl sets startTime to 0. Do we need to do that?
+      if (this._idle)
+        return
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
-      this._idle = false;
     },
     cancel: function() {
       this._source = scope.NullAnimation(this._source._clear);
@@ -173,7 +173,8 @@
       this._finishedFlag = finished;
     },
     _tick: function(timelineTime) {
-      if (!this.paused && isNaN(this._startTime)) {
+      // if (!this.paused && isNaN(this._startTime)) {
+      if (!this.paused && !this._idle && isNaN(this._startTime)) {
         this.startTime = timelineTime - this._currentTime / this.playbackRate;
       } else if (!(this.paused || this.finished || this._idle)) {
         this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
