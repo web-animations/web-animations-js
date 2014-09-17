@@ -136,8 +136,8 @@
       this._source = scope.NullAnimation(this._source._clear);
       this._inEffect = false;
       this._idle = true;
-      this._startTime = NaN;
       this.currentTime = 0;
+      this._startTime = NaN;
     },
     reverse: function() {
       this._playbackRate *= -1;
@@ -156,8 +156,7 @@
     },
     _fireEvents: function(baseTime) {
       var finished = this.finished;
-      var idle = this._idle;
-      if ((finished || idle) && !this._finishedFlag) {
+      if ((finished || this._idle) && !this._finishedFlag) {
         var event = new AnimationPlayerEvent(this, this._currentTime, baseTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
