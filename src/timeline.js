@@ -91,7 +91,8 @@
     configurable: true,
     enumerable: true,
     value: function() {
-      if (needsRetick) { console.log('tick ' + timeline.currentTime); tick(timeline.currentTime); }
+      if (needsRetick)
+        tick(timeline.currentTime);
       applyPendingEffects();
       return originalGetComputedStyle.apply(this, arguments);
     },
