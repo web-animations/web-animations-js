@@ -48,7 +48,7 @@
 
   scope.Player.prototype = {
     _ensureAlive: function() {
-      this._inEffect = this._source._update(this._currentTime);
+      this._inEffect = this._source._update(this.currentTime);
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
         document.timeline._players.push(this);
@@ -138,6 +138,7 @@
       this._idle = true;
       this.currentTime = 0;
       this._startTime = NaN;
+      this._source._clear();
     },
     reverse: function() {
       this._playbackRate *= -1;
