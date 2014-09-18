@@ -57,8 +57,6 @@
       if (needsRetick)
         tick(timeline.currentTime);
       return this._players.filter(function(player) {
-        // return player._source._isCurrent(player.currentTime) && player._inEffect;
-        // return player._source._isCurrent(player.currentTime);
         return player._source._isCurrent(player.currentTime) && !player._idle;
       }).sort(comparePlayers);
     }
@@ -91,8 +89,7 @@
     configurable: true,
     enumerable: true,
     value: function() {
-      if (needsRetick)
-        tick(timeline.currentTime);
+      if (needsRetick) tick(timeline.currentTime);
       applyPendingEffects();
       return originalGetComputedStyle.apply(this, arguments);
     },

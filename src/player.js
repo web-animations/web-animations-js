@@ -129,8 +129,6 @@
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
     },
     cancel: function() {
-      // this._source = scope.NullAnimation(this._source._clear);
-      // this._source._clear();
       this._inEffect = false;
       this._idle = true;
       this.currentTime = 0;
