@@ -163,10 +163,11 @@
       this._finishedFlag = finished;
     },
     _tick: function(timelineTime) {
-      if (!this.paused && !this._idle && isNaN(this._startTime)) {
-        this.startTime = timelineTime - this._currentTime / this.playbackRate;
-      } else if (!this.paused && !this.finished && !this._idle) {
-        this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
+      if (!this._idle && !this.paused) {
+        if (isNaN(this._startTime))
+          this.startTime = timelineTime - this._currentTime / this.playbackRate;
+        else if (!this.finished)
+          this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
       }
 
       this._fireEvents(timelineTime);
