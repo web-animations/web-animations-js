@@ -20,6 +20,7 @@
     var timeFraction;
     var animation = function() {
       WEB_ANIMATIONS_TESTING && console.assert(typeof timeFraction !== 'undefined');
+      console.log('timeFraction: ' + timeFraction);
       effect(target, timeFraction);
     };
     // Returns whether the animation is in effect or not after the timing update.

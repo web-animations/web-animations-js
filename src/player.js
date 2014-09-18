@@ -63,7 +63,7 @@
     },
     get currentTime() {
       if (this._idle)
-        return NaN;
+        return null;
       return this._currentTime;
     },
     set currentTime(newTime) {
@@ -130,11 +130,11 @@
     },
     cancel: function() {
       // this._source = scope.NullAnimation(this._source._clear);
+      // this._source._clear();
       this._inEffect = false;
       this._idle = true;
       this.currentTime = 0;
       this._startTime = NaN;
-      this._source._clear();
     },
     reverse: function() {
       this._playbackRate *= -1;
