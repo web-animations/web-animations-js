@@ -41,7 +41,6 @@
     this.onfinish = null;
     this._finishHandlers = [];
     this._source = source;
-    // this._specifiedSource = source;
     this._inEffect = this._source._update(0);
     this._idle = false;
   };
@@ -106,9 +105,6 @@
       return 'running';
     },
     play: function() {
-      // if (this._source._isNullAnimation) {
-      //   this._source = this._specifiedSource;
-      // }
       this.paused = false;
       if (this.finished || this._idle) {
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;

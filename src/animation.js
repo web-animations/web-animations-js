@@ -55,7 +55,6 @@
     nullAnimation._hasSameTarget = function() {
       return false;
     };
-    // nullAnimation._isNullAnimation = true;
     return nullAnimation;
   };
 

@@ -253,8 +253,10 @@ suite('player', function() {
     tick(10);
     tick(110);
     assert.equal(getComputedStyle(target).marginLeft, '50px');
+    console.log(player._player._source);
     player.cancel();
     // getComputedStyle forces a tick.
+    console.log(player._player._source);
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     assert.deepEqual(document.timeline._players, []);
     document.documentElement.removeChild(target);
