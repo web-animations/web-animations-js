@@ -42,11 +42,12 @@
     this._finishHandlers = [];
     this._source = source;
     this._inEffect = this._source._update(0);
+    this._idle = false;
   };
 
   scope.Player.prototype = {
     _ensureAlive: function() {
-      this._inEffect = this._source._update(this._currentTime);
+      this._inEffect = this._source._update(this.currentTime);
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
         document.timeline._players.push(this);
@@ -60,7 +61,11 @@
         this._ensureAlive();
       }
     },
-    get currentTime() { return this._currentTime; },
+    get currentTime() {
+      if (this._idle)
+        return null;
+      return this._currentTime;
+    },
     set currentTime(newTime) {
       if (scope.restart())
         this._startTime = NaN;
@@ -76,7 +81,7 @@
       return this._startTime;
     },
     set startTime(newTime) {
-      if (this.paused)
+      if (this.paused || this._idle)
         return;
       this._startTime = newTime;
       this._tickCurrentTime((this._timeline.currentTime - this._startTime) * this.playbackRate);
@@ -84,15 +89,15 @@
     },
     get playbackRate() { return this._playbackRate; },
     get finished() {
-      return this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
-          this._playbackRate < 0 && this._currentTime <= 0;
+      return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
+          this._playbackRate < 0 && this._currentTime <= 0);
     },
     get _totalDuration() { return this._source._totalDuration; },
     get playState() {
-      // FIXME: Add clause for in-idle-state here.
+      if (this._idle)
+        return 'idle';
       if (isNaN(this._startTime) && !this.paused && this.playbackRate != 0)
         return 'pending';
-      // FIXME: Add idle handling here.
       if (this.paused)
         return 'paused';
       if (this.finished)
@@ -101,7 +106,7 @@
     },
     play: function() {
       this.paused = false;
-      if (this.finished) {
+      if (this.finished || this._idle) {
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
         scope.invalidateEffects();
       }
@@ -111,6 +116,7 @@
       }
       else
         this._startTime = NaN;
+      this._idle = false;
       this._ensureAlive();
     },
     pause: function() {
@@ -118,12 +124,15 @@
       this._startTime = NaN;
     },
     finish: function() {
+      if (this._idle)
+        return;
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
     },
     cancel: function() {
-      this._source = scope.NullAnimation(this._source._clear);
       this._inEffect = false;
+      this._idle = true;
       this.currentTime = 0;
+      this._startTime = NaN;
     },
     reverse: function() {
       this._playbackRate *= -1;
@@ -142,8 +151,8 @@
     },
     _fireEvents: function(baseTime) {
       var finished = this.finished;
-      if (finished && !this._finishedFlag) {
-        var event = new AnimationPlayerEvent(this, this.currentTime, baseTime);
+      if ((finished || this._idle) && !this._finishedFlag) {
+        var event = new AnimationPlayerEvent(this, this._currentTime, baseTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {
@@ -154,15 +163,16 @@
       this._finishedFlag = finished;
     },
     _tick: function(timelineTime) {
-      if (!this.paused && isNaN(this._startTime)) {
-        this.startTime = timelineTime - this._currentTime / this.playbackRate;
-      } else if (!(this.paused || this.finished)) {
-        this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
+      if (!this._idle && !this.paused) {
+        if (isNaN(this._startTime))
+          this.startTime = timelineTime - this._currentTime / this.playbackRate;
+        else if (!this.finished)
+          this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
       }
 
       this._fireEvents(timelineTime);
 
-      return this._inEffect || !this._finishedFlag;
+      return !this._idle && (this._inEffect || !this._finishedFlag);
     },
   };
 

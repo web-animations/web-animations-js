@@ -329,7 +329,7 @@ suite('group-player', function() {
     tick(4);
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '3px');
     player.cancel();
-    assert.equal(player.currentTime, 0);
+    assert.equal(player.currentTime, null);
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
   });
 
