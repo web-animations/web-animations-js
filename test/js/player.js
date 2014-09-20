@@ -326,10 +326,10 @@ suite('player', function() {
     assert.equal(getComputedStyle(target).width, '50px');
     document.body.removeChild(target);
   });
-  test('Player that hasn\'t been played has playState \'pending\'', function() {
+  test('Player that hasn\'t been played has playState \'idle\'', function() {
     var source = new minifillAnimation(document.body, [], 1000);
     var p = new Player(source);
-    assert.equal(p.playState, 'pending');
+    assert.equal(p.playState, 'idle');
   });
   test('playState works for a simple animation', function() {
     var p = document.body.animate([], 1000);
@@ -338,11 +338,14 @@ suite('player', function() {
     tick(100);
     assert.equal(p.playState, 'running');
     p.pause();
+    assert.equal(p.playState, 'pending');
+    tick(101);
     assert.equal(p.playState, 'paused');
     p.play();
-    tick(101);
+    assert.equal(p.playState, 'pending');
+    tick(102);
     assert.equal(p.playState, 'running');
-    tick(1001);
+    tick(1002);
     assert.equal(p.playState, 'finished');
   });
   test('Play after cancel', function() {

@@ -46,6 +46,7 @@
     _play: function(source) {
       source._timing = shared.normalizeTimingInput(source.timing);
       var player = new scope.Player(source);
+      player._idle = false;
       player._timeline = this;
       this._players.push(player);
       scope.restart();
