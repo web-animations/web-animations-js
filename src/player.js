@@ -42,7 +42,7 @@
     this._finishHandlers = [];
     this._source = source;
     this._inEffect = this._source._update(0);
-    this._idle = true
+    this._idle = true;
     this._currentTimePending = true;
   };
 
@@ -121,7 +121,7 @@
       this._ensureAlive();
     },
     pause: function() {
-      if (!this.finished && !this.paused && !this._idle){
+      if (!this.finished && !this.paused && !this._idle) {
         this._currentTimePending = true;
       }
       this._startTime = NaN;
