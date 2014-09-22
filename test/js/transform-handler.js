@@ -1,59 +1,59 @@
 suite('transform-handler parsing', function() {
   test('parse skew values', function() {
     assert.deepEqual(parseTransform('skew(10deg) skew(12deg,45deg) skewX(0) skewY(1.5rad)'), [
-      ['skew', [{deg: 10}, {deg: 0}]],
-      ['skew', [{deg: 12}, {deg: 45}]],
-      ['skewx', [{deg: 0}]],
-      ['skewy', [{rad: 1.5}]]
+      {t: 'skew', d: [{deg: 10}, {deg: 0}]},
+      {t: 'skew', d: [{deg: 12}, {deg: 45}]},
+      {t: 'skewx', d: [{deg: 0}]},
+      {t: 'skewy', d: [{rad: 1.5}]}
     ]);
   });
 
   test('parse scale values', function() {
     assert.deepEqual(parseTransform('scale(-2) scale(3,-4) scaleX(5) scaleY(-1) scaleZ(-3)'), [
-      ['scale', [-2, -2]],
-      ['scale', [3, -4]],
-      ['scalex', [5]],
-      ['scaley', [-1]],
-      ['scalez', [-3]]
+      {t: 'scale', d: [-2, -2]},
+      {t: 'scale', d: [3, -4]},
+      {t: 'scalex', d: [5]},
+      {t: 'scaley', d: [-1]},
+      {t: 'scalez', d: [-3]}
     ]);
     assert.deepEqual(parseTransform('scale3d(-2, 0, 7)'),
-        [['scale3d', [-2, 0, 7]]]);
+        [{t: 'scale3d', d: [-2, 0, 7]}]);
   });
 
   test('parse rotate values', function() {
     assert.deepEqual(parseTransform('rotate(10deg) rotateX(0) rotateY(1.5rad) rotateZ(50grad)'), [
-      ['rotate', [{deg: 10}]],
-      ['rotatex', [{deg: 0}]],
-      ['rotatey', [{rad: 1.5}]],
-      ['rotatez', [{grad: 50}]]
+      {t: 'rotate', d: [{deg: 10}]},
+      {t: 'rotatex', d: [{deg: 0}]},
+      {t: 'rotatey', d: [{rad: 1.5}]},
+      {t: 'rotatez', d: [{grad: 50}]}
     ]);
   });
 
   test('parse translate values', function() {
     assert.deepEqual(parseTransform('translate(20%, 30px) translate(30em, 40%) translate(50vw) translate(0)'), [
-      ['translate', [{'%': 20}, {px: 30}]],
-      ['translate', [{em: 30}, {'%': 40}]],
-      ['translate', [{vw: 50}, {px: 0}]],
-      ['translate', [{px: 0}, {px: 0}]]
+      {t: 'translate', d: [{'%': 20}, {px: 30}]},
+      {t: 'translate', d: [{em: 30}, {'%': 40}]},
+      {t: 'translate', d: [{vw: 50}, {px: 0}]},
+      {t: 'translate', d: [{px: 0}, {px: 0}]}
     ]);
     assert.deepEqual(parseTransform('translateX(10px) translateX(20%) translateX(0)'), [
-      ['translatex', [{px: 10}]],
-      ['translatex', [{'%': 20}]],
-      ['translatex', [{px: 0}]]
+      {t: 'translatex', d: [{px: 10}]},
+      {t: 'translatex', d: [{'%': 20}]},
+      {t: 'translatex', d: [{px: 0}]}
     ]);
     assert.deepEqual(parseTransform('translateY(10px) translateY(20%) translateY(0)'), [
-      ['translatey', [{px: 10}]],
-      ['translatey', [{'%': 20}]],
-      ['translatey', [{px: 0}]]
+      {t: 'translatey', d: [{px: 10}]},
+      {t: 'translatey', d: [{'%': 20}]},
+      {t: 'translatey', d: [{px: 0}]}
     ]);
     assert.deepEqual(parseTransform('translateZ(10px) translateZ(0)'), [
-      ['translatez', [{px: 10}]],
-      ['translatez', [{px: 0}]]
+      {t: 'translatez', d: [{px: 10}]},
+      {t: 'translatez', d: [{px: 0}]}
     ]);
     assert.deepEqual(parseTransform('translate3d(10px, 20px, 30px) translate3d(0, 40%, 0) translate3d(50%, 0, 60px)'), [
-      ['translate3d', [{px: 10}, {px: 20}, {px: 30}]],
-      ['translate3d', [{px: 0}, {'%': 40}, {px: 0}]],
-      ['translate3d', [{'%': 50}, {px: 0}, {px: 60}]]
+      {t: 'translate3d', d: [{px: 10}, {px: 20}, {px: 30}]},
+      {t: 'translate3d', d: [{px: 0}, {'%': 40}, {px: 0}]},
+      {t: 'translate3d', d: [{'%': 50}, {px: 0}, {px: 60}]}
     ]);
   });
 
@@ -78,6 +78,8 @@ suite('transform-handler interpolation', function() {
   });
 
   test('transform interpolations with conversion to primitives', function() {
+    console.log(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translate(20px, 10px)'));
+    console.log(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translate(20px, 10px)')(0.2));
     assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translate(20px, 10px)')(0.2), 'translate(12px,2px)');
     assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translateY(10px)')(0.2), 'translate(8px,2px)');
     assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translateZ(10px)')(0.2), 'translate3d(8px,0px,2px)');

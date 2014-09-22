@@ -153,10 +153,10 @@
   };
 
   function interpolateDecomposedTransformsWithMatrices(fromM, toM, f) {
-    // console.log("FromM:");
-    // console.log(fromM);
-    // console.log("ToM:");
-    // console.log(toM);
+    console.log("FromM:");
+    console.log(fromM);
+    console.log("ToM:");
+    console.log(toM);
     var product = scope.dot(fromM.quaternion, toM.quaternion);
     product = clamp(product, -1.0, 1.0);
 
@@ -228,6 +228,7 @@
   }
 
   function interpolate(from, to, f) {
+    console.log('interpolate');
     if ((typeof from == 'number') && (typeof to == 'number')) {
       return from * (1 - f) + to * f;
     }
@@ -239,10 +240,10 @@
     // transform function.
     if (from[0].t && to[0].t) {
       var out = [];
-      // console.log('from');
-      // console.log(from);
-      // console.log('to');
-      // console.log(to);
+      console.log('from');
+      console.log(from);
+      console.log('to');
+      console.log(to);
       // FIXME: What happens if there is a mix of functions and matrices?
       for (var i = 0; i < Math.min(from.length, to.length); i++) {
         if (from[i].t !== to[i].t || isMatrix(from[i])) {
@@ -253,6 +254,7 @@
 
       if (i < Math.min(from.length, to.length) ||
           from.some(isMatrix) || to.some(isMatrix)) {
+        console.log('i: ' + i);
         out.push(interpolateDecomposedTransformsWithMatrices(
             from[i].d, to[i].d, f));
         return out;
@@ -279,6 +281,7 @@
 
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
+      console.log(convertToString);
       return convertToString(interpolate(from, to, f));
     }
   };

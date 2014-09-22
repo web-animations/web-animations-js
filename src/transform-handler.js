@@ -102,6 +102,7 @@ var decomposeMatrix = (function() {
     // TODO: Implement 2D matrix decomposition.
     // http://dev.w3.org/csswg/css-transforms/#decomposing-a-2d-matrix
     function decomposeMatrix(matrix) {
+      console.log('decomposing');
       var m3d = [
         matrix.slice(0, 4),
         matrix.slice(4, 8),
@@ -432,7 +433,7 @@ var decomposeMatrix = (function() {
   };
 
   function parseTransform(string) {
-    console.log("parseTransform");
+    // console.log("parseTransform");
     string = string.toLowerCase().trim();
     if (string == 'none')
       return [];
@@ -452,8 +453,8 @@ var decomposeMatrix = (function() {
 
       var args = match[2].split(',');
       var argTypes = functionData[0];
-      console.log('arg types');
-      console.log(argTypes);
+      // console.log('arg types');
+      // console.log(argTypes);
       if (argTypes.length < args.length)
         return;
 
@@ -461,10 +462,10 @@ var decomposeMatrix = (function() {
       for (var i = 0; i < argTypes.length; i++) {
         var arg = args[i];
         var type = argTypes[i];
-        console.log('arg type');
-        console.log(type);
-        console.log('arg');
-        console.log(arg);
+        // console.log('arg type');
+        // console.log(type);
+        // console.log('arg');
+        // console.log(arg);
         var parsedArg;
         if (!arg)
           parsedArg = ({a: Odeg,
@@ -537,6 +538,7 @@ var decomposeMatrix = (function() {
   }
 
   function mergeTransforms(left, right) {
+    console.log('merge transforms');
     // FIXME: We should add optional matrix interpolation support for the early return cases
     var flipResults = false;
     if (!left.length || !right.length) {
@@ -560,8 +562,9 @@ var decomposeMatrix = (function() {
       }
     }
 
-    if (left.length != right.length)
+    if (left.length != right.length) {
       return matrixDecomp(left, right);
+    }
 
     var leftResult = [];
     var rightResult = [];
@@ -591,11 +594,14 @@ var decomposeMatrix = (function() {
         type = typeTo2D(leftType);
         leftArgs = leftFunctionData[2](left[i].d);
         rightArgs = rightFunctionData[2](right[i].d);
+        console.log("same types 1!");
       } else if (leftFunctionData[1] && rightFunctionData[1] && typeTo3D(leftType) == typeTo3D(rightType)) {
         type = typeTo3D(leftType);
         leftArgs = leftFunctionData[1](left[i].d);
         rightArgs = rightFunctionData[1](right[i].d);
+        console.log("same types 2!");
       } else {
+        console.log('will decompose');
         return matrixDecomp(left, right);
       }
 
