@@ -225,6 +225,8 @@ var decomposeMatrix = (function() {
   })();
 
   function dot(v1, v2) {
+    // console.log(v1);
+    // console.log(v2);
     var result = 0;
     for (var i = 0; i < v1.length; i++) {
       result += v1[i] * v2[i];
@@ -256,7 +258,7 @@ var decomposeMatrix = (function() {
     ];
   }
 
-  // FIXME: Need to adjust for units. Already done for rotate and skew.
+  // FIXME: !!! Need to adjust for units. Already done for rotate and skew.
   function convertItemToMatrix(item) {
     // console.log("item:");
     // console.log(item);
@@ -405,11 +407,14 @@ var decomposeMatrix = (function() {
   var Opx = {px: 0};
   var Odeg = {deg: 0};
 
-  // FIXME: We should support matrix, matrix3d, perspective and rotate3d
+  // FIXME: We should support perspective and rotate3d
 
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
+    // FIXME: These values for matrix/matrix3d work but they're a bit silly. Fix.
+    matrix: ['Mmmmmm'],
+    matrix3d: ['Mmmmmmmmmmmmmmmm'],
     rotate: ['A'],
     rotatex: ['A'],
     rotatey: ['A'],
@@ -442,6 +447,7 @@ var decomposeMatrix = (function() {
     while (match = transformRegExp.exec(string)) {
       if (match.index != prevLastIndex)
         return;
+
       prevLastIndex = match.index + match[0].length;
       var functionName = match[1];
       var functionData = transformFunctions[functionName];
@@ -450,8 +456,6 @@ var decomposeMatrix = (function() {
 
       var args = match[2].split(',');
       var argTypes = functionData[0];
-      // console.log('arg types');
-      // console.log(argTypes);
       if (argTypes.length < args.length)
         return;
 
@@ -471,6 +475,7 @@ var decomposeMatrix = (function() {
         else
           parsedArg = ({A: function(s) { return s.trim() == '0' ? Odeg : scope.parseAngle(s); },
                         N: scope.parseNumber,
+                        M: scope.parseNumber,
                         T: scope.parseLengthOrPercent,
                         L: scope.parseLength})[type.toUpperCase()](arg);
         // console.log("parsedArg");
@@ -528,8 +533,6 @@ var decomposeMatrix = (function() {
   }
 
   function mergeTransforms(left, right) {
-    // console.log('merge transforms');
-    // FIXME: We should add optional matrix interpolation support for the early return cases
     var flipResults = false;
     if (!left.length || !right.length) {
       if (!left.length) {
@@ -578,7 +581,12 @@ var decomposeMatrix = (function() {
       // console.log(rightFunctionData);
 
       var type;
-      if (leftType == rightType) {
+      // TODO: The old polyfill falls back to matrix decomposition if the transform function list
+      // contains a matrix. We should decide if that is what we want to do in this polyfill.
+      if (leftType === 'matrix' || rightType === 'matrix' ||
+        leftType === 'matrix3d' || rightType === 'matrix3d') {
+        return matrixDecomp(left, right);
+      } else if (leftType == rightType) {
         // console.log("same types!");
         type = leftType;
       } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
