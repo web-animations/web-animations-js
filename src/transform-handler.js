@@ -529,8 +529,6 @@ var decomposeMatrix = (function() {
 
   function mergeTransforms(left, right) {
     // console.log('merge transforms');
-    var differentLengths = left.length != right.length;
-
     // FIXME: We should add optional matrix interpolation support for the early return cases
     var flipResults = false;
     if (!left.length || !right.length) {
@@ -601,41 +599,7 @@ var decomposeMatrix = (function() {
       var leftArgsCopy = [];
       var rightArgsCopy = [];
       var stringConversions = [];
-
-      // console.log('leftargs.length');
-      // console.log(leftArgs);
-
-      if(type == 'matrix') {
-        console.log("new matrix handler");
-        // var merged = [leftArgs[j], rightArgs[j], scope.numberToString];
-        // stringConversions.push(merged[2]);
-        // leftResult.push({t: leftType, d: leftArgs});
-        // rightResult.push({t: rightType, d: rightArgs});
-        // types.push([type, [scope.numberToString]]);
-        // FIXME: Do I ever need to flip here?
-        return [[{t: leftType, d: leftArgs}], [{t: rightType, d: rightArgs}], function(list) {
-          return list.map(function(args) {
-            var stringifiedArgs = args.d.map(function(arg) {
-              return scope.numberToString(arg);
-            }).join(',');
-            return 'matrix(' + stringifiedArgs + ')';
-          }).join(' ');
-        }];
-      }
-
-      var leftArgsCopy = [];
-      var rightArgsCopy = [];
-      var stringConversions = [];
       for (var j = 0; j < leftArgs.length; j++) {
-        var merged;
-        if (type == 'matrix') {
-          // TODO: Add a matrix-handler module?
-          merged = [leftArgs[j], rightArgs[j], scope.numberToString];
-        }
-        else {
-          var merge = typeof leftArgs[j] == 'number' ? scope.mergeNumbers : scope.mergeDimensions;
-          merged = merge(leftArgs[j], rightArgs[j]);
-        }
         var merge = typeof leftArgs[j] == 'number' ? scope.mergeNumbers : scope.mergeDimensions;
         var merged = merge(leftArgs[j], rightArgs[j]);
         leftArgsCopy[j] = merged[0];
