@@ -102,7 +102,6 @@ var decomposeMatrix = (function() {
     // TODO: Implement 2D matrix decomposition.
     // http://dev.w3.org/csswg/css-transforms/#decomposing-a-2d-matrix
     function decomposeMatrix(matrix) {
-      console.log('decomposing');
       var m3d = [
         matrix.slice(0, 4),
         matrix.slice(4, 8),
@@ -387,8 +386,6 @@ var decomposeMatrix = (function() {
               0, 0, 1, 0,
               0, 0, 0, 1];
     }
-    // console.log("TransformList:");
-    // console.log(transformList[0][1][0]);
     return transformList.map(convertItemToMatrix).reduce(multiplyMatrices);
   }
 
@@ -433,7 +430,7 @@ var decomposeMatrix = (function() {
   };
 
   function parseTransform(string) {
-    // console.log("parseTransform");
+    // console.log('parseTransform');
     string = string.toLowerCase().trim();
     if (string == 'none')
       return [];
@@ -511,18 +508,11 @@ var decomposeMatrix = (function() {
     if (left.decompositionPair !== right) {
       left.decompositionPair = right;
       var leftArgs = decomposeMatrix(convertToMatrix(left));
-      // var leftMat = convertToMatrix(left);
-      // console.log('leftMat');
-      // console.log(leftMat);
-      // var leftArgs = decomposeMatrix(leftMat);
     }
     if (right.decompositionPair !== left) {
       right.decompositionPair = left;
       var rightArgs = decomposeMatrix(convertToMatrix(right));
     }
-    // console.log('leftType');
-    // console.log(leftType);
-    // FIXME: Do I ever need to flip here?
     return [
       [{t: 'matrix', d: leftArgs}],
       [{t: 'matrix', d: rightArgs}],
@@ -538,7 +528,7 @@ var decomposeMatrix = (function() {
   }
 
   function mergeTransforms(left, right) {
-    console.log('merge transforms');
+    // console.log('merge transforms');
     var differentLengths = left.length != right.length;
 
     // FIXME: We should add optional matrix interpolation support for the early return cases
@@ -564,54 +554,47 @@ var decomposeMatrix = (function() {
       }
     }
 
+    // FIXME: Test this.
     if (left.length != right.length) {
       return matrixDecomp(left, right);
     }
 
+    // console.log('left');
+    // console.log(left);
+    // console.log('right');
+    // console.log(right);
     var leftResult = [];
     var rightResult = [];
     var types = [];
-    console.log('left');
-    console.log(left);
-    console.log('right');
-    console.log(right);
     for (var i = 0; i < left.length; i++) {
       var leftType = left[i].t;
       var rightType = right[i].t;
       var leftArgs = left[i].d;
       var rightArgs = right[i].d;
-      // console.log("leftArgs[0]");
-      // console.log(leftArgs[0]);
-      // console.log("rightArgs[0]");
-      // console.log(rightArgs[0]);
 
       var leftFunctionData = transformFunctions[leftType];
       var rightFunctionData = transformFunctions[rightType];
-      console.log('leftFunctionData');
-      console.log(leftFunctionData);
-      console.log('rightFunctionData');
-      console.log(rightFunctionData);
+      // console.log('leftFunctionData');
+      // console.log(leftFunctionData);
+      // console.log('rightFunctionData');
+      // console.log(rightFunctionData);
 
       var type;
       if (leftType == rightType) {
-        // console.log('left');
-        // console.log(left);
-        // console.log('right');
-        // console.log(right);
-        console.log("same types!");
+        // console.log("same types!");
         type = leftType;
       } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
         type = typeTo2D(leftType);
         leftArgs = leftFunctionData[2](left[i].d);
         rightArgs = rightFunctionData[2](right[i].d);
-        console.log("same types 1!");
+        // console.log("same types 1!");
       } else if (leftFunctionData[1] && rightFunctionData[1] && typeTo3D(leftType) == typeTo3D(rightType)) {
         type = typeTo3D(leftType);
         leftArgs = leftFunctionData[1](left[i].d);
         rightArgs = rightFunctionData[1](right[i].d);
-        console.log("same types 2!");
+        // console.log("same types 2!");
       } else {
-        console.log('will decompose');
+        // console.log('will decompose');
         return matrixDecomp(left, right);
       }
 
@@ -686,6 +669,8 @@ var decomposeMatrix = (function() {
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.parseTransform = parseTransform;
+    testing.typeTo2D = typeTo2D;
+    testing.typeTo3D = typeTo3D;
   }
 
 })(webAnimationsMinifill, webAnimationsTesting);

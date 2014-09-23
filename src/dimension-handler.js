@@ -78,8 +78,6 @@
         // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
         return scope.numberToString(value) + units[i];
       }).join(' + ');
-      // console.log('result');
-      // console.log(result);
       return values.length > 1 ? 'calc(' + result + ')' : result;
     }];
   }

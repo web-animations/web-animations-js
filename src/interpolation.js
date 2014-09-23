@@ -120,8 +120,7 @@
     return isDefined(val) && (val !== null);
   };
 
-  // FIXME: This is just a stopgap. Look at the real function from the old polyfill.
-  // function interp(from, to, f) { return interpolate(from, to, f); }
+  // FIXME: Can this be merged with interpolate?
   var interp = function(from, to, f, type) {
     if (Array.isArray(from) || Array.isArray(to)) {
       return interpArray(from, to, f, type);
@@ -134,15 +133,15 @@
   };
 
   var interpArray = function(from, to, f, type) {
-    // ASSERT_ENABLED && assert(
-    //     Array.isArray(from) || from === null,
-    //     'From is not an array or null');
-    // ASSERT_ENABLED && assert(
-    //     Array.isArray(to) || to === null,
-    //     'To is not an array or null');
-    // ASSERT_ENABLED && assert(
-    //     from === null || to === null || from.length === to.length,
-    //     'Arrays differ in length ' + from + ' : ' + to);
+    WEB_ANIMATIONS_TESTING && console.assert(
+        Array.isArray(from) || from === null,
+        'From is not an array or null');
+    WEB_ANIMATIONS_TESTING && console.assert(
+        Array.isArray(to) || to === null,
+        'To is not an array or null');
+    WEB_ANIMATIONS_TESTING && console.assert(
+        from === null || to === null || from.length === to.length,
+        'Arrays differ in length ' + from + ' : ' + to);
     var length = from ? from.length : to.length;
 
     var result = [];
@@ -153,10 +152,10 @@
   };
 
   function interpolateDecomposedTransformsWithMatrices(fromM, toM, f) {
-    console.log("FromM:");
-    console.log(fromM);
-    console.log("ToM:");
-    console.log(toM);
+    // console.log("FromM:");
+    // console.log(fromM);
+    // console.log("ToM:");
+    // console.log(toM);
     var product = scope.dot(fromM.quaternion, toM.quaternion);
     product = clamp(product, -1.0, 1.0);
 
@@ -186,8 +185,8 @@
     switch (type) {
       case 'matrix':
       case 'matrix3d':
-        // ASSERT_ENABLED && assert(false,
-        //     'Must use matrix decomposition when interpolating raw matrices');
+        WEB_ANIMATIONS_TESTING && console.assert(false,
+            'Must use matrix decomposition when interpolating raw matrices');
       // Transforms with unitless parameters.
       case 'rotate':
       case 'rotateX':
@@ -217,7 +216,7 @@
         for (var j = 0; j < maxVal; j++) {
           var fromVal = from.d ? from.d[j] : {};
           var toVal = to.d ? to.d[j] : {};
-          result.push(interpolate(fromVal, toVal, f));
+          result.push(interp(fromVal, toVal, f));
         }
         return {t: type, d: result};
     }
@@ -228,7 +227,6 @@
   }
 
   function interpolate(from, to, f) {
-    console.log('interpolate');
     if ((typeof from == 'number') && (typeof to == 'number')) {
       return from * (1 - f) + to * f;
     }
@@ -236,28 +234,31 @@
       return f < 0.5 ? from : to;
     }
 
+    WEB_ANIMATIONS_TESTING && console.assert(
+      Array.isArray(from) && Array.isArray(to),
+      'If interpolation arguments are not numbers or bools they must be arrays');
+
     var transformFunctionNames = ('matrix|matrix3d|perspective|' +
         'rotate|rotatex|rotatey|rotatez|rotate3d|scale|scalex|' +
         'scaley|scalez|scale3d|skew|skewx|skewy|translate|' +
         'translatex|translatey|translatez|translate3d').split('|');
 
-    // FIXME: Decide how to detect transforms.
-    if (Array.isArray(from) && Array.isArray(to)
-      && from[0].t && to[0].t && (transformFunctionNames.indexOf(to[0].t) !== -1)
+    if (from[0].t && to[0].t && (transformFunctionNames.indexOf(to[0].t) !== -1)
       && (transformFunctionNames.indexOf(to[0].t) !== -1)) {
       var out = [];
-      // FIXME: What happens if there is a mix of functions and matrices? Function - matrix - function.
       for (var i = 0; i < Math.min(from.length, to.length); i++) {
-        // FIXME: This is problematic.
-        // See test/js/transform-handler.js:'transform interpolations with conversion to primitives'
-        // if (from[i].t !== to[i].t || isMatrix(from[i])) {
-        // RENEE: Fix this first. If the types of the functions in from and to are not compatible
-        // will they always be matrices by this stage? (I think they need to be otherwise the next
-        // step will fail). Should assert that from[i].t == to[i].t
+        WEB_ANIMATIONS_TESTING && console.assert(
+          (from[i].t === to[i].t) ||
+              (testing.typeTo2D(from[i].t) === testing.typeTo2D(to[i].t)) ||
+              (testing.typeTo3D(from[i].t) === testing.typeTo3D(to[i].t)),
+          'Interpolated pairs of transform functions have same type or same primitive conversion type.');
 
         // FIXME: This will be interpolating literal matrices as well as matrices resulting from
         // decomposition. Does it matter? Should at least rename
         // interpolateDecomposedTransformsWithMatrices.
+
+        // In the old polyfill, literal matrices always trigger matrix decomposition. If we take
+        // that approach here then this can be moved back out of this loop.
         if (isMatrix(from[i])) {
           out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
         }
@@ -266,18 +267,12 @@
         }
       }
 
-      // if (i < Math.min(from.length, to.length) ||
-      //     from.some(isMatrix) || to.some(isMatrix)) {
-      // if (i < Math.min(from.length, to.length)) {
-      //   out.push(interpolateDecomposedTransformsWithMatrices(
-      //       from[i].d, to[i].d, f));
-      //   return out;
-      // }
-
       for (; i < from.length; i++) {
         // FIXME: This will actually be interpolating literal matrices, not matrices resulting from
         // decomposition. Does it matter? Should at least rename
         // interpolateDecomposedTransformsWithMatrices.
+        // In the old polyfill, literal matrices always trigger matrix decomposition. If we take
+        // that approach here then we don't need this check.
         if (isMatrix(from[i]))
           out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
         else
@@ -287,6 +282,8 @@
         // FIXME: This will actually be interpolating literal matrices, not matrices resulting from
         // decomposition. Does it matter? Should at least rename
         // interpolateDecomposedTransformsWithMatrices.
+        // In the old polyfill, literal matrices always trigger matrix decomposition. If we take
+        // that approach here then we don't need this check.
         if (isMatrix(from[i]))
           out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
         else
@@ -307,7 +304,6 @@
 
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
-      console.log(convertToString);
       return convertToString(interpolate(from, to, f));
     }
   };
