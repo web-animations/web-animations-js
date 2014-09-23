@@ -120,7 +120,6 @@
     return isDefined(val) && (val !== null);
   };
 
-  // FIXME: Can this be merged with interpolate?
   var interp = function(from, to, f, type) {
     if (Array.isArray(from) || Array.isArray(to)) {
       return interpArray(from, to, f, type);

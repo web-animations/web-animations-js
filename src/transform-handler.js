@@ -553,7 +553,7 @@ var decomposeMatrix = (function() {
       var rightFunctionData = transformFunctions[rightType];
 
       var type;
-      // TODO: The old polyfill falls back to matrix decomposition if the transform function list
+      // FIXME: The old polyfill falls back to matrix decomposition if the transform function list
       // contains a matrix. We should decide if that is what we want to do in this polyfill.
       if (leftType === 'matrix' || rightType === 'matrix' ||
         leftType === 'matrix3d' || rightType === 'matrix3d') {
