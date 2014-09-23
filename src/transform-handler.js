@@ -539,6 +539,8 @@ var decomposeMatrix = (function() {
 
   function mergeTransforms(left, right) {
     console.log('merge transforms');
+    var differentLengths = left.length != right.length;
+
     // FIXME: We should add optional matrix interpolation support for the early return cases
     var flipResults = false;
     if (!left.length || !right.length) {
@@ -551,14 +553,14 @@ var decomposeMatrix = (function() {
         var type = left[i].t;
         var args = left[i].d;
         var defaultValue = type.substr(0, 5) == 'scale' ? 1 : 0;
-        right.push([type, args.map(function(arg) {
+        right.push({t: type, d: args.map(function(arg) {
           if (typeof arg == 'number')
             return defaultValue;
           var result = {};
           for (var unit in arg)
             result[unit] = defaultValue;
           return result;
-        })]);
+        })});
       }
     }
 
@@ -569,6 +571,10 @@ var decomposeMatrix = (function() {
     var leftResult = [];
     var rightResult = [];
     var types = [];
+    console.log('left');
+    console.log(left);
+    console.log('right');
+    console.log(right);
     for (var i = 0; i < left.length; i++) {
       var leftType = left[i].t;
       var rightType = right[i].t;
@@ -581,6 +587,10 @@ var decomposeMatrix = (function() {
 
       var leftFunctionData = transformFunctions[leftType];
       var rightFunctionData = transformFunctions[rightType];
+      console.log('leftFunctionData');
+      console.log(leftFunctionData);
+      console.log('rightFunctionData');
+      console.log(rightFunctionData);
 
       var type;
       if (leftType == rightType) {

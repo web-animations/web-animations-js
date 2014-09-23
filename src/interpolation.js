@@ -244,17 +244,23 @@
       console.log(from);
       console.log('to');
       console.log(to);
-      // FIXME: What happens if there is a mix of functions and matrices?
+      // FIXME: What happens if there is a mix of functions and matrices? Function - matrix - function.
       for (var i = 0; i < Math.min(from.length, to.length); i++) {
-        if (from[i].t !== to[i].t || isMatrix(from[i])) {
+        // FIXME: This is problematic.
+        // See test/js/transform-handler.js:'transform interpolations with conversion to primitives'
+        // if (from[i].t !== to[i].t || isMatrix(from[i])) {
+        // RENEE: Fix this first. If the types of the functions in from and to are not compatible
+        // will they always be matrices by this stage? (I think they need to be otherwise the next
+        // step will fail). Should assert that from[i].t == to[i].t
+        if (isMatrix(from[i])) {
           break;
         }
         out.push(interpTransformValue(from[i], to[i], f));
       }
 
-      if (i < Math.min(from.length, to.length) ||
-          from.some(isMatrix) || to.some(isMatrix)) {
-        console.log('i: ' + i);
+      // if (i < Math.min(from.length, to.length) ||
+      //     from.some(isMatrix) || to.some(isMatrix)) {
+      if (i < Math.min(from.length, to.length)) {
         out.push(interpolateDecomposedTransformsWithMatrices(
             from[i].d, to[i].d, f));
         return out;
