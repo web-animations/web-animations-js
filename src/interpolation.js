@@ -152,10 +152,6 @@
   };
 
   function interpolateDecomposedTransformsWithMatrices(fromM, toM, f) {
-    // console.log("FromM:");
-    // console.log(fromM);
-    // console.log("ToM:");
-    // console.log(toM);
     var fromMValue = fromM.d;
     var toMValue = toM.d;
     var product = scope.dot(fromMValue.quaternion, toMValue.quaternion);
@@ -249,20 +245,17 @@
     }
 
     if (from.length == to.length) {
-      var out = [];
       var isTransformList = isTransform(from);
       var functionIsMatrix = isTransformList && from[0].t == 'matrix';
       var interpFunction = interpolate;
       if (isTransformList) {
-        if (functionIsMatrix) {
-          WEB_ANIMATIONS_TESTING && console.assert(
-            (to[0].t === 'matrix') && (from.length === 1) && (to.length === 1),
-            'Interpolated pairs of transform functions have same type or same primitive conversion type.');
+        if (functionIsMatrix)
           interpFunction = interpolateDecomposedTransformsWithMatrices;
-        } else {
+        else
           interpFunction = interpTransformValue;
-        }
       }
+
+      var out = [];
       for (var i = 0; i < from.length; i++)
         out.push(interpFunction(from[i], to[i], f));
       return out;

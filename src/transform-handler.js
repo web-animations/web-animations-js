@@ -225,8 +225,6 @@ var decomposeMatrix = (function() {
   })();
 
   function dot(v1, v2) {
-    // console.log(v1);
-    // console.log(v2);
     var result = 0;
     for (var i = 0; i < v1.length; i++) {
       result += v1[i] * v2[i];
@@ -260,8 +258,6 @@ var decomposeMatrix = (function() {
 
   // FIXME: !!! Need to adjust for units. Already done for rotate and skew.
   function convertItemToMatrix(item) {
-    // console.log("item:");
-    // console.log(item);
     switch (item.t) {
       case 'rotateX':
         var angle = item.d * Math.PI / 180;
@@ -435,7 +431,6 @@ var decomposeMatrix = (function() {
   };
 
   function parseTransform(string) {
-    // console.log('parseTransform');
     string = string.toLowerCase().trim();
     if (string == 'none')
       return [];
@@ -463,10 +458,6 @@ var decomposeMatrix = (function() {
       for (var i = 0; i < argTypes.length; i++) {
         var arg = args[i];
         var type = argTypes[i];
-        // console.log('arg type');
-        // console.log(type);
-        // console.log('arg');
-        // console.log(arg);
         var parsedArg;
         if (!arg)
           parsedArg = ({a: Odeg,
@@ -478,24 +469,13 @@ var decomposeMatrix = (function() {
                         M: scope.parseNumber,
                         T: scope.parseLengthOrPercent,
                         L: scope.parseLength})[type.toUpperCase()](arg);
-        // console.log("parsedArg");
-        // console.log(parsedArg);
         if (parsedArg === undefined)
           return;
         parsedArgs.push(parsedArg);
-        // console.log(parsedArgs.length);
-        // console.log('parsedArgs');
-        // console.log(parsedArgs[parsedArgs.length - 1]);
       }
       result.push({t: functionName, d: parsedArgs});
-      // console.log('result');
-      // console.log(result);
 
       if (transformRegExp.lastIndex == string.length) {
-        // console.log('parsedArgs');
-        // console.log(parsedArgs);
-        // console.log('result');
-        // console.log(result);
         return result;
       }
     }
@@ -560,10 +540,6 @@ var decomposeMatrix = (function() {
       return matrixDecomp(left, right);
     }
 
-    // console.log('left');
-    // console.log(left);
-    // console.log('right');
-    // console.log(right);
     var leftResult = [];
     var rightResult = [];
     var types = [];
@@ -575,10 +551,6 @@ var decomposeMatrix = (function() {
 
       var leftFunctionData = transformFunctions[leftType];
       var rightFunctionData = transformFunctions[rightType];
-      // console.log('leftFunctionData');
-      // console.log(leftFunctionData);
-      // console.log('rightFunctionData');
-      // console.log(rightFunctionData);
 
       var type;
       // TODO: The old polyfill falls back to matrix decomposition if the transform function list
@@ -587,20 +559,16 @@ var decomposeMatrix = (function() {
         leftType === 'matrix3d' || rightType === 'matrix3d') {
         return matrixDecomp(left, right);
       } else if (leftType == rightType) {
-        // console.log("same types!");
         type = leftType;
       } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
         type = typeTo2D(leftType);
         leftArgs = leftFunctionData[2](left[i].d);
         rightArgs = rightFunctionData[2](right[i].d);
-        // console.log("same types 1!");
       } else if (leftFunctionData[1] && rightFunctionData[1] && typeTo3D(leftType) == typeTo3D(rightType)) {
         type = typeTo3D(leftType);
         leftArgs = leftFunctionData[1](left[i].d);
         rightArgs = rightFunctionData[1](right[i].d);
-        // console.log("same types 2!");
       } else {
-        // console.log('will decompose');
         return matrixDecomp(left, right);
       }
 
