@@ -238,64 +238,36 @@
       Array.isArray(from) && Array.isArray(to),
       'If interpolation arguments are not numbers or bools they must be arrays');
 
-    var transformFunctionNames = ('matrix|matrix3d|perspective|' +
+    var isTransform = function(list) {
+      var transformFunctionNames = ('matrix|matrix3d|perspective|' +
         'rotate|rotatex|rotatey|rotatez|rotate3d|scale|scalex|' +
         'scaley|scalez|scale3d|skew|skewx|skewy|translate|' +
         'translatex|translatey|translatez|translate3d').split('|');
-
-    if (from[0].t && to[0].t && (transformFunctionNames.indexOf(to[0].t) !== -1)
-      && (transformFunctionNames.indexOf(to[0].t) !== -1)) {
-      var out = [];
-      for (var i = 0; i < Math.min(from.length, to.length); i++) {
-        WEB_ANIMATIONS_TESTING && console.assert(
-          (from[i].t === to[i].t) ||
-              (testing.typeTo2D(from[i].t) === testing.typeTo2D(to[i].t)) ||
-              (testing.typeTo3D(from[i].t) === testing.typeTo3D(to[i].t)),
-          'Interpolated pairs of transform functions have same type or same primitive conversion type.');
-
-        // FIXME: This will be interpolating literal matrices as well as matrices resulting from
-        // decomposition. Does it matter? Should at least rename
-        // interpolateDecomposedTransformsWithMatrices.
-
-        // In the old polyfill, literal matrices always trigger matrix decomposition. If we take
-        // that approach here then this can be moved back out of this loop.
-        if (isMatrix(from[i])) {
-          out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
-        }
-        else {
-          out.push(interpTransformValue(from[i], to[i], f));
-        }
-      }
-
-      for (; i < from.length; i++) {
-        // FIXME: This will actually be interpolating literal matrices, not matrices resulting from
-        // decomposition. Does it matter? Should at least rename
-        // interpolateDecomposedTransformsWithMatrices.
-        // In the old polyfill, literal matrices always trigger matrix decomposition. If we take
-        // that approach here then we don't need this check.
-        if (isMatrix(from[i]))
-          out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
-        else
-          out.push(interpTransformValue(from[i], {t: null, d: null}, f));
-      }
-      for (; i < to.length; i++) {
-        // FIXME: This will actually be interpolating literal matrices, not matrices resulting from
-        // decomposition. Does it matter? Should at least rename
-        // interpolateDecomposedTransformsWithMatrices.
-        // In the old polyfill, literal matrices always trigger matrix decomposition. If we take
-        // that approach here then we don't need this check.
-        if (isMatrix(from[i]))
-          out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
-        else
-          out.push(interpTransformValue({t: null, d: null}, to[i], f));
-      }
-      return out;
+      return (list[0].t) && (transformFunctionNames.indexOf(list[0].t) !== -1);
     }
 
     if (from.length == to.length) {
       var out = [];
-      for (var i = 0; i < from.length; i++) {
-        out.push(interpolate(from[i], to[i], f));
+      if (isTransform(from) && isTransform(to)) {
+        if (from[0].t == 'matrix') {
+          WEB_ANIMATIONS_TESTING && console.assert(
+              (to[0].t === 'matrix') && (from.length === 1) && (to.length === 1),
+              'Interpolated pairs of transform functions have same type or same primitive conversion type.');
+          out.push(interpolateDecomposedTransformsWithMatrices(from[0].d, to[0].d, f));
+          return out;
+        }
+        for (var i = 0; i < from.length; i++) {
+          WEB_ANIMATIONS_TESTING && console.assert(
+              (from[i].t !== 'matrix') && (to[i].t !== 'matrix') &&
+                  ((from[i].t === to[i].t) ||
+                  (testing.typeTo2D(from[i].t) === testing.typeTo2D(to[i].t)) ||
+                  (testing.typeTo3D(from[i].t) === testing.typeTo3D(to[i].t))),
+              'Interpolated pairs of transform functions have same type or same primitive conversion type.');
+          out.push(interpTransformValue(from[i], to[i], f));
+        }
+      } else {
+        for (var i = 0; i < from.length; i++)
+          out.push(interpolate(from[i], to[i], f));
       }
       return out;
     }
