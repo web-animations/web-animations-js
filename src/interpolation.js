@@ -156,26 +156,28 @@
     // console.log(fromM);
     // console.log("ToM:");
     // console.log(toM);
-    var product = scope.dot(fromM.quaternion, toM.quaternion);
+    var fromMValue = fromM.d;
+    var toMValue = toM.d;
+    var product = scope.dot(fromMValue.quaternion, toMValue.quaternion);
     product = clamp(product, -1.0, 1.0);
 
     var quat = [];
     if (product === 1.0) {
-      quat = fromM.quaternion;
+      quat = fromMValue.quaternion;
     } else {
       var theta = Math.acos(product);
       var w = Math.sin(f * theta) * 1 / Math.sqrt(1 - product * product);
 
       for (var i = 0; i < 4; i++) {
-        quat.push(fromM.quaternion[i] * (Math.cos(f * theta) - product * w) +
-                  toM.quaternion[i] * w);
+        quat.push(fromMValue.quaternion[i] * (Math.cos(f * theta) - product * w) +
+                  toMValue.quaternion[i] * w);
       }
     }
 
-    var translate = interp(fromM.translate, toM.translate, f);
-    var scale = interp(fromM.scale, toM.scale, f);
-    var skew = interp(fromM.skew, toM.skew, f);
-    var perspective = interp(fromM.perspective, toM.perspective, f);
+    var translate = interp(fromMValue.translate, toMValue.translate, f);
+    var scale = interp(fromMValue.scale, toMValue.scale, f);
+    var skew = interp(fromMValue.skew, toMValue.skew, f);
+    var perspective = interp(fromMValue.perspective, toMValue.perspective, f);
 
     return composeMatrix(translate, scale, skew, quat, perspective);
   }
@@ -248,27 +250,21 @@
 
     if (from.length == to.length) {
       var out = [];
-      if (isTransform(from) && isTransform(to)) {
-        if (from[0].t == 'matrix') {
+      var isTransformList = isTransform(from);
+      var functionIsMatrix = isTransformList && from[0].t == 'matrix';
+      var interpFunction = interpolate;
+      if (isTransformList) {
+        if (functionIsMatrix) {
           WEB_ANIMATIONS_TESTING && console.assert(
-              (to[0].t === 'matrix') && (from.length === 1) && (to.length === 1),
-              'Interpolated pairs of transform functions have same type or same primitive conversion type.');
-          out.push(interpolateDecomposedTransformsWithMatrices(from[0].d, to[0].d, f));
-          return out;
+            (to[0].t === 'matrix') && (from.length === 1) && (to.length === 1),
+            'Interpolated pairs of transform functions have same type or same primitive conversion type.');
+          interpFunction = interpolateDecomposedTransformsWithMatrices;
+        } else {
+          interpFunction = interpTransformValue;
         }
-        for (var i = 0; i < from.length; i++) {
-          WEB_ANIMATIONS_TESTING && console.assert(
-              (from[i].t !== 'matrix') && (to[i].t !== 'matrix') &&
-                  ((from[i].t === to[i].t) ||
-                  (testing.typeTo2D(from[i].t) === testing.typeTo2D(to[i].t)) ||
-                  (testing.typeTo3D(from[i].t) === testing.typeTo3D(to[i].t))),
-              'Interpolated pairs of transform functions have same type or same primitive conversion type.');
-          out.push(interpTransformValue(from[i], to[i], f));
-        }
-      } else {
-        for (var i = 0; i < from.length; i++)
-          out.push(interpolate(from[i], to[i], f));
       }
+      for (var i = 0; i < from.length; i++)
+        out.push(interpFunction(from[i], to[i], f));
       return out;
     }
     throw 'Mismatched interpolation arguments ' + from + ':' + to;
