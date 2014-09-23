@@ -236,14 +236,16 @@
       return f < 0.5 ? from : to;
     }
 
-    // FIXME: Testing that 't' is defined might not be the best way to check that the argument is a
-    // transform function.
-    if (from[0].t && to[0].t) {
+    var transformFunctionNames = ('matrix|matrix3d|perspective|' +
+        'rotate|rotatex|rotatey|rotatez|rotate3d|scale|scalex|' +
+        'scaley|scalez|scale3d|skew|skewx|skewy|translate|' +
+        'translatex|translatey|translatez|translate3d').split('|');
+
+    // FIXME: Decide how to detect transforms.
+    if (Array.isArray(from) && Array.isArray(to)
+      && from[0].t && to[0].t && (transformFunctionNames.indexOf(to[0].t) !== -1)
+      && (transformFunctionNames.indexOf(to[0].t) !== -1)) {
       var out = [];
-      console.log('from');
-      console.log(from);
-      console.log('to');
-      console.log(to);
       // FIXME: What happens if there is a mix of functions and matrices? Function - matrix - function.
       for (var i = 0; i < Math.min(from.length, to.length); i++) {
         // FIXME: This is problematic.
@@ -252,25 +254,43 @@
         // RENEE: Fix this first. If the types of the functions in from and to are not compatible
         // will they always be matrices by this stage? (I think they need to be otherwise the next
         // step will fail). Should assert that from[i].t == to[i].t
+
+        // FIXME: This will be interpolating literal matrices as well as matrices resulting from
+        // decomposition. Does it matter? Should at least rename
+        // interpolateDecomposedTransformsWithMatrices.
         if (isMatrix(from[i])) {
-          break;
+          out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
         }
-        out.push(interpTransformValue(from[i], to[i], f));
+        else {
+          out.push(interpTransformValue(from[i], to[i], f));
+        }
       }
 
       // if (i < Math.min(from.length, to.length) ||
       //     from.some(isMatrix) || to.some(isMatrix)) {
-      if (i < Math.min(from.length, to.length)) {
-        out.push(interpolateDecomposedTransformsWithMatrices(
-            from[i].d, to[i].d, f));
-        return out;
-      }
+      // if (i < Math.min(from.length, to.length)) {
+      //   out.push(interpolateDecomposedTransformsWithMatrices(
+      //       from[i].d, to[i].d, f));
+      //   return out;
+      // }
 
       for (; i < from.length; i++) {
-        out.push(interpTransformValue(from[i], {t: null, d: null}, f));
+        // FIXME: This will actually be interpolating literal matrices, not matrices resulting from
+        // decomposition. Does it matter? Should at least rename
+        // interpolateDecomposedTransformsWithMatrices.
+        if (isMatrix(from[i]))
+          out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
+        else
+          out.push(interpTransformValue(from[i], {t: null, d: null}, f));
       }
       for (; i < to.length; i++) {
-        out.push(interpTransformValue({t: null, d: null}, to[i], f));
+        // FIXME: This will actually be interpolating literal matrices, not matrices resulting from
+        // decomposition. Does it matter? Should at least rename
+        // interpolateDecomposedTransformsWithMatrices.
+        if (isMatrix(from[i]))
+          out.push(interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
+        else
+          out.push(interpTransformValue({t: null, d: null}, to[i], f));
       }
       return out;
     }
