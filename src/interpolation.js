@@ -13,51 +13,51 @@
 // limitations under the License.
 
 (function(scope, testing) {
-  function interpTransformValue(from, to, f) {
-    var type = from.t ? from.t : to.t;
-    switch (type) {
-      case 'matrix':
-      case 'matrix3d':
-        WEB_ANIMATIONS_TESTING && console.assert(false,
-            'Must use matrix decomposition when interpolating raw matrices');
-      // Transforms with unitless parameters.
-      case 'rotate':
-      case 'rotateX':
-      case 'rotateY':
-      case 'rotateZ':
-      case 'rotate3d':
-      case 'scale':
-      case 'scaleX':
-      case 'scaleY':
-      case 'scaleZ':
-      case 'scale3d':
-      case 'skew':
-      case 'skewX':
-      case 'skewY':
-        return {t: type, d: scope.interp(from.d, to.d, f, type)};
-      default:
-        // Transforms with lengthType parameters.
-        console.log('from.d');
-        console.log(from.d);
-        console.log('to.d');
-        console.log(to.d);
-        var result = [];
-        var maxVal;
-        if (from.d && to.d) {
-          maxVal = Math.max(from.d.length, to.d.length);
-        } else if (from.d) {
-          maxVal = from.d.length;
-        } else {
-          maxVal = to.d.length;
-        }
-        for (var j = 0; j < maxVal; j++) {
-          var fromVal = from.d ? from.d[j] : {};
-          var toVal = to.d ? to.d[j] : {};
-          result.push(scope.interp(fromVal, toVal, f));
-        }
-        return {t: type, d: result};
-    }
-  }
+  // function interpTransformValue(from, to, f) {
+  //   var type = from.t ? from.t : to.t;
+  //   switch (type) {
+  //     case 'matrix':
+  //     case 'matrix3d':
+  //       WEB_ANIMATIONS_TESTING && console.assert(false,
+  //           'Must use matrix decomposition when interpolating raw matrices');
+  //     // Transforms with unitless parameters.
+  //     case 'rotate':
+  //     case 'rotateX':
+  //     case 'rotateY':
+  //     case 'rotateZ':
+  //     case 'rotate3d':
+  //     case 'scale':
+  //     case 'scaleX':
+  //     case 'scaleY':
+  //     case 'scaleZ':
+  //     case 'scale3d':
+  //     case 'skew':
+  //     case 'skewX':
+  //     case 'skewY':
+  //       return {t: type, d: scope.interp(from.d, to.d, f, type)};
+  //     default:
+  //       // Transforms with lengthType parameters.
+  //       console.log('from.d');
+  //       console.log(from.d);
+  //       console.log('to.d');
+  //       console.log(to.d);
+  //       var result = [];
+  //       var maxVal;
+  //       if (from.d && to.d) {
+  //         maxVal = Math.max(from.d.length, to.d.length);
+  //       } else if (from.d) {
+  //         maxVal = from.d.length;
+  //       } else {
+  //         maxVal = to.d.length;
+  //       }
+  //       for (var j = 0; j < maxVal; j++) {
+  //         var fromVal = from.d ? from.d[j] : {};
+  //         var toVal = to.d ? to.d[j] : {};
+  //         result.push(scope.interp(fromVal, toVal, f));
+  //       }
+  //       return {t: type, d: result};
+  //   }
+  // }
 
   function interpolate(from, to, f) {
     // console.log('from');
@@ -89,24 +89,22 @@
 
     if (from.length == to.length) {
       // RENEE: This is more like what you copied from the polyfill. Reliable.
-      var interpFunction = isTransform(from) ? interpTransformValue : interpolate;
-      var out = [];
-      for (var i = 0; i < from.length; i++)
-        out.push(interpFunction(from[i], to[i], f));
-      console.log('out');
-      console.log(out);
-      return out;
-
-      // RENEE: This bypasses interpolateTransformValue. Needs testing!
+      // var interpFunction = isTransform(from) ? interpTransformValue : interpolate;
       // var out = [];
-      // for (var i = 0; i < from.length; i++) {
-      //   if (from[i].d) {
-      //     out.push({t: from.t, d: interpolate(from[i].d, to[i].d, f)});
-      //   } else {
-      //     out.push(interpolate(from[i], to[i], f));
-      //   }
-      // }
+      // for (var i = 0; i < from.length; i++)
+      //   out.push(interpFunction(from[i], to[i], f));
       // return out;
+
+      // RENEE: This bypasses interpolateTransformValue. Needs testing but seems to work.
+      var out = [];
+      for (var i = 0; i < from.length; i++) {
+        if (from[i].d) {
+          out.push({t: from.t, d: interpolate(from[i].d, to[i].d, f)});
+        } else {
+          out.push(interpolate(from[i], to[i], f));
+        }
+      }
+      return out;
     }
     throw 'Mismatched interpolation arguments ' + from + ':' + to;
   }
