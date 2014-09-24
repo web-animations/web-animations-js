@@ -88,37 +88,34 @@
     }
 
     if (from.length == to.length) {
-      console.log('from');
-      console.log(from);
-      console.log('to');
-      console.log(to);
-      // var interpFunction = isTransform(from) ? interpTransformValue : interpolate;
-      var interpFunction = interpolate;
+      // RENEE: This is more like what you copied from the polyfill. Reliable.
+      var interpFunction = isTransform(from) ? interpTransformValue : interpolate;
       var out = [];
-      // for (var i = 0; i < from.length; i++)
-      //   out.push(interpFunction(from[i], to[i], f));
-      // return out;
-      for (var i = 0; i < from.length; i++) {
-        var fromVal = from[i];
-        var toVal = to[i];
-        if (from[i].d) {
-          fromVal = from[i].d;
-          toVal = to[i].d;
-        }
-        console.log('fromVal');
-        console.log(fromVal);
-        console.log('toVal');
-        console.log(toVal);
-        out.push(interpFunction(fromVal, toVal, f));
-      }
+      for (var i = 0; i < from.length; i++)
+        out.push(interpFunction(from[i], to[i], f));
+      console.log('out');
+      console.log(out);
       return out;
+
+      // RENEE: This bypasses interpolateTransformValue. Needs testing!
+      // var out = [];
+      // for (var i = 0; i < from.length; i++) {
+      //   if (from[i].d) {
+      //     out.push({t: from.t, d: interpolate(from[i].d, to[i].d, f)});
+      //   } else {
+      //     out.push(interpolate(from[i], to[i], f));
+      //   }
+      // }
+      // return out;
     }
     throw 'Mismatched interpolation arguments ' + from + ':' + to;
   }
 
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
-      return convertToString(interpolate(from, to, f));
+      var r = convertToString(interpolate(from, to, f));
+      console.log(r);
+      return r;
     }
   };
 
