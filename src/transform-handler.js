@@ -291,27 +291,12 @@ var decomposeMatrix = (function() {
                 0, 0, 1, 0,
                 0, 0, 0, 1];
       case 'rotate3d':
-        // console.log('rotate3d');
-        // var xRads = item.d[0].rad || 0;
-        // var xDegs = item.d[0].deg || 0;
-        // var x = (xDegs *  Math.PI / 180) + xRads;
-        // var yRads = item.d[1].rad || 0;
-        // var yDegs = item.d[1].deg || 0;
-        // var y = (yDegs *  Math.PI / 180) + yRads;
-        // var zRads = item.d[2].rad || 0;
-        // var zDegs = item.d[2].deg || 0;
-        // var z = (zDegs *  Math.PI / 180) + zRads;
-
         var x = item.d[0];
         var y = item.d[1];
         var z = item.d[2];
         var rads = item.d[3].rad || 0;
         var degs = item.d[3].deg || 0;
         var angle = degs + (rads * 180 / Math.PI);
-        // console.log('x: ' + x);
-        // console.log('y: ' + y);
-        // console.log('z: ' + z);
-        // console.log('angle: ' + angle);
 
         var sqrLength = x * x + y * y + z * z;
         if (sqrLength === 0) {
@@ -432,7 +417,7 @@ var decomposeMatrix = (function() {
   var Opx = {px: 0};
   var Odeg = {deg: 0};
 
-  // FIXME: We should support perspective and rotate3d
+  // FIXME: We should support perspective
 
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
@@ -555,16 +540,7 @@ var decomposeMatrix = (function() {
         }).join(',');
         // console.log('stringifiedArgs');
         // console.log(stringifiedArgs);
-        // list will only ever be singleton in this case.
         return list.t + '(' + stringifiedArgs + ')';
-        // return list.map(function(args) {
-        //   var stringifiedArgs = args.d.map(function(arg) {
-        //     return scope.numberToString(arg);
-        //   }).join(',');
-        //   var result;
-        //   // list will only ever be singleton in this case.
-        //   return list[0].t + '(' + stringifiedArgs + ')';
-        // }).join(' ');
       }
     ];
   }
