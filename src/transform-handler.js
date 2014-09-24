@@ -308,10 +308,10 @@ var decomposeMatrix = (function() {
         var rads = item.d[3].rad || 0;
         var degs = item.d[3].deg || 0;
         var angle = degs + (rads * 180 / Math.PI);
-        console.log('x: ' + x);
-        console.log('y: ' + y);
-        console.log('z: ' + z);
-        console.log('angle: ' + angle);
+        // console.log('x: ' + x);
+        // console.log('y: ' + y);
+        // console.log('z: ' + z);
+        // console.log('angle: ' + angle);
 
         var sqrLength = x * x + y * y + z * z;
         if (sqrLength === 0) {
@@ -470,24 +470,24 @@ var decomposeMatrix = (function() {
     var match;
     var prevLastIndex = 0;
     while (match = transformRegExp.exec(string)) {
-      console.log(match);
+      // console.log(match);
       if (match.index != prevLastIndex)
         return;
-      console.log('same index');
+      // console.log('same index');
       prevLastIndex = match.index + match[0].length;
       var functionName = match[1];
-      console.log('functionData');
-      console.log(functionData);
+      // console.log('functionData');
+      // console.log(functionData);
       var functionData = transformFunctions[functionName];
-      console.log('functionData');
-      console.log(functionData);
+      // console.log('functionData');
+      // console.log(functionData);
       if (!functionData)
         return;
-      console.log('have function data');
+      // console.log('have function data');
       var args = match[2].split(',');
-      console.log('Args: ' + args);
+      // console.log('Args: ' + args);
       var argTypes = functionData[0];
-      console.log('ArgTypes: ' + argTypes);
+      // console.log('ArgTypes: ' + argTypes);
       if (argTypes.length < args.length)
         return;
 
@@ -510,10 +510,10 @@ var decomposeMatrix = (function() {
           return;
         parsedArgs.push(parsedArg);
       }
-      console.log('parsed args');
-      console.log(parsedArgs);
-      console.log('function name');
-      console.log(functionName);
+      // console.log('parsed args');
+      // console.log(parsedArgs);
+      // console.log('function name');
+      // console.log(functionName);
       result.push({t: functionName, d: parsedArgs});
 
       if (transformRegExp.lastIndex == string.length) {
@@ -540,21 +540,21 @@ var decomposeMatrix = (function() {
       right.decompositionPair = left;
       var rightArgs = decomposeMatrix(convertToMatrix(right));
     }
-    console.log('decomposed right args');
-    console.log(rightArgs);
-    console.log('decomposed left args');
-    console.log(leftArgs);
+    // console.log('decomposed right args');
+    // console.log(rightArgs);
+    // console.log('decomposed left args');
+    // console.log(leftArgs);
     return [
-      [{t: 'matrix', d: leftArgs}],
-      [{t: 'matrix', d: rightArgs}],
+      {t: 'decomposedMatrix', d: leftArgs},
+      {t: 'decomposedMatrix', d: rightArgs},
       function(list) {
-        console.log('list: ');
-        console.log(list);
+        // console.log('list: ');
+        // console.log(list);
         var stringifiedArgs = list.d.map(function(arg) {
           return scope.numberToString(arg);
         }).join(',');
-        console.log('stringifiedArgs');
-        console.log(stringifiedArgs);
+        // console.log('stringifiedArgs');
+        // console.log(stringifiedArgs);
         // list will only ever be singleton in this case.
         return list.t + '(' + stringifiedArgs + ')';
         // return list.map(function(args) {

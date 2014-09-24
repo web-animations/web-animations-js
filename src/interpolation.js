@@ -235,9 +235,12 @@
       return f < 0.5 ? from : to;
     }
 
+    if (from.t && from.t == 'decomposedMatrix')
+      return interpolateDecomposedTransformsWithMatrices(from, to, f);
+
     WEB_ANIMATIONS_TESTING && console.assert(
       Array.isArray(from) && Array.isArray(to),
-      'If interpolation arguments are not numbers or bools they must be arrays');
+      'If interpolation arguments are not numbers, bools or matrices they must be arrays');
 
     var isTransform = function(list) {
       var transformFunctionNames = ('matrix|matrix3d|perspective|' +
@@ -248,17 +251,7 @@
     }
 
     if (from.length == to.length) {
-      var isTransformList = isTransform(from);
-      var functionIsMatrix = isTransformList && from[0].t == 'matrix';
-      var interpFunction = interpolate;
-      if (isTransformList) {
-        if (functionIsMatrix)
-          // interpFunction = interpolateDecomposedTransformsWithMatrices;
-          return interpolateDecomposedTransformsWithMatrices(from[0], to[0], f);
-        else
-          interpFunction = interpTransformValue;
-      }
-
+      var interpFunction = isTransform(from) ? interpTransformValue : interpolate;
       var out = [];
       for (var i = 0; i < from.length; i++)
         out.push(interpFunction(from[i], to[i], f));
