@@ -224,6 +224,10 @@
   }
 
   function interpolate(from, to, f) {
+    // console.log('from');
+    // console.log(from);
+    // console.log('to');
+    // console.log(to);
     if ((typeof from == 'number') && (typeof to == 'number')) {
       return from * (1 - f) + to * f;
     }
@@ -249,7 +253,8 @@
       var interpFunction = interpolate;
       if (isTransformList) {
         if (functionIsMatrix)
-          interpFunction = interpolateDecomposedTransformsWithMatrices;
+          // interpFunction = interpolateDecomposedTransformsWithMatrices;
+          return interpolateDecomposedTransformsWithMatrices(from[0], to[0], f);
         else
           interpFunction = interpTransformValue;
       }

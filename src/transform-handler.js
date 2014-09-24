@@ -260,30 +260,59 @@ var decomposeMatrix = (function() {
   function convertItemToMatrix(item) {
     switch (item.t) {
       case 'rotateX':
-        var angle = item.d * Math.PI / 180;
+        // console.log('rotateX');
+        var rads = item.d[0].rad || 0;
+        var degs = item.d[0].deg || 0;
+        var angle = (degs *  Math.PI / 180) + rads;
+        // console.log('Angle: ' + angle);
         return [1, 0, 0, 0,
                 0, Math.cos(angle), Math.sin(angle), 0,
                 0, -Math.sin(angle), Math.cos(angle), 0,
                 0, 0, 0, 1];
       case 'rotateY':
-        var angle = item.d * Math.PI / 180;
+        // console.log('rotateY');
+        var rads = item.d[0].rad || 0;
+        var degs = item.d[0].deg || 0;
+        var angle = (degs *  Math.PI / 180) + rads;
+        // console.log('Angle: ' + angle);
         return [Math.cos(angle), 0, -Math.sin(angle), 0,
                 0, 1, 0, 0,
                 Math.sin(angle), 0, Math.cos(angle), 0,
                 0, 0, 0, 1];
       case 'rotate':
       case 'rotateZ':
+        // console.log('rotate');
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
         var angle = (degs *  Math.PI / 180) + rads;
+        // console.log('Angle: ' + angle);
         return [Math.cos(angle), Math.sin(angle), 0, 0,
                 -Math.sin(angle), Math.cos(angle), 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1];
       case 'rotate3d':
+        // console.log('rotate3d');
+        // var xRads = item.d[0].rad || 0;
+        // var xDegs = item.d[0].deg || 0;
+        // var x = (xDegs *  Math.PI / 180) + xRads;
+        // var yRads = item.d[1].rad || 0;
+        // var yDegs = item.d[1].deg || 0;
+        // var y = (yDegs *  Math.PI / 180) + yRads;
+        // var zRads = item.d[2].rad || 0;
+        // var zDegs = item.d[2].deg || 0;
+        // var z = (zDegs *  Math.PI / 180) + zRads;
+
         var x = item.d[0];
         var y = item.d[1];
         var z = item.d[2];
+        var rads = item.d[3].rad || 0;
+        var degs = item.d[3].deg || 0;
+        var angle = degs + (rads * 180 / Math.PI);
+        console.log('x: ' + x);
+        console.log('y: ' + y);
+        console.log('z: ' + z);
+        console.log('angle: ' + angle);
+
         var sqrLength = x * x + y * y + z * z;
         if (sqrLength === 0) {
           x = 1;
@@ -295,8 +324,8 @@ var decomposeMatrix = (function() {
           y /= length;
           z /= length;
         }
-        var s = Math.sin(item.d[3] * Math.PI / 360);
-        var sc = s * Math.cos(item.d[3] * Math.PI / 360);
+        var s = Math.sin(angle * Math.PI / 360);
+        var sc = s * Math.cos(angle * Math.PI / 360);
         var sq = s * s;
         return [
           1 - 2 * (y * y + z * z) * sq,
@@ -372,8 +401,8 @@ var decomposeMatrix = (function() {
       case 'matrix3d':
         return item.d;
       default:
-        // ASSERT_ENABLED && assert(false, 'Transform item type ' + item.t +
-        //     ' conversion to matrix not yet implemented.');
+        WEB_ANIMATIONS_TESTING && console.assert(false, 'Transform item type ' + item.t +
+            ' conversion to matrix not yet implemented.');
     }
   }
 
@@ -415,6 +444,7 @@ var decomposeMatrix = (function() {
     rotatex: ['A'],
     rotatey: ['A'],
     rotatez: ['A'],
+    rotate3d: ['Nnna'],
     scale: ['Nn', cast([_, _, 1]), id],
     scalex: ['N', cast([_, 1, 1]), cast([_, 1])],
     scaley: ['N', cast([1, _, 1]), cast([1, _])],
@@ -440,17 +470,24 @@ var decomposeMatrix = (function() {
     var match;
     var prevLastIndex = 0;
     while (match = transformRegExp.exec(string)) {
+      console.log(match);
       if (match.index != prevLastIndex)
         return;
-
+      console.log('same index');
       prevLastIndex = match.index + match[0].length;
       var functionName = match[1];
+      console.log('functionData');
+      console.log(functionData);
       var functionData = transformFunctions[functionName];
+      console.log('functionData');
+      console.log(functionData);
       if (!functionData)
         return;
-
+      console.log('have function data');
       var args = match[2].split(',');
+      console.log('Args: ' + args);
       var argTypes = functionData[0];
+      console.log('ArgTypes: ' + argTypes);
       if (argTypes.length < args.length)
         return;
 
@@ -473,6 +510,10 @@ var decomposeMatrix = (function() {
           return;
         parsedArgs.push(parsedArg);
       }
+      console.log('parsed args');
+      console.log(parsedArgs);
+      console.log('function name');
+      console.log(functionName);
       result.push({t: functionName, d: parsedArgs});
 
       if (transformRegExp.lastIndex == string.length) {
@@ -489,6 +530,7 @@ var decomposeMatrix = (function() {
     return type.replace(/(x|y|z|3d)?$/, '3d');
   }
 
+  // This is basically the matrix alternative to mergeTransforms.
   function matrixDecomp(left, right) {
     if (left.decompositionPair !== right) {
       left.decompositionPair = right;
@@ -498,16 +540,31 @@ var decomposeMatrix = (function() {
       right.decompositionPair = left;
       var rightArgs = decomposeMatrix(convertToMatrix(right));
     }
+    console.log('decomposed right args');
+    console.log(rightArgs);
+    console.log('decomposed left args');
+    console.log(leftArgs);
     return [
       [{t: 'matrix', d: leftArgs}],
       [{t: 'matrix', d: rightArgs}],
       function(list) {
-        return list.map(function(args) {
-          var stringifiedArgs = args.d.map(function(arg) {
-            return scope.numberToString(arg);
-          }).join(',');
-          return 'matrix(' + stringifiedArgs + ')';
-        }).join(' ');
+        console.log('list: ');
+        console.log(list);
+        var stringifiedArgs = list.d.map(function(arg) {
+          return scope.numberToString(arg);
+        }).join(',');
+        console.log('stringifiedArgs');
+        console.log(stringifiedArgs);
+        // list will only ever be singleton in this case.
+        return list.t + '(' + stringifiedArgs + ')';
+        // return list.map(function(args) {
+        //   var stringifiedArgs = args.d.map(function(arg) {
+        //     return scope.numberToString(arg);
+        //   }).join(',');
+        //   var result;
+        //   // list will only ever be singleton in this case.
+        //   return list[0].t + '(' + stringifiedArgs + ')';
+        // }).join(' ');
       }
     ];
   }
