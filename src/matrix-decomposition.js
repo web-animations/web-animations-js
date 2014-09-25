@@ -1,5 +1,19 @@
+// Copyright 2014 Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+// limitations under the License.
+
 (function(scope, testing) {
-var decomposeMatrix = (function() {
+  var decomposeMatrix = (function() {
     // this is only ever used on the perspective matrix, which has 0, 0, 0, 1 as
     // last column
     function determinant(m) {
@@ -249,7 +263,7 @@ var decomposeMatrix = (function() {
         // console.log('rotateX');
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
-        var angle = (degs *  Math.PI / 180) + rads;
+        var angle = (degs * Math.PI / 180) + rads;
         // console.log('Angle: ' + angle);
         return [1, 0, 0, 0,
                 0, Math.cos(angle), Math.sin(angle), 0,
@@ -259,7 +273,7 @@ var decomposeMatrix = (function() {
         // console.log('rotateY');
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
-        var angle = (degs *  Math.PI / 180) + rads;
+        var angle = (degs * Math.PI / 180) + rads;
         // console.log('Angle: ' + angle);
         return [Math.cos(angle), 0, -Math.sin(angle), 0,
                 0, 1, 0, 0,
@@ -270,7 +284,7 @@ var decomposeMatrix = (function() {
         // console.log('rotate');
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
-        var angle = (degs *  Math.PI / 180) + rads;
+        var angle = (degs * Math.PI / 180) + rads;
         // console.log('Angle: ' + angle);
         return [Math.cos(angle), Math.sin(angle), 0, 0,
                 -Math.sin(angle), Math.cos(angle), 0, 0,
@@ -331,8 +345,8 @@ var decomposeMatrix = (function() {
         var xRads = item.d[0].rad || 0;
         var yDegs = item.d[1].deg || 0;
         var yRads = item.d[1].rad || 0;
-        var xAngle = (xDegs *  Math.PI / 180) + xRads;
-        var yAngle = (yDegs *  Math.PI / 180) + yRads;
+        var xAngle = (xDegs * Math.PI / 180) + xRads;
+        var yAngle = (yDegs * Math.PI / 180) + yRads;
         return [1, Math.tan(yAngle), 0, 0,
                 Math.tan(xAngle), 1, 0, 0,
                 0, 0, 1, 0,

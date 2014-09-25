@@ -75,17 +75,17 @@
       return scope.interpolateDecomposedTransformsWithMatrices(from, to, f);
 
     WEB_ANIMATIONS_TESTING && console.assert(
-      Array.isArray(from) && Array.isArray(to),
-      'If interpolation arguments are not numbers, bools or matrices they must be arrays');
+        Array.isArray(from) && Array.isArray(to),
+        'If interpolation arguments are not numbers, bools or matrices they must be arrays');
 
     var isTransform = function(list) {
       // matrix and matrix3d omitted as they should be handled by matrix decomposition.
       var transformFunctionNames = ('perspective|' +
-        'rotate|rotatex|rotatey|rotatez|rotate3d|scale|scalex|' +
-        'scaley|scalez|scale3d|skew|skewx|skewy|translate|' +
-        'translatex|translatey|translatez|translate3d').split('|');
+          'rotate|rotatex|rotatey|rotatez|rotate3d|scale|scalex|' +
+          'scaley|scalez|scale3d|skew|skewx|skewy|translate|' +
+          'translatex|translatey|translatez|translate3d').split('|');
       return (list[0].t) && (transformFunctionNames.indexOf(list[0].t) !== -1);
-    }
+    };
 
     if (from.length == to.length) {
       // RENEE: This is more like what you copied from the polyfill. Reliable.

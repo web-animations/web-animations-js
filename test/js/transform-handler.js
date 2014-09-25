@@ -75,11 +75,11 @@ suite('transform-handler interpolation', function() {
     // webAnimationsMinifill.propertyInterpolation('transform', 'translate(10px, 10px) rotate(20deg)', 'translate(20px, 20px) rotate(30rad)')(0.2);
     // webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px) rotate(20deg)', 'translateX(20em) rotate(30rad)')(0.2);
     assert.equal(
-      webAnimationsMinifill.propertyInterpolation(
-        'transform',
-        'translate(10px, 10em) rotate(20deg)',
-        'translate(20em, 20px) rotate(30rad)')(0.5),
-      'translate(calc(5px + 10em),calc(5em + 10px)) rotate(calc(10deg + 15rad))');
+        webAnimationsMinifill.propertyInterpolation(
+          'transform',
+          'translate(10px, 10em) rotate(20deg)',
+          'translate(20em, 20px) rotate(30rad)')(0.5),
+        'translate(calc(5px + 10em),calc(5em + 10px)) rotate(calc(10deg + 15rad))');
     // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translate(10px, 10px) rotate(20deg)', 'translate(20px, 20px) rotate(30deg)')(0.2), 'translate(12px,12px) rotate(22deg)');
     // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'rotateY(1000deg)', 'rotateY(3000deg)')(0.4), 'rotatey(1800deg)');
     // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'scale(6)', 'scale(1,-4)')(0.2), 'scale(5,4)');
@@ -93,7 +93,7 @@ suite('transform-handler interpolation', function() {
         'matrix(1, -0.2, 0, 1, 0, 0)');
     var evaluatedInterp = interpolatedMatrix(0.5);
     var interpElements = evaluatedInterp.slice(
-      evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.closeTo(interpElements[0], 1, 0.01);
     assert.closeTo(interpElements[1], -0.1, 0.01);
     assert.closeTo(interpElements[2], 0, 0.01);
@@ -107,7 +107,7 @@ suite('transform-handler interpolation', function() {
         'matrix3d(1, 1, 0, 0, -2, 1, 0, 0, 0, 0, 1, 0, 10, 10, 0, 1)');
     var evaluatedInterp3D = interpolatedMatrix3D(0.5);
     var interpElements3D = evaluatedInterp3D.slice(
-      evaluatedInterp3D.indexOf('(') + 1, evaluatedInterp3D.lastIndexOf(')')).split(',');
+        evaluatedInterp3D.indexOf('(') + 1, evaluatedInterp3D.lastIndexOf(')')).split(',');
     assert.closeTo(interpElements3D[0], 1.115, 0.01);
     assert.closeTo(interpElements3D[1], 0.462, 0.01);
     assert.closeTo(interpElements3D[2], -0.838, 0.01);
@@ -133,7 +133,7 @@ suite('transform-handler interpolation', function() {
 
   // FIXME: These are now supported. Change them to the actual values and change the description.
   // test('currently unsupported transform interpolations', function() {
-    // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translate(10px)', 'scale(2)')(0.4), 'translate(10px)');
-    // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'rotateX(10deg)', 'rotateY(20deg)')(0.4), 'rotateX(10deg)');
+  //   assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translate(10px)', 'scale(2)')(0.4), 'translate(10px)');
+  //   assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'rotateX(10deg)', 'rotateY(20deg)')(0.4), 'rotateX(10deg)');
   // });
 });
