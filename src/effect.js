@@ -21,13 +21,15 @@
     return function(target, fraction) {
       if (fraction != null) {
         for (var i = 0; i < interpolations.length && interpolations[i].startTime <= fraction; i++)
-          if (interpolations[i].endTime >= fraction && interpolations[i].endTime != interpolations[i].startTime)
-            scope.apply(target,
-                interpolations[i].property,
-                interpolations[i].interpolation((fraction - interpolations[i].startTime) / (interpolations[i].endTime - interpolations[i].startTime)));
+          if (interpolations[i].endTime >= fraction && interpolations[i].endTime != interpolations[i].startTime) {
+            var offsetFraction = fraction - interpolations[i].startTime;
+            var localDuration = interpolations[i].endTime - interpolations[i].startTime;
+            var scaledLocalTime = interpolations[i].easing(offsetFraction / localDuration);
+            scope.apply(target, interpolations[i].property, interpolations[i].interpolation(scaledLocalTime));
+          }
       } else {
         for (var property in propertySpecificKeyframeGroups)
-          if (property != 'offset')
+          if (property != 'offset' && property != 'easing' && property != 'composite')
             scope.clear(target, property);
       }
     };
@@ -51,6 +53,8 @@
             if (!isFinite(memberValue))
               throw new TypeError('keyframe offsets must be numbers.');
           }
+        } else if (member == 'easing') {
+          memberValue = scope.toTimingFunction(memberValue);
         } else {
           memberValue = '' + memberValue;
         }
@@ -58,6 +62,8 @@
       }
       if (keyframe.offset == undefined)
         keyframe.offset = null;
+      if (keyframe.easing == undefined)
+        keyframe.easing = scope.toTimingFunction('linear');
       return keyframe;
     });
 
@@ -123,6 +129,7 @@
         if (member != 'offset' && member != 'easing' && member != 'composite') {
           var propertySpecificKeyframe = {
             offset: keyframeEffect[i].offset,
+            easing: keyframeEffect[i].easing,
             value: keyframeEffect[i][member]
           };
           propertySpecificKeyframeGroups[member] = propertySpecificKeyframeGroups[member] || [];
@@ -148,6 +155,7 @@
         interpolations.push({
           startTime: group[i].offset,
           endTime: group[i + 1].offset,
+          easing: group[i].easing,
           property: groupName,
           interpolation: scope.propertyInterpolation(groupName, group[i].value, group[i + 1].value)
         });

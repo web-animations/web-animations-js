@@ -1,3 +1,9 @@
+
+function leftAsNumber(target) {
+  var left = getComputedStyle(target).left;
+  return Number(left.substring(0, left.length - 2));
+}
+
 suite('effect', function() {
   // Test normalize.
   test('Normalize keyframes with all offsets specified but not sorted by offset. Some offsets are out of [0, 1] range.', function() {
@@ -134,6 +140,29 @@ suite('effect', function() {
     assert.closeTo(normalizedKeyframes[0].offset, 0, 0.001);
     assert.closeTo(normalizedKeyframes[1].offset, 0.5, 0.001);
     assert.closeTo(normalizedKeyframes[2].offset, 1, 0.001);
+  });
+
+  test('Normalize keyframes where some keyframes have easings.', function() {
+    var normalizedKeyframes;
+    assert.doesNotThrow(function() {
+      normalizedKeyframes = normalize([
+        {left: '0px', easing: 'ease-in'},
+        {left: '10px'},
+        {left: '0px'}
+      ]);
+    });
+  });
+
+  test('Normalize keyframes with invalid specified easing.', function() {
+    var normalizedKeyframes;
+    assert.doesNotThrow(function() {
+      normalizedKeyframes = normalize([
+        {left: '0px', easing: 'easy-peasy'},
+        {left: '10px'},
+        {left: '0px'}
+      ]);
+    });
+    assert.equal('' + normalizedKeyframes[0].easing, 'function (x) { return x; }');
   });
 
   test('Normalize keyframes where some properties are given non-string, non-number values.', function() {
@@ -305,7 +334,50 @@ suite('effect', function() {
     assert.equal(Object.getOwnPropertyNames(groups).length, 2);
   });
 
-  // Test makeInterpolations
+  // Test per-keyframe easings.
+  test('Apply keyframe easings.', function() {
+    var target1 = document.createElement('div');
+    var target2 = document.createElement('div');
+    document.body.appendChild(target1);
+    document.body.appendChild(target2);
+
+    var player1 = target1.animate(
+        [
+          {left: '0px'},
+          {left: '50px', offset: 0.25},
+          {left: '0px'}
+        ],
+        {duration: 4000, fill: 'forwards'});
+    var player2 = target2.animate(
+        [
+          {left: '0px', easing: 'ease-in'},
+          {left: '50px', offset: 0.25},
+          {left: '0px'}
+        ],
+        {duration: 4000, fill: 'forwards'});
+
+    tick(0);
+    assert.equal(leftAsNumber(target1), 0);
+    assert.equal(leftAsNumber(target2), 0);
+    tick(250);
+    assert.closeTo(leftAsNumber(target1), 12.5, 1);
+    assert.closeTo(leftAsNumber(target2), 4.65, 1);
+    tick(500);
+    assert.closeTo(leftAsNumber(target1), 25, 1);
+    assert.closeTo(leftAsNumber(target2), 15.25, 1);
+    tick(1000);
+    assert.equal(leftAsNumber(target1), 50);
+    assert.equal(leftAsNumber(target2), 50);
+
+    tick(2500);
+    assert.equal(leftAsNumber(target1), 25);
+    assert.equal(leftAsNumber(target2), 25);
+    tick(4000);
+    assert.equal(leftAsNumber(target1), 0);
+    assert.equal(leftAsNumber(target2), 0);
+  });
+
+  // Test makeInterpolations.
   test('Make interpolations for a simple effect with one property.', function() {
     var interpolations;
     assert.doesNotThrow(function() {
@@ -349,23 +421,18 @@ suite('effect-convertEffectInput', function() {
       ]);
     });
 
-    var targetLeftAsNumber = (function() {
-      var left = getComputedStyle(this.target).left;
-      return Number(left.substring(0, left.length - 2));
-    }).bind(this);
-
     effectFunction(this.target, 0);
-    assert.closeTo(targetLeftAsNumber(), 0, 0.001);
+    assert.closeTo(leftAsNumber(this.target), 0, 0.001);
     effectFunction(this.target, 0.075);
-    assert.closeTo(targetLeftAsNumber(), 50, 0.001);
+    assert.closeTo(leftAsNumber(this.target), 50, 0.001);
     effectFunction(this.target, 0.15);
-    assert.closeTo(targetLeftAsNumber(), 100, 0.001);
+    assert.closeTo(leftAsNumber(this.target), 100, 0.001);
     effectFunction(this.target, 0.65);
-    assert.closeTo(targetLeftAsNumber(), 150, 0.001);
+    assert.closeTo(leftAsNumber(this.target), 150, 0.001);
     effectFunction(this.target, 1);
-    assert.closeTo(targetLeftAsNumber(), 100, 0.001);
+    assert.closeTo(leftAsNumber(this.target), 100, 0.001);
     effectFunction(this.target, 2);
-    assert.closeTo(targetLeftAsNumber(), 100, 0.001);
+    assert.closeTo(leftAsNumber(this.target), 100, 0.001);
   });
 
   test('Convert effect input where one property is animated and the property has two keyframes at offset 1.', function() {

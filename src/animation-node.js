@@ -225,6 +225,8 @@
     return animationNode;
   };
 
+  scope.toTimingFunction = toTimingFunction;
+
   if (WEB_ANIMATIONS_TESTING) {
     testing.normalizeTimingInput = normalizeTimingInput;
     testing.toTimingFunction = toTimingFunction;
