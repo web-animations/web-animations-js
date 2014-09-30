@@ -178,12 +178,12 @@ suite('transform-handler interpolation', function() {
     var interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 1, 0.01);
-    assert.closeTo(interpElements[1], -0.1, 0.01);
-    assert.closeTo(interpElements[2], 0, 0.01);
-    assert.closeTo(interpElements[3], 1, 0.01);
-    assert.closeTo(interpElements[4], 0, 0.01);
-    assert.closeTo(interpElements[5], 0, 0.01);
+    assert.closeTo(Number(interpElements[0]), 1, 0.01);
+    assert.closeTo(Number(interpElements[1]), -0.1, 0.01);
+    assert.closeTo(Number(interpElements[2]), 0, 0.01);
+    assert.closeTo(Number(interpElements[3]), 1, 0.01);
+    assert.closeTo(Number(interpElements[4]), 0, 0.01);
+    assert.closeTo(Number(interpElements[5]), 0, 0.01);
 
     var interpolatedMatrix3D = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -193,12 +193,12 @@ suite('transform-handler interpolation', function() {
     var interpElements3D = evaluatedInterp3D.slice(
         evaluatedInterp3D.indexOf('(') + 1, evaluatedInterp3D.lastIndexOf(')')).split(',');
     assert.equal(interpElements3D.length, 6);
-    assert.closeTo(interpElements3D[0], 1.12, 0.01);
-    assert.closeTo(interpElements3D[1], 0.46, 0.01);
-    assert.closeTo(interpElements3D[2], -0.84, 0.01);
-    assert.closeTo(interpElements3D[3], 1.34, 0.01);
-    assert.closeTo(interpElements3D[4], 5, 0.01);
-    assert.closeTo(interpElements3D[5], 5, 0.01);
+    assert.closeTo(Number(interpElements3D[0]), 1.12, 0.01);
+    assert.closeTo(Number(interpElements3D[1]), 0.46, 0.01);
+    assert.closeTo(Number(interpElements3D[2]), -0.84, 0.01);
+    assert.closeTo(Number(interpElements3D[3]), 1.34, 0.01);
+    assert.closeTo(Number(interpElements3D[4]), 5, 0.01);
+    assert.closeTo(Number(interpElements3D[5]), 5, 0.01);
 
     var interpolatedMatrix3DComplex = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -208,24 +208,24 @@ suite('transform-handler interpolation', function() {
     var interpElements3DComplex = evaluatedInterp3DComplex.slice(
         evaluatedInterp3DComplex.indexOf('(') + 1, evaluatedInterp3DComplex.lastIndexOf(')')).split(',');
     assert.equal(interpElements3DComplex.length, 16);
-    assert.closeTo(interpElements3DComplex[0], 1.73, 0.01);
-    assert.closeTo(interpElements3DComplex[1], 0.67, 0.01);
-    assert.closeTo(interpElements3DComplex[2], 1.10, 0.01);
-    assert.closeTo(interpElements3DComplex[3], 0, 0.01);
-    assert.closeTo(interpElements3DComplex[4], -0.85, 0.01);
-    assert.closeTo(interpElements3DComplex[5], 1.34, 0.01);
-    assert.closeTo(interpElements3DComplex[6], 0.29, 0.01);
-    assert.closeTo(interpElements3DComplex[7], 0, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[0]), 1.73, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[1]), 0.67, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[2]), 1.10, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[3]), 0, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[4]), -0.85, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[5]), 1.34, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[6]), 0.29, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[7]), 0, 0.01);
     // FIXME: These 3 values are different from the native impl (and FF), which gives 0.31, 0.04, 1.01.
     // Result looks the same.
-    assert.closeTo(interpElements3DComplex[8], -0.35, 0.01);
-    assert.closeTo(interpElements3DComplex[9], -0.22, 0.01);
-    assert.closeTo(interpElements3DComplex[10], 0.58, 0.01);
-    assert.closeTo(interpElements3DComplex[11], 0, 0.01);
-    assert.closeTo(interpElements3DComplex[12], 5, 0.01);
-    assert.closeTo(interpElements3DComplex[13], 5, 0.01);
-    assert.closeTo(interpElements3DComplex[14], 0, 0.01);
-    assert.closeTo(interpElements3DComplex[15], 1, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[8]), -0.35, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[9]), -0.22, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[10]), 0.58, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[11]), 0, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[12]), 5, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[13]), 5, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[14]), 0, 0.01);
+    assert.closeTo(Number(interpElements3DComplex[15]), 1, 0.01);
   });
 
   test('transform interpolations that require matrix decomposition', function() {
@@ -237,12 +237,12 @@ suite('transform-handler interpolation', function() {
     var interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 1.4, 0.01);
-    assert.closeTo(interpElements[1], 0, 0.01);
-    assert.closeTo(interpElements[2], 0, 0.01);
-    assert.closeTo(interpElements[3], 1.4, 0.01);
-    assert.closeTo(interpElements[4], 6, 0.01);
-    assert.closeTo(interpElements[5], 0, 0.01);
+    assert.closeTo(Number(interpElements[0]), 1.4, 0.01);
+    assert.closeTo(Number(interpElements[1]), 0, 0.01);
+    assert.closeTo(Number(interpElements[2]), 0, 0.01);
+    assert.closeTo(Number(interpElements[3]), 1.4, 0.01);
+    assert.closeTo(Number(interpElements[4]), 6, 0.01);
+    assert.closeTo(Number(interpElements[5]), 0, 0.01);
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -252,12 +252,12 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 1.6, 0.01);
-    assert.closeTo(interpElements[1], 0, 0.01);
-    assert.closeTo(interpElements[2], 0, 0.01);
-    assert.closeTo(interpElements[3], 1.6, 0.01);
-    assert.closeTo(interpElements[4], 4, 0.01);
-    assert.closeTo(interpElements[5], 0, 0.01);
+    assert.closeTo(Number(interpElements[0]), 1.6, 0.01);
+    assert.closeTo(Number(interpElements[1]), 0, 0.01);
+    assert.closeTo(Number(interpElements[2]), 0, 0.01);
+    assert.closeTo(Number(interpElements[3]), 1.6, 0.01);
+    assert.closeTo(Number(interpElements[4]), 4, 0.01);
+    assert.closeTo(Number(interpElements[5]), 0, 0.01);
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -267,22 +267,22 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 16);
-    assert.closeTo(interpElements[0], 0.99, 0.01);
-    assert.closeTo(interpElements[1], 0.01, 0.01);
-    assert.closeTo(interpElements[2], -0.14, 0.01);
-    assert.closeTo(interpElements[3], 0, 0.01);
-    assert.closeTo(interpElements[4], 0.01, 0.01);
-    assert.closeTo(interpElements[5], 1.00, 0.01);
-    assert.closeTo(interpElements[6], 0.10, 0.01);
-    assert.closeTo(interpElements[7], 0, 0.01);
-    assert.closeTo(interpElements[8], 0.14, 0.01);
-    assert.closeTo(interpElements[9], -0.10, 0.01);
-    assert.closeTo(interpElements[10], 0.98, 0.01);
-    assert.closeTo(interpElements[11], 0, 0.01);
-    assert.closeTo(interpElements[12], 0, 0.01);
-    assert.closeTo(interpElements[13], 0, 0.01);
-    assert.closeTo(interpElements[14], 0, 0.01);
-    assert.closeTo(interpElements[15], 1, 0.01);
+    assert.closeTo(Number(interpElements[0]), 0.99, 0.01);
+    assert.closeTo(Number(interpElements[1]), 0.01, 0.01);
+    assert.closeTo(Number(interpElements[2]), -0.14, 0.01);
+    assert.closeTo(Number(interpElements[3]), 0, 0.01);
+    assert.closeTo(Number(interpElements[4]), 0.01, 0.01);
+    assert.closeTo(Number(interpElements[5]), 1.00, 0.01);
+    assert.closeTo(Number(interpElements[6]), 0.10, 0.01);
+    assert.closeTo(Number(interpElements[7]), 0, 0.01);
+    assert.closeTo(Number(interpElements[8]), 0.14, 0.01);
+    assert.closeTo(Number(interpElements[9]), -0.10, 0.01);
+    assert.closeTo(Number(interpElements[10]), 0.98, 0.01);
+    assert.closeTo(Number(interpElements[11]), 0, 0.01);
+    assert.closeTo(Number(interpElements[12]), 0, 0.01);
+    assert.closeTo(Number(interpElements[13]), 0, 0.01);
+    assert.closeTo(Number(interpElements[14]), 0, 0.01);
+    assert.closeTo(Number(interpElements[15]), 1, 0.01);
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -292,22 +292,22 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 16);
-    assert.closeTo(interpElements[0], 1, 0.01);
-    assert.closeTo(interpElements[1], 0, 0.01);
-    assert.closeTo(interpElements[2], 0, 0.01);
-    assert.closeTo(interpElements[3], 0, 0.01);
-    assert.closeTo(interpElements[4], 0, 0.01);
-    assert.closeTo(interpElements[5], 0.53, 0.01);
-    assert.closeTo(interpElements[6], -0.85, 0.01);
-    assert.closeTo(interpElements[7], 0, 0.01);
-    assert.closeTo(interpElements[8], 0, 0.01);
-    assert.closeTo(interpElements[9], 0.85, 0.01);
-    assert.closeTo(interpElements[10], 0.53, 0.01);
-    assert.closeTo(interpElements[11], 0, 0.01);
-    assert.closeTo(interpElements[12], 4, 0.01);
-    assert.closeTo(interpElements[13], 0, 0.01);
-    assert.closeTo(interpElements[14], 0, 0.01);
-    assert.closeTo(interpElements[15], 1, 0.01);
+    assert.closeTo(Number(interpElements[0]), 1, 0.01);
+    assert.closeTo(Number(interpElements[1]), 0, 0.01);
+    assert.closeTo(Number(interpElements[2]), 0, 0.01);
+    assert.closeTo(Number(interpElements[3]), 0, 0.01);
+    assert.closeTo(Number(interpElements[4]), 0, 0.01);
+    assert.closeTo(Number(interpElements[5]), 0.53, 0.01);
+    assert.closeTo(Number(interpElements[6]), -0.85, 0.01);
+    assert.closeTo(Number(interpElements[7]), 0, 0.01);
+    assert.closeTo(Number(interpElements[8]), 0, 0.01);
+    assert.closeTo(Number(interpElements[9]), 0.85, 0.01);
+    assert.closeTo(Number(interpElements[10]), 0.53, 0.01);
+    assert.closeTo(Number(interpElements[11]), 0, 0.01);
+    assert.closeTo(Number(interpElements[12]), 4, 0.01);
+    assert.closeTo(Number(interpElements[13]), 0, 0.01);
+    assert.closeTo(Number(interpElements[14]), 0, 0.01);
+    assert.closeTo(Number(interpElements[15]), 1, 0.01);
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -317,12 +317,12 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 0.47, 0.01);
-    assert.closeTo(interpElements[1], 0.89, 0.01);
-    assert.closeTo(interpElements[2], -0.89, 0.01);
-    assert.closeTo(interpElements[3], 0.47, 0.01);
-    assert.closeTo(interpElements[4], 320, 0.01);
-    assert.closeTo(interpElements[5], 0, 0.01);
+    assert.closeTo(Number(interpElements[0]), 0.47, 0.01);
+    assert.closeTo(Number(interpElements[1]), 0.89, 0.01);
+    assert.closeTo(Number(interpElements[2]), -0.89, 0.01);
+    assert.closeTo(Number(interpElements[3]), 0.47, 0.01);
+    assert.closeTo(Number(interpElements[4]), 320, 0.01);
+    assert.closeTo(Number(interpElements[5]), 0, 0.01);
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -332,12 +332,12 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 0.84, 0.01);
-    assert.closeTo(interpElements[1], 1.59, 0.01);
-    assert.closeTo(interpElements[2], -1.59, 0.01);
-    assert.closeTo(interpElements[3], 0.84, 0.01);
-    assert.closeTo(interpElements[4], 360, 0.01);
-    assert.closeTo(interpElements[5], 108, 0.01);
+    assert.closeTo(Number(interpElements[0]), 0.84, 0.01);
+    assert.closeTo(Number(interpElements[1]), 1.59, 0.01);
+    assert.closeTo(Number(interpElements[2]), -1.59, 0.01);
+    assert.closeTo(Number(interpElements[3]), 0.84, 0.01);
+    assert.closeTo(Number(interpElements[4]), 360, 0.01);
+    assert.closeTo(Number(interpElements[5]), 108, 0.01);
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -347,12 +347,12 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 0.84, 0.01);
-    assert.closeTo(interpElements[1], 1.59, 0.01);
-    assert.closeTo(interpElements[2], -1.59, 0.01);
-    assert.closeTo(interpElements[3], 0.84, 0.01);
-    assert.closeTo(interpElements[4], 360, 0.01);
-    assert.closeTo(interpElements[5], 108, 0.01);
+    assert.closeTo(Number(interpElements[0]), 0.84, 0.01);
+    assert.closeTo(Number(interpElements[1]), 1.59, 0.01);
+    assert.closeTo(Number(interpElements[2]), -1.59, 0.01);
+    assert.closeTo(Number(interpElements[3]), 0.84, 0.01);
+    assert.closeTo(Number(interpElements[4]), 360, 0.01);
+    assert.closeTo(Number(interpElements[5]), 108, 0.01);
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -362,12 +362,12 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 0.84, 0.01);
-    assert.closeTo(interpElements[1], 1.59, 0.01);
-    assert.closeTo(interpElements[2], -1.59, 0.01);
-    assert.closeTo(interpElements[3], 0.84, 0.01);
-    assert.closeTo(interpElements[4], 360, 0.01);
-    assert.closeTo(interpElements[5], 76, 0.01);
+    assert.closeTo(Number(interpElements[0]), 0.84, 0.01);
+    assert.closeTo(Number(interpElements[1]), 1.59, 0.01);
+    assert.closeTo(Number(interpElements[2]), -1.59, 0.01);
+    assert.closeTo(Number(interpElements[3]), 0.84, 0.01);
+    assert.closeTo(Number(interpElements[4]), 360, 0.01);
+    assert.closeTo(Number(interpElements[5]), 76, 0.01);
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -377,12 +377,12 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 1, 0.01);
-    assert.closeTo(interpElements[1], 0, 0.01);
-    assert.closeTo(interpElements[2], 0.35, 0.01);
-    assert.closeTo(interpElements[3], 1, 0.01);
-    assert.closeTo(interpElements[4], 120, 0.01);
-    assert.closeTo(interpElements[5], 36, 0.01);
+    assert.closeTo(Number(interpElements[0]), 1, 0.01);
+    assert.closeTo(Number(interpElements[1]), 0, 0.01);
+    assert.closeTo(Number(interpElements[2]), 0.35, 0.01);
+    assert.closeTo(Number(interpElements[3]), 1, 0.01);
+    assert.closeTo(Number(interpElements[4]), 120, 0.01);
+    assert.closeTo(Number(interpElements[5]), 36, 0.01);
 
     // This case agrees with FireFox and the spec, but not with the old polyfill (or Blink). The old
     // polyfill only does matrix decomposition on the rotate and scale sections of the function
@@ -395,11 +395,11 @@ suite('transform-handler interpolation', function() {
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 6);
-    assert.closeTo(interpElements[0], 0.47, 0.01);
-    assert.closeTo(interpElements[1], 0.89, 0.01);
-    assert.closeTo(interpElements[2], -0.89, 0.01);
-    assert.closeTo(interpElements[3], 0.47, 0.01);
-    assert.closeTo(interpElements[4], 320, 0.01);
-    assert.closeTo(interpElements[5], 0, 0.01);
+    assert.closeTo(Number(interpElements[0]), 0.47, 0.01);
+    assert.closeTo(Number(interpElements[1]), 0.89, 0.01);
+    assert.closeTo(Number(interpElements[2]), -0.89, 0.01);
+    assert.closeTo(Number(interpElements[3]), 0.47, 0.01);
+    assert.closeTo(Number(interpElements[4]), 320, 0.01);
+    assert.closeTo(Number(interpElements[5]), 0, 0.01);
   });
 });
