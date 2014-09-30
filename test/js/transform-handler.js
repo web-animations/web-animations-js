@@ -71,21 +71,105 @@ suite('transform-handler parsing', function() {
 
 suite('transform-handler interpolation', function() {
   test('simple transform interpolations', function() {
-    // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translateX(20px)')(0.2), 'translatex(12px)');
-    // webAnimationsMinifill.propertyInterpolation('transform', 'translate(10px, 10px) rotate(20deg)', 'translate(20px, 20px) rotate(30rad)')(0.2);
-    // webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px) rotate(20deg)', 'translateX(20em) rotate(30rad)')(0.2);
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'translateX(10px)',
+            'translateX(20px)')(0.2),
+        'translatex(12px)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'translate(10px, 10px) rotate(20deg)',
+            'translate(20px, 20px) rotate(90deg)')(0.2),
+        'translate(12px,12px) rotate(34deg)');
     assert.equal(
         webAnimationsMinifill.propertyInterpolation(
             'transform',
             'translate(10px, 10em) rotate(20deg)',
-            'translate(20em, 20px) rotate(30rad)')(0.5),
-        'translate(calc(5px + 10em),calc(5em + 10px)) rotate(calc(10deg + 15rad))');
-    // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translate(10px, 10px) rotate(20deg)', 'translate(20px, 20px) rotate(30deg)')(0.2), 'translate(12px,12px) rotate(22deg)');
-    // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'rotateY(1000deg)', 'rotateY(3000deg)')(0.4), 'rotatey(1800deg)');
-    // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'scale(6)', 'scale(1,-4)')(0.2), 'scale(5,4)');
-    // assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'skewX(5deg) translateY(5px)', 'skewX(-35deg) translateY(45px)')(0.25), 'skewx(-5deg) translatey(15px)');
+            'translate(20em, 20px) rotate(90deg)')(0.5),
+        'translate(calc(5px + 10em),calc(5em + 10px)) rotate(55deg)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'rotateY(1000deg)',
+            'rotateY(3000deg)')(0.4),
+        'rotatey(1800deg)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'scale(6)',
+            'scale(1,-4)')(0.2),
+        'scale(5,4)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'skewX(5deg) translateY(5px)',
+            'skewX(-35deg) translateY(45px)')(0.25),
+        'skewx(-5deg) translatey(15px)');
   });
 
+  test('transform interpolations with conversion to primitives', function() {
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'translateX(10px)',
+            'translate(20px, 10px)')(0.2),
+        'translate(12px,2px)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'translateX(10px)',
+            'translateY(10px)')(0.2),
+        'translate(8px,2px)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'translateX(10px)',
+            'translateZ(10px)')(0.2),
+        'translate3d(8px,0px,2px)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'scaleX(6)',
+            'scale(1,6)')(0.2),
+        'scale(5,2)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'skew(10deg)',
+            'skewY(30deg)')(0.2),
+        'skew(8deg,6deg)');
+  });
+
+  test('transform interpolations with none', function() {
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'none',
+            'scale(5) translateX(100px) rotate(1000deg)')(0.25),
+        'scale(2,2) translatex(25px) rotate(250deg)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'scale(5) translateX(100px) rotate(1000deg)',
+            'none')(0.75),
+        'scale(2,2) translatex(25px) rotate(250deg)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'none',
+            'scaleX(5) skewY(100grad)')(0.25),
+        'scalex(2) skewy(25grad)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'none',
+            'none')(0.4),
+        'none');
+  });
+
+  // TODO: Add more here.
   test('transform interpolations with matrices', function() {
     var interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -116,21 +200,7 @@ suite('transform-handler interpolation', function() {
     assert.closeTo(interpElements3D[5], 5, 0.01);
   });
 
-  test('transform interpolations with conversion to primitives', function() {
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translate(20px, 10px)')(0.2), 'translate(12px,2px)');
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translateY(10px)')(0.2), 'translate(8px,2px)');
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translateX(10px)', 'translateZ(10px)')(0.2), 'translate3d(8px,0px,2px)');
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'scalex(6)', 'scale(1,6)')(0.2), 'scale(5,2)');
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'skew(10deg)', 'skewy(30deg)')(0.2), 'skew(8deg,6deg)');
-  });
-
-  test('transform interpolations with none', function() {
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'none', 'scale(5) translateX(100px) rotate(1000deg)')(0.25), 'scale(2,2) translatex(25px) rotate(250deg)');
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'scale(5) translateX(100px) rotate(1000deg)', 'none')(0.75), 'scale(2,2) translatex(25px) rotate(250deg)');
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'none', 'scaleX(5) skewY(100grad)')(0.25), 'scalex(2) skewy(25grad)');
-    assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'none', 'none')(0.4), 'none');
-  });
-
+  // TODO: Add many more here.
   // FIXME: These are now supported. Change them to the actual values and change the description.
   // test('currently unsupported transform interpolations', function() {
   //   assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translate(10px)', 'scale(2)')(0.4), 'translate(10px)');
