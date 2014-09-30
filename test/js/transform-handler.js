@@ -169,7 +169,6 @@ suite('transform-handler interpolation', function() {
         'none');
   });
 
-  // TODO: Add more here.
   test('transform interpolations with matrices', function() {
     var interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -178,6 +177,7 @@ suite('transform-handler interpolation', function() {
     var evaluatedInterp = interpolatedMatrix(0.5);
     var interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
     assert.closeTo(interpElements[0], 1, 0.01);
     assert.closeTo(interpElements[1], -0.1, 0.01);
     assert.closeTo(interpElements[2], 0, 0.01);
@@ -192,18 +192,214 @@ suite('transform-handler interpolation', function() {
     var evaluatedInterp3D = interpolatedMatrix3D(0.5);
     var interpElements3D = evaluatedInterp3D.slice(
         evaluatedInterp3D.indexOf('(') + 1, evaluatedInterp3D.lastIndexOf(')')).split(',');
-    assert.closeTo(interpElements3D[0], 1.115, 0.01);
-    assert.closeTo(interpElements3D[1], 0.462, 0.01);
-    assert.closeTo(interpElements3D[2], -0.838, 0.01);
-    assert.closeTo(interpElements3D[3], 1.342, 0.01);
+    assert.equal(interpElements3D.length, 6);
+    assert.closeTo(interpElements3D[0], 1.12, 0.01);
+    assert.closeTo(interpElements3D[1], 0.46, 0.01);
+    assert.closeTo(interpElements3D[2], -0.84, 0.01);
+    assert.closeTo(interpElements3D[3], 1.34, 0.01);
     assert.closeTo(interpElements3D[4], 5, 0.01);
     assert.closeTo(interpElements3D[5], 5, 0.01);
+
+    var interpolatedMatrix3DComplex = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'matrix(1, 0, 0, 1, 0, 0)',
+        'matrix3d(1, 1, 3, 0, -2, 1, 0, 0, 0, 0, 1, 0, 10, 10, 0, 1)');
+    var evaluatedInterp3DComplex = interpolatedMatrix3DComplex(0.5);
+    var interpElements3DComplex = evaluatedInterp3DComplex.slice(
+        evaluatedInterp3DComplex.indexOf('(') + 1, evaluatedInterp3DComplex.lastIndexOf(')')).split(',');
+    assert.equal(interpElements3DComplex.length, 16);
+    assert.closeTo(interpElements3DComplex[0], 1.73, 0.01);
+    assert.closeTo(interpElements3DComplex[1], 0.67, 0.01);
+    assert.closeTo(interpElements3DComplex[2], 1.10, 0.01);
+    assert.closeTo(interpElements3DComplex[3], 0, 0.01);
+    assert.closeTo(interpElements3DComplex[4], -0.85, 0.01);
+    assert.closeTo(interpElements3DComplex[5], 1.34, 0.01);
+    assert.closeTo(interpElements3DComplex[6], 0.29, 0.01);
+    assert.closeTo(interpElements3DComplex[7], 0, 0.01);
+    // FIXME: These 3 values are different from the native impl (and FF), which gives 0.31, 0.04, 1.01.
+    // Result looks the same.
+    assert.closeTo(interpElements3DComplex[8], -0.35, 0.01);
+    assert.closeTo(interpElements3DComplex[9], -0.22, 0.01);
+    assert.closeTo(interpElements3DComplex[10], 0.58, 0.01);
+    assert.closeTo(interpElements3DComplex[11], 0, 0.01);
+    assert.closeTo(interpElements3DComplex[12], 5, 0.01);
+    assert.closeTo(interpElements3DComplex[13], 5, 0.01);
+    assert.closeTo(interpElements3DComplex[14], 0, 0.01);
+    assert.closeTo(interpElements3DComplex[15], 1, 0.01);
   });
 
-  // TODO: Add many more here.
-  // FIXME: These are now supported. Change them to the actual values and change the description.
-  // test('currently unsupported transform interpolations', function() {
-  //   assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'translate(10px)', 'scale(2)')(0.4), 'translate(10px)');
-  //   assert.equal(webAnimationsMinifill.propertyInterpolation('transform', 'rotateX(10deg)', 'rotateY(20deg)')(0.4), 'rotateX(10deg)');
-  // });
+  test('transform interpolations that require matrix decomposition', function() {
+    var interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(10px)',
+        'scale(2)');
+    var evaluatedInterp = interp(0.4);
+    var interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
+    assert.closeTo(interpElements[0], 1.4, 0.01);
+    assert.closeTo(interpElements[1], 0, 0.01);
+    assert.closeTo(interpElements[2], 0, 0.01);
+    assert.closeTo(interpElements[3], 1.4, 0.01);
+    assert.closeTo(interpElements[4], 6, 0.01);
+    assert.closeTo(interpElements[5], 0, 0.01);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'scale(2)',
+        'translate(10px)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
+    assert.closeTo(interpElements[0], 1.6, 0.01);
+    assert.closeTo(interpElements[1], 0, 0.01);
+    assert.closeTo(interpElements[2], 0, 0.01);
+    assert.closeTo(interpElements[3], 1.6, 0.01);
+    assert.closeTo(interpElements[4], 4, 0.01);
+    assert.closeTo(interpElements[5], 0, 0.01);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotateX(10deg)',
+        'rotateY(20deg)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 16);
+    assert.closeTo(interpElements[0], 0.99, 0.01);
+    assert.closeTo(interpElements[1], 0.01, 0.01);
+    assert.closeTo(interpElements[2], -0.14, 0.01);
+    assert.closeTo(interpElements[3], 0, 0.01);
+    assert.closeTo(interpElements[4], 0.01, 0.01);
+    assert.closeTo(interpElements[5], 1.00, 0.01);
+    assert.closeTo(interpElements[6], 0.10, 0.01);
+    assert.closeTo(interpElements[7], 0, 0.01);
+    assert.closeTo(interpElements[8], 0.14, 0.01);
+    assert.closeTo(interpElements[9], -0.10, 0.01);
+    assert.closeTo(interpElements[10], 0.98, 0.01);
+    assert.closeTo(interpElements[11], 0, 0.01);
+    assert.closeTo(interpElements[12], 0, 0.01);
+    assert.closeTo(interpElements[13], 0, 0.01);
+    assert.closeTo(interpElements[14], 0, 0.01);
+    assert.closeTo(interpElements[15], 1, 0.01);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotateX(10deg)',
+        'translate(10px) rotateX(200deg)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 16);
+    assert.closeTo(interpElements[0], 1, 0.01);
+    assert.closeTo(interpElements[1], 0, 0.01);
+    assert.closeTo(interpElements[2], 0, 0.01);
+    assert.closeTo(interpElements[3], 0, 0.01);
+    assert.closeTo(interpElements[4], 0, 0.01);
+    assert.closeTo(interpElements[5], 0.53, 0.01);
+    assert.closeTo(interpElements[6], -0.85, 0.01);
+    assert.closeTo(interpElements[7], 0, 0.01);
+    assert.closeTo(interpElements[8], 0, 0.01);
+    assert.closeTo(interpElements[9], 0.85, 0.01);
+    assert.closeTo(interpElements[10], 0.53, 0.01);
+    assert.closeTo(interpElements[11], 0, 0.01);
+    assert.closeTo(interpElements[12], 4, 0.01);
+    assert.closeTo(interpElements[13], 0, 0.01);
+    assert.closeTo(interpElements[14], 0, 0.01);
+    assert.closeTo(interpElements[15], 1, 0.01);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotate(0rad) translate(0px)',
+        'translate(800px) rotate(9rad)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
+    assert.closeTo(interpElements[0], 0.47, 0.01);
+    assert.closeTo(interpElements[1], 0.89, 0.01);
+    assert.closeTo(interpElements[2], -0.89, 0.01);
+    assert.closeTo(interpElements[3], 0.47, 0.01);
+    assert.closeTo(interpElements[4], 320, 0.01);
+    assert.closeTo(interpElements[5], 0, 0.01);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(0px, 0px) rotate(0deg) scale(1)',
+        'scale(3) translate(300px, 90px) rotate(9rad)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
+    assert.closeTo(interpElements[0], 0.84, 0.01);
+    assert.closeTo(interpElements[1], 1.59, 0.01);
+    assert.closeTo(interpElements[2], -1.59, 0.01);
+    assert.closeTo(interpElements[3], 0.84, 0.01);
+    assert.closeTo(interpElements[4], 360, 0.01);
+    assert.closeTo(interpElements[5], 108, 0.01);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(0px, 0px) scale(1)',
+        'scale(3) translate(300px, 90px) rotate(9rad)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
+    assert.closeTo(interpElements[0], 0.84, 0.01);
+    assert.closeTo(interpElements[1], 1.59, 0.01);
+    assert.closeTo(interpElements[2], -1.59, 0.01);
+    assert.closeTo(interpElements[3], 0.84, 0.01);
+    assert.closeTo(interpElements[4], 360, 0.01);
+    assert.closeTo(interpElements[5], 108, 0.01);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(0px, 0px) rotate(0deg) scale(1)',
+        'translate(900px, 190px) scale(3) rotate(9rad)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
+    assert.closeTo(interpElements[0], 0.84, 0.01);
+    assert.closeTo(interpElements[1], 1.59, 0.01);
+    assert.closeTo(interpElements[2], -1.59, 0.01);
+    assert.closeTo(interpElements[3], 0.84, 0.01);
+    assert.closeTo(interpElements[4], 360, 0.01);
+    assert.closeTo(interpElements[5], 76, 0.01);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(0px, 0px) skew(30deg)',
+        'skew(0deg) translate(300px, 90px)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
+    assert.closeTo(interpElements[0], 1, 0.01);
+    assert.closeTo(interpElements[1], 0, 0.01);
+    assert.closeTo(interpElements[2], 0.35, 0.01);
+    assert.closeTo(interpElements[3], 1, 0.01);
+    assert.closeTo(interpElements[4], 120, 0.01);
+    assert.closeTo(interpElements[5], 36, 0.01);
+
+    // This case agrees with FireFox and the spec, but not with the old polyfill (or Blink). The old
+    // polyfill only does matrix decomposition on the rotate and scale sections of the function
+    // lists.
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(0px)',
+        'translate(800px) rotate(9rad)');
+    evaluatedInterp = interp(0.4);
+    interpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(interpElements.length, 6);
+    assert.closeTo(interpElements[0], 0.47, 0.01);
+    assert.closeTo(interpElements[1], 0.89, 0.01);
+    assert.closeTo(interpElements[2], -0.89, 0.01);
+    assert.closeTo(interpElements[3], 0.47, 0.01);
+    assert.closeTo(interpElements[4], 320, 0.01);
+    assert.closeTo(interpElements[5], 0, 0.01);
+  });
 });

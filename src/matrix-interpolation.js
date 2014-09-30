@@ -117,6 +117,10 @@
   };
 
   var interp = function(from, to, f, type) {
+    // console.log('from');
+    // console.log(from);
+    // console.log('to');
+    // console.log(to);
     if (Array.isArray(from) || Array.isArray(to)) {
       return interpArray(from, to, f, type);
     }
@@ -128,6 +132,10 @@
   };
 
   var interpArray = function(from, to, f, type) {
+    // console.log('from array');
+    // console.log(from);
+    // console.log('to array');
+    // console.log(to);
     WEB_ANIMATIONS_TESTING && console.assert(
         Array.isArray(from) || from === null,
         'From is not an array or null');
@@ -153,6 +161,10 @@
   function interpolateDecomposedTransformsWithMatrices(fromM, toM, f) {
     var fromMValue = fromM.d;
     var toMValue = toM.d;
+    // console.log('from matrix');
+    // console.log(fromMValue);
+    // console.log('to matrix');
+    // console.log(toMValue);
     var product = scope.dot(fromMValue.quaternion, toMValue.quaternion);
     product = clamp(product, -1.0, 1.0);
 

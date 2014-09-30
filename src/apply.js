@@ -27,10 +27,10 @@
   }
 
   scope.apply = function(element, property, value) {
-    console.log('apply');
-    console.log(element);
-    console.log(property);
-    console.log(value);
+    // console.log('apply');
+    // console.log(element);
+    // console.log(property);
+    // console.log(value);
     element.style[propertyName(property)] = value;
   };
 

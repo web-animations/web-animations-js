@@ -112,7 +112,7 @@
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
       var r = convertToString(interpolate(from, to, f));
-      console.log(r);
+      // console.log(r);
       return r;
     }
   };
