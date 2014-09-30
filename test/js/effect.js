@@ -2,7 +2,7 @@
 function leftAsNumber(target) {
   var left = getComputedStyle(target).left;
   return Number(left.substring(0, left.length - 2));
-};
+}
 
 suite('effect', function() {
   // Test normalize.
