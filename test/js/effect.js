@@ -1,10 +1,10 @@
+
+function leftAsNumber(target) {
+  var left = getComputedStyle(target).left;
+  return Number(left.substring(0, left.length - 2));
+};
+
 suite('effect', function() {
-
-  webAnimationsTesting.leftAsNumber = function(target) {
-    var left = getComputedStyle(target).left;
-    return Number(left.substring(0, left.length - 2));
-  };
-
   // Test normalize.
   test('Normalize keyframes with all offsets specified but not sorted by offset. Some offsets are out of [0, 1] range.', function() {
     var normalizedKeyframes;
