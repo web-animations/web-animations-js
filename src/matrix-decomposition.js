@@ -258,7 +258,7 @@
 
   // FIXME: !!! Need to adjust for units. Already done for rotate and skew.
   function convertItemToMatrix(item) {
-    console.log(item.t);
+    // console.log(item.t);
     switch (item.t) {
       case 'rotateX':
       case 'rotatex':
