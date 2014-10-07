@@ -169,7 +169,7 @@ suite('transform-handler interpolation', function() {
         'none');
   });
 
-  test('transform interpolations with matrices', function() {
+  test('transform interpolations with matrices only', function() {
     var interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'matrix(1, 0, 0, 1, 0, 0)',
@@ -226,6 +226,45 @@ suite('transform-handler interpolation', function() {
     assert.closeTo(Number(interpElements3DComplex[13]), 5, 0.01);
     assert.closeTo(Number(interpElements3DComplex[14]), 0, 0.01);
     assert.closeTo(Number(interpElements3DComplex[15]), 1, 0.01);
+  });
+
+  test('transform interpolations with matrices and other functions', function() {
+    var interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(100px) matrix(1, 0, 0, 1, 0, 0)',
+        'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
+    var evaluatedInterp = interp(0.5);
+    console.log(evaluatedInterp);
+    var functions = evaluatedInterp.split(' ');
+    assert.equal(functions[0], 'translate(55px)');
+    var matrixInterpElements = functions[1].slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(matrixInterpElements.length, 6);
+    assert.closeTo(Number(matrixInterpElements[0]), 1, 0.01);
+    assert.closeTo(Number(matrixInterpElements[1]), -0.1, 0.01);
+    assert.closeTo(Number(matrixInterpElements[2]), 0, 0.01);
+    assert.closeTo(Number(matrixInterpElements[3]), 1, 0.01);
+    assert.closeTo(Number(matrixInterpElements[4]), 0, 0.01);
+    assert.closeTo(Number(matrixInterpElements[5]), 0, 0.01);
+
+    // var interp;
+    // var evaluatedInterp;
+    // var matrixInterpElements;
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'matrix(1, 0, 0, 1, 0, 0) translate(100px)',
+        'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    console.log(evaluatedInterp);
+    matrixInterpElements = evaluatedInterp.slice(
+        evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
+    assert.equal(matrixInterpElements.length, 6);
+    assert.closeTo(Number(matrixInterpElements[0]), 1, 0.01);
+    assert.closeTo(Number(matrixInterpElements[1]), -0.1, 0.01);
+    assert.closeTo(Number(matrixInterpElements[2]), 0, 0.01);
+    assert.closeTo(Number(matrixInterpElements[3]), 1, 0.01);
+    assert.closeTo(Number(matrixInterpElements[4]), 55, 0.01);
+    assert.closeTo(Number(matrixInterpElements[5]), 0, 0.01);
   });
 
   test('transform interpolations that require matrix decomposition', function() {
@@ -385,7 +424,7 @@ suite('transform-handler interpolation', function() {
     assert.closeTo(Number(interpElements[5]), 36, 0.01);
 
     // This case agrees with FireFox and the spec, but not with the old polyfill (or Blink). The old
-    // polyfill only does matrix decomposition on the rotate and scale sections of the function
+    // polyfill only does matrix decomposition on the rotate section of the function
     // lists.
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
