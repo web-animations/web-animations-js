@@ -190,21 +190,30 @@
     var leftResult = [];
     var rightResult = [];
     var types = [];
+    // console.log('left');
+    // console.log(left);
+    // console.log('right');
+    // console.log(right);
     for (var i = 0; i < left.length; i++) {
       var leftType = left[i].t;
       var rightType = right[i].t;
       var leftArgs = left[i].d;
       var rightArgs = right[i].d;
+      // console.log(leftType);
+      // console.log(rightType);
+      // console.log(leftArgs);
+      // console.log(rightArgs);
 
       var leftFunctionData = transformFunctions[leftType];
       var rightFunctionData = transformFunctions[rightType];
 
       var type;
-      // FIXME: The old polyfill falls back to matrix decomposition if the transform function list
-      // contains a matrix. We should decide if that is what we want to do in this polyfill.
-      if (leftType === 'matrix' || rightType === 'matrix' ||
-          leftType === 'matrix3d' || rightType === 'matrix3d') {
-        return matrixDecomp(left, right);
+      if ((leftType === 'matrix' || leftType === 'matrix3d') && (rightType === 'matrix' || rightType === 'matrix3d')) {
+        var merged = matrixDecomp([left[i]], [right[i]]);
+        leftResult.push(merged[0]);
+        rightResult.push(merged[1]);
+        types.push(['matrix', [merged[2]]]);
+        continue;
       } else if (leftType == rightType) {
         type = leftType;
       } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
@@ -242,10 +251,14 @@
 
     return [leftResult, rightResult, function(list) {
       return list.map(function(args, i) {
-        var stringifiedArgs = args.d.map(function(arg, j) {
-          return types[i][1][j](arg);
-        }).join(',');
-        return types[i][0] + '(' + stringifiedArgs + ')';
+        if(args.t === 'matrix' || args.t === 'matrix3d') {
+          return types[i][1][0](args);
+        } else {
+          var stringifiedArgs = args.d.map(function(arg, j) {
+            return types[i][1][j](arg);
+          }).join(',');
+          return types[i][0] + '(' + stringifiedArgs + ')';
+        }
       }).join(' ');
     }];
   }

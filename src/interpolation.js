@@ -78,14 +78,14 @@
         Array.isArray(from) && Array.isArray(to),
         'If interpolation arguments are not numbers, bools or matrices they must be arrays');
 
-    var isTransform = function(list) {
-      // matrix and matrix3d omitted as they should be handled by matrix decomposition.
-      var transformFunctionNames = ('perspective|' +
-          'rotate|rotatex|rotatey|rotatez|rotate3d|scale|scalex|' +
-          'scaley|scalez|scale3d|skew|skewx|skewy|translate|' +
-          'translatex|translatey|translatez|translate3d').split('|');
-      return (list[0].t) && (transformFunctionNames.indexOf(list[0].t) !== -1);
-    };
+    // var isTransform = function(list) {
+    //   // matrix and matrix3d omitted as they should be handled by matrix decomposition.
+    //   var transformFunctionNames = ('perspective|' +
+    //       'rotate|rotatex|rotatey|rotatez|rotate3d|scale|scalex|' +
+    //       'scaley|scalez|scale3d|skew|skewx|skewy|translate|' +
+    //       'translatex|translatey|translatez|translate3d').split('|');
+    //   return (list[0].t) && (transformFunctionNames.indexOf(list[0].t) !== -1);
+    // };
 
     if (from.length == to.length) {
       // RENEE: This is more like what you copied from the polyfill. Reliable.
@@ -98,11 +98,10 @@
       // RENEE: This bypasses interpolateTransformValue. Needs testing but seems to work.
       var out = [];
       for (var i = 0; i < from.length; i++) {
-        if (from[i].d) {
+        if (from[i].d && from[i].t !== 'decomposedMatrix')
           out.push({t: from.t, d: interpolate(from[i].d, to[i].d, f)});
-        } else {
+        else
           out.push(interpolate(from[i], to[i], f));
-        }
       }
       return out;
     }
