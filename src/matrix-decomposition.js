@@ -258,26 +258,21 @@
 
   // FIXME: !!! Need to adjust for units. Already done for rotate and skew.
   function convertItemToMatrix(item) {
-    // console.log(item.t);
     switch (item.t) {
       case 'rotateX':
       case 'rotatex':
-        // console.log('rotateX');
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
         var angle = (degs * Math.PI / 180) + rads;
-        // console.log('Angle: ' + angle);
         return [1, 0, 0, 0,
                 0, Math.cos(angle), Math.sin(angle), 0,
                 0, -Math.sin(angle), Math.cos(angle), 0,
                 0, 0, 0, 1];
       case 'rotateY':
       case 'rotatey':
-        // console.log('rotateY');
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
         var angle = (degs * Math.PI / 180) + rads;
-        // console.log('Angle: ' + angle);
         return [Math.cos(angle), 0, -Math.sin(angle), 0,
                 0, 1, 0, 0,
                 Math.sin(angle), 0, Math.cos(angle), 0,
@@ -285,11 +280,9 @@
       case 'rotate':
       case 'rotateZ':
       case 'rotatez':
-        // console.log('rotate');
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
         var angle = (degs * Math.PI / 180) + rads;
-        // console.log('Angle: ' + angle);
         return [Math.cos(angle), Math.sin(angle), 0, 0,
                 -Math.sin(angle), Math.cos(angle), 0, 0,
                 0, 0, 1, 0,

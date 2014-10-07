@@ -227,7 +227,6 @@ suite('transform-handler interpolation', function() {
     assert.closeTo(Number(interpElements[14]), 0, 0.01);
     assert.closeTo(Number(interpElements[15]), 1, 0.01);
 
-    // FIXME: double check this
     interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)',
@@ -255,7 +254,6 @@ suite('transform-handler interpolation', function() {
     assert.closeTo(Number(interpElements[14]), 0, 0.01);
     assert.closeTo(Number(interpElements[15]), 1, 0.01);
 
-    // FIXME: Double check this.
     interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)',

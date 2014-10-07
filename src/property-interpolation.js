@@ -28,18 +28,10 @@
   function propertyInterpolation(property, left, right) {
     var handlers = left == right ? [] : propertyHandlers[property];
     for (var i = 0; handlers && i < handlers.length; i++) {
-      // console.log('handlers');
-      // console.log(handlers);
       var parsedLeft = handlers[i][0](left);
       var parsedRight = handlers[i][0](right);
-      // console.log('parsedLeft');
-      // console.log(parsedLeft);
-      // console.log('parsedRight');
-      // console.log(parsedRight);
       if (parsedLeft !== undefined && parsedRight !== undefined) {
         var interpolationArgs = handlers[i][1](parsedLeft, parsedRight);
-        // console.log('interpolationArgs');
-        // console.log(interpolationArgs);
         if (interpolationArgs)
           return scope.Interpolation.apply(null, interpolationArgs);
       }

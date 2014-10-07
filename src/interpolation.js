@@ -60,10 +60,6 @@
   // }
 
   function interpolate(from, to, f) {
-    // console.log('from');
-    // console.log(from);
-    // console.log('to');
-    // console.log(to);
     if ((typeof from == 'number') && (typeof to == 'number')) {
       return from * (1 - f) + to * f;
     }
@@ -111,7 +107,6 @@
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
       var r = convertToString(interpolate(from, to, f));
-      // console.log(r);
       return r;
     }
   };

@@ -68,24 +68,15 @@
     var match;
     var prevLastIndex = 0;
     while (match = transformRegExp.exec(string)) {
-      // console.log(match);
       if (match.index != prevLastIndex)
         return;
-      // console.log('same index');
       prevLastIndex = match.index + match[0].length;
       var functionName = match[1];
-      // console.log('functionData');
-      // console.log(functionData);
       var functionData = transformFunctions[functionName];
-      // console.log('functionData');
-      // console.log(functionData);
       if (!functionData)
         return;
-      // console.log('have function data');
       var args = match[2].split(',');
-      // console.log('Args: ' + args);
       var argTypes = functionData[0];
-      // console.log('ArgTypes: ' + argTypes);
       if (argTypes.length < args.length)
         return;
 
@@ -108,10 +99,6 @@
           return;
         parsedArgs.push(parsedArg);
       }
-      // console.log('parsed args');
-      // console.log(parsedArgs);
-      // console.log('function name');
-      // console.log(functionName);
       result.push({t: functionName, d: parsedArgs});
 
       if (transformRegExp.lastIndex == string.length) {
@@ -131,21 +118,13 @@
       right.decompositionPair = left;
       var rightArgs = scope.makeMatrixDecomposition(right);
     }
-    // console.log('decomposed right args');
-    // console.log(rightArgs);
-    // console.log('decomposed left args');
-    // console.log(leftArgs);
     return [
       {t: 'decomposedMatrix', d: leftArgs},
       {t: 'decomposedMatrix', d: rightArgs},
       function(list) {
-        // console.log('list: ');
-        // console.log(list);
         var stringifiedArgs = list.d.map(function(arg) {
           return scope.numberToString(arg);
         }).join(',');
-        // console.log('stringifiedArgs');
-        // console.log(stringifiedArgs);
         return list.t + '(' + stringifiedArgs + ')';
       }
     ];
@@ -190,19 +169,11 @@
     var leftResult = [];
     var rightResult = [];
     var types = [];
-    // console.log('left');
-    // console.log(left);
-    // console.log('right');
-    // console.log(right);
     for (var i = 0; i < left.length; i++) {
       var leftType = left[i].t;
       var rightType = right[i].t;
       var leftArgs = left[i].d;
       var rightArgs = right[i].d;
-      // console.log(leftType);
-      // console.log(rightType);
-      // console.log(leftArgs);
-      // console.log(rightArgs);
 
       var leftFunctionData = transformFunctions[leftType];
       var rightFunctionData = transformFunctions[rightType];
@@ -264,8 +235,6 @@
   }
 
   scope.addPropertiesHandler(parseTransform, mergeTransforms, ['transform']);
-
-  // scope.dot = dot;
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.parseTransform = parseTransform;
