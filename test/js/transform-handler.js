@@ -277,7 +277,6 @@ suite('transform-handler interpolation', function() {
         'translate(100px) matrix(1, 0, 0, 1, 0, 0)',
         'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
     var evaluatedInterp = interp(0.5);
-    console.log(evaluatedInterp);
     var functions = evaluatedInterp.split(' ');
     assert.equal(functions.length, 2);
     assert.equal(functions[0], 'translate(55px,0px)');

@@ -35,11 +35,8 @@
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
-    // FIXME: These values for matrix/matrix3d work but they're a bit silly. Fix.
     matrix: ['Nnnnnn'],
     matrix3d: ['Nnnnnnnnnnnnnnnn'],
-    // matrix: ['M'],
-    // matrix3d: ['X'],
     rotate: ['A'],
     rotatex: ['A'],
     rotatey: ['A'],
@@ -79,28 +76,8 @@
         return;
       var args = match[2].split(',');
       var argTypes = functionData[0];
-
-      // if (argTypes[0] == 'M' || argTypes[0] == 'X')
-      //   args = [args];
-
       if (argTypes.length < args.length)
         return;
-
-      // var parseMatrix = function(matrix) {
-      //   var mat = [];
-      //   for (var i = 0; i < 6; i++) {
-      //     mat.push(scope.parseNumber(matrix[i]));
-      //   }
-      //   return mat;
-      // }
-
-      // var parseMatrix3d = function(matrix) {
-      //   var mat = [];
-      //   for (var i = 0; i < 16; i++) {
-      //     mat.push(scope.parseNumber(matrix[i]));
-      //   }
-      //   return mat;
-      // }
 
       var parsedArgs = [];
       for (var i = 0; i < argTypes.length; i++) {
@@ -114,18 +91,10 @@
         else
           parsedArg = ({A: function(s) { return s.trim() == '0' ? Odeg : scope.parseAngle(s); },
                         N: scope.parseNumber,
-                        // M: scope.parseNumber,
-                        // M: parseMatrix,
-                        // X: parseMatrix3d,
                         T: scope.parseLengthOrPercent,
                         L: scope.parseLength})[type.toUpperCase()](arg);
         if (parsedArg === undefined)
           return;
-        // if (type == 'M' || type == 'X') {
-        //   parsedArgs = parsedArgs.concat(parsedArg);
-        //   console.log(parsedArgs);
-        //   break;
-        // }
         parsedArgs.push(parsedArg);
       }
       result.push({t: functionName, d: parsedArgs});
@@ -136,9 +105,7 @@
     }
   };
 
-  // This is basically the matrix alternative to mergeTransforms.
-  // FIXME: RENEE: Don't move this out of transform-handler.js
-  function matrixDecomp(left, right) {
+  function mergeMatrices(left, right) {
     if (left.decompositionPair !== right) {
       left.decompositionPair = right;
       var leftArgs = scope.makeMatrixDecomposition(left);
@@ -192,7 +159,7 @@
 
     // FIXME: Test this.
     if (left.length != right.length) {
-      return matrixDecomp(left, right);
+      return mergeMatrices(left, right);
     }
 
     var leftResult = [];
@@ -209,7 +176,7 @@
 
       var type;
       if ((leftType === 'matrix' || leftType === 'matrix3d') && (rightType === 'matrix' || rightType === 'matrix3d')) {
-        var merged = matrixDecomp([left[i]], [right[i]]);
+        var merged = mergeMatrices([left[i]], [right[i]]);
         leftResult.push(merged[0]);
         rightResult.push(merged[1]);
         types.push(['matrix', [merged[2]]]);
@@ -225,7 +192,7 @@
         leftArgs = leftFunctionData[1](left[i].d);
         rightArgs = rightFunctionData[1](right[i].d);
       } else {
-        return matrixDecomp(left, right);
+        return mergeMatrices(left, right);
       }
 
       var leftArgsCopy = [];
