@@ -35,8 +35,8 @@
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
-    matrix: ['Nnnnnn'],
-    matrix3d: ['Nnnnnnnnnnnnnnnn'],
+    matrix: ['NNNNNN'],
+    matrix3d: ['NNNNNNNNNNNNNNNN'],
     rotate: ['A'],
     rotatex: ['A'],
     rotatey: ['A'],
