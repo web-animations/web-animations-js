@@ -35,8 +35,9 @@
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
-    matrix: ['NNNNNN'],
-    matrix3d: ['NNNNNNNNNNNNNNNN'],
+    // FIXME, do these two need convertTo3D and convertTo2D?
+    matrix: ['NNNNNN', [_, _, 0, 0, _, _, 0, 0, 0, 0, 1, 0, _, _, 0, 1], id],
+    matrix3d: ['NNNNNNNNNNNNNNNN', id],
     rotate: ['A'],
     rotatex: ['A'],
     rotatey: ['A'],
@@ -157,7 +158,6 @@
       }
     }
 
-    // FIXME: Test this.
     if (left.length != right.length) {
       return mergeMatrices(left, right);
     }
@@ -232,11 +232,7 @@
 
   scope.addPropertiesHandler(parseTransform, mergeTransforms, ['transform']);
 
-  if (WEB_ANIMATIONS_TESTING) {
+  if (WEB_ANIMATIONS_TESTING)
     testing.parseTransform = parseTransform;
-    // FIXME: These were used for asserts. Remove if not needed.
-    testing.typeTo2D = typeTo2D;
-    testing.typeTo3D = typeTo3D;
-  }
 
 })(webAnimationsMinifill, webAnimationsTesting);
