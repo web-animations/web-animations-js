@@ -84,14 +84,14 @@
     // };
 
     if (from.length == to.length) {
-      // RENEE: This is more like what you copied from the polyfill. Reliable.
+      // FIXME: RENEE: This is more like what you copied from the polyfill. Reliable.
       // var interpFunction = isTransform(from) ? interpTransformValue : interpolate;
       // var out = [];
       // for (var i = 0; i < from.length; i++)
       //   out.push(interpFunction(from[i], to[i], f));
       // return out;
 
-      // RENEE: This bypasses interpolateTransformValue. Needs testing but seems to work.
+      // FIXME: RENEE: This bypasses interpolateTransformValue. Needs testing but seems to work.
       var out = [];
       for (var i = 0; i < from.length; i++) {
         if (from[i].d && from[i].t !== 'decomposedMatrix')
