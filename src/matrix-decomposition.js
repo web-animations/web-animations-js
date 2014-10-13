@@ -256,11 +256,24 @@
     ];
   }
 
-  // FIXME: !!! Need to adjust for units. Already done for rotate and skew.
+  // FIXME: Need to adjust for units for:
+  // rotatex *
+  // rotatey *
+  // rotatez *
+  // rotate *
+  // rotate3d *
+  // skew *
+  // skewx *
+  // skewy *
+  // translate
+  // translate3d
+  // perspective
+  // FIXME: Test all of these!
   function convertItemToMatrix(item) {
-    switch (item.t) {
-      case 'rotateX':
+    // FIXME: WHy is toLowerCase needed?
+    switch (item.t.toLowerCase()) {
       case 'rotatex':
+        // FIXME: Are there units other than rads and degs?
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
         var angle = (degs * Math.PI / 180) + rads;
@@ -268,7 +281,6 @@
                 0, Math.cos(angle), Math.sin(angle), 0,
                 0, -Math.sin(angle), Math.cos(angle), 0,
                 0, 0, 0, 1];
-      case 'rotateY':
       case 'rotatey':
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
@@ -278,7 +290,6 @@
                 Math.sin(angle), 0, Math.cos(angle), 0,
                 0, 0, 0, 1];
       case 'rotate':
-      case 'rotateZ':
       case 'rotatez':
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
@@ -293,7 +304,7 @@
         var z = item.d[2];
         var rads = item.d[3].rad || 0;
         var degs = item.d[3].deg || 0;
-        var angle = degs + (rads * 180 / Math.PI);
+        var angle = (degs * Math.PI / 180) + rads;
 
         var sqrLength = x * x + y * y + z * z;
         if (sqrLength === 0) {
@@ -306,8 +317,9 @@
           y /= length;
           z /= length;
         }
-        var s = Math.sin(angle * Math.PI / 360);
-        var sc = s * Math.cos(angle * Math.PI / 360);
+
+        var s = Math.sin(angle/2);
+        var sc = s * Math.cos(angle/2);
         var sq = s * s;
         return [
           1 - 2 * (y * y + z * z) * sq,
@@ -348,24 +360,64 @@
                 Math.tan(xAngle), 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1];
-      case 'skewX':
       case 'skewx':
+        console.log(item.d);
+        var rads = item.d[0].rad || 0;
+        var degs = item.d[0].deg || 0;
+        var angle = (degs * Math.PI / 180) + rads;
+        console.log(angle);
         return [1, 0, 0, 0,
-                Math.tan(item.d * Math.PI / 180), 1, 0, 0,
+                Math.tan(angle * Math.PI / 180), 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1];
-      case 'skewY':
       case 'skewy':
-        return [1, Math.tan(item.d * Math.PI / 180), 0, 0,
+        console.log(item.d);
+        var rads = item.d[0].rad || 0;
+        var degs = item.d[0].deg || 0;
+        var angle = (degs * Math.PI / 180) + rads;
+        console.log(angle);
+        return [1, Math.tan(angle * Math.PI / 180), 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1];
       // TODO: Work out what to do with non-px values.
       case 'translate':
+        console.log(item.d);
         return [1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 item.d[0].px, item.d[1].px, 0, 1];
+        // var xParts = [];
+        // for (var i in item.d[0])
+        //   xParts.push(item.d[0][i] + i);
+        // console.log(xParts);
+        // var xVal;
+        // if (!xParts.length)
+        //   xVal = 0;
+        // else if (xParts.length == 1)
+        //   xVal = xParts[0];
+        // else
+        //   xVal = 'calc(' + xParts.join('+') + ')';
+        // console.log('xVal');
+        // console.log(xVal);
+
+        // var yParts = [];
+        // for (var i in item.d[0])
+        //   yParts.push(item.d[0][i] + i);
+        // console.log(yParts);
+        // var yVal;
+        // if (!yParts.length)
+        //   yVal = 0;
+        // else if (yParts.length == 1)
+        //   yVal = yParts[0];
+        // else
+        //   yVal = 'calc(' + yParts.join('+') + ')';
+        // console.log('yVal');
+        // console.log(yVal);
+        // return [1, 0, 0, 0,
+        //         0, 1, 0, 0,
+        //         0, 0, 1, 0,
+        //         xVal, yVal, 0, 1];
       case 'translate3d':
         return [1, 0, 0, 0,
                 0, 1, 0, 0,
