@@ -178,6 +178,5 @@
   }
 
   scope.interpolateDecomposedTransformsWithMatrices = interpolateDecomposedTransformsWithMatrices;
-  scope.interp = interp;
 
 })(webAnimationsMinifill, webAnimationsTesting);

@@ -270,7 +270,6 @@ suite('transform-handler interpolation', function() {
     assert.closeTo(Number(interpElements[5]), 5, 0.01);
   });
 
-  // FIXME: Check this against FF (or something)
   test('transform interpolations with matrices and other functions', function() {
     var interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
