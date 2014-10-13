@@ -256,24 +256,10 @@
     ];
   }
 
-  // FIXME: Need to adjust for units for:
-  // rotatex *
-  // rotatey *
-  // rotatez *
-  // rotate *
-  // rotate3d *
-  // skew *
-  // skewx *
-  // skewy *
-  // translate
-  // translate3d
-  // perspective
-  // FIXME: Test all of these!
   function convertItemToMatrix(item) {
-    // FIXME: WHy is toLowerCase needed?
-    switch (item.t.toLowerCase()) {
+    switch (item.t) {
+      // TODO: Handle units other than rads and degs.
       case 'rotatex':
-        // FIXME: Are there units other than rads and degs?
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
         var angle = (degs * Math.PI / 180) + rads;
@@ -344,6 +330,21 @@
                 0, item.d[1], 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1];
+      case 'scalex':
+        return [item.d[0], 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1];
+      case 'scaley':
+        return [1, 0, 0, 0,
+                0, item.d[0], 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1];
+      case 'scalez':
+        return [1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, item.d[0], 0,
+                0, 0, 0, 1];
       case 'scale3d':
         return [item.d[0], 0, 0, 0,
                 0, item.d[1], 0, 0,
@@ -356,6 +357,10 @@
         var yRads = item.d[1].rad || 0;
         var xAngle = (xDegs * Math.PI / 180) + xRads;
         var yAngle = (yDegs * Math.PI / 180) + yRads;
+        console.log('xAngle');
+        console.log(xAngle);
+        console.log('yAngle');
+        console.log(yAngle);
         return [1, Math.tan(yAngle), 0, 0,
                 Math.tan(xAngle), 1, 0, 0,
                 0, 0, 1, 0,
@@ -382,42 +387,10 @@
                 0, 0, 0, 1];
       // TODO: Work out what to do with non-px values.
       case 'translate':
-        console.log(item.d);
         return [1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 item.d[0].px, item.d[1].px, 0, 1];
-        // var xParts = [];
-        // for (var i in item.d[0])
-        //   xParts.push(item.d[0][i] + i);
-        // console.log(xParts);
-        // var xVal;
-        // if (!xParts.length)
-        //   xVal = 0;
-        // else if (xParts.length == 1)
-        //   xVal = xParts[0];
-        // else
-        //   xVal = 'calc(' + xParts.join('+') + ')';
-        // console.log('xVal');
-        // console.log(xVal);
-
-        // var yParts = [];
-        // for (var i in item.d[0])
-        //   yParts.push(item.d[0][i] + i);
-        // console.log(yParts);
-        // var yVal;
-        // if (!yParts.length)
-        //   yVal = 0;
-        // else if (yParts.length == 1)
-        //   yVal = yParts[0];
-        // else
-        //   yVal = 'calc(' + yParts.join('+') + ')';
-        // console.log('yVal');
-        // console.log(yVal);
-        // return [1, 0, 0, 0,
-        //         0, 1, 0, 0,
-        //         0, 0, 1, 0,
-        //         xVal, yVal, 0, 1];
       case 'translate3d':
         return [1, 0, 0, 0,
                 0, 1, 0, 0,
