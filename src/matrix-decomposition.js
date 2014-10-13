@@ -305,8 +305,8 @@
           z /= length;
         }
 
-        var s = Math.sin(angle/2);
-        var sc = s * Math.cos(angle/2);
+        var s = Math.sin(angle / 2);
+        var sc = s * Math.cos(angle / 2);
         var sq = s * s;
         return [
           1 - 2 * (y * y + z * z) * sq,

@@ -215,7 +215,7 @@
 
     return [leftResult, rightResult, function(list) {
       return list.map(function(args, i) {
-        if(args.t === 'matrix' || args.t === 'matrix3d') {
+        if (args.t === 'matrix' || args.t === 'matrix3d') {
           return types[i][1][0](args);
         } else {
           var stringifiedArgs = args.d.map(function(arg, j) {
