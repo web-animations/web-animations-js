@@ -350,6 +350,7 @@
                 0, item.d[1], 0, 0,
                 0, 0, item.d[2], 0,
                 0, 0, 0, 1];
+      // FIXME: Skew behaves differently in Blink, FireFox and here. Need to work out why.
       case 'skew':
         var xDegs = item.d[0].deg || 0;
         var xRads = item.d[0].rad || 0;
@@ -357,30 +358,22 @@
         var yRads = item.d[1].rad || 0;
         var xAngle = (xDegs * Math.PI / 180) + xRads;
         var yAngle = (yDegs * Math.PI / 180) + yRads;
-        console.log('xAngle');
-        console.log(xAngle);
-        console.log('yAngle');
-        console.log(yAngle);
         return [1, Math.tan(yAngle), 0, 0,
                 Math.tan(xAngle), 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1];
       case 'skewx':
-        console.log(item.d);
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
         var angle = (degs * Math.PI / 180) + rads;
-        console.log(angle);
         return [1, 0, 0, 0,
                 Math.tan(angle * Math.PI / 180), 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1];
       case 'skewy':
-        console.log(item.d);
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
         var angle = (degs * Math.PI / 180) + rads;
-        console.log(angle);
         return [1, Math.tan(angle * Math.PI / 180), 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
