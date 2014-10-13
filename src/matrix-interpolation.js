@@ -108,44 +108,6 @@
     return composeMatrix;
   })();
 
-  var isDefined = function(val) {
-    return typeof val !== 'undefined';
-  };
-
-  var isDefinedAndNotNull = function(val) {
-    return isDefined(val) && (val !== null);
-  };
-
-  var interp = function(from, to, f, type) {
-    if (Array.isArray(from) || Array.isArray(to)) {
-      return interpArray(from, to, f, type);
-    }
-    var zero = (type && type.indexOf('scale') === 0) ? 1 : 0;
-    to = isDefinedAndNotNull(to) ? to : zero;
-    from = isDefinedAndNotNull(from) ? from : zero;
-
-    return to * f + from * (1 - f);
-  };
-
-  var interpArray = function(from, to, f, type) {
-    WEB_ANIMATIONS_TESTING && console.assert(
-        Array.isArray(from) || from === null,
-        'From is not an array or null');
-    WEB_ANIMATIONS_TESTING && console.assert(
-        Array.isArray(to) || to === null,
-        'To is not an array or null');
-    WEB_ANIMATIONS_TESTING && console.assert(
-        from === null || to === null || from.length === to.length,
-        'Arrays differ in length ' + from + ' : ' + to);
-    var length = from ? from.length : to.length;
-
-    var result = [];
-    for (var i = 0; i < length; i++) {
-      result[i] = interp(from ? from[i] : null, to ? to[i] : null, f, type);
-    }
-    return result;
-  };
-
   var clamp = function(x, min, max) {
     return Math.max(Math.min(x, max), min);
   };
@@ -167,10 +129,10 @@
       }
     }
 
-    var translate = interp(fromM.translate, toM.translate, f);
-    var scale = interp(fromM.scale, toM.scale, f);
-    var skew = interp(fromM.skew, toM.skew, f);
-    var perspective = interp(fromM.perspective, toM.perspective, f);
+    var translate = scope.interpolate(fromM.translate, toM.translate, f);
+    var scale = scope.interpolate(fromM.scale, toM.scale, f);
+    var skew = scope.interpolate(fromM.skew, toM.skew, f);
+    var perspective = scope.interpolate(fromM.perspective, toM.perspective, f);
 
     return composeMatrix(translate, scale, skew, quat, perspective);
   }
