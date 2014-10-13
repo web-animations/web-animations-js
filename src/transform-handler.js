@@ -42,7 +42,7 @@
     rotatex: ['A'],
     rotatey: ['A'],
     rotatez: ['A'],
-    rotate3d: ['Nnna'],
+    rotate3d: ['NNNA'],
     scale: ['Nn', cast([_, _, 1]), id],
     scalex: ['N', cast([_, 1, 1]), cast([_, 1])],
     scaley: ['N', cast([1, _, 1]), cast([1, _])],
@@ -100,9 +100,8 @@
       }
       result.push({t: functionName, d: parsedArgs});
 
-      if (transformRegExp.lastIndex == string.length) {
+      if (transformRegExp.lastIndex == string.length)
         return result;
-      }
     }
   };
 
@@ -158,9 +157,8 @@
       }
     }
 
-    if (left.length != right.length) {
+    if (left.length != right.length)
       return mergeMatrices(left, right);
-    }
 
     var leftResult = [];
     var rightResult = [];
@@ -185,12 +183,12 @@
         type = leftType;
       } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
         type = typeTo2D(leftType);
-        leftArgs = leftFunctionData[2](left[i].d);
-        rightArgs = rightFunctionData[2](right[i].d);
+        leftArgs = leftFunctionData[2](leftArgs);
+        rightArgs = rightFunctionData[2](rightArgs);
       } else if (leftFunctionData[1] && rightFunctionData[1] && typeTo3D(leftType) == typeTo3D(rightType)) {
         type = typeTo3D(leftType);
-        leftArgs = leftFunctionData[1](left[i].d);
-        rightArgs = rightFunctionData[1](right[i].d);
+        leftArgs = leftFunctionData[1](leftArgs);
+        rightArgs = rightFunctionData[1](rightArgs);
       } else {
         return mergeMatrices(left, right);
       }
