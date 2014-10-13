@@ -886,26 +886,32 @@ suite('group-player', function() {
     document.body.appendChild(target);
     var anim = new AnimationSequence([new Animation(target, [], 100), new Animation(target, [], 100)]);
     var p = document.timeline.play(anim);
+    assert.equal(p.playState, 'pending');
     tick(1);
     assert.equal(p.playState, 'running');
-    // FIXME: Not sure if this is right.
     assert.equal(p._childPlayers[0]._player.playState, 'running');
     assert.equal(p._childPlayers[1]._player.playState, 'running');
-    tick(102);
+    tick(101);
     assert.equal(p.playState, 'running');
     assert.equal(p._childPlayers[0]._player.playState, 'finished');
     assert.equal(p._childPlayers[1]._player.playState, 'running');
     p.pause();
+    assert.equal(p.playState, 'pending');
+    assert.equal(p._childPlayers[0]._player.playState, 'paused');
+    assert.equal(p._childPlayers[1]._player.playState, 'pending');
+    tick(102);
     assert.equal(p.playState, 'paused');
-    // FIXME: Not sure if this is right.
     assert.equal(p._childPlayers[0]._player.playState, 'paused');
     assert.equal(p._childPlayers[1]._player.playState, 'paused');
     p.play();
+    assert.equal(p.playState, 'pending');
+    assert.equal(p._childPlayers[0]._player.playState, 'pending');
+    assert.equal(p._childPlayers[1]._player.playState, 'pending');
     tick(103);
     assert.equal(p.playState, 'running');
     assert.equal(p._childPlayers[0]._player.playState, 'finished');
     assert.equal(p._childPlayers[1]._player.playState, 'running');
-    tick(203);
+    tick(204);
     assert.equal(p.playState, 'finished');
     assert.equal(p._childPlayers[0]._player.playState, 'finished');
     assert.equal(p._childPlayers[1]._player.playState, 'finished');

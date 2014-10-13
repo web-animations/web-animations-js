@@ -42,7 +42,8 @@
     this._finishHandlers = [];
     this._source = source;
     this._inEffect = this._source._update(0);
-    this._idle = false;
+    this._idle = true;
+    this._currentTimePending = true;
   };
 
   scope.Player.prototype = {
@@ -96,7 +97,7 @@
     get playState() {
       if (this._idle)
         return 'idle';
-      if (isNaN(this._startTime) && !this.paused && this.playbackRate != 0)
+      if ((isNaN(this._startTime) && !this.paused && this.playbackRate != 0) || this._currentTimePending)
         return 'pending';
       if (this.paused)
         return 'paused';
@@ -120,8 +121,11 @@
       this._ensureAlive();
     },
     pause: function() {
-      this.paused = true;
+      if (!this.finished && !this.paused && !this._idle) {
+        this._currentTimePending = true;
+      }
       this._startTime = NaN;
+      this.paused = true;
     },
     finish: function() {
       if (this._idle)
@@ -170,8 +174,8 @@
           this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
       }
 
+      this._currentTimePending = false;
       this._fireEvents(timelineTime);
-
       return !this._idle && (this._inEffect || !this._finishedFlag);
     },
   };
