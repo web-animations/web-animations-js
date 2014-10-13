@@ -230,28 +230,26 @@ suite('transform-handler interpolation', function() {
     interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)',
-        'matrix3d(1, 1, 3, 0, -2, 1, 0, 0, 0, 0, 1, 0, 10, 10, 0, 1)');
+        'matrix3d(1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 10, 10, 1)');
     evaluatedInterp = interpolatedMatrix(0.5);
     interpElements = evaluatedInterp.slice(
         evaluatedInterp.indexOf('(') + 1, evaluatedInterp.lastIndexOf(')')).split(',');
     assert.equal(interpElements.length, 16);
-    assert.closeTo(Number(interpElements[0]), 1.73, 0.01);
-    assert.closeTo(Number(interpElements[1]), 0.67, 0.01);
-    assert.closeTo(Number(interpElements[2]), 1.10, 0.01);
+    assert.closeTo(Number(interpElements[0]), 1.38, 0.01);
+    assert.closeTo(Number(interpElements[1]), 0.85, 0.01);
+    assert.closeTo(Number(interpElements[2]), 0, 0.01);
     assert.closeTo(Number(interpElements[3]), 0, 0.01);
-    assert.closeTo(Number(interpElements[4]), -0.85, 0.01);
-    assert.closeTo(Number(interpElements[5]), 1.34, 0.01);
-    assert.closeTo(Number(interpElements[6]), 0.29, 0.01);
+    assert.closeTo(Number(interpElements[4]), 0.24, 0.01);
+    assert.closeTo(Number(interpElements[5]), 1.00, 0.01);
+    assert.closeTo(Number(interpElements[6]), 0, 0.01);
     assert.closeTo(Number(interpElements[7]), 0, 0.01);
-    // FIXME: These 3 values are different from the native impl (and FF), which gives 0.31, 0.04, 1.01.
-    // Result looks the same.
-    assert.closeTo(Number(interpElements[8]), -0.35, 0.01);
-    assert.closeTo(Number(interpElements[9]), -0.22, 0.01);
-    assert.closeTo(Number(interpElements[10]), 0.58, 0.01);
+    assert.closeTo(Number(interpElements[8]), 0, 0.01);
+    assert.closeTo(Number(interpElements[9]), 0, 0.01);
+    assert.closeTo(Number(interpElements[10]), 1, 0.01);
     assert.closeTo(Number(interpElements[11]), 0, 0.01);
-    assert.closeTo(Number(interpElements[12]), 5, 0.01);
+    assert.closeTo(Number(interpElements[12]), 0, 0.01);
     assert.closeTo(Number(interpElements[13]), 5, 0.01);
-    assert.closeTo(Number(interpElements[14]), 0, 0.01);
+    assert.closeTo(Number(interpElements[14]), 5, 0.01);
     assert.closeTo(Number(interpElements[15]), 1, 0.01);
 
     interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
@@ -311,7 +309,7 @@ suite('transform-handler interpolation', function() {
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
-        'translate(10px) matrix3d(1, 1, 3, 0, -2, 1, 0, 0, 0, 0, 1, 0, 10, 10, 0, 1) rotate(100deg)');
+        'translate(10px) matrix3d(1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 10, 10, 1) rotate(100deg)');
     evaluatedInterp = interp(0.5);
     functions = evaluatedInterp.split(' ');
     assert.equal(functions.length, 3);
@@ -319,23 +317,21 @@ suite('transform-handler interpolation', function() {
     matrixInterpElements = functions[1].slice(
         functions[1].indexOf('(') + 1, functions[1].lastIndexOf(')')).split(',');
     assert.equal(matrixInterpElements.length, 16);
-    assert.closeTo(Number(matrixInterpElements[0]), 1.73, 0.01);
-    assert.closeTo(Number(matrixInterpElements[1]), 0.67, 0.01);
-    assert.closeTo(Number(matrixInterpElements[2]), 1.10, 0.01);
+    assert.closeTo(Number(matrixInterpElements[0]), 1.38, 0.01);
+    assert.closeTo(Number(matrixInterpElements[1]), 0.85, 0.01);
+    assert.closeTo(Number(matrixInterpElements[2]), 0, 0.01);
     assert.closeTo(Number(matrixInterpElements[3]), 0, 0.01);
-    assert.closeTo(Number(matrixInterpElements[4]), -0.85, 0.01);
-    assert.closeTo(Number(matrixInterpElements[5]), 1.34, 0.01);
-    assert.closeTo(Number(matrixInterpElements[6]), 0.29, 0.01);
+    assert.closeTo(Number(matrixInterpElements[4]), 0.24, 0.01);
+    assert.closeTo(Number(matrixInterpElements[5]), 1.00, 0.01);
+    assert.closeTo(Number(matrixInterpElements[6]), 0, 0.01);
     assert.closeTo(Number(matrixInterpElements[7]), 0, 0.01);
-    // FIXME: These 3 values are different from the native impl (and FF), which gives 0.31, 0.04, 1.01.
-    // Result looks the same.
-    assert.closeTo(Number(matrixInterpElements[8]), -0.35, 0.01);
-    assert.closeTo(Number(matrixInterpElements[9]), -0.22, 0.01);
-    assert.closeTo(Number(matrixInterpElements[10]), 0.58, 0.01);
+    assert.closeTo(Number(matrixInterpElements[8]), 0, 0.01);
+    assert.closeTo(Number(matrixInterpElements[9]), 0, 0.01);
+    assert.closeTo(Number(matrixInterpElements[10]), 1, 0.01);
     assert.closeTo(Number(matrixInterpElements[11]), 0, 0.01);
-    assert.closeTo(Number(matrixInterpElements[12]), 5, 0.01);
+    assert.closeTo(Number(matrixInterpElements[12]), 0, 0.01);
     assert.closeTo(Number(matrixInterpElements[13]), 5, 0.01);
-    assert.closeTo(Number(matrixInterpElements[14]), 0, 0.01);
+    assert.closeTo(Number(matrixInterpElements[14]), 5, 0.01);
     assert.closeTo(Number(matrixInterpElements[15]), 1, 0.01);
     assert.equal(functions[2], 'rotate(55deg)');
 
