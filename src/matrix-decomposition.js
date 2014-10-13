@@ -256,6 +256,7 @@
     ];
   }
 
+  // TODO: This can probably be made smaller.
   function convertItemToMatrix(item) {
     switch (item.t) {
       // TODO: Handle units other than rads and degs.

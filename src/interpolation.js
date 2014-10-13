@@ -24,7 +24,7 @@
 
     if (from.t) {
       if (from.t == 'decomposedMatrix')
-        return scope.interpolateDecomposedTransformsWithMatrices(from, to, f);
+        return scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
       else
         return {t: from.t, d: interpolate(from.d, to.d, f)};
     }
