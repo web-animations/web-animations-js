@@ -22,21 +22,28 @@
       return f < 0.5 ? from : to;
     }
 
-    if (from.t) {
-      if (from.t == 'decomposedMatrix')
-        return scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
-      else
-        return {t: from.t, d: interpolate(from.d, to.d, f)};
-    }
+    // if (from.t) {
+    //   if (from.t == 'decomposedMatrix')
+    //     return scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
+    //   else
+    //     return {t: from.t, d: interpolate(from.d, to.d, f)};
+    // }
 
     WEB_ANIMATIONS_TESTING && console.assert(
         Array.isArray(from) && Array.isArray(to),
-        'If interpolation arguments are not numbers, bools or transforms they must be arrays');
+        'If interpolation arguments are not numbers or bools they must be arrays');
 
     if (from.length == to.length) {
       var r = [];
       for (var i = 0; i < from.length; i++) {
-        r.push(interpolate(from[i], to[i], f));
+        if(from[i].t) {
+          if (from[i].t == 'decomposedMatrix')
+            r.push(scope.interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
+          else
+            r.push({t: from[i].t, d: interpolate(from[i].d, to[i].d, f)});
+        } else {
+          r.push(interpolate(from[i], to[i], f));
+        }
       }
       return r;
     }
@@ -45,7 +52,16 @@
 
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
-      return convertToString(interpolate(from, to, f));
+      var interp;
+      if(from.t) {
+        if (from.t == 'decomposedMatrix')
+          interp = scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
+        else
+          interp = {t: from.t, d: interpolate(from.d, to.d, f)};
+      } else {
+        interp = interpolate(from, to, f);
+      }
+      return convertToString(interp);
     }
   };
 
