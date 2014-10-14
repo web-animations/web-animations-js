@@ -13,6 +13,7 @@
 // limitations under the License.
 
 (function(scope, testing) {
+
   function interpolate(from, to, f) {
     if ((typeof from == 'number') && (typeof to == 'number')) {
       return from * (1 - f) + to * f;
