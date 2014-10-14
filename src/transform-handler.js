@@ -117,9 +117,7 @@
       {t: 'decomposedMatrix', d: leftArgs},
       {t: 'decomposedMatrix', d: rightArgs},
       function(list) {
-        var stringifiedArgs = list.d.map(function(arg) {
-          return scope.numberToString(arg);
-        }).join(',');
+        var stringifiedArgs = list.d.map(scope.numberToString).join(',');
         return list.t + '(' + stringifiedArgs + ')';
       }
     ];
@@ -172,7 +170,7 @@
       var rightFunctionData = transformFunctions[rightType];
 
       var type;
-      if ((leftType === 'matrix' || leftType === 'matrix3d') && (rightType === 'matrix' || rightType === 'matrix3d')) {
+      if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
         var merged = mergeMatrices([left[i]], [right[i]]);
         leftResult.push(merged[0]);
         rightResult.push(merged[1]);
@@ -215,7 +213,7 @@
 
     return [leftResult, rightResult, function(list) {
       return list.map(function(args, i) {
-        if (args.t === 'matrix' || args.t === 'matrix3d') {
+        if (args.t == 'matrix' || args.t == 'matrix3d') {
           return types[i][1][0](args);
         } else {
           var stringifiedArgs = args.d.map(function(arg, j) {

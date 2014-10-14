@@ -70,6 +70,14 @@ suite('transform-handler parsing', function() {
 });
 
 suite('transform-handler interpolation', function() {
+  function compareMatrices(actual, expected, expectedLength) {
+    var actualElements = actual.slice(
+        actual.indexOf('(') + 1, actual.lastIndexOf(')')).split(',');
+    assert.equal(actualElements.length, expectedLength);
+    for (var i = 0; i < expectedLength; i++)
+      assert.closeTo(Number(actualElements[i]), expected[i], 0.01);
+  }
+
   test('simple transform interpolations', function() {
     assert.equal(
         webAnimationsMinifill.propertyInterpolation(
@@ -184,6 +192,7 @@ suite('transform-handler interpolation', function() {
     assert.closeTo(Number(interpElements[3]), 1, 0.01);
     assert.closeTo(Number(interpElements[4]), 0, 0.01);
     assert.closeTo(Number(interpElements[5]), 0, 0.01);
+    compareMatrices(evaluatedInterp, [1, -0.1, 0, 1, 0, 0], 6);
 
     interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -216,7 +225,7 @@ suite('transform-handler interpolation', function() {
     assert.closeTo(Number(interpElements[5]), 1.34, 0.01);
     assert.closeTo(Number(interpElements[6]), 0.29, 0.01);
     assert.closeTo(Number(interpElements[7]), 0, 0.01);
-    // FIXME: These 3 values are different from the native impl (and FF), which gives 0.31, 0.04, 1.01.
+    // FIXME: These 3 values are different from Blink and FireFox, which give 0.31, 0.04, 1.01.
     // Result looks the same.
     assert.closeTo(Number(interpElements[8]), -0.35, 0.01);
     assert.closeTo(Number(interpElements[9]), -0.22, 0.01);

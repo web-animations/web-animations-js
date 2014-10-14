@@ -126,7 +126,7 @@
       var rhs = [];
 
       var perspective;
-      if (m3d[0][3] !== 0 || m3d[1][3] !== 0 || m3d[2][3] !== 0) {
+      if (m3d[0][3] || m3d[1][3] || m3d[2][3]) {
         rhs.push(m3d[0][3]);
         rhs.push(m3d[1][3]);
         rhs.push(m3d[2][3]);
