@@ -13,6 +13,8 @@
 // limitations under the License.
 
 (function(scope, testing) {
+  // function interpolateTransform(from, to, f) {
+  // }
 
   function interpolate(from, to, f) {
     if ((typeof from == 'number') && (typeof to == 'number')) {
@@ -22,13 +24,6 @@
       return f < 0.5 ? from : to;
     }
 
-    // if (from.t) {
-    //   if (from.t == 'decomposedMatrix')
-    //     return scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
-    //   else
-    //     return {t: from.t, d: interpolate(from.d, to.d, f)};
-    // }
-
     WEB_ANIMATIONS_TESTING && console.assert(
         Array.isArray(from) && Array.isArray(to),
         'If interpolation arguments are not numbers or bools they must be arrays');
@@ -36,14 +31,12 @@
     if (from.length == to.length) {
       var r = [];
       for (var i = 0; i < from.length; i++) {
-        if(from[i].t) {
-          if (from[i].t == 'decomposedMatrix')
-            r.push(scope.interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
-          else
-            r.push({t: from[i].t, d: interpolate(from[i].d, to[i].d, f)});
-        } else {
+        if (!from[i].t)
           r.push(interpolate(from[i], to[i], f));
-        }
+        else if (from[i].t == 'decomposedMatrix')
+          r.push(scope.interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
+        else
+          r.push({t: from[i].t, d: interpolate(from[i].d, to[i].d, f)});
       }
       return r;
     }
@@ -53,14 +46,12 @@
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
       var interp;
-      if(from.t) {
-        if (from.t == 'decomposedMatrix')
-          interp = scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
-        else
-          interp = {t: from.t, d: interpolate(from.d, to.d, f)};
-      } else {
+      if (!from.t)
         interp = interpolate(from, to, f);
-      }
+      else if (from.t == 'decomposedMatrix')
+        interp = scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
+      else
+        interp = {t: from.t, d: interpolate(from.d, to.d, f)};
       return convertToString(interp);
     }
   };
