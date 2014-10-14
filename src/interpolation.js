@@ -13,9 +13,6 @@
 // limitations under the License.
 
 (function(scope, testing) {
-  // function interpolateTransform(from, to, f) {
-  // }
-
   function interpolate(from, to, f) {
     if ((typeof from == 'number') && (typeof to == 'number')) {
       return from * (1 - f) + to * f;
@@ -31,27 +28,30 @@
     if (from.length == to.length) {
       var r = [];
       for (var i = 0; i < from.length; i++) {
-        if (!from[i].t)
-          r.push(interpolate(from[i], to[i], f));
-        else if (from[i].t == 'decomposedMatrix')
-          r.push(scope.interpolateDecomposedTransformsWithMatrices(from[i].d, to[i].d, f));
-        else
-          r.push({t: from[i].t, d: interpolate(from[i].d, to[i].d, f)});
+        r.push(interpolate(from[i], to[i], f));
       }
       return r;
     }
     throw 'Mismatched interpolation arguments ' + from + ':' + to;
   }
 
+  function interpolateTransform(from, to, f) {
+    if (from.t == 'decomposedMatrix')
+      return scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
+    return {t: from.t, d: interpolate(from.d, to.d, f)};
+  }
+
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
       var interp;
-      if (!from.t)
-        interp = interpolate(from, to, f);
-      else if (from.t == 'decomposedMatrix')
-        interp = scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
+      if (Array.isArray(from) && from[0].t)
+        interp = from.map(function(x, i) {
+          return interpolateTransform(from[i], to[i], f);
+        });
+      else if (from.t)
+        interp = interpolateTransform(from, to, f);
       else
-        interp = {t: from.t, d: interpolate(from.d, to.d, f)};
+        interp = interpolate(from, to, f);
       return convertToString(interp);
     }
   };
