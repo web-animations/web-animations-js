@@ -258,11 +258,11 @@ suite('transform-handler interpolation', function() {
         16);
     assert.equal(functions[2], 'rotate(55deg)');
 
-    var interp = webAnimationsMinifill.propertyInterpolation(
+    interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'matrix(1, 0, 0, 1, 0, 0) translate(100px)',
         'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
-    var evaluatedInterp = interp(0.5);
+    evaluatedInterp = interp(0.5);
     compareMatrices(evaluatedInterp, [1, -0.1, 0, 1, 55, 0], 6);
   });
 
