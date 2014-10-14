@@ -223,40 +223,40 @@ suite('transform-handler interpolation', function() {
   });
 
   test('transform interpolations with matrices and other functions', function() {
-    // var interp = webAnimationsMinifill.propertyInterpolation(
-    //     'transform',
-    //     'translate(100px) matrix(1, 0, 0, 1, 0, 0)',
-    //     'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
-    // var evaluatedInterp = interp(0.5);
-    // var functions = evaluatedInterp.split(' ');
-    // assert.equal(functions.length, 2);
-    // assert.equal(functions[0], 'translate(55px,0px)');
-    // compareMatrices(functions[1], [1, -0.1, 0, 1, 0, 0], 6);
+    var interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(100px) matrix(1, 0, 0, 1, 0, 0)',
+        'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
+    var evaluatedInterp = interp(0.5);
+    var functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 2);
+    assert.equal(functions[0], 'translate(55px,0px)');
+    compareMatrices(functions[1], [1, -0.1, 0, 1, 0, 0], 6);
 
-    // interp = webAnimationsMinifill.propertyInterpolation(
-    //     'transform',
-    //     'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
-    //     'translate(10px) matrix(1, -0.2, 0, 1, 0, 0) rotate(100deg)');
-    // evaluatedInterp = interp(0.5);
-    // functions = evaluatedInterp.split(' ');
-    // assert.equal(functions.length, 3);
-    // assert.equal(functions[0], 'translate(55px,0px)');
-    // compareMatrices(functions[1], [1, -0.1, 0, 1, 0, 0], 6);
-    // assert.equal(functions[2], 'rotate(55deg)');
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
+        'translate(10px) matrix(1, -0.2, 0, 1, 0, 0) rotate(100deg)');
+    evaluatedInterp = interp(0.5);
+    functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 3);
+    assert.equal(functions[0], 'translate(55px,0px)');
+    compareMatrices(functions[1], [1, -0.1, 0, 1, 0, 0], 6);
+    assert.equal(functions[2], 'rotate(55deg)');
 
-    // interp = webAnimationsMinifill.propertyInterpolation(
-    //     'transform',
-    //     'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
-    //     'translate(10px) matrix3d(1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 10, 10, 1) rotate(100deg)');
-    // evaluatedInterp = interp(0.5);
-    // functions = evaluatedInterp.split(' ');
-    // assert.equal(functions.length, 3);
-    // assert.equal(functions[0], 'translate(55px,0px)');
-    // compareMatrices(
-    //     functions[1],
-    //     [1.38, 0.85, 0, 0, 0.24, 1.00, 0, 0, 0, 0, 1, 0, 0, 5, 5, 1],
-    //     16);
-    // assert.equal(functions[2], 'rotate(55deg)');
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
+        'translate(10px) matrix3d(1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 10, 10, 1) rotate(100deg)');
+    evaluatedInterp = interp(0.5);
+    functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 3);
+    assert.equal(functions[0], 'translate(55px,0px)');
+    compareMatrices(
+        functions[1],
+        [1.38, 0.85, 0, 0, 0.24, 1.00, 0, 0, 0, 0, 1, 0, 0, 5, 5, 1],
+        16);
+    assert.equal(functions[2], 'rotate(55deg)');
 
     var interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
