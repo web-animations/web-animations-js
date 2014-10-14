@@ -14,8 +14,6 @@
 
 (function(scope, testing) {
   var decomposeMatrix = (function() {
-    // this is only ever used on the perspective matrix, which has 0, 0, 0, 1 as
-    // last column
     function determinant(m) {
       return m[0][0] * m[1][1] * m[2][2] +
              m[1][0] * m[2][1] * m[0][2] +
