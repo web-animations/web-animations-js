@@ -1,9 +1,9 @@
 (function() {
 
-  var src = [
+  var scopeSrc = [
       'src/scope.js'];
 
-  var minifillSrc = src.concat(
+  var minifillSrc = [
       'src/animation-node.js',
       'src/effect.js',
       'src/property-interpolation.js',
@@ -17,13 +17,17 @@
       'src/number-handler.js',
       'src/player.js',
       'src/timeline.js',
-      'src/transform-handler.js');
+      'src/transform-handler.js'];
 
-  var maxifillSrc = minifillSrc.concat(
+  var sharedSrc = [
+      'src/timing-utilities.js',
+      'src/normalize-keyframes.js'];
+
+  var maxifillSrc = [
       'src/maxifill-player.js',
       'src/animation-constructor.js',
       'src/effect-callback.js',
-      'src/group-constructors.js');
+      'src/group-constructors.js'];
 
   var minifillTest = [
       'test/js/animation-node.js',
@@ -50,11 +54,11 @@
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {
     minifill: {
-      src: minifillSrc,
+      src: scopeSrc.concat(sharedSrc).concat(minifillSrc),
       test: minifillTest,
     },
     maxifill: {
-      src: maxifillSrc,
+      src: scopeSrc.concat(sharedSrc).concat(minifillSrc).concat(maxifillSrc),
       test: maxifillTest,
     },
   };

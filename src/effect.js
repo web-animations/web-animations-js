@@ -15,7 +15,7 @@
 (function(shared, scope, testing) {
 
   scope.convertEffectInput = function(effectInput) {
-    var keyframeEffect = normalize(effectInput);
+    var keyframeEffect = shared.normalizeKeyframes(effectInput);
     var propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframeEffect);
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
     return function(target, fraction) {
@@ -35,91 +35,6 @@
     };
   };
 
-
-  function normalize(effectInput) {
-    if (!Array.isArray(effectInput) && effectInput !== null)
-      throw new TypeError('Keyframe effect must be null or an array of keyframes');
-
-    if (effectInput == null)
-      return [];
-
-    var keyframeEffect = effectInput.map(function(originalKeyframe) {
-      var keyframe = {};
-      for (var member in originalKeyframe) {
-        var memberValue = originalKeyframe[member];
-        if (member == 'offset') {
-          if (memberValue != null) {
-            memberValue = Number(memberValue);
-            if (!isFinite(memberValue))
-              throw new TypeError('keyframe offsets must be numbers.');
-          }
-        } else if (member == 'easing') {
-          memberValue = scope.toTimingFunction(memberValue);
-        } else {
-          memberValue = '' + memberValue;
-        }
-        keyframe[member] = memberValue;
-      }
-      if (keyframe.offset == undefined)
-        keyframe.offset = null;
-      if (keyframe.easing == undefined)
-        keyframe.easing = scope.toTimingFunction('linear');
-      return keyframe;
-    });
-
-    var everyFrameHasOffset = true;
-    var looselySortedByOffset = true;
-    var previousOffset = -Infinity;
-    for (var i = 0; i < keyframeEffect.length; i++) {
-      var offset = keyframeEffect[i].offset;
-      if (offset != null) {
-        if (offset < previousOffset)
-          looselySortedByOffset = false;
-        previousOffset = offset;
-      } else {
-        everyFrameHasOffset = false;
-      }
-    }
-
-    keyframeEffect = keyframeEffect.filter(function(keyframe) {
-      return keyframe.offset >= 0 && keyframe.offset <= 1;
-    });
-
-    if (!looselySortedByOffset) {
-      if (!everyFrameHasOffset) {
-        throw 'Keyframes are not loosely sorted by offset. Sort or specify offsets.';
-      }
-      keyframeEffect.sort(function(leftKeyframe, rightKeyframe) {
-        return leftKeyframe.offset - rightKeyframe.offset;
-      });
-    }
-
-    function spaceKeyframes() {
-      var length = keyframeEffect.length;
-      if (keyframeEffect[length - 1].offset == null)
-        keyframeEffect[length - 1].offset = 1;
-      if (length > 1 && keyframeEffect[0].offset == null)
-        keyframeEffect[0].offset = 0;
-
-      var previousIndex = 0;
-      var previousOffset = keyframeEffect[0].offset;
-      for (var i = 1; i < length; i++) {
-        var offset = keyframeEffect[i].offset;
-        if (offset != null) {
-          for (var j = 1; j < i - previousIndex; j++)
-            keyframeEffect[previousIndex + j].offset = previousOffset + (offset - previousOffset) * j / (i - previousIndex);
-          previousIndex = i;
-          previousOffset = offset;
-        }
-      }
-    }
-    if (!everyFrameHasOffset)
-      spaceKeyframes();
-
-    return keyframeEffect;
-  }
-
-  shared.normalizeKeyframes = normalize;
 
   function makePropertySpecificKeyframeGroups(keyframeEffect) {
     var propertySpecificKeyframeGroups = {};
@@ -169,7 +84,6 @@
 
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.normalize = normalize;
     testing.makePropertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups;
     testing.makeInterpolations = makeInterpolations;
   }

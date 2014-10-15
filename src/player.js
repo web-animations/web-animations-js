@@ -12,7 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(shared, scope, testing) {
+(function(scope, testing) {
 
   var sequenceNumber = 0;
 
@@ -184,4 +184,4 @@
     testing.Player = scope.Player;
   }
 
-})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);
+})(webAnimationsMinifill, webAnimationsTesting);
