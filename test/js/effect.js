@@ -9,7 +9,7 @@ suite('effect', function() {
   test('Normalize keyframes with all offsets specified but not sorted by offset. Some offsets are out of [0, 1] range.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([
+      normalizedKeyframes = normalizeKeyframes([
         {offset: 0},
         {offset: -1},
         {offset: 1},
@@ -25,7 +25,7 @@ suite('effect', function() {
 
   test('Normalize keyframes with some offsets not specified, and not sorted by offset.', function() {
     assert.throws(function() {
-      normalize([
+      normalizeKeyframes([
         {offset: 0.5},
         {offset: 0},
         {offset: 0.8},
@@ -37,7 +37,7 @@ suite('effect', function() {
 
   test('Normalize keyframes with some offsets not specified, and not sorted by offset. Out of order keyframes are out of [0, 1] range.', function() {
     assert.throws(function() {
-      normalize([
+      normalizeKeyframes([
         {offset: 0},
         {offset: -1},
         {offset: 0.5},
@@ -50,7 +50,7 @@ suite('effect', function() {
   test('Normalize keyframes with some offsets not specified, but sorted by offset where specified. Some offsets are out of [0, 1] range.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([
+      normalizedKeyframes = normalizeKeyframes([
         {offset: -1},
         {offset: 0},
         {offset: 0.5},
@@ -69,7 +69,7 @@ suite('effect', function() {
   test('Normalize keyframes with some offsets not specified, but sorted by offset where specified. All specified offsets in [0, 1] range.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([
+      normalizedKeyframes = normalizeKeyframes([
         {left: '0px', offset: 0},
         {left: '10px'},
         {left: '20px'},
@@ -96,7 +96,7 @@ suite('effect', function() {
   test('Normalize keyframes with no offsets specified.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([
+      normalizedKeyframes = normalizeKeyframes([
         {left: '0px'},
         {left: '10px'},
         {left: '20px'},
@@ -119,7 +119,7 @@ suite('effect', function() {
 
   test('Normalize keyframes where a keyframe has an offset that is not a number.', function() {
     assert.throws(function() {
-      normalize([
+      normalizeKeyframes([
         {offset: 0},
         {offset: 'one'},
         {offset: 1}
@@ -130,7 +130,7 @@ suite('effect', function() {
   test('Normalize keyframes where a keyframe has an offset that is a numeric string.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([
+      normalizedKeyframes = normalizeKeyframes([
         {offset: 0},
         {offset: '0.5'},
         {offset: 1}
@@ -145,7 +145,7 @@ suite('effect', function() {
   test('Normalize keyframes where some keyframes have easings.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([
+      normalizedKeyframes = normalizeKeyframes([
         {left: '0px', easing: 'ease-in'},
         {left: '10px'},
         {left: '0px'}
@@ -156,7 +156,7 @@ suite('effect', function() {
   test('Normalize keyframes with invalid specified easing.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([
+      normalizedKeyframes = normalizeKeyframes([
         {left: '0px', easing: 'easy-peasy'},
         {left: '10px'},
         {left: '0px'}
@@ -168,7 +168,7 @@ suite('effect', function() {
   test('Normalize keyframes where some properties are given non-string, non-number values.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([
+      normalizedKeyframes = normalizeKeyframes([
         {left: {}},
         {left: '100px'},
         {left: []}
@@ -182,14 +182,14 @@ suite('effect', function() {
 
   test('Normalize input that is not an array.', function() {
     assert.throws(function() {
-      normalize(10);
+      normalizeKeyframes(10);
     });
   });
 
   test('Normalize an empty array.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize([]);
+      normalizedKeyframes = normalizeKeyframes([]);
     });
     assert.deepEqual(normalizedKeyframes, []);
   });
@@ -197,7 +197,7 @@ suite('effect', function() {
   test('Normalize null.', function() {
     var normalizedKeyframes;
     assert.doesNotThrow(function() {
-      normalizedKeyframes = normalize(null);
+      normalizedKeyframes = normalizeKeyframes(null);
     });
     assert.deepEqual(normalizedKeyframes, []);
   });
@@ -206,7 +206,7 @@ suite('effect', function() {
   test('Make property specific keyframe groups for a simple effect with one property.', function() {
     var groups;
     assert.doesNotThrow(function() {
-      groups = makePropertySpecificKeyframeGroups(normalize([
+      groups = makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px'},
         {left: '200px', offset: 0.3},
         {left: '0px'}
@@ -225,7 +225,7 @@ suite('effect', function() {
   test('Make property specific keyframe groups for an effect with three properties.', function() {
     var groups;
     assert.doesNotThrow(function() {
-      groups = makePropertySpecificKeyframeGroups(normalize([
+      groups = makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px', top: '200px', opacity: 1},
         {left: '200px', top: '0px'},
         {left: '0px', top: '200px', opacity: 0},
@@ -270,7 +270,7 @@ suite('effect', function() {
 
   test('Make property specific keyframes when the offset of the last keyframe is specified but not equal to 1.', function() {
     assert.throws(function() {
-      makePropertySpecificKeyframeGroups(normalize([
+      makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px', offset: 0},
         {left: '20px'},
         {left: '30px', offset: 0.9}
@@ -281,7 +281,7 @@ suite('effect', function() {
   test('Make property specific keyframes when no properties are animated, and the offset of the last keyframe is specified but not equal to 1.', function() {
     var groups;
     assert.doesNotThrow(function() {
-      groups = makePropertySpecificKeyframeGroups(normalize([
+      groups = makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {offset: 0},
         {},
         {offset: 0.9}
@@ -292,7 +292,7 @@ suite('effect', function() {
 
   test('Make property specific keyframes when a property appears in some keyframes, but not in the last keyframe.', function() {
     assert.throws(function() {
-      makePropertySpecificKeyframeGroups(normalize([
+      makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px', top: '0px'},
         {left: '10px', top: '10px'},
         {top: '20px'}
@@ -302,7 +302,7 @@ suite('effect', function() {
 
   test('Make property specific keyframes when a property appears in some keyframes, but not in the first keyframe.', function() {
     assert.throws(function() {
-      makePropertySpecificKeyframeGroups(normalize([
+      makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px'},
         {left: '10px', top: '10px'},
         {left: '20px', top: '20px'}
@@ -313,7 +313,7 @@ suite('effect', function() {
   test('Make property specific keyframes where two properties are animated. One property in a keyframe with offset 1. One property in the last keyframe, with no offset.', function() {
     var groups;
     assert.doesNotThrow(function() {
-      groups = makePropertySpecificKeyframeGroups(normalize([
+      groups = makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px', top: '0px', offset: 0},
         {left: '20px', offset: 1},
         {top: '20px'}
@@ -325,7 +325,7 @@ suite('effect', function() {
   test('Make property specific keyframes where two properties are animated. One property in a keyframe with offset 0. One property in the first keyframe, with no offset.', function() {
     var groups;
     assert.doesNotThrow(function() {
-      groups = makePropertySpecificKeyframeGroups(normalize([
+      groups = makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {top: '0px'},
         {left: '0px', offset: 0},
         {left: '20px', top: '20px', offset: 1}
@@ -381,7 +381,7 @@ suite('effect', function() {
   test('Make interpolations for a simple effect with one property.', function() {
     var interpolations;
     assert.doesNotThrow(function() {
-      interpolations = makeInterpolations(makePropertySpecificKeyframeGroups(normalize([
+      interpolations = makeInterpolations(makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px'},
         {left: '200px', offset: 0.3},
         {left: '0px'}
