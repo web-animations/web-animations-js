@@ -93,17 +93,23 @@
         }
       }
 
+      // if (is2D(matrix)) {
+      //   return {
+      //     t: 'matrix',
+      //     d: [matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1],
+      //         matrix[3][0], matrix[3][1]]
+      //   };
+      // }
+      // return {
+      //   t: 'matrix3d',
+      //   d: matrix[0].concat(matrix[1], matrix[2], matrix[3])
+      // };
+
       if (is2D(matrix)) {
-        return {
-          t: 'matrix',
-          d: [matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1],
-              matrix[3][0], matrix[3][1]]
-        };
+        return [matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1],
+              matrix[3][0], matrix[3][1]];
       }
-      return {
-        t: 'matrix3d',
-        d: matrix[0].concat(matrix[1], matrix[2], matrix[3])
-      };
+      return matrix[0].concat(matrix[1], matrix[2], matrix[3])
     }
     return composeMatrix;
   })();
@@ -134,7 +140,7 @@
     var skew = scope.interpolate(fromM.skew, toM.skew, f);
     var perspective = scope.interpolate(fromM.perspective, toM.perspective, f);
 
-    return composeMatrix(translate, scale, skew, quat, perspective);
+    return [composeMatrix(translate, scale, skew, quat, perspective)];
   }
 
   scope.interpolateDecomposedTransformsWithMatrices = interpolateDecomposedTransformsWithMatrices;

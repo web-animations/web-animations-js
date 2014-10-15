@@ -114,11 +114,18 @@
       var rightArgs = scope.makeMatrixDecomposition(right);
     }
     return [
+      // RENEE: 4) change these to just be leftArgs and rightArgs. (later on leftArgs and rightArgs
+      // should actually just be JS matrices not JS dictionaries.)
       {t: 'decomposedMatrix', d: leftArgs},
       {t: 'decomposedMatrix', d: rightArgs},
       function(list) {
-        var stringifiedArgs = list.d.map(scope.numberToString).join(',');
-        return list.t + '(' + stringifiedArgs + ')';
+        // console.log(list);
+        // RENEE: 3) change this so it doesn't need to check list.t (list is the result of
+        // interpolateDecomposedTransformsWithMatrice whose return value will need to change.)
+        var stringifiedArgs = list.map(scope.numberToString).join(',');
+        // console.log(stringifiedArgs);
+        // return list.t + '(' + stringifiedArgs + ')';
+        return stringifiedArgs;
       }
     ];
   }
@@ -154,55 +161,70 @@
       }
     }
 
-    if (left.length != right.length)
-      return mergeMatrices(left, right);
-
     var leftResult = [];
     var rightResult = [];
     var types = [];
-    for (var i = 0; i < left.length; i++) {
-      var leftType = left[i].t;
-      var rightType = right[i].t;
-      var leftArgs = left[i].d;
-      var rightArgs = right[i].d;
 
-      var leftFunctionData = transformFunctions[leftType];
-      var rightFunctionData = transformFunctions[rightType];
+    if (left.length != right.length) {
+      // return mergeMatrices(left, right);
+      var merged = mergeMatrices(left, right);
+      leftResult = [merged[0]];
+      rightResult = [merged[1]];
+      // RENEE: 5) This will need to be 'matrix3d' some of the time. Can we tell here which?
+      types = [['matrix', [merged[2]]]];
+    } else {
+      for (var i = 0; i < left.length; i++) {
+        var leftType = left[i].t;
+        var rightType = right[i].t;
+        var leftArgs = left[i].d;
+        var rightArgs = right[i].d;
 
-      var type;
-      if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
-        var merged = mergeMatrices([left[i]], [right[i]]);
-        leftResult.push(merged[0]);
-        rightResult.push(merged[1]);
-        types.push(['matrix', [merged[2]]]);
-        continue;
-      } else if (leftType == rightType) {
-        type = leftType;
-      } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
-        type = typeTo2D(leftType);
-        leftArgs = leftFunctionData[2](leftArgs);
-        rightArgs = rightFunctionData[2](rightArgs);
-      } else if (leftFunctionData[1] && rightFunctionData[1] && typeTo3D(leftType) == typeTo3D(rightType)) {
-        type = typeTo3D(leftType);
-        leftArgs = leftFunctionData[1](leftArgs);
-        rightArgs = rightFunctionData[1](rightArgs);
-      } else {
-        return mergeMatrices(left, right);
+        var leftFunctionData = transformFunctions[leftType];
+        var rightFunctionData = transformFunctions[rightType];
+
+        var type;
+        if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
+          var merged = mergeMatrices([left[i]], [right[i]]);
+          leftResult.push(merged[0]);
+          rightResult.push(merged[1]);
+          // RENEE: 5) This will need to be 'matrix3d' some of the time. Can we tell here which?
+          types.push(['matrix', [merged[2]]]);
+          continue;
+        } else if (leftType == rightType) {
+          type = leftType;
+        } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
+          type = typeTo2D(leftType);
+          leftArgs = leftFunctionData[2](leftArgs);
+          rightArgs = rightFunctionData[2](rightArgs);
+        } else if (leftFunctionData[1] && rightFunctionData[1] && typeTo3D(leftType) == typeTo3D(rightType)) {
+          type = typeTo3D(leftType);
+          leftArgs = leftFunctionData[1](leftArgs);
+          rightArgs = rightFunctionData[1](rightArgs);
+        } else {
+          var merged = mergeMatrices(left, right);
+          leftResult = [merged[0]];
+          rightResult = [merged[1]];
+          // RENEE: 5) This will need to be 'matrix3d' some of the time. Can we tell here which?
+          types = [['matrix', [merged[2]]]];
+          break;
+          // return mergeMatrices(left, right);
+        }
+
+        var leftArgsCopy = [];
+        var rightArgsCopy = [];
+        var stringConversions = [];
+        for (var j = 0; j < leftArgs.length; j++) {
+          var merge = typeof leftArgs[j] == 'number' ? scope.mergeNumbers : scope.mergeDimensions;
+          var merged = merge(leftArgs[j], rightArgs[j]);
+          leftArgsCopy[j] = merged[0];
+          rightArgsCopy[j] = merged[1];
+          stringConversions.push(merged[2]);
+        }
+        // RENEE: 2) Change this so that it just pushes leftArgsCopy/rightArgsCopy.
+        leftResult.push({t: leftType, d: leftArgsCopy});
+        rightResult.push({t: rightType, d: rightArgsCopy});
+        types.push([type, stringConversions]);
       }
-
-      var leftArgsCopy = [];
-      var rightArgsCopy = [];
-      var stringConversions = [];
-      for (var j = 0; j < leftArgs.length; j++) {
-        var merge = typeof leftArgs[j] == 'number' ? scope.mergeNumbers : scope.mergeDimensions;
-        var merged = merge(leftArgs[j], rightArgs[j]);
-        leftArgsCopy[j] = merged[0];
-        rightArgsCopy[j] = merged[1];
-        stringConversions.push(merged[2]);
-      }
-      leftResult.push({t: leftType, d: leftArgsCopy});
-      rightResult.push({t: rightType, d: rightArgsCopy});
-      types.push([type, stringConversions]);
     }
 
     if (flipResults) {
@@ -212,15 +234,31 @@
     }
 
     return [leftResult, rightResult, function(list) {
+      // console.log('list');
+      // console.log(list);
       return list.map(function(args, i) {
-        if (args.t == 'matrix' || args.t == 'matrix3d') {
-          return types[i][1][0](args);
-        } else {
-          var stringifiedArgs = args.d.map(function(arg, j) {
-            return types[i][1][j](arg);
-          }).join(',');
-          return types[i][0] + '(' + stringifiedArgs + ')';
-        }
+        // console.log('args');
+        // console.log(args);
+        // RENEE: 1) Change this so that it doesn't have to check args.t - OK
+        // if (args.t == 'matrix' || args.t == 'matrix3d') {
+        //   return types[i][1][0](args);
+        // } else {
+        //   var stringifiedArgs = args.d.map(function(arg, j) {
+        //     console.log('arg');
+        //     console.log(arg);
+        //     console.log('type');
+        //     console.log(types[i][1][j]);
+        //     return types[i][1][j](arg);
+        //   }).join(',');
+        //   return types[i][0] + '(' + stringifiedArgs + ')';
+        // }
+        var stringifiedArgs = args.map(function(arg, j) {
+          // console.log('arg');
+          // console.log(arg);
+          // console.log(types[i][1][j]);
+          return types[i][1][j](arg);
+        }).join(',');
+        return types[i][0] + '(' + stringifiedArgs + ')';
       }).join(' ');
     }];
   }

@@ -39,7 +39,9 @@
   function interpolateTransform(from, to, f) {
     if (from.t == 'decomposedMatrix')
       return scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
-    return {t: from.t, d: interpolate(from.d, to.d, f)};
+    // return {t: from.t, d: interpolate(from.d, to.d, f)};
+    // return [{t: from.t, d: interpolate(from.d, to.d, f)}];
+    return interpolate(from.d, to.d, f);
   }
 
   scope.Interpolation = function(from, to, convertToString) {
