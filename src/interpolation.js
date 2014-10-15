@@ -15,7 +15,6 @@
 (function(scope, testing) {
 
   function interpolate(from, to, f) {
-    // console.log(from);
     if ((typeof from == 'number') && (typeof to == 'number')) {
       return from * (1 - f) + to * f;
     }

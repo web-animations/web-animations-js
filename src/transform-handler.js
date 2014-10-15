@@ -119,8 +119,8 @@
       leftArgs,
       rightArgs,
       function(list) {
-        console.log('Matrixlist');
-        console.log(list);
+        // console.log('Matrixlist');
+        // console.log(list);
         var mat = scope.composeMatrix(list[0], list[1], list[2], list[3], list[4]);
         // RENEE: 3) change this so it doesn't need to check list.t (list is the result of
         // interpolateDecomposedTransformsWithMatrice whose return value will need to change.) - OK
@@ -172,7 +172,6 @@
       var merged = mergeMatrices(left, right);
       leftResult = [merged[0]];
       rightResult = [merged[1]];
-      // RENEE: 5) This will need to be 'matrix3d' some of the time. Can we tell here which?
       types = [['matrix', [merged[2]]]];
     } else {
       for (var i = 0; i < left.length; i++) {
@@ -187,11 +186,8 @@
         var type;
         if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
           var merged = mergeMatrices([left[i]], [right[i]]);
-          // console.log('merged[2]');
-          // console.log(merged[2]);
           leftResult.push(merged[0]);
           rightResult.push(merged[1]);
-          // RENEE: 5) This will need to be 'matrix3d' some of the time. Can we tell here which?
           types.push(['matrix', [merged[2]]]);
           continue;
         } else if (leftType == rightType) {
@@ -208,7 +204,6 @@
           var merged = mergeMatrices(left, right);
           leftResult = [merged[0]];
           rightResult = [merged[1]];
-          // RENEE: 5) This will need to be 'matrix3d' some of the time. Can we tell here which?
           types = [['matrix', [merged[2]]]];
           break;
           // return mergeMatrices(left, right);
@@ -238,13 +233,11 @@
     }
 
     return [leftResult, rightResult, function(list) {
-      // console.log('list');
-      // console.log(list);
       return list.map(function(args, i) {
-        console.log('args length');
-        console.log(args.length);
-        console.log('args');
-        console.log(args);
+        // console.log('args length');
+        // console.log(args.length);
+        // console.log('args');
+        // console.log(args);
         // RENEE: 1) Change this so that it doesn't have to check args.t - OK
         // if (args.t == 'matrix' || args.t == 'matrix3d') {
         //   return types[i][1][0](args);

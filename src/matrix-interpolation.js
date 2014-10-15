@@ -119,7 +119,6 @@
   };
 
   function interpolateDecomposedTransformsWithMatrices(fromM, toM, f) {
-    console.log('interpolate matrices');
     var product = scope.dot(fromM.quaternion, toM.quaternion);
     product = clamp(product, -1.0, 1.0);
 

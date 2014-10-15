@@ -418,11 +418,8 @@
   }
 
   function makeMatrixDecomposition(transformList) {
-    console.log('Make Matrix Decomp');
     var decomp = decomposeMatrix(convertToMatrix(transformList));
     var result = [[decomp.translate, decomp.scale, decomp.skew, decomp.quaternion, decomp.perspective]];
-    console.log('result');
-    console.log(result);
     return result;
   }
 
