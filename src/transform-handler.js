@@ -116,15 +116,17 @@
     return [
       // RENEE: 4) change these to just be leftArgs and rightArgs. (later on leftArgs and rightArgs
       // should actually just be JS matrices not JS dictionaries.)
-      {t: 'decomposedMatrix', d: leftArgs},
-      {t: 'decomposedMatrix', d: rightArgs},
+      leftArgs,
+      rightArgs,
       function(list) {
-        // console.log(list);
+        console.log('Matrixlist');
+        console.log(list);
+        var mat = scope.composeMatrix(list[0], list[1], list[2], list[3], list[4]);
         // RENEE: 3) change this so it doesn't need to check list.t (list is the result of
-        // interpolateDecomposedTransformsWithMatrice whose return value will need to change.)
-        var stringifiedArgs = list.map(scope.numberToString).join(',');
-        // console.log(stringifiedArgs);
+        // interpolateDecomposedTransformsWithMatrice whose return value will need to change.) - OK
+        // var stringifiedArgs = list.map(scope.numberToString).join(',');
         // return list.t + '(' + stringifiedArgs + ')';
+        var stringifiedArgs = mat.map(scope.numberToString).join(',');
         return stringifiedArgs;
       }
     ];
@@ -185,6 +187,8 @@
         var type;
         if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
           var merged = mergeMatrices([left[i]], [right[i]]);
+          // console.log('merged[2]');
+          // console.log(merged[2]);
           leftResult.push(merged[0]);
           rightResult.push(merged[1]);
           // RENEE: 5) This will need to be 'matrix3d' some of the time. Can we tell here which?
@@ -220,9 +224,9 @@
           rightArgsCopy[j] = merged[1];
           stringConversions.push(merged[2]);
         }
-        // RENEE: 2) Change this so that it just pushes leftArgsCopy/rightArgsCopy.
-        leftResult.push({t: leftType, d: leftArgsCopy});
-        rightResult.push({t: rightType, d: rightArgsCopy});
+        // RENEE: 2) Change this so that it just pushes leftArgsCopy/rightArgsCopy. - OK
+        leftResult.push(leftArgsCopy);
+        rightResult.push(rightArgsCopy);
         types.push([type, stringConversions]);
       }
     }
@@ -237,8 +241,10 @@
       // console.log('list');
       // console.log(list);
       return list.map(function(args, i) {
-        // console.log('args');
-        // console.log(args);
+        console.log('args length');
+        console.log(args.length);
+        console.log('args');
+        console.log(args);
         // RENEE: 1) Change this so that it doesn't have to check args.t - OK
         // if (args.t == 'matrix' || args.t == 'matrix3d') {
         //   return types[i][1][0](args);
@@ -253,12 +259,14 @@
         //   return types[i][0] + '(' + stringifiedArgs + ')';
         // }
         var stringifiedArgs = args.map(function(arg, j) {
-          // console.log('arg');
-          // console.log(arg);
-          // console.log(types[i][1][j]);
           return types[i][1][j](arg);
         }).join(',');
-        return types[i][0] + '(' + stringifiedArgs + ')';
+
+        if (types[i][0] == 'matrix' && stringifiedArgs.split(',').length == 16)
+          return 'matrix3d(' + stringifiedArgs + ')';
+        else
+          return types[i][0] + '(' + stringifiedArgs + ')';
+
       }).join(' ');
     }];
   }

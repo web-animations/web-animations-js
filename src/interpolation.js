@@ -15,6 +15,7 @@
 (function(scope, testing) {
 
   function interpolate(from, to, f) {
+    // console.log(from);
     if ((typeof from == 'number') && (typeof to == 'number')) {
       return from * (1 - f) + to * f;
     }
@@ -47,6 +48,7 @@
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
       var interp;
+      // RENEE: These no longer work. Probably need to eliminate interpolateDecomposedTransformsWithMatrices.
       if (Array.isArray(from) && from[0].t)
         interp = from.map(function(x, i) {
           return interpolateTransform(from[i], to[i], f);
