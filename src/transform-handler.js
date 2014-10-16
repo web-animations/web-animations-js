@@ -108,16 +108,19 @@
     if (left.decompositionPair !== right) {
       left.decompositionPair = right;
       var leftArgs = scope.makeMatrixDecomposition(left);
+      leftArgs[0].push(0);
     }
     if (right.decompositionPair !== left) {
       right.decompositionPair = left;
       var rightArgs = scope.makeMatrixDecomposition(right);
+      rightArgs[0].push(1);
     }
     return [
       leftArgs,
       rightArgs,
       function(list) {
-        var mat = scope.composeMatrix(list[0], list[1], list[2], list[3], list[4]);
+        var quat = scope.quat(leftArgs[0][3], rightArgs[0][3], list[5]);
+        var mat = scope.composeMatrix(list[0], list[1], list[2], quat, list[4]);
         var stringifiedArgs = mat.map(scope.numberToString).join(',');
         return stringifiedArgs;
       }
@@ -209,7 +212,6 @@
           rightArgsCopy[j] = merged[1];
           stringConversions.push(merged[2]);
         }
-        // RENEE: 2) Change this so that it just pushes leftArgsCopy/rightArgsCopy. - OK
         leftResult.push(leftArgsCopy);
         rightResult.push(rightArgsCopy);
         types.push([type, stringConversions]);

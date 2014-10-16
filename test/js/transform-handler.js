@@ -71,8 +71,6 @@ suite('transform-handler parsing', function() {
 
 suite('transform-handler interpolation', function() {
   function compareMatrices(actual, expected, expectedLength) {
-    // console.log(actual);
-    // console.log(expected);
     var actualElements = actual.slice(
         actual.indexOf('(') + 1, actual.lastIndexOf(')')).split(',');
     assert.equal(actualElements.length, expectedLength);
