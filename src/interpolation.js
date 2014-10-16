@@ -42,8 +42,6 @@
     }
   };
 
-  scope.interpolate = interpolate;
-
   if (WEB_ANIMATIONS_TESTING) {
     testing.interpolate = interpolate;
   }
