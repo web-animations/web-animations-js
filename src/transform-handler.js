@@ -107,11 +107,11 @@
   function mergeMatrices(left, right) {
     if (left.decompositionPair !== right) {
       left.decompositionPair = right;
-      var leftArgs = scope.makeMatrixDecomposition(left);
+      var leftArgs = scope.makeMatrixDecomposition ? scope.makeMatrixDecomposition(left) : [null];
     }
     if (right.decompositionPair !== left) {
       right.decompositionPair = left;
-      var rightArgs = scope.makeMatrixDecomposition(right);
+      var rightArgs = scope.makeMatrixDecomposition ? scope.makeMatrixDecomposition(right) : [null];
     }
     if (leftArgs[0] == null || rightArgs[0] == null)
       return [[false], [true], function(x) { return x ? right[0].d : left[0].d; }];
