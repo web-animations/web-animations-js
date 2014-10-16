@@ -105,7 +105,7 @@ suite('player', function() {
     assert.equal(p.currentTime, 1000);
     assert.equal(isTicking(), false);
     p.reverse();
-    assert.ok(isNaN(p._startTime));
+    assert.equal(p._startTime, null);
     assert.equal(p.currentTime, 1000);
     tick(1600);
     assert.equal(p.startTime, 2600);
@@ -147,7 +147,7 @@ suite('player', function() {
     p.reverse();
     assert.equal(p.playbackRate, -1);
     assert.equal(p.currentTime, 1000);
-    assert.ok(isNaN(p._startTime));
+    assert.equal(p._startTime, null);
     tick(2000);
     assert.equal(p.currentTime, 1000);
     assert.equal(p.startTime, 3000);
