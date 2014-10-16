@@ -31,10 +31,8 @@
     var last = undefined;
     timing = shared.normalizeTimingInput(timing);
     var callback = function() {
-      var t = callback._player ? callback._player.currentTime : NaN;
-      if (isNaN(t)) {
-        t = null;
-      } else {
+      var t = callback._player ? callback._player.currentTime : null;
+      if (t !== null) {
         t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
         if (isNaN(t))
           t = null;

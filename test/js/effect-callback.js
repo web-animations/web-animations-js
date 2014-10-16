@@ -33,7 +33,7 @@ suite('effect-callback', function() {
       }, 1);
     }, 2);
     tick(1);
-    assert.isFalse(isNaN(player.startTime));
+    assert.isTrue(player.startTime >= 0);
     assert.isFalse(called);
   });
 
