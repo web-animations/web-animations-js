@@ -114,8 +114,6 @@
       var rightArgs = scope.makeMatrixDecomposition(right);
     }
     return [
-      // RENEE: 4) change these to just be leftArgs and rightArgs. (later on leftArgs and rightArgs
-      // should actually just be JS matrices not JS dictionaries.)
       leftArgs,
       rightArgs,
       function(list) {
