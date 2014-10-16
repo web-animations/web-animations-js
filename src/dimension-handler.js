@@ -70,6 +70,7 @@
       if (units.indexOf(unit) < 0)
         units.push(unit);
     }
+
     left = units.map(function(unit) { return left[unit] || 0; });
     right = units.map(function(unit) { return right[unit] || 0; });
     return [left, right, function(values) {
