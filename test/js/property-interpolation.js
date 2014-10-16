@@ -18,4 +18,13 @@ suite('property-interpolation', function() {
       assert.equal(interpolation(2), right);
     }
   });
+
+  test('registers camel cased property names', function() {
+    function merge(a, b) {
+      return [a, b, function(x) { return a + b; }];
+    };
+    webAnimationsMinifill.addPropertiesHandler(Number, merge, ['dummy-property']);
+    assert.equal(webAnimationsMinifill.propertyInterpolation('dummy-property', 1, 2)(0), 3);
+    assert.equal(webAnimationsMinifill.propertyInterpolation('dummyProperty', 5, 3)(0), 8);
+  });
 });

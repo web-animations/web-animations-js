@@ -26,6 +26,7 @@
       var property = properties[i];
       addPropertyHandler(parser, merger, property);
       if (/-/.test(property)) {
+        // Add camel cased variant.
         addPropertyHandler(parser, merger, property.replace(/-(.)/g, function(_, c) {
           return c.toUpperCase();
         }));
