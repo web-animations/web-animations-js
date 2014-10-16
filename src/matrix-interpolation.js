@@ -107,26 +107,26 @@
   };
 
   function interpolateDecomposedTransformsWithMatrices(fromM, toM, f) {
-    var product = scope.dot(fromM.quaternion, toM.quaternion);
+    var product = scope.dot(fromM[0][3], toM[0][3]);
     product = clamp(product, -1.0, 1.0);
 
     var quat = [];
     if (product === 1.0) {
-      quat = fromM.quaternion;
+      quat = fromM[0][3];
     } else {
       var theta = Math.acos(product);
       var w = Math.sin(f * theta) * 1 / Math.sqrt(1 - product * product);
 
       for (var i = 0; i < 4; i++) {
-        quat.push(fromM.quaternion[i] * (Math.cos(f * theta) - product * w) +
-                  toM.quaternion[i] * w);
+        quat.push(fromM[0][3][i] * (Math.cos(f * theta) - product * w) +
+                  toM[0][3][i] * w);
       }
     }
 
-    var translate = scope.interpolate(fromM.translate, toM.translate, f);
-    var scale = scope.interpolate(fromM.scale, toM.scale, f);
-    var skew = scope.interpolate(fromM.skew, toM.skew, f);
-    var perspective = scope.interpolate(fromM.perspective, toM.perspective, f);
+    var translate = scope.interpolate(fromM[0][0], toM[0][0], f);
+    var scale = scope.interpolate(fromM[0][1], toM[0][1], f);
+    var skew = scope.interpolate(fromM[0][2], toM[0][2], f);
+    var perspective = scope.interpolate(fromM[0][4], toM[0][4], f);
 
     return [composeMatrix(translate, scale, skew, quat, perspective)];
   }
