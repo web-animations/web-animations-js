@@ -11,7 +11,6 @@ module.exports = function(grunt) {
 
   var config = {
     uglify: {},
-    gen: {},
     template: {}
   };
 
@@ -70,7 +69,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     uglify: config.uglify,
-    gen: config.gen,
     template: config.template,
     checkrepo: {
       all: {
@@ -136,14 +134,6 @@ module.exports = function(grunt) {
       grunt.log.writeln('File ' + file + ' removed');
     });
   });
-
-  for (var target in targetConfig) {
-    grunt.task.registerTask(target, [
-      'uglify:' + target,
-      'gen:' + target,
-      'gjslint',
-    ]);
-  }
 
   grunt.task.registerTask('default', ['uglify', 'template', 'gjslint']);
 };
