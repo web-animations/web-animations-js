@@ -394,7 +394,8 @@ suite('transform-handler interpolation', function() {
     compareMatrices(evaluatedInterp, [0.47, 0.89, -0.89, 0.47, 320, 0], 6);
   });
 
-  test('transform interpolations involving matrices when matrix code is not avaliable', function() {
+  test('transform interpolations involving matrices when matrix code is not available', function() {
+    // FIXME: This is vulnerable to module interface changes. Can we disable modules?
     var composeMatrix = webAnimationsMinifill.composeMatrix;
     var quat = webAnimationsMinifill.quat;
     var dot = webAnimationsMinifill.dot;
@@ -429,8 +430,7 @@ suite('transform-handler interpolation', function() {
     assert.equal(functions[0], 'translate(46px,0px)');
     compareMatrices(functions[1], [1, -0.2, 0, 1, 0, 0], 6);
     assert.equal(functions[2], 'rotate(64deg)');
-    // var interp;
-    // var evaluatedInterp;
+
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'translate(10px)',
@@ -439,6 +439,60 @@ suite('transform-handler interpolation', function() {
     assert.equal(evaluatedInterp, 'translate(10px,0px)');
     evaluatedInterp = interp(0.6);
     assert.equal(evaluatedInterp, 'scale(2,2)');
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'scale(2)',
+        'translate(10px)');
+    evaluatedInterp = interp(0.4);
+    assert.equal(evaluatedInterp, 'scale(2,2)');
+    evaluatedInterp = interp(0.6);
+    assert.equal(evaluatedInterp, 'translate(10px,0px)');
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotateX(10deg)',
+        'rotateY(20deg)');
+    evaluatedInterp = interp(0.4);
+    assert.equal(evaluatedInterp, 'rotatex(10deg)');
+    evaluatedInterp = interp(0.6);
+    assert.equal(evaluatedInterp, 'rotatey(20deg)');
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotateX(10deg)',
+        'translate(10px) rotateX(200deg)');
+    evaluatedInterp = interp(0.4);
+    assert.equal(evaluatedInterp, 'rotatex(10deg)');
+    evaluatedInterp = interp(0.6);
+    assert.equal(evaluatedInterp, 'translate(10px,0px) rotatex(200deg)');
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotate(0rad) translate(0px)',
+        'translate(800px) rotate(9rad)');
+    evaluatedInterp = interp(0.4);
+    assert.equal(evaluatedInterp, 'rotate(0rad) translate(0px,0px)');
+    evaluatedInterp = interp(0.6);
+    assert.equal(evaluatedInterp, 'translate(800px,0px) rotate(9rad)');
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(0px, 0px) rotate(0deg) scale(1)',
+        'scale(3) translate(300px, 90px) rotate(9rad)');
+    evaluatedInterp = interp(0.4);
+    assert.equal(evaluatedInterp, 'translate(0px,0px) rotate(0deg) scale(1,1)');
+    evaluatedInterp = interp(0.6);
+    assert.equal(evaluatedInterp, 'scale(3,3) translate(300px,90px) rotate(9rad)');
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(0px, 0px) skew(30deg)',
+        'skew(0deg) translate(300px, 90px)');
+    evaluatedInterp = interp(0.4);
+    assert.equal(evaluatedInterp, 'translate(0px,0px) skew(30deg,0deg)');
+    evaluatedInterp = interp(0.6);
+    assert.equal(evaluatedInterp, 'skew(0deg,0deg) translate(300px,90px)');
 
     webAnimationsMinifill.composeMatrix = composeMatrix;
     webAnimationsMinifill.quat = quat;

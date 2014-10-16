@@ -15,8 +15,6 @@
 (function(scope, testing) {
 
   function numberToString(x) {
-    console.log('x');
-    console.log(x);
     return x.toFixed(3).replace('.000', '');
   }
 

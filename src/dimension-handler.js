@@ -63,8 +63,6 @@
   }
 
   function mergeDimensions(left, right) {
-    console.log('left');
-    console.log(left);
     var units = [], unit;
     for (unit in left)
       units.push(unit);
@@ -72,17 +70,11 @@
       if (units.indexOf(unit) < 0)
         units.push(unit);
     }
-    console.log('units');
-    console.log(units);
     left = units.map(function(unit) { return left[unit] || 0; });
-    console.log('left');
-    console.log(left);
     right = units.map(function(unit) { return right[unit] || 0; });
     return [left, right, function(values) {
       var result = values.map(function(value, i) {
         // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
-        console.log('value');
-        console.log(value);
         return scope.numberToString(value) + units[i];
       }).join(' + ');
       return values.length > 1 ? 'calc(' + result + ')' : result;
