@@ -26,6 +26,6 @@
     "grunt-template": "~0.2.3"
   },
   "scripts": {
-    "test": "grunt test gen gjslint git-status checkrepo"
+    "test": "grunt test gjslint git-status checkrepo"
   }
 }
