@@ -49,7 +49,7 @@
     }];
   }
 
-  scope.addPropertiesHandler(parseColor, mergeColors, ['color', 'backgroundColor']);
+  scope.addPropertiesHandler(parseColor, mergeColors, ['color', 'background-color']);
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.parseColor = parseColor;

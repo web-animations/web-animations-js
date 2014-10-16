@@ -39,7 +39,12 @@
     };
   }
 
+  function round(left, right) {
+    return [left, right, Math.round];
+  }
+
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity']);
+  scope.addPropertiesHandler(parseNumber, round, ['z-index']);
 
   scope.parseNumber = parseNumber;
   scope.mergeNumbers = mergeNumbers;
