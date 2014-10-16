@@ -38,7 +38,7 @@
 
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
-      return convertToString(interpolate(from, to, f););
+      return convertToString(interpolate(from, to, f));
     }
   };
 
