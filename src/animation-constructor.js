@@ -45,7 +45,7 @@
 
   var pendingGroups = [];
   scope.awaitStartTime = function(groupPlayer) {
-    if (!isNaN(groupPlayer.startTime) || !groupPlayer._isGroup)
+    if (groupPlayer.startTime !== null || !groupPlayer._isGroup)
       return;
     if (pendingGroups.length == 0) {
       requestAnimationFrame(updatePendingGroups);
@@ -74,7 +74,7 @@
 
   // TODO: Call into this less frequently.
   scope.Player.prototype._updateChildren = function() {
-    if (isNaN(this.startTime) || !this.source || !this._isGroup)
+    if (this.startTime === null || !this.source || !this._isGroup)
       return;
     var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
@@ -121,7 +121,7 @@
           player._removePlayers();
           return;
         }
-        if (isNaN(player.startTime))
+        if (player.startTime === null)
           return;
 
         player._updateChildren();
