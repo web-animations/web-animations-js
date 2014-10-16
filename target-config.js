@@ -16,6 +16,7 @@
       'src/interpolation.js',
       'src/matrix-interpolation.js',
       'src/number-handler.js',
+      'src/visibility-handler.js',
       'src/player.js',
       'src/timeline.js',
       'src/matrix-decomposition.js',
