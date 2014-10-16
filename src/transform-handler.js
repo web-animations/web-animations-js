@@ -119,13 +119,7 @@
       leftArgs,
       rightArgs,
       function(list) {
-        // console.log('Matrixlist');
-        // console.log(list);
         var mat = scope.composeMatrix(list[0], list[1], list[2], list[3], list[4]);
-        // RENEE: 3) change this so it doesn't need to check list.t (list is the result of
-        // interpolateDecomposedTransformsWithMatrice whose return value will need to change.) - OK
-        // var stringifiedArgs = list.map(scope.numberToString).join(',');
-        // return list.t + '(' + stringifiedArgs + ')';
         var stringifiedArgs = mat.map(scope.numberToString).join(',');
         return stringifiedArgs;
       }
@@ -168,7 +162,6 @@
     var types = [];
 
     if (left.length != right.length) {
-      // return mergeMatrices(left, right);
       var merged = mergeMatrices(left, right);
       leftResult = [merged[0]];
       rightResult = [merged[1]];
@@ -206,7 +199,6 @@
           rightResult = [merged[1]];
           types = [['matrix', [merged[2]]]];
           break;
-          // return mergeMatrices(left, right);
         }
 
         var leftArgsCopy = [];
@@ -234,23 +226,6 @@
 
     return [leftResult, rightResult, function(list) {
       return list.map(function(args, i) {
-        // console.log('args length');
-        // console.log(args.length);
-        // console.log('args');
-        // console.log(args);
-        // RENEE: 1) Change this so that it doesn't have to check args.t - OK
-        // if (args.t == 'matrix' || args.t == 'matrix3d') {
-        //   return types[i][1][0](args);
-        // } else {
-        //   var stringifiedArgs = args.d.map(function(arg, j) {
-        //     console.log('arg');
-        //     console.log(arg);
-        //     console.log('type');
-        //     console.log(types[i][1][j]);
-        //     return types[i][1][j](arg);
-        //   }).join(',');
-        //   return types[i][0] + '(' + stringifiedArgs + ')';
-        // }
         var stringifiedArgs = args.map(function(arg, j) {
           return types[i][1][j](arg);
         }).join(',');

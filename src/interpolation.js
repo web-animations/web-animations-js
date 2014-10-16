@@ -36,26 +36,9 @@
     throw 'Mismatched interpolation arguments ' + from + ':' + to;
   }
 
-  function interpolateTransform(from, to, f) {
-    if (from.t == 'decomposedMatrix')
-      return scope.interpolateDecomposedTransformsWithMatrices(from.d, to.d, f);
-    // return {t: from.t, d: interpolate(from.d, to.d, f)};
-    // return [{t: from.t, d: interpolate(from.d, to.d, f)}];
-    return interpolate(from.d, to.d, f);
-  }
-
   scope.Interpolation = function(from, to, convertToString) {
     return function(f) {
-      var interp;
-      // RENEE: These no longer work. Probably need to eliminate interpolateDecomposedTransformsWithMatrices.
-      if (Array.isArray(from) && from[0].t)
-        interp = from.map(function(x, i) {
-          return interpolateTransform(from[i], to[i], f);
-        });
-      else if (from.t)
-        interp = interpolateTransform(from, to, f);
-      else
-        interp = interpolate(from, to, f);
+      var interp = interpolate(from, to, f);
       return convertToString(interp);
     }
   };

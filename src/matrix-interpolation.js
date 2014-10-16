@@ -93,18 +93,6 @@
         }
       }
 
-      // if (is2D(matrix)) {
-      //   return {
-      //     t: 'matrix',
-      //     d: [matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1],
-      //         matrix[3][0], matrix[3][1]]
-      //   };
-      // }
-      // return {
-      //   t: 'matrix3d',
-      //   d: matrix[0].concat(matrix[1], matrix[2], matrix[3])
-      // };
-
       if (is2D(matrix)) {
         return [matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1],
               matrix[3][0], matrix[3][1]];
