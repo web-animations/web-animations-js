@@ -264,6 +264,53 @@ suite('transform-handler interpolation', function() {
         'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
     evaluatedInterp = interp(0.5);
     compareMatrices(evaluatedInterp, [1, -0.1, 0, 1, 55, 0], 6);
+
+    // Test matrices with [3][3] != 1
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
+        'translate(10px) matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2) rotate(100deg)');
+    evaluatedInterp = interp(0.4);
+    functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 3);
+    assert.equal(functions[0], 'translate(64px,0px)');
+    compareMatrices(
+        functions[1],
+        [1, 0, 0, 1, 0, 0],
+        6);
+    assert.equal(functions[2], 'rotate(46deg)');
+    evaluatedInterp = interp(0.6);
+    functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 3);
+    assert.equal(functions[0], 'translate(46px,0px)');
+    compareMatrices(
+        functions[1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2],
+        16);
+    assert.equal(functions[2], 'rotate(64deg)');
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(10px) matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2) rotate(100deg)',
+        'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)');
+    evaluatedInterp = interp(0.4);
+    functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 3);
+    assert.equal(functions[0], 'translate(46px,0px)');
+    compareMatrices(
+        functions[1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2],
+        16);
+    assert.equal(functions[2], 'rotate(64deg)');
+    evaluatedInterp = interp(0.6);
+    functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 3);
+    assert.equal(functions[0], 'translate(64px,0px)');
+    compareMatrices(
+        functions[1],
+        [1, 0, 0, 1, 0, 0],
+        6);
+    assert.equal(functions[2], 'rotate(46deg)');
   });
 
   test('transform interpolations that require matrix decomposition', function() {

@@ -109,7 +109,7 @@
 
       // skip normalization step as m3d[3][3] should always be 1
       if (m3d[3][3] !== 1) {
-        throw 'attempt to decompose non-normalized matrix';
+        return null;
       }
 
       var perspectiveMatrix = m3d.concat(); // copy m3d
@@ -214,10 +214,7 @@
         ];
       }
 
-      return {
-        translate: translate, scale: scale, skew: skew,
-        quaternion: quaternion, perspective: perspective
-      };
+      return [translate, scale, skew, quaternion, perspective];
     }
     return decomposeMatrix;
   })();
@@ -418,9 +415,7 @@
   }
 
   function makeMatrixDecomposition(transformList) {
-    var decomp = decomposeMatrix(convertToMatrix(transformList));
-    var result = [[decomp.translate, decomp.scale, decomp.skew, decomp.quaternion, decomp.perspective]];
-    return result;
+    return [decomposeMatrix(convertToMatrix(transformList))];
   }
 
   scope.dot = dot;

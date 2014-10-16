@@ -108,13 +108,15 @@
     if (left.decompositionPair !== right) {
       left.decompositionPair = right;
       var leftArgs = scope.makeMatrixDecomposition(left);
-      leftArgs[0].push(0);
     }
     if (right.decompositionPair !== left) {
       right.decompositionPair = left;
       var rightArgs = scope.makeMatrixDecomposition(right);
-      rightArgs[0].push(1);
     }
+    if (leftArgs[0] == null || rightArgs[0] == null)
+      return [[false], [true], function(x) { return x ? right[0].d : left[0].d; }];
+    leftArgs[0].push(0);
+    rightArgs[0].push(1);
     return [
       leftArgs,
       rightArgs,
