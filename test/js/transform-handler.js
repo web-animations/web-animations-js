@@ -233,9 +233,6 @@ suite('transform-handler interpolation', function() {
     assert.equal(functions[0], 'translate(55px,0px)');
     compareMatrices(functions[1], [1, -0.1, 0, 1, 0, 0], 6);
 
-    // var interp;
-    // var evaluatedInterp;
-    // var functions;
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
@@ -277,8 +274,6 @@ suite('transform-handler interpolation', function() {
     var evaluatedInterp = interp(0.4);
     compareMatrices(evaluatedInterp, [1.4, 0, 0, 1.4, 6, 0], 6);
 
-    // var interp;
-    // var evaluatedInterp;
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'scale(2)',
