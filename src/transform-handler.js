@@ -30,15 +30,18 @@
   var Opx = {px: 0};
   var Odeg = {deg: 0};
 
-  // FIXME: We should support matrix, matrix3d, perspective and rotate3d
+  // FIXME: We should support perspective
 
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
+    matrix: ['NNNNNN', [_, _, 0, 0, _, _, 0, 0, 0, 0, 1, 0, _, _, 0, 1], id],
+    matrix3d: ['NNNNNNNNNNNNNNNN', id],
     rotate: ['A'],
     rotatex: ['A'],
     rotatey: ['A'],
     rotatez: ['A'],
+    rotate3d: ['NNNA'],
     scale: ['Nn', cast([_, _, 1]), id],
     scalex: ['N', cast([_, 1, 1]), cast([_, 1])],
     scaley: ['N', cast([1, _, 1]), cast([1, _])],
@@ -71,7 +74,6 @@
       var functionData = transformFunctions[functionName];
       if (!functionData)
         return;
-
       var args = match[2].split(',');
       var argTypes = functionData[0];
       if (argTypes.length < args.length)
@@ -95,12 +97,37 @@
           return;
         parsedArgs.push(parsedArg);
       }
-      result.push([functionName, parsedArgs]);
+      result.push({t: functionName, d: parsedArgs});
 
       if (transformRegExp.lastIndex == string.length)
         return result;
     }
   };
+
+  function mergeMatrices(left, right) {
+    if (left.decompositionPair !== right) {
+      left.decompositionPair = right;
+      var leftArgs = scope.makeMatrixDecomposition(left);
+    }
+    if (right.decompositionPair !== left) {
+      right.decompositionPair = left;
+      var rightArgs = scope.makeMatrixDecomposition(right);
+    }
+    if (leftArgs[0] == null || rightArgs[0] == null)
+      return [[false], [true], function(x) { return x ? right[0].d : left[0].d; }];
+    leftArgs[0].push(0);
+    rightArgs[0].push(1);
+    return [
+      leftArgs,
+      rightArgs,
+      function(list) {
+        var quat = scope.quat(leftArgs[0][3], rightArgs[0][3], list[5]);
+        var mat = scope.composeMatrix(list[0], list[1], list[2], quat, list[4]);
+        var stringifiedArgs = mat.map(scope.numberToString).join(',');
+        return stringifiedArgs;
+      }
+    ];
+  }
 
   function typeTo2D(type) {
     return type.replace(/[xy]/, '');
@@ -111,7 +138,6 @@
   }
 
   function mergeTransforms(left, right) {
-    // FIXME: We should add optional matrix interpolation support for the early return cases
     var flipResults = false;
     if (!left.length || !right.length) {
       if (!left.length) {
@@ -120,60 +146,78 @@
         right = [];
       }
       for (var i = 0; i < left.length; i++) {
-        var type = left[i][0];
-        var args = left[i][1];
+        var type = left[i].t;
+        var args = left[i].d;
         var defaultValue = type.substr(0, 5) == 'scale' ? 1 : 0;
-        right.push([type, args.map(function(arg) {
+        right.push({t: type, d: args.map(function(arg) {
           if (typeof arg == 'number')
             return defaultValue;
           var result = {};
           for (var unit in arg)
             result[unit] = defaultValue;
           return result;
-        })]);
+        })});
       }
     }
 
-    if (left.length != right.length)
-      return;
     var leftResult = [];
     var rightResult = [];
     var types = [];
-    for (var i = 0; i < left.length; i++) {
-      var leftType = left[i][0];
-      var rightType = right[i][0];
-      var leftArgs = left[i][1];
-      var rightArgs = right[i][1];
 
-      var leftFunctionData = transformFunctions[leftType];
-      var rightFunctionData = transformFunctions[rightType];
+    if (left.length != right.length) {
+      var merged = mergeMatrices(left, right);
+      leftResult = [merged[0]];
+      rightResult = [merged[1]];
+      types = [['matrix', [merged[2]]]];
+    } else {
+      for (var i = 0; i < left.length; i++) {
+        var leftType = left[i].t;
+        var rightType = right[i].t;
+        var leftArgs = left[i].d;
+        var rightArgs = right[i].d;
 
-      var type;
-      if (leftType == rightType) {
-        type = leftType;
-      } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
-        type = typeTo2D(leftType);
-        leftArgs = leftFunctionData[2](leftArgs);
-        rightArgs = rightFunctionData[2](rightArgs);
-      } else if (leftFunctionData[1] && rightFunctionData[1] && typeTo3D(leftType) == typeTo3D(rightType)) {
-        type = typeTo3D(leftType);
-        leftArgs = leftFunctionData[1](leftArgs);
-        rightArgs = rightFunctionData[1](rightArgs);
-      } else {
-        return;
+        var leftFunctionData = transformFunctions[leftType];
+        var rightFunctionData = transformFunctions[rightType];
+
+        var type;
+        if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
+          var merged = mergeMatrices([left[i]], [right[i]]);
+          leftResult.push(merged[0]);
+          rightResult.push(merged[1]);
+          types.push(['matrix', [merged[2]]]);
+          continue;
+        } else if (leftType == rightType) {
+          type = leftType;
+        } else if (leftFunctionData[2] && rightFunctionData[2] && typeTo2D(leftType) == typeTo2D(rightType)) {
+          type = typeTo2D(leftType);
+          leftArgs = leftFunctionData[2](leftArgs);
+          rightArgs = rightFunctionData[2](rightArgs);
+        } else if (leftFunctionData[1] && rightFunctionData[1] && typeTo3D(leftType) == typeTo3D(rightType)) {
+          type = typeTo3D(leftType);
+          leftArgs = leftFunctionData[1](leftArgs);
+          rightArgs = rightFunctionData[1](rightArgs);
+        } else {
+          var merged = mergeMatrices(left, right);
+          leftResult = [merged[0]];
+          rightResult = [merged[1]];
+          types = [['matrix', [merged[2]]]];
+          break;
+        }
+
+        var leftArgsCopy = [];
+        var rightArgsCopy = [];
+        var stringConversions = [];
+        for (var j = 0; j < leftArgs.length; j++) {
+          var merge = typeof leftArgs[j] == 'number' ? scope.mergeNumbers : scope.mergeDimensions;
+          var merged = merge(leftArgs[j], rightArgs[j]);
+          leftArgsCopy[j] = merged[0];
+          rightArgsCopy[j] = merged[1];
+          stringConversions.push(merged[2]);
+        }
+        leftResult.push(leftArgsCopy);
+        rightResult.push(rightArgsCopy);
+        types.push([type, stringConversions]);
       }
-
-      var stringConversions = [];
-      for (var j = 0; j < leftArgs.length; j++) {
-        var merge = typeof leftArgs[j] == 'number' ? scope.mergeNumbers : scope.mergeDimensions;
-        var merged = merge(leftArgs[j], rightArgs[j]);
-        leftArgs[j] = merged[0];
-        rightArgs[j] = merged[1];
-        stringConversions.push(merged[2]);
-      }
-      leftResult.push(leftArgs);
-      rightResult.push(rightArgs);
-      types.push([type, stringConversions]);
     }
 
     if (flipResults) {
@@ -187,15 +231,17 @@
         var stringifiedArgs = args.map(function(arg, j) {
           return types[i][1][j](arg);
         }).join(',');
+        if (types[i][0] == 'matrix' && stringifiedArgs.split(',').length == 16)
+          types[i][0] = 'matrix3d';
         return types[i][0] + '(' + stringifiedArgs + ')';
+
       }).join(' ');
     }];
   }
 
   scope.addPropertiesHandler(parseTransform, mergeTransforms, ['transform']);
 
-  if (WEB_ANIMATIONS_TESTING) {
+  if (WEB_ANIMATIONS_TESTING)
     testing.parseTransform = parseTransform;
-  }
 
 })(webAnimationsMinifill, webAnimationsTesting);

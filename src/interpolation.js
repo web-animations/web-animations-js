@@ -21,6 +21,11 @@
     if ((typeof from == 'boolean') && (typeof to == 'boolean')) {
       return f < 0.5 ? from : to;
     }
+
+    WEB_ANIMATIONS_TESTING && console.assert(
+        Array.isArray(from) && Array.isArray(to),
+        'If interpolation arguments are not numbers or bools they must be arrays');
+
     if (from.length == to.length) {
       var r = [];
       for (var i = 0; i < from.length; i++) {
