@@ -33,7 +33,7 @@
   scope.Player = function(source) {
     this._sequenceNumber = sequenceNumber++;
     this._currentTime = 0;
-    this._startTime = NaN;
+    this._startTime = null;
     this.paused = false;
     this._playbackRate = 1;
     this._inTimeline = true;
@@ -69,8 +69,8 @@
     },
     set currentTime(newTime) {
       if (scope.restart())
-        this._startTime = NaN;
-      if (!this.paused && !isNaN(this._startTime)) {
+        this._startTime = null;
+      if (!this.paused && this._startTime != null) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
       if (this._currentTime == newTime)
@@ -79,7 +79,7 @@
       scope.invalidateEffects();
     },
     get startTime() {
-      return isNaN(this._startTime) ? null : this._startTime;
+      return this._startTime;
     },
     set startTime(newTime) {
       if (this.paused || this._idle)
@@ -97,7 +97,7 @@
     get playState() {
       if (this._idle)
         return 'idle';
-      if ((isNaN(this._startTime) && !this.paused && this.playbackRate != 0) || this._currentTimePending)
+      if ((this._startTime == null && !this.paused && this.playbackRate != 0) || this._currentTimePending)
         return 'pending';
       if (this.paused)
         return 'paused';
@@ -116,7 +116,7 @@
         this._startTime = this._timeline.currentTime - this._currentTime / this._playbackRate;
       }
       else
-        this._startTime = NaN;
+        this._startTime = null;
       this._idle = false;
       this._ensureAlive();
     },
@@ -124,7 +124,7 @@
       if (!this.finished && !this.paused && !this._idle) {
         this._currentTimePending = true;
       }
-      this._startTime = NaN;
+      this._startTime = null;
       this.paused = true;
     },
     finish: function() {
@@ -136,7 +136,7 @@
       this._inEffect = false;
       this._idle = true;
       this.currentTime = 0;
-      this._startTime = NaN;
+      this._startTime = null;
     },
     reverse: function() {
       this._playbackRate *= -1;
@@ -168,7 +168,7 @@
     },
     _tick: function(timelineTime) {
       if (!this._idle && !this.paused) {
-        if (isNaN(this._startTime))
+        if (this._startTime == null)
           this.startTime = timelineTime - this._currentTime / this.playbackRate;
         else if (!this.finished)
           this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
