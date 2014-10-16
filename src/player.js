@@ -43,7 +43,7 @@
     this._source = source;
     this._inEffect = this._source._update(0);
     this._idle = true;
-    this._currentTimePending = true;
+    this._currentTimePending = false;
   };
 
   scope.Player.prototype = {
@@ -63,7 +63,7 @@
       }
     },
     get currentTime() {
-      if (this._idle)
+      if (this._idle || this._currentTimePending)
         return null;
       return this._currentTime;
     },
@@ -79,7 +79,7 @@
       scope.invalidateEffects();
     },
     get startTime() {
-      return this._startTime;
+      return isNaN(this._startTime) ? null : this._startTime;
     },
     set startTime(newTime) {
       if (this.paused || this._idle)
