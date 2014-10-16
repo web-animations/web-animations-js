@@ -16,11 +16,20 @@
 
   var propertyHandlers = {};
 
+  function addPropertyHandler(parser, merger, property) {
+    propertyHandlers[property] = propertyHandlers[property] || [];
+    propertyHandlers[property].push([parser, merger]);
+  }
   function addPropertiesHandler(parser, merger, properties) {
     for (var i = 0; i < properties.length; i++) {
+      WEB_ANIMATIONS_TESTING && console.assert(!/-/.test(property));
       var property = properties[i];
-      propertyHandlers[property] = propertyHandlers[property] || [];
-      propertyHandlers[property].push([parser, merger]);
+      addPropertyHandler(parser, merger, property);
+      if (/-/.test(property)) {
+        addPropertyHandler(parser, merger, property.replace(/-(.)/g, function(_, c) {
+          return c.toUpperCase();
+        }));
+      }
     }
   }
   scope.addPropertiesHandler = addPropertiesHandler;
