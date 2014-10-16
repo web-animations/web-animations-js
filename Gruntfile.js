@@ -5,24 +5,24 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-saucelabs');
   grunt.loadNpmTasks('grunt-git-status');
+  grunt.loadNpmTasks('grunt-template');
 
   var targetConfig = require('./target-config.js');
 
-  var uglifyTargets = {};
-  var genTargets = {};
-  var testTargets = {};
-  for (var target in targetConfig) {
-    var suffix = target === targetConfig.defaultTarget ? '' : '-' + target;
-    uglifyTargets[target] = {
+  var config = {
+    uglify: {},
+    template: {}
+  };
+
+  function uglify(sources, target, options) {
+    config.uglify[target] = {
       options: {
         sourceMap: true,
-        sourceMapName: 'web-animations' + suffix + '.min.js.map',
+        sourceMapName: target + '.map',
         banner: grunt.file.read('templates/boilerplate'),
         wrap: true,
         compress: {
-          global_defs: {
-            "WEB_ANIMATIONS_TESTING": false
-          },
+          global_defs: options,
           dead_code: true
         },
         mangle: {
@@ -30,16 +30,46 @@ module.exports = function(grunt) {
         },
       },
       nonull: true,
-      dest: 'web-animations' + suffix + '.min.js',
-      src: targetConfig[target].src,
+      dest: target,
+      src: sources
     };
-    genTargets[target] = targetConfig[target];
-    testTargets[target] = {};
+    return target;
   }
 
+  function gen(sources, target) {
+    var suffix = target == targetConfig.defaultTarget ? '' : '-' + target
+    generateFromTemplate('templates/web-animations.js', {target: target}, 'web-animations' + suffix + '.js');
+    generateFromTemplate('templates/web-animations.html', {src: sources}, 'web-animations' + suffix + '.html');
+    generateFromTemplate('templates/runner.html', {target: target}, 'test/runner' + suffix + '.html');
+  }
+
+  function generateFromTemplate(source, data, target) {
+    var targetSpec = {};
+    targetSpec[target] = [source];
+    config.template[target] = {
+      options: {
+        data: data
+      },
+      files: targetSpec
+    }
+    return target;
+  }
+
+  var uglifyConfig = {
+    WEB_ANIMATIONS_TESTING: false
+  };
+
+  uglify(targetConfig.minifill.src, 'web-animations-minifill.min.js', uglifyConfig);
+  uglify(targetConfig.maxifill.src, 'web-animations.min.js', uglifyConfig);
+
+  gen(targetConfig.minifill.src, 'minifill');
+  gen(targetConfig.maxifill.src, 'maxifill');
+
+  var testTargets = {'minifill': {}, 'maxifill': {}};
+
   grunt.initConfig({
-    uglify: uglifyTargets,
-    gen: genTargets,
+    uglify: config.uglify,
+    template: config.template,
     checkrepo: {
       all: {
         clean: true,
@@ -74,34 +104,6 @@ module.exports = function(grunt) {
     sauce: testTargets,
   });
 
-  grunt.task.registerMultiTask('gen', 'Generate web-animations-<target>.js, web-animations-<target>.html, test/runner-<target>.js', function() {
-    var target = this.target;
-    var config = targetConfig[target];
-
-    (function() {
-      var template = grunt.file.read('templates/web-animations.js')
-      var filename = 'web-animations' + (target === targetConfig.defaultTarget ? '' : '-' + target) + '.js';
-      var contents = grunt.template.process(template, {data: {target: target}});
-      grunt.file.write(filename, contents);
-      grunt.log.writeln('File ' + filename + ' created');
-    })();
-
-    (function() {
-      var template = grunt.file.read('templates/web-animations.html')
-      var filename = 'web-animations' + (target === targetConfig.defaultTarget ? '' : '-' + target) + '.html';
-      var contents = grunt.template.process(template, {data: {src: config.src}});
-      grunt.file.write(filename, contents);
-      grunt.log.writeln('File ' + filename + ' created');
-    })();
-
-    (function() {
-      var template = grunt.file.read('templates/runner.html')
-      var filename = 'test/runner' + (target === targetConfig.defaultTarget ? '' : '-' + target) + '.html';
-      var contents = grunt.template.process(template, {data: {target: target}});
-      grunt.file.write(filename, contents);
-      grunt.log.writeln('File ' + filename + ' created');
-    })();
-  });
 
   grunt.task.registerMultiTask('test', 'Run <target> tests under Karma', function() {
     var done = this.async();
@@ -133,13 +135,5 @@ module.exports = function(grunt) {
     });
   });
 
-  for (var target in targetConfig) {
-    grunt.task.registerTask(target, [
-      'uglify:' + target,
-      'gen:' + target,
-      'gjslint',
-    ]);
-  }
-
-  grunt.task.registerTask('default', ['uglify', 'gen', 'gjslint']);
+  grunt.task.registerTask('default', ['uglify', 'template', 'gjslint']);
 };
