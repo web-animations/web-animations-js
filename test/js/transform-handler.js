@@ -393,4 +393,13 @@ suite('transform-handler interpolation', function() {
     evaluatedInterp = interp(0.4);
     compareMatrices(evaluatedInterp, [0.47, 0.89, -0.89, 0.47, 320, 0], 6);
   });
+
+  test('transform interpolations involving matrices when matrix code is not avaliable', function() {
+    var interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'matrix(1, 0, 0, 1, 0, 0)',
+        'matrix(1, -0.2, 0, 1, 0, 0)');
+    var evaluatedInterp = interpolatedMatrix(0.5);
+    compareMatrices(evaluatedInterp, [1, -0.1, 0, 1, 0, 0], 6);
+  });
 });
