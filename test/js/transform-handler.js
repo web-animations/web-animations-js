@@ -220,6 +220,22 @@ suite('transform-handler interpolation', function() {
         'matrix3d(1, 1, 0, 0, -2, 1, 0, 0, 0, 0, 1, 0, 10, 10, 0, 1)');
     evaluatedInterp = interpolatedMatrix(0.5);
     compareMatrices(evaluatedInterp, [1.12, 0.46, -0.84, 1.34, 5, 5], 6);
+
+    // Test matrices with [3][3] != 1
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'matrix(1, 0, 0, 1, 0, 0)',
+        'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2)');
+    evaluatedInterp = interp(0.4);
+    compareMatrices(
+        evaluatedInterp,
+        [1, 0, 0, 1, 0, 0],
+        6);
+    evaluatedInterp = interp(0.6);
+    compareMatrices(
+        evaluatedInterp,
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2],
+        16);
   });
 
   test('transform interpolations with matrices and other functions', function() {
