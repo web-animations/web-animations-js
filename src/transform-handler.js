@@ -229,11 +229,9 @@
         var stringifiedArgs = args.map(function(arg, j) {
           return types[i][1][j](arg);
         }).join(',');
-
         if (types[i][0] == 'matrix' && stringifiedArgs.split(',').length == 16)
-          return 'matrix3d(' + stringifiedArgs + ')';
-        else
-          return types[i][0] + '(' + stringifiedArgs + ')';
+          types[i][0] = 'matrix3d';
+        return types[i][0] + '(' + stringifiedArgs + ')';
 
       }).join(' ');
     }];
