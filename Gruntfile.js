@@ -55,12 +55,12 @@ module.exports = function(grunt) {
     return target;
   }
 
-  var minifillConfig = {
+  var uglifyConfig = {
     WEB_ANIMATIONS_TESTING: false
   };
 
-  uglify(targetConfig.minifill.src, 'web-animations-minifill.min.js', minifillConfig);
-  uglify(targetConfig.maxifill.src, 'web-animations.min.js', minifillConfig);
+  uglify(targetConfig.minifill.src, 'web-animations-minifill.min.js', uglifyConfig);
+  uglify(targetConfig.maxifill.src, 'web-animations.min.js', uglifyConfig);
 
   gen(targetConfig.minifill.src, 'minifill');
   gen(targetConfig.maxifill.src, 'maxifill');
