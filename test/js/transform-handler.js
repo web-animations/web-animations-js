@@ -395,11 +395,54 @@ suite('transform-handler interpolation', function() {
   });
 
   test('transform interpolations involving matrices when matrix code is not avaliable', function() {
-    var interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
+    var composeMatrix = webAnimationsMinifill.composeMatrix;
+    var quat = webAnimationsMinifill.quat;
+    var dot = webAnimationsMinifill.dot;
+    var makeMatrixDecomposition = webAnimationsMinifill.makeMatrixDecomposition;
+    webAnimationsMinifill.composeMatrix = null;
+    webAnimationsMinifill.quat = null;
+    webAnimationsMinifill.dot = null;
+    webAnimationsMinifill.makeMatrixDecomposition = null;
+
+    var interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'matrix(1, 0, 0, 1, 0, 0)',
         'matrix(1, -0.2, 0, 1, 0, 0)');
-    var evaluatedInterp = interpolatedMatrix(0.5);
-    compareMatrices(evaluatedInterp, [1, -0.1, 0, 1, 0, 0], 6);
+    var evaluatedInterp = interp(0.4);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 1, 0, 0], 6);
+    evaluatedInterp = interp(0.6);
+    compareMatrices(evaluatedInterp, [1, -0.2, 0, 1, 0, 0], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
+        'translate(10px) matrix(1, -0.2, 0, 1, 0, 0) rotate(100deg)');
+    evaluatedInterp = interp(0.4);
+    var functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 3);
+    assert.equal(functions[0], 'translate(64px,0px)');
+    compareMatrices(functions[1], [1, 0, 0, 1, 0, 0], 6);
+    assert.equal(functions[2], 'rotate(46deg)');
+    evaluatedInterp = interp(0.6);
+    functions = evaluatedInterp.split(' ');
+    assert.equal(functions.length, 3);
+    assert.equal(functions[0], 'translate(46px,0px)');
+    compareMatrices(functions[1], [1, -0.2, 0, 1, 0, 0], 6);
+    assert.equal(functions[2], 'rotate(64deg)');
+    // var interp;
+    // var evaluatedInterp;
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(10px)',
+        'scale(2)');
+    evaluatedInterp = interp(0.4);
+    assert.equal(evaluatedInterp, 'translate(10px,0px)');
+    evaluatedInterp = interp(0.6);
+    assert.equal(evaluatedInterp, 'scale(2,2)');
+
+    webAnimationsMinifill.composeMatrix = composeMatrix;
+    webAnimationsMinifill.quat = quat;
+    webAnimationsMinifill.dot = dot;
+    webAnimationsMinifill.makeMatrixDecomposition = makeMatrixDecomposition;
   });
 });

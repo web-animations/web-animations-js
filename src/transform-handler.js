@@ -113,8 +113,14 @@
       right.decompositionPair = left;
       var rightArgs = scope.makeMatrixDecomposition ? scope.makeMatrixDecomposition(right) : [null];
     }
-    if (leftArgs[0] == null || rightArgs[0] == null)
-      return [[false], [true], function(x) { return x ? right[0].d : left[0].d; }];
+    if (leftArgs[0] == null || rightArgs[0] == null) {
+      if ((right[0].t == 'matrix' || right[0].t == 'matrix3d') &&
+          (left[0].t == 'matrix' || left[0].t == 'matrix3d')) {
+        return [[false], [true], function(x) { return x ? right[0].d : left[0].d; }];
+      } else {
+        return [false, true, null];
+      }
+    }
     leftArgs[0].push(0);
     rightArgs[0].push(1);
     return [
@@ -135,6 +141,21 @@
 
   function typeTo3D(type) {
     return type.replace(/(x|y|z|3d)?$/, '3d');
+  }
+
+  function transformFlip(left, right) {
+    return function(x) {
+      var value = x ? right : left;
+      var result = value.map(function(args, j) {
+        var merge = typeof (value[j].d)[0] == 'number' ? scope.mergeNumbers : scope.mergeDimensions;
+        var stringifiedArgs = value[j].d.map(function(arg, k) {
+          var mergedFunctionArgs = merge((value[j].d)[k], (value[j].d)[k]);
+          return x ? mergedFunctionArgs[2](mergedFunctionArgs[1]) : mergedFunctionArgs[2](mergedFunctionArgs[0]);
+        }).join(',');
+        return (value[j].t + '(' + stringifiedArgs + ')');
+      }).join(' ');
+      return result;
+    };
   }
 
   function mergeTransforms(left, right) {
@@ -168,6 +189,13 @@
       var merged = mergeMatrices(left, right);
       leftResult = [merged[0]];
       rightResult = [merged[1]];
+      // console.log('leftResult');
+      // console.log(leftResult);
+      // console.log('rightResult');
+      // console.log(rightResult);
+      if(typeof merged[0][0] == 'boolean' || typeof merged[1][0] == 'boolean') {
+        return merged;
+      }
       types = [['matrix', [merged[2]]]];
     } else {
       for (var i = 0; i < left.length; i++) {
@@ -197,10 +225,14 @@
           leftArgs = leftFunctionData[1](leftArgs);
           rightArgs = rightFunctionData[1](rightArgs);
         } else {
-          var merged = mergeMatrices(left, right);
-          leftResult = [merged[0]];
-          rightResult = [merged[1]];
-          types = [['matrix', [merged[2]]]];
+          // if(typeof mergedMatrices[0] == 'boolean' || typeof mergedMatrices[1] == 'boolean') {
+            // return [mergedMatrices[0], mergedMatrices[1], transformFlip(left, right)];
+          if (!scope.makeMatrixDecomposition)
+            return [false, true, transformFlip(left, right)];
+          var mergedMatrices = mergeMatrices(left, right);
+          leftResult = [mergedMatrices[0]];
+          rightResult = [mergedMatrices[1]];
+          types = [['matrix', [mergedMatrices[2]]]];
           break;
         }
 
