@@ -258,6 +258,7 @@ suite('transform-handler interpolation', function() {
         16);
     assert.equal(functions[2], 'rotate(55deg)');
 
+    // Contains matrices and requires matrix decomposition.
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'matrix(1, 0, 0, 1, 0, 0) translate(100px)',
@@ -405,94 +406,40 @@ suite('transform-handler interpolation', function() {
     webAnimationsMinifill.dot = null;
     webAnimationsMinifill.makeMatrixDecomposition = null;
 
-    var interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
-        'matrix(1, 0, 0, 1, 0, 0)',
-        'matrix(1, -0.2, 0, 1, 0, 0)');
-    var evaluatedInterp = interp(0.4);
-    compareMatrices(evaluatedInterp, [1, 0, 0, 1, 0, 0], 6);
-    evaluatedInterp = interp(0.6);
-    compareMatrices(evaluatedInterp, [1, -0.2, 0, 1, 0, 0], 6);
+    var testFlipTransformLists = function(keyframeFrom, keyframeTo) {
+      var interp = webAnimationsMinifill.propertyInterpolation(
+          'transform',
+          keyframeFrom,
+          keyframeTo);
+      var evaluatedInterp = interp(0.49);
+      assert.equal(evaluatedInterp, keyframeFrom);
+      evaluatedInterp = interp(0.51);
+      assert.equal(evaluatedInterp, keyframeTo);
+    };
 
-    interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
+    // Function lists with just matrices.
+    testFlipTransformLists('matrix(1, 0, 0, 1, 0, 0)', 'matrix(1, -0.2, 0, 1, 0, 0)');
+    // Function lists with matrices and other functions.
+    testFlipTransformLists(
         'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
         'translate(10px) matrix(1, -0.2, 0, 1, 0, 0) rotate(100deg)');
-    evaluatedInterp = interp(0.4);
-    var functions = evaluatedInterp.split(' ');
-    assert.equal(functions.length, 3);
-    assert.equal(functions[0], 'translate(64px,0px)');
-    compareMatrices(functions[1], [1, 0, 0, 1, 0, 0], 6);
-    assert.equal(functions[2], 'rotate(46deg)');
-    evaluatedInterp = interp(0.6);
-    functions = evaluatedInterp.split(' ');
-    assert.equal(functions.length, 3);
-    assert.equal(functions[0], 'translate(46px,0px)');
-    compareMatrices(functions[1], [1, -0.2, 0, 1, 0, 0], 6);
-    assert.equal(functions[2], 'rotate(64deg)');
-
-    interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
-        'translate(10px)',
-        'scale(2)');
-    evaluatedInterp = interp(0.4);
-    assert.equal(evaluatedInterp, 'translate(10px,0px)');
-    evaluatedInterp = interp(0.6);
-    assert.equal(evaluatedInterp, 'scale(2,2)');
-
-    interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
-        'scale(2)',
-        'translate(10px)');
-    evaluatedInterp = interp(0.4);
-    assert.equal(evaluatedInterp, 'scale(2,2)');
-    evaluatedInterp = interp(0.6);
-    assert.equal(evaluatedInterp, 'translate(10px,0px)');
-
-    interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
-        'rotateX(10deg)',
-        'rotateY(20deg)');
-    evaluatedInterp = interp(0.4);
-    assert.equal(evaluatedInterp, 'rotatex(10deg)');
-    evaluatedInterp = interp(0.6);
-    assert.equal(evaluatedInterp, 'rotatey(20deg)');
-
-    interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
-        'rotateX(10deg)',
-        'translate(10px) rotateX(200deg)');
-    evaluatedInterp = interp(0.4);
-    assert.equal(evaluatedInterp, 'rotatex(10deg)');
-    evaluatedInterp = interp(0.6);
-    assert.equal(evaluatedInterp, 'translate(10px,0px) rotatex(200deg)');
-
-    interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
+    // Function lists that require matrix decomposition to be interpolated.
+    testFlipTransformLists('translate(10px)', 'scale(2)');
+    testFlipTransformLists('scale(2)', 'translate(10px)');
+    testFlipTransformLists('rotateX(10deg)', 'rotateY(20deg)');
+    testFlipTransformLists('rotateX(10deg)', 'translate(10px) rotateX(200deg)');
+    testFlipTransformLists(
         'rotate(0rad) translate(0px)',
         'translate(800px) rotate(9rad)');
-    evaluatedInterp = interp(0.4);
-    assert.equal(evaluatedInterp, 'rotate(0rad) translate(0px,0px)');
-    evaluatedInterp = interp(0.6);
-    assert.equal(evaluatedInterp, 'translate(800px,0px) rotate(9rad)');
-
-    interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
+    testFlipTransformLists(
         'translate(0px, 0px) rotate(0deg) scale(1)',
         'scale(3) translate(300px, 90px) rotate(9rad)');
-    evaluatedInterp = interp(0.4);
-    assert.equal(evaluatedInterp, 'translate(0px,0px) rotate(0deg) scale(1,1)');
-    evaluatedInterp = interp(0.6);
-    assert.equal(evaluatedInterp, 'scale(3,3) translate(300px,90px) rotate(9rad)');
-
-    interp = webAnimationsMinifill.propertyInterpolation(
-        'transform',
+    testFlipTransformLists(
         'translate(0px, 0px) skew(30deg)',
         'skew(0deg) translate(300px, 90px)');
-    evaluatedInterp = interp(0.4);
-    assert.equal(evaluatedInterp, 'translate(0px,0px) skew(30deg,0deg)');
-    evaluatedInterp = interp(0.6);
-    assert.equal(evaluatedInterp, 'skew(0deg,0deg) translate(300px,90px)');
+    testFlipTransformLists(
+        'matrix(1, 0, 0, 1, 0, 0) translate(100px)',
+        'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
 
     webAnimationsMinifill.composeMatrix = composeMatrix;
     webAnimationsMinifill.quat = quat;
