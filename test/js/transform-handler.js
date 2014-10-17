@@ -417,33 +417,35 @@ suite('transform-handler interpolation', function() {
       assert.equal(evaluatedInterp, keyframeTo);
     };
 
-    // Function lists with just matrices.
-    testFlipTransformLists('matrix(1, 0, 0, 1, 0, 0)', 'matrix(1, -0.2, 0, 1, 0, 0)');
-    // Function lists with matrices and other functions.
-    testFlipTransformLists(
-        'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
-        'translate(10px) matrix(1, -0.2, 0, 1, 0, 0) rotate(100deg)');
-    // Function lists that require matrix decomposition to be interpolated.
-    testFlipTransformLists('translate(10px)', 'scale(2)');
-    testFlipTransformLists('scale(2)', 'translate(10px)');
-    testFlipTransformLists('rotateX(10deg)', 'rotateY(20deg)');
-    testFlipTransformLists('rotateX(10deg)', 'translate(10px) rotateX(200deg)');
-    testFlipTransformLists(
-        'rotate(0rad) translate(0px)',
-        'translate(800px) rotate(9rad)');
-    testFlipTransformLists(
-        'translate(0px, 0px) rotate(0deg) scale(1)',
-        'scale(3) translate(300px, 90px) rotate(9rad)');
-    testFlipTransformLists(
-        'translate(0px, 0px) skew(30deg)',
-        'skew(0deg) translate(300px, 90px)');
-    testFlipTransformLists(
-        'matrix(1, 0, 0, 1, 0, 0) translate(100px)',
-        'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
-
-    webAnimationsMinifill.composeMatrix = composeMatrix;
-    webAnimationsMinifill.quat = quat;
-    webAnimationsMinifill.dot = dot;
-    webAnimationsMinifill.makeMatrixDecomposition = makeMatrixDecomposition;
+    try {
+      // Function lists with just matrices.
+      testFlipTransformLists('matrix(1, 0, 0, 1, 0, 0)', 'matrix(1, -0.2, 0, 1, 0, 0)');
+      // Function lists with matrices and other functions.
+      testFlipTransformLists(
+          'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
+          'translate(10px) matrix(1, -0.2, 0, 1, 0, 0) rotate(100deg)');
+      // Function lists that require matrix decomposition to be interpolated.
+      testFlipTransformLists('translate(10px)', 'scale(2)');
+      testFlipTransformLists('scale(2)', 'translate(10px)');
+      testFlipTransformLists('rotateX(10deg)', 'rotateY(20deg)');
+      testFlipTransformLists('rotateX(10deg)', 'translate(10px) rotateX(200deg)');
+      testFlipTransformLists(
+          'rotate(0rad) translate(0px)',
+          'translate(800px) rotate(9rad)');
+      testFlipTransformLists(
+          'translate(0px, 0px) rotate(0deg) scale(1)',
+          'scale(3) translate(300px, 90px) rotate(9rad)');
+      testFlipTransformLists(
+          'translate(0px, 0px) skew(30deg)',
+          'skew(0deg) translate(300px, 90px)');
+      testFlipTransformLists(
+          'matrix(1, 0, 0, 1, 0, 0) translate(100px)',
+          'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
+    } finally {
+      webAnimationsMinifill.composeMatrix = composeMatrix;
+      webAnimationsMinifill.quat = quat;
+      webAnimationsMinifill.dot = dot;
+      webAnimationsMinifill.makeMatrixDecomposition = makeMatrixDecomposition;
+    }
   });
 });
