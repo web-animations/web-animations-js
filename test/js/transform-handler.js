@@ -401,10 +401,10 @@ suite('transform-handler interpolation', function() {
     var quat = webAnimationsMinifill.quat;
     var dot = webAnimationsMinifill.dot;
     var makeMatrixDecomposition = webAnimationsMinifill.makeMatrixDecomposition;
-    webAnimationsMinifill.composeMatrix = null;
-    webAnimationsMinifill.quat = null;
-    webAnimationsMinifill.dot = null;
-    webAnimationsMinifill.makeMatrixDecomposition = null;
+    webAnimationsMinifill.composeMatrix = undefined;
+    webAnimationsMinifill.quat = undefined;
+    webAnimationsMinifill.dot = undefined;
+    webAnimationsMinifill.makeMatrixDecomposition = undefined;
 
     var testFlipTransformLists = function(keyframeFrom, keyframeTo) {
       var interp = webAnimationsMinifill.propertyInterpolation(
