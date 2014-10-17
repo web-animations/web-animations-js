@@ -168,7 +168,7 @@
 
     if (left.length != right.length) {
       if (!matrixModulesLoaded)
-        return undefined;
+        return;
       var merged = mergeMatrices(left, right);
       leftResult = [merged[0]];
       rightResult = [merged[1]];
@@ -186,7 +186,7 @@
         var type;
         if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
           if (!matrixModulesLoaded)
-            return undefined;
+            return;
           var merged = mergeMatrices([left[i]], [right[i]]);
           leftResult.push(merged[0]);
           rightResult.push(merged[1]);
@@ -204,7 +204,7 @@
           rightArgs = rightFunctionData[1](rightArgs);
         } else {
           if (!matrixModulesLoaded)
-            return undefined;
+            return;
           var merged = mergeMatrices(left, right);
           leftResult = [merged[0]];
           rightResult = [merged[1]];
