@@ -30,8 +30,6 @@
   var Opx = {px: 0};
   var Odeg = {deg: 0};
 
-  // FIXME: We should support perspective
-
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
@@ -42,6 +40,7 @@
     rotatey: ['A'],
     rotatez: ['A'],
     rotate3d: ['NNNA'],
+    perspective: ['L'],
     scale: ['Nn', cast([_, _, 1]), id],
     scalex: ['N', cast([_, 1, 1]), cast([_, 1])],
     scaley: ['N', cast([1, _, 1]), cast([1, _])],

@@ -148,6 +148,12 @@ suite('transform-handler interpolation', function() {
             'skew(10deg)',
             'skewY(30deg)')(0.2),
         'skew(8deg,6deg)');
+    assert.equal(
+        webAnimationsMinifill.propertyInterpolation(
+            'transform',
+            'perspective(1000px)',
+            'perspective(200px)')(0.2),
+        'perspective(840px)');
   });
 
   test('transform interpolations with none', function() {
