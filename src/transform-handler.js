@@ -138,6 +138,8 @@
   }
 
   function mergeTransforms(left, right) {
+    var matrixModulesLoaded = scope.makeMatrixDecomposition && true;
+
     var flipResults = false;
     if (!left.length || !right.length) {
       if (!left.length) {
@@ -165,6 +167,8 @@
     var types = [];
 
     if (left.length != right.length) {
+      if (!matrixModulesLoaded)
+        return;
       var merged = mergeMatrices(left, right);
       leftResult = [merged[0]];
       rightResult = [merged[1]];
@@ -181,6 +185,8 @@
 
         var type;
         if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
+          if (!matrixModulesLoaded)
+            return;
           var merged = mergeMatrices([left[i]], [right[i]]);
           leftResult.push(merged[0]);
           rightResult.push(merged[1]);
@@ -197,6 +203,8 @@
           leftArgs = leftFunctionData[1](leftArgs);
           rightArgs = rightFunctionData[1](rightArgs);
         } else {
+          if (!matrixModulesLoaded)
+            return;
           var merged = mergeMatrices(left, right);
           leftResult = [merged[0]];
           rightResult = [merged[1]];

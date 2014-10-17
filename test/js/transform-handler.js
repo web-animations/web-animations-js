@@ -274,6 +274,7 @@ suite('transform-handler interpolation', function() {
         16);
     assert.equal(functions[2], 'rotate(55deg)');
 
+    // Contains matrices and requires matrix decomposition.
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'matrix(1, 0, 0, 1, 0, 0) translate(100px)',
@@ -408,5 +409,59 @@ suite('transform-handler interpolation', function() {
         'translate(800px) rotate(9rad)');
     evaluatedInterp = interp(0.4);
     compareMatrices(evaluatedInterp, [0.47, 0.89, -0.89, 0.47, 320, 0], 6);
+  });
+
+  test('transform interpolations involving matrices when matrix code is not available', function() {
+    // FIXME: This is vulnerable to module interface changes. Can we disable modules?
+    var composeMatrix = webAnimationsMinifill.composeMatrix;
+    var quat = webAnimationsMinifill.quat;
+    var dot = webAnimationsMinifill.dot;
+    var makeMatrixDecomposition = webAnimationsMinifill.makeMatrixDecomposition;
+    webAnimationsMinifill.composeMatrix = undefined;
+    webAnimationsMinifill.quat = undefined;
+    webAnimationsMinifill.dot = undefined;
+    webAnimationsMinifill.makeMatrixDecomposition = undefined;
+
+    var testFlipTransformLists = function(keyframeFrom, keyframeTo) {
+      var interp = webAnimationsMinifill.propertyInterpolation(
+          'transform',
+          keyframeFrom,
+          keyframeTo);
+      var evaluatedInterp = interp(0.49);
+      assert.equal(evaluatedInterp, keyframeFrom);
+      evaluatedInterp = interp(0.51);
+      assert.equal(evaluatedInterp, keyframeTo);
+    };
+
+    try {
+      // Function lists with just matrices.
+      testFlipTransformLists('matrix(1, 0, 0, 1, 0, 0)', 'matrix(1, -0.2, 0, 1, 0, 0)');
+      // Function lists with matrices and other functions.
+      testFlipTransformLists(
+          'translate(100px) matrix(1, 0, 0, 1, 0, 0) rotate(10deg)',
+          'translate(10px) matrix(1, -0.2, 0, 1, 0, 0) rotate(100deg)');
+      // Function lists that require matrix decomposition to be interpolated.
+      testFlipTransformLists('translate(10px)', 'scale(2)');
+      testFlipTransformLists('scale(2)', 'translate(10px)');
+      testFlipTransformLists('rotateX(10deg)', 'rotateY(20deg)');
+      testFlipTransformLists('rotateX(10deg)', 'translate(10px) rotateX(200deg)');
+      testFlipTransformLists(
+          'rotate(0rad) translate(0px)',
+          'translate(800px) rotate(9rad)');
+      testFlipTransformLists(
+          'translate(0px, 0px) rotate(0deg) scale(1)',
+          'scale(3) translate(300px, 90px) rotate(9rad)');
+      testFlipTransformLists(
+          'translate(0px, 0px) skew(30deg)',
+          'skew(0deg) translate(300px, 90px)');
+      testFlipTransformLists(
+          'matrix(1, 0, 0, 1, 0, 0) translate(100px)',
+          'translate(10px) matrix(1, -0.2, 0, 1, 0, 0)');
+    } finally {
+      webAnimationsMinifill.composeMatrix = composeMatrix;
+      webAnimationsMinifill.quat = quat;
+      webAnimationsMinifill.dot = dot;
+      webAnimationsMinifill.makeMatrixDecomposition = makeMatrixDecomposition;
+    }
   });
 });
