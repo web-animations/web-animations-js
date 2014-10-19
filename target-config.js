@@ -66,6 +66,7 @@
       src: scopeSrc.concat(sharedSrc).concat(minifillSrc).concat(maxifillSrc),
       test: maxifillTest,
     },
+    minifillSrc: minifillSrc,
   };
 
   // The default target will be used for files without target suffixes, eg. web-animations.js
