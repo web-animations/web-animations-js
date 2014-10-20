@@ -72,17 +72,19 @@ module.exports = function(grunt) {
     config.wrap[target] = {
       source: source,
       preamble: '(function() {\n' +
-                '  var player = document.body.animate([], 0);\n' +
-                '  var load = true;\n' +
-                '  if (player !== undefined) {\n' +
-                '    load = false;\n' +
-                '    "play|currentTime|pause|reverse|playbackRate|cancel|finish|startTime|playState".split("|").forEach(function(t) {\n' +
-                '      if (player[t] === undefined) {\n' +
-                '        load = true;\n' +
-                '      }\n' +
-                '    });\n' +
-                '  }\n' +
-                '  if (!load) { return; }',
+                '  if (document.body.animate !== undefined) {\n' +
+                '    var player = document.body.animate([], 0);\n' +
+                '    var load = true;\n' +
+                '    if (player !== undefined) {\n' +
+                '      load = false;\n' +
+                '      "play|currentTime|pause|reverse|playbackRate|cancel|finish|startTime|playState".split("|").forEach(function(t) {\n' +
+                '        if (player[t] === undefined) {\n' +
+                '          load = true;\n' +
+                '        }\n' +
+                '      });\n' +
+                '    }\n' +
+                '    if (!load) { return; }' +
+                '  }\n',
       postamble: '})();'
     };
     return 'wrap:' + target;
