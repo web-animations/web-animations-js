@@ -30,8 +30,6 @@
   var Opx = {px: 0};
   var Odeg = {deg: 0};
 
-  // FIXME: We should support perspective
-
   // type: [argTypes, convertTo3D, convertTo2D]
   // In the argument types string, lowercase characters represent optional arguments
   var transformFunctions = {
@@ -42,6 +40,7 @@
     rotatey: ['A'],
     rotatez: ['A'],
     rotate3d: ['NNNA'],
+    perspective: ['L'],
     scale: ['Nn', cast([_, _, 1]), id],
     scalex: ['N', cast([_, 1, 1]), cast([_, 1])],
     scaley: ['N', cast([1, _, 1]), cast([1, _])],
@@ -104,6 +103,10 @@
     }
   };
 
+  function numberToLongString(x) {
+    return x.toFixed(6).replace('.000000', '');
+  }
+
   function mergeMatrices(left, right) {
     if (left.decompositionPair !== right) {
       left.decompositionPair = right;
@@ -123,7 +126,7 @@
       function(list) {
         var quat = scope.quat(leftArgs[0][3], rightArgs[0][3], list[5]);
         var mat = scope.composeMatrix(list[0], list[1], list[2], quat, list[4]);
-        var stringifiedArgs = mat.map(scope.numberToString).join(',');
+        var stringifiedArgs = mat.map(numberToLongString).join(',');
         return stringifiedArgs;
       }
     ];
@@ -162,6 +165,10 @@
       }
     }
 
+    var isMatrixOrPerspective = function(lt, rt) {
+      return ((lt == 'perspective') && (rt == 'perspective')) ||
+          ((lt == 'matrix' || lt == 'matrix3d') && (rt == 'matrix' || rt == 'matrix3d'));
+    };
     var leftResult = [];
     var rightResult = [];
     var types = [];
@@ -184,7 +191,7 @@
         var rightFunctionData = transformFunctions[rightType];
 
         var type;
-        if ((leftType == 'matrix' || leftType == 'matrix3d') && (rightType == 'matrix' || rightType == 'matrix3d')) {
+        if (isMatrixOrPerspective(leftType, rightType)) {
           if (!matrixModulesLoaded)
             return;
           var merged = mergeMatrices([left[i]], [right[i]]);

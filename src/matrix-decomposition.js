@@ -112,7 +112,11 @@
         return null;
       }
 
-      var perspectiveMatrix = m3d.concat(); // copy m3d
+      var perspectiveMatrix = [];
+      for (var i = 0; i < 4; i++) {
+        perspectiveMatrix.push(m3d[i].slice());
+      }
+
       for (var i = 0; i < 3; i++) {
         perspectiveMatrix[i][3] = 0;
       }
@@ -389,7 +393,7 @@
         return [
           1, 0, 0, 0,
           0, 1, 0, 0,
-          0, 0, 1, -1 / item.d.px,
+          0, 0, 1, -1 / item.d[0].px,
           0, 0, 0, 1];
       case 'matrix':
         return [item.d[0], item.d[1], 0, 0,
