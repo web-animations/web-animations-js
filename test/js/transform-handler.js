@@ -148,12 +148,13 @@ suite('transform-handler interpolation', function() {
             'skew(10deg)',
             'skewY(30deg)')(0.2),
         'skew(8deg,6deg)');
-    assert.equal(
-        webAnimationsMinifill.propertyInterpolation(
-            'transform',
-            'perspective(1000px)',
-            'perspective(200px)')(0.2),
-        'perspective(840px)');
+
+    var interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'perspective(1000px)',
+        'perspective(200px)');
+    var evaluatedInterp = interp(0.2);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.0018, 0, 0, 0, 1], 16);
   });
 
   test('transform interpolations with none', function() {
