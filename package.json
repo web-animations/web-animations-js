@@ -23,7 +23,8 @@
     "grunt-saucelabs": "~4.0.2",
     "grunt-checkrepo": "~0.1.0",
     "grunt-git-status": "~1.0.0",
-    "grunt-template": "~0.2.3"
+    "grunt-template": "~0.2.3",
+    "source-map": "~0.1.40"
   },
   "scripts": {
     "test": "grunt test gjslint git-status checkrepo"
