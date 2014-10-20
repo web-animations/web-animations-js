@@ -138,6 +138,20 @@
     }
   };
 
+  var _animate = window.Element.prototype.animate;
+  window.Element.prototype.animate = function(effectInput, timingInput) {
+    var p = _animate.apply(this, [effectInput, timingInput]);
+    p.source = {target: this};
+    window.document.timeline._addPlayer(p);
+    return p;
+  };
+
+  window.Element.prototype.getAnimationPlayers = function() {
+    return document.timeline.getAnimationPlayers().filter(function(player) {
+      return player.source !== null && player.source.target == this;
+    }.bind(this));
+  };
+
   scope.groupChildDuration = groupChildDuration;
 
 }(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting));

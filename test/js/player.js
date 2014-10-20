@@ -1,6 +1,6 @@
 suite('player', function() {
   setup(function() {
-    document.timeline._players = [];
+    webAnimationsMinifill.timeline._players = [];
   });
   test('zero duration animation works', function() {
     tick(90);
@@ -256,14 +256,14 @@ suite('player', function() {
     player.cancel();
     // getComputedStyle forces a tick.
     assert.equal(getComputedStyle(target).marginLeft, '0px');
-    assert.deepEqual(document.timeline._players, []);
+    assert.deepEqual(webAnimationsMinifill.timeline._players, []);
     tick(120);
     assert.equal(getComputedStyle(target).marginLeft, '0px');
-    assert.deepEqual(document.timeline._players, []);
+    assert.deepEqual(webAnimationsMinifill.timeline._players, []);
     document.documentElement.removeChild(target);
   });
   test('startTime is set on first tick if timeline hasn\'t started', function() {
-    document.timeline.currentTime = undefined;
+    webAnimationsMinifill.timeline.currentTime = undefined;
     var p = document.body.animate([], 1000);
     tick(0);
     tick(100);
@@ -273,27 +273,27 @@ suite('player', function() {
     tick(90);
     var nofill = document.body.animate([], 100);
     var fill = document.body.animate([], {duration: 100, fill: 'forwards'});
-    assert.deepEqual(document.timeline._players, [nofill._player || nofill, fill._player || fill]);
+    assert.deepEqual(webAnimationsMinifill.timeline._players, [nofill._player || nofill, fill._player || fill]);
     tick(100);
-    assert.deepEqual(document.timeline._players, [nofill._player || nofill, fill._player || fill]);
+    assert.deepEqual(webAnimationsMinifill.timeline._players, [nofill._player || nofill, fill._player || fill]);
     tick(400);
-    assert.deepEqual(document.timeline._players, [fill._player || fill]);
+    assert.deepEqual(webAnimationsMinifill.timeline._players, [fill._player || fill]);
   });
   test('discarded players get re-added on modification', function() {
     tick(90);
     var player = document.body.animate([], 100);
     tick(100);
     tick(400);
-    assert.deepEqual(document.timeline._players, []);
+    assert.deepEqual(webAnimationsMinifill.timeline._players, []);
     player.currentTime = 0;
-    assert.deepEqual(document.timeline._players, [player._player || player]);
+    assert.deepEqual(webAnimationsMinifill.timeline._players, [player._player || player]);
   });
   test('players in the before phase are not discarded', function() {
     tick(100);
     var player = document.body.animate([], 100);
     player.currentTime = -50;
     tick(110);
-    assert.deepEqual(document.timeline._players, [player._player || player]);
+    assert.deepEqual(webAnimationsMinifill.timeline._players, [player._player || player]);
   });
   test('players that go out of effect should not clear the effect of players that are in effect', function() {
     var target = document.createElement('div');

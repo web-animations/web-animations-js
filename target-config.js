@@ -18,7 +18,7 @@
       'src/number-handler.js',
       'src/visibility-handler.js',
       'src/player.js',
-      'src/timeline.js',
+      'src/tick.js',
       'src/matrix-decomposition.js',
       'src/transform-handler.js',
       'src/font-weight-handler.js'];
@@ -28,6 +28,7 @@
       'src/normalize-keyframes.js'];
 
   var maxifillSrc = [
+      'src/timeline.js',
       'src/maxifill-player.js',
       'src/animation-constructor.js',
       'src/effect-callback.js',
@@ -38,7 +39,6 @@
       'test/js/color-handler.js',
       'test/js/dimension-handler.js',
       'test/js/effect.js',
-      'test/js/element-animatable.js',
       'test/js/interpolation.js',
       'test/js/number-handler.js',
       'test/js/box-handler.js',
@@ -46,14 +46,15 @@
       'test/js/player.js',
       'test/js/property-interpolation.js',
       'test/js/transform-handler.js',
-      'test/js/timeline.js'];
+      'test/js/tick.js'];
 
   var maxifillTest = minifillTest.concat(
       'test/js/animation-constructor.js',
       'test/js/group-constructors.js',
       'test/js/group-player.js',
       'test/js/group-player-finish-event.js',
-      'test/js/effect-callback.js');
+      'test/js/effect-callback.js',
+      'test/js/timeline.js');
 
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {

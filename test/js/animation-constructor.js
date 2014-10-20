@@ -1,4 +1,7 @@
 suite('animation-constructor', function() {
+  setup(function() {
+    document.timeline._players = [];
+  });
 
   test('Playing an Animation makes a Player', function() {
     var animation = new Animation(document.body, [], 1000);

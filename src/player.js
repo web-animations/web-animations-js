@@ -51,7 +51,7 @@
       this._inEffect = this._source._update(this.currentTime);
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
-        document.timeline._players.push(this);
+        scope.timeline._players.push(this);
       }
     },
     _tickCurrentTime: function(newTime, ignoreLimit) {

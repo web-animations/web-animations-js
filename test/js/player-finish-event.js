@@ -1,6 +1,5 @@
 suite('player-finish-event', function() {
   setup(function() {
-    document.timeline.currentTime = undefined;
     this.element = document.createElement('div');
     document.documentElement.appendChild(this.element);
     this.player = this.element.animate([], 1000);

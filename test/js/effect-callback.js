@@ -1,5 +1,8 @@
 suite('effect-callback', function() {
-  setup(function() { document.timeline._players = []; });
+  setup(function() {
+    document.timeline._players = [];
+    webAnimationsMinifill.timeline._players = [];
+  });
 
   test('animations starting in the future are not in effect', function() {
     var fractions = [];

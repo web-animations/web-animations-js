@@ -14,128 +14,47 @@
 
 
 (function(shared, scope, testing) {
-  var originalRequestAnimationFrame = window.requestAnimationFrame;
-  var rafCallbacks = [];
-  window.requestAnimationFrame = function(f) {
-    if (rafCallbacks.length == 0 && !WEB_ANIMATIONS_TESTING) {
-      originalRequestAnimationFrame(processRafCallbacks);
-    }
-    rafCallbacks.push(f);
-  };
-
-  function processRafCallbacks(t) {
-    var processing = rafCallbacks;
-    rafCallbacks = [];
-    tick(t);
-    processing.forEach(function(f) { f(t); });
-    if (needsRetick)
-      tick(t);
-    applyPendingEffects();
-  }
-
-  function comparePlayers(leftPlayer, rightPlayer) {
-    return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
-  }
-
   scope.AnimationTimeline = function() {
     this._players = [];
     this.currentTime = undefined;
   };
 
   scope.AnimationTimeline.prototype = {
-    _play: function(source) {
-      source._timing = shared.normalizeTimingInput(source.timing);
-      var player = new scope.Player(source);
-      player._idle = false;
-      player._timeline = this;
+    _addPlayer: function(player) {
       this._players.push(player);
-      scope.restart();
-      scope.invalidateEffects();
-      return player;
+      scope.restartMaxifillTick();
     },
     // FIXME: This needs to return the wrapped players in maxifill
+    // TODO: Does this need to be sorted?
+    // TODO: Do we need to consider needsRetick?
     getAnimationPlayers: function() {
-      if (needsRetick)
-        tick(timeline.currentTime);
-      return this._players.filter(function(player) {
-        return player._source._isCurrent(player.currentTime) && !player._idle;
-      }).sort(comparePlayers);
+      this.filterPlayers();
+      return this._players.slice();
+    },
+    filterPlayers: function() {
+      this._players = this._players.filter(function(player) {
+        return player.playState != 'finished' && player.playState != 'idle';
+      });
     }
   };
 
   var ticking = false;
-  var hasRestartedThisFrame = false;
 
-  scope.restart = function() {
+  scope.restartMaxifillTick = function() {
     if (!ticking) {
       ticking = true;
-      requestAnimationFrame(function() {});
-      hasRestartedThisFrame = true;
+      requestAnimationFrame(maxifillTick);
     }
-    return hasRestartedThisFrame;
   };
 
-  var needsRetick = false;
-  scope.invalidateEffects = function() {
-    needsRetick = true;
-  };
-
-  var pendingEffects = [];
-  function applyPendingEffects() {
-    pendingEffects.forEach(function(f) { f(); });
-  }
-
-  var originalGetComputedStyle = window.getComputedStyle;
-  Object.defineProperty(window, 'getComputedStyle', {
-    configurable: true,
-    enumerable: true,
-    value: function() {
-      if (needsRetick) tick(timeline.currentTime);
-      applyPendingEffects();
-      return originalGetComputedStyle.apply(this, arguments);
-    },
-  });
-
-  function tick(t) {
-    hasRestartedThisFrame = false;
+  function maxifillTick(t) {
     var timeline = window.document.timeline;
     timeline.currentTime = t;
-    timeline._players.sort(comparePlayers);
-    ticking = false;
-    var updatingPlayers = timeline._players;
-    timeline._players = [];
-
-    var newPendingClears = [];
-    var newPendingEffects = [];
-    updatingPlayers = updatingPlayers.filter(function(player) {
-      player._inTimeline = player._tick(t);
-
-      if (!player._inEffect)
-        newPendingClears.push(player._source);
-      else
-        newPendingEffects.push(player._source);
-
-      if (!player.finished && !player.paused && !player._idle)
-        ticking = true;
-
-      return player._inTimeline;
-    });
-
-    pendingEffects.length = 0;
-    pendingEffects.push.apply(pendingEffects, newPendingClears);
-    pendingEffects.push.apply(pendingEffects, newPendingEffects);
-
-    timeline._players.push.apply(timeline._players, updatingPlayers);
-    needsRetick = false;
-
-    if (ticking)
-      requestAnimationFrame(function() {});
-  };
-
-  if (WEB_ANIMATIONS_TESTING) {
-    testing.tick = processRafCallbacks;
-    testing.isTicking = function() { return ticking; };
-    testing.setTicking = function(newVal) { ticking = newVal; };
+    timeline.filterPlayers();
+    if (timeline._players.length == 0)
+      ticking = false;
+    else
+      requestAnimationFrame(maxifillTick);
   }
 
   var timeline = new scope.AnimationTimeline();
@@ -150,4 +69,4 @@
     window.document.timeline = timeline;
   } catch (e) { }
 
-})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);
+})(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);
