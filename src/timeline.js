@@ -28,40 +28,33 @@
     // TODO: Does this need to be sorted?
     // TODO: Do we need to consider needsRetick?
     getAnimationPlayers: function() {
+      this.filterPlayers();
       return this._players.slice();
+    },
+    filterPlayers: function() {
+      this._players = this._players.filter(function(player) {
+        return player.playState != 'finished' && player.playState != 'idle';
+      });
     }
   };
 
   var ticking = false;
 
-  // TODO: Consider merging maxifillTick with custom-effect tick.
   scope.restartMaxifillTick = function() {
     if (!ticking) {
       ticking = true;
-      requestAnimationFrame(tick);
+      requestAnimationFrame(maxifillTick);
     }
   };
 
-  function tick(t) {
-    hasRestartedThisFrame = false;
+  function maxifillTick(t) {
     var timeline = window.document.timeline;
     timeline.currentTime = t;
-    timeline._players = timeline._players.filter(function(player) {
-      return player.playState != 'finished';
-    });
+    timeline.filterPlayers();
     if (timeline._players.length == 0)
       ticking = false;
-
-    if (ticking)
-      requestAnimationFrame(function() {});
-  };
-
-  if (WEB_ANIMATIONS_TESTING) {
-    var _tick = testing.tick;
-    testing.tick = function(t) {
-      _tick(t);
-      tick(t);
-    }
+    else
+      requestAnimationFrame(maxifillTick);
   }
 
   var timeline = new scope.AnimationTimeline();
