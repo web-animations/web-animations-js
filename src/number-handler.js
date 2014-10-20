@@ -43,6 +43,7 @@
     return [left, right, Math.round];
   }
 
+  scope.clamp = clamp;
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity']);
   scope.addPropertiesHandler(parseNumber, round, ['z-index']);
 
