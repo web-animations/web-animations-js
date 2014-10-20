@@ -4,16 +4,19 @@
     target = webAnimationsSourceTarget;
 
   // Native implementation detection.
-  var player = document.body.animate([], 0);
-  var load = true;
 
-  if (player !== undefined) {
-    load = false;
-    "play|currentTime|pause|reverse|playbackRate|cancel|finish|startTime|playState".split('|').forEach(function(t) {
-      if (player[t] === undefined) {
-        load = true;
-      }
-    });
+  var load = true;
+  if (document.body.animate !== undefined) {
+    var player = document.body.animate([], 0);
+
+    if (player !== undefined) {
+      load = false;
+      "play|currentTime|pause|reverse|playbackRate|cancel|finish|startTime|playState".split('|').forEach(function(t) {
+        if (player[t] === undefined) {
+          load = true;
+        }
+      });
+    }
   }
 
   if (load) {
