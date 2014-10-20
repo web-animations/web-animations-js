@@ -20,7 +20,8 @@
       'src/player.js',
       'src/timeline.js',
       'src/matrix-decomposition.js',
-      'src/transform-handler.js'];
+      'src/transform-handler.js',
+      'src/font-weight-handler.js'];
 
   var sharedSrc = [
       'src/timing-utilities.js',
