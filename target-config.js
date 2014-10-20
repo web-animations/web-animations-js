@@ -28,6 +28,7 @@
       'src/normalize-keyframes.js'];
 
   var maxifillSrc = [
+      'src/timeline.js',
       'src/maxifill-player.js',
       'src/animation-constructor.js',
       'src/effect-callback.js',
@@ -52,7 +53,8 @@
       'test/js/group-constructors.js',
       'test/js/group-player.js',
       'test/js/group-player-finish-event.js',
-      'test/js/effect-callback.js');
+      'test/js/effect-callback.js',
+      'test/js/timeline.js');
 
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {
