@@ -16,9 +16,8 @@
 
   function consume(parser, string) {
     // Skip leading whitespace and count until parentheses balanced.
-    var n = /^\s*|/.exec(string)[0].length;
     var nesting = 0;
-    for (; n < string.length; n++) {
+    for (var n = 0; n < string.length; n++) {
       if (/\s|,/.test(string[n]) && nesting == 0) {
         break;
       } else if (string[n] == '(') {
@@ -109,7 +108,6 @@
   var parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
 
   scope.parseLength = parseLength;
-  scope.consumeLength = consume.bind(null, parseLength);
   scope.parseLengthOrPercent = parseLengthOrPercent;
   scope.consumeLengthOrPercent = consume.bind(null, parseLengthOrPercent);
   scope.parseAngle = parseAngle;
