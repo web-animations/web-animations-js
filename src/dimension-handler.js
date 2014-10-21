@@ -14,6 +14,27 @@
 
 (function(scope, testing) {
 
+  function consume(parser, string) {
+    // Skip leading whitespace and count until parentheses balanced.
+    var n = /^\s*|/.exec(string)[0].length;
+    var nesting = 0;
+    for (; n < string.length; n++) {
+      if (/\s|,/.test(string[n]) && nesting == 0) {
+        break;
+      } else if (string[n] == '(') {
+        nesting++;
+      } else if (string[n] == ')') {
+        nesting--;
+        if (nesting <= 0) {
+          n++;
+          break;
+        }
+      }
+    }
+    var dimension = parser(string.substr(0, n));
+    return dimension ? [dimension, string.substr(n)] : undefined;
+  }
+
   function parseDimension(unitRegExp, string) {
     string = string.trim().toLowerCase();
 
@@ -88,7 +109,9 @@
   var parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
 
   scope.parseLength = parseLength;
+  scope.consumeLength = consume.bind(null, parseLength);
   scope.parseLengthOrPercent = parseLengthOrPercent;
+  scope.consumeLengthOrPercent = consume.bind(null, parseLengthOrPercent);
   scope.parseAngle = parseAngle;
   scope.mergeDimensions = mergeDimensions;
 
