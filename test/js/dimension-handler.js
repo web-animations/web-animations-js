@@ -50,4 +50,26 @@ suite('dimension-handler', function() {
     assert.equal(webAnimationsMinifill.propertyInterpolation('left', 'calc(10px + 5em)', 'calc(20% + 35em)')(0.4), 'calc(6px + 17em + 8%)');
     assert.equal(webAnimationsMinifill.propertyInterpolation('left', 'calc(10px + 5vw)', 'calc(20% + 35em)')(0.4), 'calc(6px + 3vw + 8% + 14em)');
   });
+  test('consume simple length values', function() {
+    assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('10px()'));
+    assert.deepEqual(webAnimationsMinifill.consumeLengthOrPercent('10px,'),
+        [{px: 10}, ',']);
+    assert.deepEqual(webAnimationsMinifill.consumeLengthOrPercent('10px,20px'),
+        [{px: 10}, ',20px']);
+    assert.deepEqual(webAnimationsMinifill.consumeLengthOrPercent('0 blah'),
+        [{px: 0}, ' blah']);
+  });
+  test('consume length calcs', function() {
+    assert.deepEqual(webAnimationsMinifill.consumeLengthOrPercent('calc(10px)()'),
+        [{px: 10}, '()']);
+    assert.deepEqual(webAnimationsMinifill.consumeLengthOrPercent('calc((5px + 2px)*(1 + 2*(4 + 2*-5)) + 7px - (5em + 6vw/2)*4)blah'),
+        [{px: -70, em: -20, vw: -12}, 'blah']);
+  });
+  test('consume fails on invalid input', function() {
+    assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('()'));
+    assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('10px)'));
+    assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('(10px'));
+    assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('(10px)'));
+    assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('calc(10px,10px)'));
+  });
 });

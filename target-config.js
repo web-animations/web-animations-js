@@ -21,7 +21,8 @@
       'src/tick.js',
       'src/matrix-decomposition.js',
       'src/transform-handler.js',
-      'src/font-weight-handler.js'];
+      'src/font-weight-handler.js',
+      'src/position-handler.js'];
 
   var sharedSrc = [
       'src/timing-utilities.js',
