@@ -9,7 +9,7 @@
   if (document.body.animate !== undefined) {
     var player = document.body.animate([], 0);
 
-    if (player !== undefined) {
+    if (player !== undefined && player !== null) {
       load = false;
       "play|currentTime|pause|reverse|playbackRate|cancel|finish|startTime|playState".split('|').forEach(function(t) {
         if (player[t] === undefined) {
