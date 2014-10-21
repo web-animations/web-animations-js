@@ -16,6 +16,7 @@
       'src/tick.js',
       'src/matrix-decomposition.js',
       'src/handler-utils.js',
+      'src/shadow-handler.js',
       'src/number-handler.js',
       'src/visibility-handler.js',
       'src/color-handler.js',

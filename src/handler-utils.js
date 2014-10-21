@@ -71,13 +71,15 @@
     return parsed ? [parsed, string.substr(n)] : undefined;
   }
 
-
   function mergeNestedRepeated(nestedMerge, separator, left, right) {
     var matchingLeft = [];
     var matchingRight = [];
     var reconsititution = [];
     for (var i = 0; i < left.length; i++) {
       var thing = nestedMerge(left[i], right[i]);
+      if (!thing) {
+        return;
+      }
       matchingLeft.push(thing[0]);
       matchingRight.push(thing[1]);
       reconsititution.push(thing[2]);
