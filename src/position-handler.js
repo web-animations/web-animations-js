@@ -14,60 +14,6 @@
 
 (function(scope) {
 
-  // consume* functions return a 2 value array of [parsed-data, '' or not-yet consumed input]
-
-  // Regex should be anchored with /^
-  function consumeToken(regex, string) {
-    var result = regex.exec(string);
-    if (result) {
-      result = regex.ignoreCase ? result[0].toLowerCase() : result[0];
-      return [result, string.substr(result.length)];
-    }
-  }
-
-  function consumeTrimmed(consumer, string) {
-    string = string.replace(/^\s*/, '');
-    var result = consumer(string);
-    if (result) {
-      return [result[0], result[1].replace(/^\s*/, '')];
-    }
-  }
-
-  function consumeList(consumer, separator, string) {
-    consumer = consumeTrimmed.bind(null, consumer);
-    var list = [];
-    while (true) {
-      var result = consumer(string);
-      if (!result) {
-        return [list, string];
-      }
-      list.push(result[0]);
-      string = result[1];
-      result = consumeToken(separator, string);
-      if (!result || result[1] == '') {
-        return [list, string];
-      }
-      string = result[1];
-    }
-  }
-
-  function mergeNestedRepeated(nestedMerge, separator, left, right) {
-    var matchingLeft = [];
-    var matchingRight = [];
-    var reconsititution = [];
-    for (var i = 0; i < left.length; i++) {
-      var thing = nestedMerge(left[i], right[i]);
-      matchingLeft.push(thing[0]);
-      matchingRight.push(thing[1]);
-      reconsititution.push(thing[2]);
-    }
-    return [matchingLeft, matchingRight, function(positions) {
-      return positions.map(function(position, i) {
-        return reconsititution[i](position);
-      }).join(separator);
-    }];
-  }
-
   function negateDimension(dimension) {
     var result = {};
     for (k in dimension) {
@@ -76,10 +22,8 @@
     return result;
   }
 
-  // FIXME: Move everything above to shared parsing util -- if it's actually needed elsewhere.
-
   function consumeOffset(string) {
-    return consumeToken(/^(left|center|right|top|bottom)\b/i, string) || scope.consumeLengthOrPercent(string);
+    return scope.consumeToken(/^(left|center|right|top|bottom)\b/i, string) || scope.consumeLengthOrPercent(string);
   }
 
   var offsetMap = {
@@ -91,7 +35,7 @@
   };
 
   function parseOrigin(slots, string) {
-    var result = consumeList(consumeOffset, /^/, string);
+    var result = scope.consumeList(consumeOffset, /^/, string);
     if (!result || result[1] != '') return;
     var tokens = result[0];
     tokens[0] = tokens[0] || 'center';
@@ -118,12 +62,12 @@
     });
   }
 
-  var mergeOffsetList = mergeNestedRepeated.bind(null, scope.mergeDimensions, ' ');
+  var mergeOffsetList = scope.mergeNestedRepeated.bind(null, scope.mergeDimensions, ' ');
   scope.addPropertiesHandler(parseOrigin.bind(null, 3), mergeOffsetList, ['transform-origin']);
   scope.addPropertiesHandler(parseOrigin.bind(null, 2), mergeOffsetList, ['perspective-origin']);
 
   function consumePosition(string) {
-    var result = consumeList(consumeOffset, /^/, string);
+    var result = scope.consumeList(consumeOffset, /^/, string);
     if (!result) {
       return;
     }
@@ -158,13 +102,13 @@
   }
 
   function parsePositionList(string) {
-    var result = consumeList(consumePosition, /^,/, string);
+    var result = scope.consumeList(consumePosition, /^,/, string);
     if (result && result[1] == '') {
       return result[0];
     }
   }
 
-  var mergePositionList = mergeNestedRepeated.bind(null, mergeOffsetList, ', ');
+  var mergePositionList = scope.mergeNestedRepeated.bind(null, mergeOffsetList, ', ');
   scope.addPropertiesHandler(parsePositionList, mergePositionList, ['background-position']);
 
 })(webAnimationsMinifill);

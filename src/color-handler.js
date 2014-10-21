@@ -50,6 +50,7 @@
   }
 
   scope.addPropertiesHandler(parseColor, mergeColors, ['color', 'background-color']);
+  scope.consumeColor = scope.consumeParenthesised.bind(null, parseColor);
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.parseColor = parseColor;
