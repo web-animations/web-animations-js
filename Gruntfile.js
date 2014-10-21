@@ -124,6 +124,19 @@ module.exports = function(grunt) {
   grunt.registerTask('minifill', gen(targetConfig.minifill.src, 'minifill'));
   grunt.registerTask('maxifill', gen(targetConfig.maxifill.src, 'maxifill'));
 
+  grunt.registerTask('minifill.forced',
+      [
+        concat(targetConfig.scopeSrc.concat(targetConfig.sharedSrc).concat(targetConfig.minifillSrc), 'inter-forced-minifill.js', concatDefines),
+        compress('inter-forced-minifill.js', 'web-animations-forced-minifill.min.js', concatDefines)
+      ]);
+
+  grunt.registerTask('maxifill.forced',
+      [
+        concat(targetConfig.scopeSrc.concat(targetConfig.sharedSrc).concat(targetConfig.minifillSrc).concat(targetConfig.maxifillSrc),
+            'inter-forced.js', concatDefines),
+        compress('inter-forced.js', 'web-animations-forced.min.js', concatDefines)
+      ]);
+
   var testTargets = {'minifill': {}, 'maxifill': {}};
 
   grunt.initConfig({
@@ -271,5 +284,5 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.task.registerTask('default', ['minifill', 'maxifill', 'minifill.min', 'maxifill.min', 'gjslint']);
+  grunt.task.registerTask('default', ['minifill', 'maxifill', 'minifill.min', 'maxifill.min', 'minifill.forced', 'maxifill.forced', 'gjslint']);
 };
