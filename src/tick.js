@@ -39,7 +39,7 @@
 
   function InternalTimeline() {
     this._players = [];
-    this.currentTime = undefined;
+    this.currentTime = performance.now();
   };
 
   InternalTimeline.prototype = {
