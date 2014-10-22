@@ -98,14 +98,12 @@
     get playState() {
       if (this._idle)
         return 'idle';
-      if (this.finished)
-        return 'finished';
       if ((this._startTime == null && !this.paused && this.playbackRate != 0) || this._currentTimePending)
         return 'pending';
       if (this.paused)
         return 'paused';
-      // if (this.finished)
-      //   return 'finished';
+      if (this.finished)
+        return 'finished';
       return 'running';
     },
     play: function() {
@@ -134,6 +132,8 @@
       if (this._idle)
         return;
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
+      this._startTime = this._totalDuration - this.currentTime;
+      this._currentTimePending = false;
     },
     cancel: function() {
       this._inEffect = false;

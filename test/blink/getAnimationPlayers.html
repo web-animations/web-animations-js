@@ -39,7 +39,6 @@ test(function() {
     assert_equals(document.timeline.getAnimationPlayers()[1], player2._player);
 
     player.finish();
-    console.log(player.playState);
     assert_equals(document.timeline.getAnimationPlayers().length, 1);
     // assert_equals(document.timeline.getAnimationPlayers()[0], player2);
     //
@@ -100,24 +99,28 @@ test(function() {
 
 }, 'Animatable getAnimationPlayers()');
 
-// test(function() {
-//     assert_equals(document.timeline.getAnimationPlayers().length, 0);
-//     assert_equals(container.getAnimationPlayers().length, 0);
-//     assert_equals(element.getAnimationPlayers().length, 0);
+test(function() {
+    assert_equals(document.timeline.getAnimationPlayers().length, 0);
+    assert_equals(container.getAnimationPlayers().length, 0);
+    assert_equals(element.getAnimationPlayers().length, 0);
 
-//     var player = element.animate([], {duration: 1000, delay: 500});
-//     assert_equals(document.timeline.getAnimationPlayers().length, 1);
-//     assert_equals(document.timeline.getAnimationPlayers()[0], player);
-//     assert_equals(container.getAnimationPlayers().length, 0);
-//     assert_equals(element.getAnimationPlayers().length, 1);
-//     assert_equals(element.getAnimationPlayers()[0], player);
+    var player = element.animate([], {duration: 1000, delay: 500});
+    assert_equals(document.timeline.getAnimationPlayers().length, 1);
+    // assert_equals(document.timeline.getAnimationPlayers()[0], player);
+    //
+    assert_equals(document.timeline.getAnimationPlayers()[0], player._player);
+    assert_equals(container.getAnimationPlayers().length, 0);
+    assert_equals(element.getAnimationPlayers().length, 1);
+    // assert_equals(element.getAnimationPlayers()[0], player);
+    //
+    assert_equals(element.getAnimationPlayers()[0], player._player);
 
-//     player.finish();
-//     assert_equals(document.timeline.getAnimationPlayers().length, 0);
-//     assert_equals(container.getAnimationPlayers().length, 0);
-//     assert_equals(element.getAnimationPlayers().length, 0);
+    player.finish();
+    assert_equals(document.timeline.getAnimationPlayers().length, 0);
+    assert_equals(container.getAnimationPlayers().length, 0);
+    assert_equals(element.getAnimationPlayers().length, 0);
 
-// }, 'getAnimationPlayers() with delays');
+}, 'getAnimationPlayers() with delays');
 
 // async_test(function(t) {
 //     assert_equals(document.timeline.getAnimationPlayers().length, 0);

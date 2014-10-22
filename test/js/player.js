@@ -237,12 +237,12 @@ suite('player', function() {
     tick(1000);
     var p = document.body.animate([], 2000);
     p.finish();
-    assert.equal(p.startTime, null);
+    assert.equal(p.startTime, 0);
     assert.equal(p.currentTime, 2000);
     p.reverse();
     p.finish();
     assert.equal(p.currentTime, 0);
-    assert.equal(p.startTime, null);
+    assert.equal(p.startTime, 2000);
     tick(2000);
   });
   test('cancelling clears all effects', function() {
