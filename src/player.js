@@ -44,6 +44,7 @@
     this._inEffect = this._source._update(0);
     this._idle = true;
     this._currentTimePending = false;
+    this.name = 'MINIFILL PLAYER';
   };
 
   scope.Player.prototype = {
@@ -97,12 +98,14 @@
     get playState() {
       if (this._idle)
         return 'idle';
+      if (this.finished)
+        return 'finished';
       if ((this._startTime == null && !this.paused && this.playbackRate != 0) || this._currentTimePending)
         return 'pending';
       if (this.paused)
         return 'paused';
-      if (this.finished)
-        return 'finished';
+      // if (this.finished)
+      //   return 'finished';
       return 'running';
     },
     play: function() {

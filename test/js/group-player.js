@@ -895,7 +895,7 @@ suite('group-player', function() {
     assert.equal(p._childPlayers[1]._player.playState, 'running');
     p.pause();
     assert.equal(p.playState, 'pending');
-    assert.equal(p._childPlayers[0]._player.playState, 'paused');
+    assert.equal(p._childPlayers[0]._player.playState, 'finished');
     assert.equal(p._childPlayers[1]._player.playState, 'pending');
     tick(102);
     assert.equal(p.playState, 'paused');
