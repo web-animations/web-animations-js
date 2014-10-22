@@ -19,6 +19,7 @@ function assertAnimationStyles(keyframes, expectations, description) {
   for (var progress in expectations) {
     var element = createElement();
     element.animate(keyframes, heldTiming(progress));
+
     var computedStyle = getComputedStyle(element);
     for (var property in expectations[progress]) {
       assert_equals(computedStyle[property], expectations[progress][property],

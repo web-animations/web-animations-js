@@ -59,6 +59,7 @@
 
   var timeline = new scope.AnimationTimeline();
   scope.timeline = timeline;
+
   try {
     Object.defineProperty(window.document, 'timeline', {
       configurable: true,
