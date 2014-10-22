@@ -93,6 +93,7 @@ test(function() {
     offsetKeyframeB,
     offsetKeyframeC,
   ], offsetKeyframeBExpectations, 'with ordered offsets');
+
   assert_throws('InvalidModificationError', function() {
     assertAnimationStyles([
       offsetKeyframeA,
