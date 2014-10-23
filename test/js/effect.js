@@ -8,7 +8,7 @@ suite('effect', function() {
   // Test normalize.
   test('Normalize keyframes with all offsets specified but not sorted by offset. Some offsets are out of [0, 1] range.', function() {
     var normalizedKeyframes;
-    assert.doesNotThrow(function() {
+    assert.throws(function() {
       normalizedKeyframes = normalizeKeyframes([
         {offset: 0},
         {offset: -1},
@@ -17,10 +17,6 @@ suite('effect', function() {
         {offset: 2}
       ]);
     });
-    assert.equal(normalizedKeyframes.length, 3);
-    assert.closeTo(normalizedKeyframes[0].offset, 0, 0.001);
-    assert.closeTo(normalizedKeyframes[1].offset, 0.5, 0.001);
-    assert.closeTo(normalizedKeyframes[2].offset, 1, 0.001);
   });
 
   test('Normalize keyframes with some offsets not specified, and not sorted by offset.', function() {
