@@ -21,8 +21,8 @@ async_test(function(t) {
     assert_equals(element.getAnimationPlayers().length, 0);
 
     element.className = 'cssAnimation';
-    t.step(function() {
-        onload = function () {
+    onload = function () {
+        t.step(function() {
             var players = document.timeline.getAnimationPlayers();
             assert_equals(players.length, 1);
             assert_equals(container.getAnimationPlayers().length, 0);
@@ -33,8 +33,8 @@ async_test(function(t) {
             assert_equals(container.getAnimationPlayers().length, 0);
             assert_equals(element.getAnimationPlayers().length, 0);
             t.done();
-        }
-    });
+        });
+    }
 }, 'getAnimationPlayers() with cssanimations');
 
 </script>
