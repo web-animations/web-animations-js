@@ -377,7 +377,12 @@ var metadata_generator = {
     }
 };
 
-metadata_generator.setup();
+document.write('<script src="../../web-animations-forced.min.js"></script>');
+if (window.parent) {
+  parent.window.initTestHarness(window);
+} else {
+  metadata_generator.setup();
+}
 
 /* If the parent window has a testharness_properties object,
  * we use this to provide the test settings. This is used by the
