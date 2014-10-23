@@ -14,22 +14,16 @@
 (function(shared, scope, testing) {
 
   var element = document.createElement('div');
-  var _animate = window.Element.prototype.animate;
+  var originalAnimate = Element.prototype.animate;
 
   Element.prototype.animate = function(effect, timing) {
     var player;
-    // var p;
     if (typeof effect == 'function') {
-      // p = _animate.apply(element, [[], timing]);
-      // player = new scope.Player(p);
-      player = new scope.Player(_animate.apply(element, [[], timing]));
+      player = new scope.Player(originalAnimate.apply(element, [[], timing]));
       bind(player, this, effect, timing);
     } else {
-      // p = _animate.apply(this, [effect, timing]);
-      // player = new scope.Player(p);
-      player = new scope.Player(_animate.apply(this, [effect, timing]));
+      player = new scope.Player(originalAnimate.apply(this, [effect, timing]));
     }
-    // p.source = {target: this};
     player._player.source = {target: this};
     window.document.timeline._addPlayer(player);
     return player;
