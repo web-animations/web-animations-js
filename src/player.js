@@ -44,7 +44,6 @@
     this._inEffect = this._source._update(0);
     this._idle = true;
     this._currentTimePending = false;
-    this.name = 'MINIFILL PLAYER';
   };
 
   scope.Player.prototype = {

@@ -19,7 +19,6 @@
     this._player = player;
     this._childPlayers = [];
     this._callback = null;
-    this.name = 'MAXIFILL PLAYER';
   };
 
   // TODO: add a source getter/setter

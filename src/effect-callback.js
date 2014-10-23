@@ -17,12 +17,15 @@
   var originalAnimate = Element.prototype.animate;
 
   Element.prototype.animate = function(effect, timing) {
+    var player;
     if (typeof effect == 'function') {
-      var player = new scope.Player(originalAnimate.call(element, [], timing));
+      player = new scope.Player(originalAnimate.call(element, [], timing));
       bind(player, this, effect, timing);
-      return player;
+    } else {
+      player = new scope.Player(originalAnimate.call(this, effect, timing));
     }
-    return new scope.Player(originalAnimate.call(this, effect, timing));
+    window.document.timeline._addPlayer(player);
+    return player;
   };
 
   var sequenceNumber = 0;
