@@ -101,7 +101,7 @@
 
   var numberString = '\\s*(-?\\d+\\.?\\d*|-?\\.\\d+)\\s*';
   var cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
-  var stepRe = /step\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
+  var stepRe = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
   var linear = function(x) { return x; };
 
   function toTimingFunction(easing) {
