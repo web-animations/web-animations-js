@@ -55,8 +55,13 @@
 
     for (var groupName in propertySpecificKeyframeGroups) {
       var group = propertySpecificKeyframeGroups[groupName];
-      if (group[0].offset != 0 || group[group.length - 1].offset != 1)
-        throw 'Partial keyframes are not supported';
+      if (group[0].offset != 0 || group[group.length - 1].offset != 1) {
+        throw {
+          type: DOMException.NOT_SUPPORTED_ERR,
+          name: 'NotSupportedError',
+          message: 'Partial keyframes are not supported'
+        };
+      }
     }
     return propertySpecificKeyframeGroups;
   }
