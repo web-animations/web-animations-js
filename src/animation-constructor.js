@@ -138,6 +138,7 @@
     }
   };
 
+  // FIXME: See if this can be merged into Element.prototype.animate in effect-callback.js
   var _animate = window.Element.prototype.animate;
   window.Element.prototype.animate = function(effectInput, timingInput) {
     var p = _animate.apply(this, [effectInput, timingInput]);
