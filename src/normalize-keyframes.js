@@ -57,8 +57,13 @@
     for (var i = 0; i < keyframeEffect.length; i++) {
       var offset = keyframeEffect[i].offset;
       if (offset != null) {
-        if (offset < previousOffset)
-          looselySortedByOffset = false;
+        if (offset < previousOffset) {
+          throw {
+            code: DOMException.INVALID_MODIFICATION_ERR,
+            name: 'InvalidModificationError',
+            message: 'Keyframes are not loosely sorted by offset. Sort or specify offsets.'
+          };
+        }
         previousOffset = offset;
       } else {
         everyFrameHasOffset = false;
@@ -68,15 +73,6 @@
     keyframeEffect = keyframeEffect.filter(function(keyframe) {
       return keyframe.offset >= 0 && keyframe.offset <= 1;
     });
-
-    if (!looselySortedByOffset) {
-      if (!everyFrameHasOffset) {
-        throw 'Keyframes are not loosely sorted by offset. Sort or specify offsets.';
-      }
-      keyframeEffect.sort(function(leftKeyframe, rightKeyframe) {
-        return leftKeyframe.offset - rightKeyframe.offset;
-      });
-    }
 
     function spaceKeyframes() {
       var length = keyframeEffect.length;
