@@ -38,7 +38,7 @@ suite('animation-node', function() {
     f = toTimingFunction('cubic-bezier(1, 1, 1)');
     isLinear(f);
 
-    f = toTimingFunction('step(10, end)');
+    f = toTimingFunction('steps(10, end)');
     assert.equal(f(0), 0);
     assert.equal(f(0.09), 0);
     assert.equal(f(0.1), 0.1);
