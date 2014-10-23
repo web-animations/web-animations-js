@@ -131,6 +131,8 @@
       if (this._idle)
         return;
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
+      this._startTime = this._totalDuration - this.currentTime;
+      this._currentTimePending = false;
     },
     cancel: function() {
       this._inEffect = false;
