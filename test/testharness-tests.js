@@ -8,10 +8,10 @@ var testHarnessTests = [
   'blink/out-of-order-keyframes.html',
   'blink/same-offset-keyframes.html',
   'blink/eased-keyframes.html',
-  'blink/getAnimationPlayers.html',
+  'blink/get-animation-players.html',
 ];
 
 var testHarnessFailures = [
   'blink/keyframe-properties.html',
-  'blink/timeline-get-css-players.html',
+  'blink/get-css-players.html',
 ];
