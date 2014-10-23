@@ -24,6 +24,7 @@
     } else {
       player = new scope.Player(originalAnimate.apply(this, [effect, timing]));
     }
+    // FIXME: See if we can just use the maxifill player source and remove this all together.
     player._player.source = {target: this};
     window.document.timeline._addPlayer(player);
     return player;
