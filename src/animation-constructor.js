@@ -138,14 +138,6 @@
     }
   };
 
-  // FIXME: See if this can be merged into Element.prototype.animate in effect-callback.js
-  var _animate = window.Element.prototype.animate;
-  window.Element.prototype.animate = function(effectInput, timingInput) {
-    var p = _animate.apply(this, [effectInput, timingInput]);
-    p.source = {target: this};
-    return p;
-  };
-
   window.Element.prototype.getAnimationPlayers = function() {
     return document.timeline.getAnimationPlayers().filter(function(player) {
       return player._player.source !== null && player._player.source.target == this;

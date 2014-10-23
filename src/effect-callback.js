@@ -19,11 +19,13 @@
   Element.prototype.animate = function(effect, timing) {
     var player;
     if (typeof effect == 'function') {
-      player = new scope.Player(originalAnimate.call(element, [], timing));
+      player = new scope.Player(originalAnimate.apply(element, [[], timing]));
       bind(player, this, effect, timing);
     } else {
-      player = new scope.Player(originalAnimate.call(this, effect, timing));
+      player = new scope.Player(originalAnimate.apply(this, [effect, timing]));
     }
+    // FIXME: See if we can just use the maxifill player source and remove this all together.
+    player._player.source = {target: this};
     window.document.timeline._addPlayer(player);
     return player;
   };
