@@ -12,6 +12,6 @@ var testHarnessTests = [
 ];
 
 var testHarnessFailures = [
-  'blink/getAnimationPlayers.html',
   'blink/keyframe-properties.html',
+  'blink/timeline-get-css-players.html',
 ];
