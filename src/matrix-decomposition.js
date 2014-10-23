@@ -380,20 +380,26 @@
                 0, 0, 0, 1];
       // TODO: Work out what to do with non-px values.
       case 'translate':
+        var xPx = item.d[0].px || 0;
+        var yPx = item.d[1].px || 0;
         return [1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
-                item.d[0].px, item.d[1].px, 0, 1];
+                xPx, yPx, 0, 1];
       case 'translate3d':
+        var xPx = item.d[0].px || 0;
+        var yPx = item.d[1].px || 0;
+        var zPx = item.d[2].px || 0;
         return [1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
-                item.d[0].px, item.d[1].px, item.d[2].px, 1];
+                xPx, yPx, zPx, 1];
       case 'perspective':
+        var p = item.d[0].px ? (-1 / item.d[0].px) : 0;
         return [
           1, 0, 0, 0,
           0, 1, 0, 0,
-          0, 0, 1, -1 / item.d[0].px,
+          0, 0, 1, p,
           0, 0, 0, 1];
       case 'matrix':
         return [item.d[0], item.d[1], 0, 0,
