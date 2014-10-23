@@ -378,7 +378,7 @@ var metadata_generator = {
 };
 
 document.write('<script src="../../web-animations-forced.min.js"></script>');
-if (window.parent) {
+if (window.parent && parent.window.initTestHarness) {
   parent.window.initTestHarness(window);
 } else {
   metadata_generator.setup();

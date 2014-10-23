@@ -31,6 +31,12 @@
             if (!isFinite(memberValue))
               throw new TypeError('keyframe offsets must be numbers.');
           }
+        } else if (member == 'composite') {
+          throw {
+            type: DOMException.NOT_SUPPORTED_ERR,
+            name: 'NotSupportedError',
+            message: 'add compositing is not supported'
+          };
         } else if (member == 'easing') {
           memberValue = shared.toTimingFunction(memberValue);
         } else {

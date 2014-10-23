@@ -1,4 +1,5 @@
 var testHarnessTests = [
+  'blink/add-keyframes.html',
   'blink/simple-keyframes.html',
   'blink/keyframes-with-null-offsets.html',
   'blink/same-offset-keyframes.html',
@@ -6,7 +7,6 @@ var testHarnessTests = [
 ];
 
 var testHarnessFailures = [
-  'blink/add-keyframes.html',
   'blink/2-keyframes-with-offsets.html',
   'blink/3-keyframes-with-offsets.html',
   'blink/getAnimationPlayers.html',
