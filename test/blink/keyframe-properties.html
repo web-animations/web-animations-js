@@ -36,11 +36,10 @@ test(function() {
     value: '100px',
     enumerable: 'true'});
   var keyframe = new Keyframe();
-  assert_array_equals(Object.keys(keyframe), ["top"]);
   try {
-    div.animate([keyframe, {top: '200px'}], 1);
+    div.animate([keyframe, {top: '200px', left: '200px', height: '200px'}], 1);
   } catch (e) {
-    assert_unreached("Mismatched properties - left, width or height considered on keyframe.");
+    assert_unreached("Mismatched properties - left, width or height not considered on keyframe.");
   }
 },
 'inherited keyframe properties tests',

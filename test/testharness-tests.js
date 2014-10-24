@@ -5,6 +5,7 @@ var testHarnessTests = [
   'blink/insufficient-keyframes.html',
   'blink/simple-keyframes.html',
   'blink/keyframes-with-null-offsets.html',
+  'blink/keyframe-properties.html',
   'blink/out-of-order-keyframes.html',
   'blink/same-offset-keyframes.html',
   'blink/eased-keyframes.html',
@@ -12,6 +13,5 @@ var testHarnessTests = [
 ];
 
 var testHarnessFailures = [
-  'blink/keyframe-properties.html',
   'blink/get-css-players.html',
 ];
