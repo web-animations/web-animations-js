@@ -7,6 +7,32 @@ suite('matrix interpolation', function() {
       assert.closeTo(Number(actualElements[i]), expected[i], 0.01);
   }
 
+  function compareInterpolatedTransforms(actual, expected, timeFraction) {
+    var actualInterp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        actual[0],
+        actual[1]);
+    var expectedInterp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        expected[0],
+        expected[1]);
+    var evaluatedActualInterp = actualInterp(timeFraction);
+    var evaluatedExpectedInterp = expectedInterp(timeFraction);
+    var actualElements = evaluatedActualInterp.slice(
+    		evaluatedActualInterp.indexOf('(') + 1,
+    		evaluatedActualInterp.lastIndexOf(')')
+    		).split(',');
+    var expectedElements = evaluatedExpectedInterp.slice(
+        evaluatedExpectedInterp.indexOf('(') + 1,
+        evaluatedExpectedInterp.lastIndexOf(')')
+        ).split(',');
+    console.log(actualElements);
+    console.log(expectedElements);
+    assert.equal(actualElements.length, expectedElements.length);
+    for (var i = 0; i < expectedElements.length; i++)
+      assert.closeTo(Number(actualElements[i]), Number(expectedElements[i]), 0.01);
+  }
+
   test('transform interpolations with matrices only', function() {
     var interpolatedMatrix = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -212,28 +238,101 @@ suite('matrix interpolation', function() {
     evaluatedInterp = interp(0.4);
     compareMatrices(evaluatedInterp, [0.84, 1.59, -1.59, 0.84, 360, 76], 6);
 
-    var interp = webAnimationsMinifill.propertyInterpolation(
+    interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'perspective(1000px)',
         'perspective(200px)');
-    var evaluatedInterp = interp(0.2);
+    evaluatedInterp = interp(0.2);
     compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.0018, 0, 0, 0, 1], 16);
   });
 
 	// rotatex, rotatey, rotate, rotatez, rotate3d, scale, scalex, scaley, scalez, scale3d, skew,
 	// skewx, skewy, translate, translate3d, perspective, matrix, matrix3d
   test('decompose various CSS properties', function() {
-    // interp = webAnimationsMinifill.propertyInterpolation(
-    //     'transform',
-    //     'translate(0px, 0px) skew(30deg)',
-    //     'skew(0deg) translate(300px, 90px)');
-    // evaluatedInterp = interp(0.4);
-    // compareMatrices(evaluatedInterp, [1, 0, 0.35, 1, 120, 36], 6);
+    var interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotateX(110deg)',
+        'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)');
+    var evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 0.500, 0.866, 0, 0, -0.866, 0.500, 0, 0, 0, 0, 1], 16);
+
+    // FIXME: This test case differs from blink transitions which gives -1(this)
+    // This case agrees with FireFox transitions.
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotateY(10rad)',
+        'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [0.960, 0, 0.279, 0, 0, 1, 0, 0, -0.279, 0, 0.960, 0, 0, 0, 0, 1], 16);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotate(320deg)',
+        'rotate(10deg) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [0.966, -0.259, 0.259, 0.966, 0, 0], 6);
+
+    // FIXME: This test case differs from blink transitions which gives -1(this)
+    // This case agrees with FireFox transitions.
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotateZ(10rad)',
+        'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [0.960, -0.279, 0.279, 0.960, 0, 0], 6);
+
+    // FIXME: This test case differs from blink transitions
+    // which gives matrix3d(-0.24, +0.91, +0.33, +0, +0.33, -0.24, +0.91, +0, +0.91, +0.33, -0.24, +0, +0, +0, +0, +1)
+    // versus our  matrix3d(+0.91, -0.24, +0.33, +0, +0.33, +0.91, -0.24, +0, -0.24, +0.33, +0.91, +0, +0, +0, +0, +1)
+    // This case agrees with FireFox transitions.
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'rotate3d(1, 1, 1, 100deg)',
+        'rotate3d(1, 1, 1, 200deg) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    console.log(evaluatedInterp);
+    compareMatrices(evaluatedInterp, [0.911, -0.244, 0.333, 0, 0.333, 0.911, -0.244, 0, -0.244, 0.333, 0.911, 0, 0, 0, 0, 1], 16);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'skew(30deg)',
+        'skew(0deg) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0.289, 1, 0, 0], 6);
   });
 
 	// rotatex, rotatey, rotate, rotatez, rotate3d, scale, scalex, scaley, scalez, scale3d, skew,
 	// skewx, skewy, translate, translate3d, perspective, matrix, matrix3d
   test('decompose various CSS properties with unsupported units', function() {
+		compareInterpolatedTransforms(
+				['rotateX(110grad)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+				['rotateX(0deg)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['rotateY(10grad)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+				['rotateY(0rad)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['rotate(320deg)', 'rotateY(10grad) matrix(1, 0, 0, 1, 0, 0)'],
+				['rotate(320deg)', 'rotateY(0deg) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['rotateZ(10grad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+				['rotateZ(0rad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 200grad) matrix(1, 0, 0, 1, 0, 0)'],
+				['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 0deg) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['skew(30grad)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+				['skew(0deg)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
   });
 
   test('transform interpolations involving matrices when matrix code is not available', function() {
