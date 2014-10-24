@@ -46,11 +46,11 @@
       'test/js/interpolation.js',
       'test/js/matrix-interpolation.js',
       'test/js/number-handler.js',
-      'test/js/player-finish-event.js',
       'test/js/player.js',
+      'test/js/player-finish-event.js',
       'test/js/property-interpolation.js',
-      'test/js/transform-handler.js',
-      'test/js/tick.js'];
+      'test/js/tick.js',
+      'test/js/transform-handler.js'];
 
   var maxifillTest = minifillTest.concat(
       'test/js/animation-constructor.js',
