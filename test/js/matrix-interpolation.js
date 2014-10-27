@@ -246,7 +246,6 @@ suite('matrix interpolation', function() {
     compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.0018, 0, 0, 0, 1], 16);
   });
 
-	// scalex, scaley, scalez, scale3d, skewx, skewy, translate, translate3d, perspective, matrix, matrix3d
   test('decompose various CSS properties', function() {
     var interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -296,19 +295,80 @@ suite('matrix interpolation', function() {
         'scale(10)',
         'scale(2) matrix(1, 0, 0, 1, 0, 0)');
     evaluatedInterp = interp(0.5);
-    console.log(evaluatedInterp);
     compareMatrices(evaluatedInterp, [6, 0, 0, 6, 0, 0], 6);
 
-    // TODO: DOUBLE CHECK SKEW VS FIREFOX
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'scalex(10)',
+        'scalex(2) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [6, 0, 0, 1, 0, 0], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'scaley(10)',
+        'scaley(2) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 6, 0, 0], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'scalez(10)',
+        'scalez(2) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 6, 0, 0, 0, 0, 1], 16);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'scale3d(6, 8, 10)',
+        'scale3d(2, 2, 2) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [4, 0, 0, 0, 0, 5, 0, 0, 0, 0, 6, 0, 0, 0, 0, 1], 16);
+
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'skew(30deg)',
         'skew(0deg) matrix(1, 0, 0, 1, 0, 0)');
     evaluatedInterp = interp(0.5);
     compareMatrices(evaluatedInterp, [1, 0, 0.289, 1, 0, 0], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'skewx(3rad)',
+        'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0.707, 1, 0, 0], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'skewy(3rad)',
+        'skewy(1rad) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1.301, 0.595, 0.174, 0.921, 0, 0], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate(10px, 20px)',
+        'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 1, 55, 110], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translate3d(10px, 10px, 10px)',
+        'translate3d(20px, 20px, 20px) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 15, 15, 15, 1], 16);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'perspective(300px)',
+        'perspective(900px) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.002222, 0, 0, 0, 1], 16);
   });
 
-	// skewx, skewy, translate, translate3d, perspective, matrix, matrix3d
+	// FIXME: Change some of these from grads to the other unsupported angle units.
   test('decompose various CSS properties with unsupported units', function() {
 		compareInterpolatedTransforms(
 				['rotateX(110grad)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
@@ -338,6 +398,31 @@ suite('matrix interpolation', function() {
 		compareInterpolatedTransforms(
 				['skew(30grad)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
 				['skew(0deg)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['skewx(3grad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
+				['skewx(0rad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['skewy(3rad)', 'skewy(1grad) matrix(1, 0, 0, 1, 0, 0)'],
+				['skewy(3rad)', 'skewy(0rad) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['translate(10in, 20in)', 'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)'],
+				['translate(0px, 0px)', 'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['translate3d(10px, 10px, 10px)', 'translate3d(2rem, 2rem, 2rem) matrix(1, 0, 0, 1, 0, 0)'],
+				['translate3d(10px, 10px, 10px)', 'translate3d(0px, 0px, 0px) matrix(1, 0, 0, 1, 0, 0)'],
+				0.5);
+
+		compareInterpolatedTransforms(
+				['perspective(300px)', 'perspective(9em) matrix(1, 0, 0, 1, 0, 0)'],
+				['perspective(300px)', 'perspective(0px) matrix(1, 0, 0, 1, 0, 0)'],
 				0.5);
   });
 
