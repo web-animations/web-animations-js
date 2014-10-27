@@ -249,9 +249,9 @@ suite('matrix interpolation', function() {
     document.body.appendChild(target);
 
     var player = target.animate(
-            [{transform: 'translate(100px)'},
-            {transform: 'rotate(45deg)'}],
-            2000);
+        [{transform: 'translate(100px)'},
+         {transform: 'rotate(45deg)'}],
+        2000);
     player.currentTime = 500;
     player.pause();
 
