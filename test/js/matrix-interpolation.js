@@ -246,8 +246,7 @@ suite('matrix interpolation', function() {
     compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.0018, 0, 0, 0, 1], 16);
   });
 
-	// rotatex, rotatey, rotate, rotatez, rotate3d, scale, scalex, scaley, scalez, scale3d, skew,
-	// skewx, skewy, translate, translate3d, perspective, matrix, matrix3d
+	// scalex, scaley, scalez, scale3d, skewx, skewy, translate, translate3d, perspective, matrix, matrix3d
   test('decompose various CSS properties', function() {
     var interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
@@ -290,9 +289,17 @@ suite('matrix interpolation', function() {
         'rotate3d(1, 1, 1, 100deg)',
         'rotate3d(1, 1, 1, 200deg) matrix(1, 0, 0, 1, 0, 0)');
     evaluatedInterp = interp(0.5);
-    console.log(evaluatedInterp);
     compareMatrices(evaluatedInterp, [0.911, -0.244, 0.333, 0, 0.333, 0.911, -0.244, 0, -0.244, 0.333, 0.911, 0, 0, 0, 0, 1], 16);
 
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'scale(10)',
+        'scale(2) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    console.log(evaluatedInterp);
+    compareMatrices(evaluatedInterp, [6, 0, 0, 6, 0, 0], 6);
+
+    // TODO: DOUBLE CHECK SKEW VS FIREFOX
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
         'skew(30deg)',
@@ -301,7 +308,6 @@ suite('matrix interpolation', function() {
     compareMatrices(evaluatedInterp, [1, 0, 0.289, 1, 0, 0], 6);
   });
 
-	// rotatex, rotatey, rotate, rotatez, rotate3d, scale, scalex, scaley, scalez, scale3d, skew,
 	// skewx, skewy, translate, translate3d, perspective, matrix, matrix3d
   test('decompose various CSS properties with unsupported units', function() {
 		compareInterpolatedTransforms(
