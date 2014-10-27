@@ -19,15 +19,13 @@ suite('matrix interpolation', function() {
     var evaluatedActualInterp = actualInterp(timeFraction);
     var evaluatedExpectedInterp = expectedInterp(timeFraction);
     var actualElements = evaluatedActualInterp.slice(
-    		evaluatedActualInterp.indexOf('(') + 1,
-    		evaluatedActualInterp.lastIndexOf(')')
-    		).split(',');
+        evaluatedActualInterp.indexOf('(') + 1,
+        evaluatedActualInterp.lastIndexOf(')')
+        ).split(',');
     var expectedElements = evaluatedExpectedInterp.slice(
         evaluatedExpectedInterp.indexOf('(') + 1,
         evaluatedExpectedInterp.lastIndexOf(')')
         ).split(',');
-    console.log(actualElements);
-    console.log(expectedElements);
     assert.equal(actualElements.length, expectedElements.length);
     for (var i = 0; i < expectedElements.length; i++)
       assert.closeTo(Number(actualElements[i]), Number(expectedElements[i]), 0.01);
@@ -368,62 +366,61 @@ suite('matrix interpolation', function() {
     compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.002222, 0, 0, 0, 1], 16);
   });
 
-	// FIXME: Change some of these from grads to the other unsupported angle units.
   test('decompose various CSS properties with unsupported units', function() {
-		compareInterpolatedTransforms(
-				['rotateX(110grad)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
-				['rotateX(0deg)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['rotateX(110grad)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotateX(0deg)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['rotateY(10grad)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
-				['rotateY(0rad)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['rotateY(2turn)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotateY(0rad)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['rotate(320deg)', 'rotateY(10grad) matrix(1, 0, 0, 1, 0, 0)'],
-				['rotate(320deg)', 'rotateY(0deg) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['rotate(320deg)', 'rotateY(10grad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotate(320deg)', 'rotateY(0deg) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['rotateZ(10grad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
-				['rotateZ(0rad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['rotateZ(10grad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotateZ(0rad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 200grad) matrix(1, 0, 0, 1, 0, 0)'],
-				['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 0deg) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 2turn) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 0deg) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['skew(30grad)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
-				['skew(0deg)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['skew(30grad)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+        ['skew(0deg)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['skewx(3grad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
-				['skewx(0rad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['skewx(3grad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['skewx(0rad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['skewy(3rad)', 'skewy(1grad) matrix(1, 0, 0, 1, 0, 0)'],
-				['skewy(3rad)', 'skewy(0rad) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['skewy(3rad)', 'skewy(1grad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['skewy(3rad)', 'skewy(0rad) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['translate(10in, 20in)', 'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)'],
-				['translate(0px, 0px)', 'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['translate(10in, 20in)', 'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)'],
+        ['translate(0px, 0px)', 'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['translate3d(10px, 10px, 10px)', 'translate3d(2rem, 2rem, 2rem) matrix(1, 0, 0, 1, 0, 0)'],
-				['translate3d(10px, 10px, 10px)', 'translate3d(0px, 0px, 0px) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['translate3d(10px, 10px, 10px)', 'translate3d(2rem, 2rem, 2rem) matrix(1, 0, 0, 1, 0, 0)'],
+        ['translate3d(10px, 10px, 10px)', 'translate3d(0px, 0px, 0px) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
 
-		compareInterpolatedTransforms(
-				['perspective(300px)', 'perspective(9em) matrix(1, 0, 0, 1, 0, 0)'],
-				['perspective(300px)', 'perspective(0px) matrix(1, 0, 0, 1, 0, 0)'],
-				0.5);
+    compareInterpolatedTransforms(
+        ['perspective(300px)', 'perspective(9em) matrix(1, 0, 0, 1, 0, 0)'],
+        ['perspective(300px)', 'perspective(0px) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
   });
 
   test('transform interpolations involving matrices when matrix code is not available', function() {
