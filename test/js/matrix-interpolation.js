@@ -244,6 +244,23 @@ suite('matrix interpolation', function() {
     compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.0018, 0, 0, 0, 1], 16);
   });
 
+  test('transforms that decompose to a 2D matrix result in a 2D matrix transform in computed style', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+
+    var player = target.animate(
+            [{transform: 'translate(100px)'},
+            {transform: 'rotate(45deg)'}],
+            2000);
+    player.currentTime = 500;
+    player.pause();
+
+    var styleTransform = getComputedStyle(target).transform;
+    var elements = styleTransform.slice(
+        styleTransform.indexOf('(') + 1, styleTransform.lastIndexOf(')')).split(',');
+    assert.equal(elements.length, 6);
+  });
+
   test('decompose various CSS properties', function() {
     var interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
