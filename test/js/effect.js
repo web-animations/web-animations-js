@@ -198,6 +198,37 @@ suite('effect', function() {
     assert.deepEqual(normalizedKeyframes, []);
   });
 
+  test('Normalize shorthands.', function() {
+    var normalizedKeyframes;
+    assert.doesNotThrow(function() {
+      normalizedKeyframes = normalizeKeyframes([{borderColor: 'purple green orange blue'}, {borderColor: 'red'}]);
+    });
+    assert.equal(normalizedKeyframes[0].borderTopColor, 'purple');
+    assert.equal(normalizedKeyframes[0].borderRightColor, 'green');
+    assert.equal(normalizedKeyframes[0].borderBottomColor, 'orange');
+    assert.equal(normalizedKeyframes[0].borderLeftColor, 'blue');
+    assert.equal(normalizedKeyframes[1].borderTopColor, 'red');
+    assert.equal(normalizedKeyframes[1].borderRightColor, 'red');
+    assert.equal(normalizedKeyframes[1].borderBottomColor, 'red');
+    assert.equal(normalizedKeyframes[1].borderLeftColor, 'red');
+
+    assert.doesNotThrow(function() {
+      normalizedKeyframes = normalizeKeyframes([{font: 'italic bold 20pt / 200% serif'}, {font: 'italic normal bold 50pt serif'}]);
+    });
+    assert.equal(normalizedKeyframes[0].fontStyle, 'italic');
+    assert.equal(normalizedKeyframes[0].fontVariant, 'normal');
+    assert.equal(normalizedKeyframes[0].fontWeight, 'bold');
+    assert.equal(normalizedKeyframes[0].fontSize, '20pt');
+    assert.equal(normalizedKeyframes[0].lineHeight, '200%');
+    assert.equal(normalizedKeyframes[0].fontFamily, 'serif');
+    assert.equal(normalizedKeyframes[1].fontStyle, 'italic');
+    assert.equal(normalizedKeyframes[1].fontVariant, 'normal');
+    assert.equal(normalizedKeyframes[1].fontWeight, 'bold');
+    assert.equal(normalizedKeyframes[1].fontSize, '50pt');
+    assert.equal(normalizedKeyframes[1].lineHeight, 'normal');
+    assert.equal(normalizedKeyframes[1].fontFamily, 'serif');
+  });
+
   // Test makePropertySpecificKeyframeGroups.
   test('Make property specific keyframe groups for a simple effect with one property.', function() {
     var groups;

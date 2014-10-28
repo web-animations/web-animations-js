@@ -14,6 +14,113 @@
 
 (function(shared, testing) {
 
+  var shorthandToLonghand = {
+    background: [
+      'backgroundImage',
+      'backgroundPosition',
+      'backgroundSize',
+      'backgroundRepeat',
+      'backgroundAttachment',
+      'backgroundOrigin',
+      'backgroundClip',
+      'backgroundColor'
+    ],
+    border: [
+      'borderTopColor',
+      'borderTopStyle',
+      'borderTopWidth',
+      'borderRightColor',
+      'borderRightStyle',
+      'borderRightWidth',
+      'borderBottomColor',
+      'borderBottomStyle',
+      'borderBottomWidth',
+      'borderLeftColor',
+      'borderLeftStyle',
+      'borderLeftWidth'
+    ],
+    borderBottom: [
+      'borderBottomWidth',
+      'borderBottomStyle',
+      'borderBottomColor'
+    ],
+    borderColor: [
+      'borderTopColor',
+      'borderRightColor',
+      'borderBottomColor',
+      'borderLeftColor'
+    ],
+    borderLeft: [
+      'borderLeftWidth',
+      'borderLeftStyle',
+      'borderLeftColor'
+    ],
+    borderRadius: [
+      'borderTopLeftRadius',
+      'borderTopRightRadius',
+      'borderBottomRightRadius',
+      'borderBottomLeftRadius'
+    ],
+    borderRight: [
+      'borderRightWidth',
+      'borderRightStyle',
+      'borderRightColor'
+    ],
+    borderTop: [
+      'borderTopWidth',
+      'borderTopStyle',
+      'borderTopColor'
+    ],
+    borderWidth: [
+      'borderTopWidth',
+      'borderRightWidth',
+      'borderBottomWidth',
+      'borderLeftWidth'
+    ],
+    font: [
+      'fontFamily',
+      'fontSize',
+      'fontStyle',
+      'fontVariant',
+      'fontWeight',
+      'lineHeight'
+    ],
+    margin: [
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft'
+    ],
+    outline: [
+      'outlineColor',
+      'outlineStyle',
+      'outlineWidth'
+    ],
+    padding: [
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft'
+    ]
+  };
+
+  var shorthandExpanderElem = document.createElement('div');
+
+  // This delegates parsing shorthand value syntax to the browser.
+  function expandShorthand(property, value, result) {
+    shorthandExpanderElem.style[property] = value;
+    var longProperties = shorthandToLonghand[property];
+    if (longProperties) {
+      for (var i in longProperties) {
+        var longProperty = longProperties[i];
+        var longhandValue = shorthandExpanderElem.style[longProperty];
+        result[longProperty] = longhandValue;
+      }
+    } else {
+      result[property] = value;
+    }
+  };
+
   function normalizeKeyframes(effectInput) {
     if (!Array.isArray(effectInput) && effectInput !== null)
       throw new TypeError('Keyframe effect must be null or an array of keyframes');
@@ -42,7 +149,7 @@
         } else {
           memberValue = '' + memberValue;
         }
-        keyframe[member] = memberValue;
+        expandShorthand(member, memberValue, keyframe);
       }
       if (keyframe.offset == undefined)
         keyframe.offset = null;
