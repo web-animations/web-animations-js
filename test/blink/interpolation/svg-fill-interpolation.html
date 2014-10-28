@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  width: 100px;
+  height: 100px;
+  stroke: black;
+  stroke-width: 20px;
+}
+.replica {
+  stroke: green;
+}
+</style>
+<body>
+<template id="target-template">
+<svg>
+<defs>
+<linearGradient id="gradient">
+<stop offset="0"  stop-color="green"/>
+<stop offset="1" stop-color="gold"/>
+</linearGradient>
+</defs>
+<rect x="0" y="0" width="100" height="100">
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: 'fill',
+  from: 'orange',
+  to: 'blue'
+}, [
+  {at: -5, is: '#ffff00'},
+  {at: -0.4, is: '#ffe700'},
+  {at: 0, is: 'orange'},
+  {at: 0.2, is: '#cc8433'},
+  {at: 0.6, is: '#664299'},
+  {at: 1, is: 'blue'},
+  {at: 1.5, is: 'blue'}
+]);
+assertInterpolation({
+  property: 'fill',
+  from: 'orange',
+  to: 'url(#gradient)'
+}, [
+  {at: 0, is: 'orange'},
+  {at: 0.2, is: 'orange'},
+  {at: 0.6, is: 'url(#gradient)'},
+  {at: 1, is: 'url(#gradient)'}
+]);
+</script>
+</body>

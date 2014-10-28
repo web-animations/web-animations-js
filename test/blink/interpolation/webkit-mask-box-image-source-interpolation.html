@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+div.wrapper {
+  border: 10px solid black;
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  margin-bottom: 10px;
+  background-color: #FF7400;
+}
+div.wrapper:nth-child(2n) {
+  border-color: green;
+}
+div.wrapper div.target {
+  background-color: #009999;
+  height: 100%;
+  -webkit-mask-box-image-slice: 25;
+}
+</style>
+<body>
+<template id="target-template">
+  <div class="wrapper">
+    <div class="target"></div>
+  </div>
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+// None to image
+var from = 'none';
+var to = 'url(../resources/stripes-100.png)';
+assertInterpolation({
+  property: '-webkit-mask-box-image-source',
+  from: from,
+  to: to
+}, [
+  {at: -0.3, is: from},
+  {at: 0, is: from},
+  {at: 0.3, is: from},
+  {at: 0.6, is: to},
+  {at: 1, is: to},
+  {at: 1.5, is: to},
+]);
+
+// Image to image
+from = 'url(../resources/green-100.png)';
+to = 'url(../resources/stripes-100.png)';
+assertInterpolation({
+  property: '-webkit-mask-box-image-source',
+  from: from,
+  to: to
+}, [
+  {at: -0.3, is: from},
+  {at: 0, is: from},
+  {at: 0.3, is: '-webkit-cross-fade(' + from + ', ' + to + ', 0.3)'},
+  {at: 0.6, is: '-webkit-cross-fade(' + from + ', ' + to + ', 0.6)'},
+  {at: 1, is: to},
+  {at: 1.5, is: to},
+]);
+
+// Image to gradient
+to = 'linear-gradient(45deg, blue, orange)';
+assertInterpolation({
+  property: '-webkit-mask-box-image-source',
+  from: from,
+  to: to
+}, [
+  {at: -0.3, is: from},
+  {at: 0, is: from},
+  {at: 0.3, is: '-webkit-cross-fade(' + from + ', ' + to + ', 0.3)'},
+  {at: 0.6, is: '-webkit-cross-fade(' + from + ', ' + to + ', 0.6)'},
+  {at: 1, is: to},
+  {at: 1.5, is: to},
+]);
+
+// Gradient to gradient
+from = 'linear-gradient(-45deg, red, yellow)';
+assertInterpolation({
+  property: '-webkit-mask-box-image-source',
+  from: from,
+  to: to
+}, [
+  {at: -0.3, is: from},
+  {at: 0, is: from},
+  {at: 0.3, is: '-webkit-cross-fade(' + from + ', ' + to + ', 0.3)'},
+  {at: 0.6, is: '-webkit-cross-fade(' + from + ', ' + to + ', 0.6)'},
+  {at: 1, is: to},
+  {at: 1.5, is: to},
+]);
+</script>
+</body>

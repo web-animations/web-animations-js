@@ -1,0 +1,16 @@
+CSS Animations:
+PASS: shape-image-threshold from [0.5] to [1] was [0] at -1.5
+PASS: shape-image-threshold from [0.5] to [1] was [0.25] at -0.5
+PASS: shape-image-threshold from [0.5] to [1] was [0.5] at 0
+PASS: shape-image-threshold from [0.5] to [1] was [0.75] at 0.5
+PASS: shape-image-threshold from [0.5] to [1] was [1] at 1
+PASS: shape-image-threshold from [0.5] to [1] was [1] at 1.5
+
+Web Animations API:
+PASS: shapeImageThreshold from [0.5] to [1] was [0] at -1.5
+PASS: shapeImageThreshold from [0.5] to [1] was [0.25] at -0.5
+PASS: shapeImageThreshold from [0.5] to [1] was [0.5] at 0
+PASS: shapeImageThreshold from [0.5] to [1] was [0.75] at 0.5
+PASS: shapeImageThreshold from [0.5] to [1] was [1] at 1
+PASS: shapeImageThreshold from [0.5] to [1] was [1] at 1.5
+

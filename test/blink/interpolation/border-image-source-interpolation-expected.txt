@@ -1,0 +1,52 @@
+CSS Animations:
+PASS: border-image-source from [none] to [url(../resources/stripes-100.png)] was [none] at -0.3
+PASS: border-image-source from [none] to [url(../resources/stripes-100.png)] was [none] at 0
+PASS: border-image-source from [none] to [url(../resources/stripes-100.png)] was [none] at 0.3
+PASS: border-image-source from [none] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 0.6
+PASS: border-image-source from [none] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 1
+PASS: border-image-source from [none] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 1.5
+PASS: border-image-source from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [url(../resources/green-100.png)] at -0.3
+PASS: border-image-source from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [url(../resources/green-100.png)] at 0
+PASS: border-image-source from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [-webkit-cross-fade(url(../resources/green-100.png), url(../resources/stripes-100.png), 0.3)] at 0.3
+PASS: border-image-source from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [-webkit-cross-fade(url(../resources/green-100.png), url(../resources/stripes-100.png), 0.6)] at 0.6
+PASS: border-image-source from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 1
+PASS: border-image-source from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 1.5
+PASS: border-image-source from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [url(../resources/green-100.png)] at -0.3
+PASS: border-image-source from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [url(../resources/green-100.png)] at 0
+FAIL: border-image-source from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [url(file:///.../green-100.png)] at 0.3, expected [-webkit-cross-fade(url(../resources/green-100.png), linear-gradient(45deg, blue, orange), 0.3)] (parsed as [-webkit-cross-fade(url(file:///.../green-100.png), linear-gradient(45deg, blue, orange), 0.3)])
+FAIL: border-image-source from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 0.6, expected [-webkit-cross-fade(url(../resources/green-100.png), linear-gradient(45deg, blue, orange), 0.6)] (parsed as [-webkit-cross-fade(url(file:///.../green-100.png), linear-gradient(45deg, blue, orange), 0.6)])
+PASS: border-image-source from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1
+PASS: border-image-source from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1.5
+PASS: border-image-source from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at -0.3
+PASS: border-image-source from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at 0
+FAIL: border-image-source from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at 0.3, expected [-webkit-cross-fade(linear-gradient(-45deg, red, yellow), linear-gradient(45deg, blue, orange), 0.3)]
+FAIL: border-image-source from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 0.6, expected [-webkit-cross-fade(linear-gradient(-45deg, red, yellow), linear-gradient(45deg, blue, orange), 0.6)]
+PASS: border-image-source from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1
+PASS: border-image-source from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1.5
+
+Web Animations API:
+PASS: borderImageSource from [none] to [url(../resources/stripes-100.png)] was [none] at -0.3
+PASS: borderImageSource from [none] to [url(../resources/stripes-100.png)] was [none] at 0
+PASS: borderImageSource from [none] to [url(../resources/stripes-100.png)] was [none] at 0.3
+PASS: borderImageSource from [none] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 0.6
+PASS: borderImageSource from [none] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 1
+PASS: borderImageSource from [none] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 1.5
+PASS: borderImageSource from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [url(../resources/green-100.png)] at -0.3
+PASS: borderImageSource from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [url(../resources/green-100.png)] at 0
+PASS: borderImageSource from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [-webkit-cross-fade(url(../resources/green-100.png), url(../resources/stripes-100.png), 0.3)] at 0.3
+PASS: borderImageSource from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [-webkit-cross-fade(url(../resources/green-100.png), url(../resources/stripes-100.png), 0.6)] at 0.6
+PASS: borderImageSource from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 1
+PASS: borderImageSource from [url(../resources/green-100.png)] to [url(../resources/stripes-100.png)] was [url(../resources/stripes-100.png)] at 1.5
+PASS: borderImageSource from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [url(../resources/green-100.png)] at -0.3
+PASS: borderImageSource from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [url(../resources/green-100.png)] at 0
+FAIL: borderImageSource from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [url(file:///.../green-100.png)] at 0.3, expected [-webkit-cross-fade(url(../resources/green-100.png), linear-gradient(45deg, blue, orange), 0.3)] (parsed as [-webkit-cross-fade(url(file:///.../green-100.png), linear-gradient(45deg, blue, orange), 0.3)])
+FAIL: borderImageSource from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 0.6, expected [-webkit-cross-fade(url(../resources/green-100.png), linear-gradient(45deg, blue, orange), 0.6)] (parsed as [-webkit-cross-fade(url(file:///.../green-100.png), linear-gradient(45deg, blue, orange), 0.6)])
+PASS: borderImageSource from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1
+PASS: borderImageSource from [url(../resources/green-100.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1.5
+PASS: borderImageSource from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at -0.3
+PASS: borderImageSource from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at 0
+FAIL: borderImageSource from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at 0.3, expected [-webkit-cross-fade(linear-gradient(-45deg, red, yellow), linear-gradient(45deg, blue, orange), 0.3)]
+FAIL: borderImageSource from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 0.6, expected [-webkit-cross-fade(linear-gradient(-45deg, red, yellow), linear-gradient(45deg, blue, orange), 0.6)]
+PASS: borderImageSource from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1
+PASS: borderImageSource from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1.5
+

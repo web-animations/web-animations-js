@@ -1,0 +1,52 @@
+CSS Animations:
+PASS: list-style-image from [none] to [url(../resources/stripes-20.png)] was [none] at -0.3
+PASS: list-style-image from [none] to [url(../resources/stripes-20.png)] was [none] at 0
+PASS: list-style-image from [none] to [url(../resources/stripes-20.png)] was [none] at 0.3
+PASS: list-style-image from [none] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 0.6
+PASS: list-style-image from [none] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 1
+PASS: list-style-image from [none] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 1.5
+PASS: list-style-image from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [url(../resources/green-20.png)] at -0.3
+PASS: list-style-image from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [url(../resources/green-20.png)] at 0
+PASS: list-style-image from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [-webkit-cross-fade(url(../resources/green-20.png), url(../resources/stripes-20.png), 0.3)] at 0.3
+PASS: list-style-image from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [-webkit-cross-fade(url(../resources/green-20.png), url(../resources/stripes-20.png), 0.6)] at 0.6
+PASS: list-style-image from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 1
+PASS: list-style-image from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 1.5
+PASS: list-style-image from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [url(../resources/green-20.png)] at -0.3
+PASS: list-style-image from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [url(../resources/green-20.png)] at 0
+FAIL: list-style-image from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [url(file:///.../green-20.png)] at 0.3, expected [-webkit-cross-fade(url(../resources/green-20.png), linear-gradient(45deg, blue, orange), 0.3)] (parsed as [-webkit-cross-fade(url(file:///.../green-20.png), linear-gradient(45deg, blue, orange), 0.3)])
+FAIL: list-style-image from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 0.6, expected [-webkit-cross-fade(url(../resources/green-20.png), linear-gradient(45deg, blue, orange), 0.6)] (parsed as [-webkit-cross-fade(url(file:///.../green-20.png), linear-gradient(45deg, blue, orange), 0.6)])
+PASS: list-style-image from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1
+PASS: list-style-image from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1.5
+PASS: list-style-image from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at -0.3
+PASS: list-style-image from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at 0
+FAIL: list-style-image from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at 0.3, expected [-webkit-cross-fade(linear-gradient(-45deg, red, yellow), linear-gradient(45deg, blue, orange), 0.3)]
+FAIL: list-style-image from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 0.6, expected [-webkit-cross-fade(linear-gradient(-45deg, red, yellow), linear-gradient(45deg, blue, orange), 0.6)]
+PASS: list-style-image from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1
+PASS: list-style-image from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1.5
+
+Web Animations API:
+PASS: listStyleImage from [none] to [url(../resources/stripes-20.png)] was [none] at -0.3
+PASS: listStyleImage from [none] to [url(../resources/stripes-20.png)] was [none] at 0
+PASS: listStyleImage from [none] to [url(../resources/stripes-20.png)] was [none] at 0.3
+PASS: listStyleImage from [none] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 0.6
+PASS: listStyleImage from [none] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 1
+PASS: listStyleImage from [none] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 1.5
+PASS: listStyleImage from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [url(../resources/green-20.png)] at -0.3
+PASS: listStyleImage from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [url(../resources/green-20.png)] at 0
+PASS: listStyleImage from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [-webkit-cross-fade(url(../resources/green-20.png), url(../resources/stripes-20.png), 0.3)] at 0.3
+PASS: listStyleImage from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [-webkit-cross-fade(url(../resources/green-20.png), url(../resources/stripes-20.png), 0.6)] at 0.6
+PASS: listStyleImage from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 1
+PASS: listStyleImage from [url(../resources/green-20.png)] to [url(../resources/stripes-20.png)] was [url(../resources/stripes-20.png)] at 1.5
+PASS: listStyleImage from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [url(../resources/green-20.png)] at -0.3
+PASS: listStyleImage from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [url(../resources/green-20.png)] at 0
+FAIL: listStyleImage from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [url(file:///.../green-20.png)] at 0.3, expected [-webkit-cross-fade(url(../resources/green-20.png), linear-gradient(45deg, blue, orange), 0.3)] (parsed as [-webkit-cross-fade(url(file:///.../green-20.png), linear-gradient(45deg, blue, orange), 0.3)])
+FAIL: listStyleImage from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 0.6, expected [-webkit-cross-fade(url(../resources/green-20.png), linear-gradient(45deg, blue, orange), 0.6)] (parsed as [-webkit-cross-fade(url(file:///.../green-20.png), linear-gradient(45deg, blue, orange), 0.6)])
+PASS: listStyleImage from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1
+PASS: listStyleImage from [url(../resources/green-20.png)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1.5
+PASS: listStyleImage from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at -0.3
+PASS: listStyleImage from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at 0
+FAIL: listStyleImage from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(-45deg, red, yellow)] at 0.3, expected [-webkit-cross-fade(linear-gradient(-45deg, red, yellow), linear-gradient(45deg, blue, orange), 0.3)]
+FAIL: listStyleImage from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 0.6, expected [-webkit-cross-fade(linear-gradient(-45deg, red, yellow), linear-gradient(45deg, blue, orange), 0.6)]
+PASS: listStyleImage from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1
+PASS: listStyleImage from [linear-gradient(-45deg, red, yellow)] to [linear-gradient(45deg, blue, orange)] was [linear-gradient(45deg, blue, orange)] at 1.5
+

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  width: 100px;
+  height: 100px;
+}
+.active {
+  background-color: green;
+  display: inline-block;
+}
+
+.replica {
+  background-color: black;
+  display: inline-block;
+}
+</style>
+<body>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: '-webkit-clip-path',
+  from: 'circle(10px at 25px 75px)',
+  to: 'circle(50px at 50px 50px)'
+}, [
+  {at: -0.3, is: 'circle(0px at 17.5px 82.5px)'}, // radius can't be negative
+  {at: 0, is: 'circle(10px at 25px 75px)'},
+  {at: 0.3, is: 'circle(22px at 32.5px 67.5px)'},
+  {at: 0.6, is: 'circle(34px at 40px 60px)'},
+  {at: 1, is: 'circle(50px at 50px 50px)'},
+  {at: 1.5, is: 'circle(70px at 62.5px 37.5px)'}
+]);
+
+assertInterpolation({
+  property: '-webkit-clip-path',
+  from: 'none',
+  to: 'circle(3px at 1px 2px)'
+}, [
+  {at: -0.3, is: 'none'},
+  {at: 0, is: 'none'},
+  {at: 0.3, is: 'none'},
+  {at: 0.6, is: 'circle(3px at 1px 2px)'},
+  {at: 1, is: 'circle(3px at 1px 2px)'},
+  {at: 1.5, is: 'circle(3px at 1px 2px)'}
+]);
+</script>
+</body>

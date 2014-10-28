@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  stroke: black;
+  stroke-width: 10px;
+}
+.replica {
+  stroke: green;
+}
+</style>
+<body>
+<template id="target-template">
+  <svg height="200" width="10">
+    <path d="M5,0 l0,200" stroke-dasharray="15,15" class="target">
+  </svg>
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: 'stroke-dashoffset',
+  from: '-10px',
+  to: '10px'
+}, [
+  {at: -0.25, is: '-15px'},
+  {at: 0, is: '-10px'},
+  {at: 0.25, is: '-5px'},
+  {at: 0.5, is: '0px'},
+  {at: 0.75, is: '5px'},
+  {at: 1, is: '10px'},
+  {at: 1.25, is: '15px'},
+]);
+</script>
+</body>

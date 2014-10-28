@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  stroke-width: 10px;
+  stroke: black;
+}
+.replica {
+  stroke: green;
+}
+</style>
+<body>
+<template id="target-template">
+  <svg height="200" width="10">
+    <path d="M5,0 l0,400" class="target">
+  </svg>
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+// Basic case
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: '5 10',
+  to: '15 20'
+}, [
+  {at: -0.6, is: ' 0  4'}, // Values must be non-negative.
+  {at: -0.4, is: ' 1  6'},
+  {at: -0.2, is: ' 3  8'},
+  {at:  0,   is: ' 5 10'},
+  {at:  0.2, is: ' 7 12'},
+  {at:  0.4, is: ' 9 14'},
+  {at:  0.6, is: '11 16'},
+  {at:  0.8, is: '13 18'},
+  {at:  1,   is: '15 20'},
+  {at:  1.2, is: '17 22'},
+]);
+
+// Zero value
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: '0 0',
+  to: '5 10'
+}, [
+  {at: -0.2, is: ' 0  0'}, // Values must be non-negative.
+  {at:  0,   is: ' 0  0'},
+  {at:  0.2, is: ' 1  2'},
+  {at:  0.4, is: ' 2  4'},
+  {at:  0.6, is: ' 3  6'},
+  {at:  0.8, is: ' 4  8'},
+  {at:  1.0, is: ' 5 10'},
+  {at:  1.2, is: ' 6 12'},
+]);
+
+// From none
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: 'none',
+  to: '5 10'
+}, [
+  {at: -0.2, is: ' 0  0'}, // Values must be non-negative.
+  {at:  0,   is: 'none'},
+  {at:  0.2, is: ' 1  2'},
+  {at:  0.4, is: ' 2  4'},
+  {at:  0.6, is: ' 3  6'},
+  {at:  0.8, is: ' 4  8'},
+  {at:  1.0, is: ' 5 10'},
+  {at:  1.2, is: ' 6 12'},
+]);
+
+// To none
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: '5 10',
+  to: 'none'
+}, [
+  {at: -0.2, is: ' 6 12'},
+  {at:  0,   is: ' 5 10'},
+  {at:  0.2, is: ' 4  8'},
+  {at:  0.4, is: ' 3  6'},
+  {at:  0.6, is: ' 2  4'},
+  {at:  0.8, is: ' 1  2'},
+  {at:  1.0, is: 'none'},
+  {at:  1.2, is: ' 0  0'}, // Values must be non-negative.
+]);
+
+// Both none
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: 'none',
+  to: 'none'
+}, [
+  {at: -0.2, is: 'none'},
+  {at:  0,   is: 'none'},
+  {at:  2.2, is: 'none'},
+  {at:  4.2, is: 'none'},
+  {at:  6.2, is: 'none'},
+  {at:  8.2, is: 'none'},
+  {at:  0.2, is: 'none'},
+  {at:  1.2, is: 'none'},
+]);
+
+// Differing list lengths
+// Lists are repeated until length is equal to lowest common multiple of lengths.
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: '5 10',
+  to: '15 20 25'
+}, [
+  {at: -0.2, is: ' 3  8  1  9  2  7'},
+  {at:  0,   is: ' 5 10'},
+  {at:  0.2, is: ' 7 12  9 11  8 13'},
+  {at:  0.4, is: ' 9 14 13 12 11 16'},
+  {at:  0.6, is: '11 16 17 13 14 19'},
+  {at:  0.8, is: '13 18 21 14 17 22'},
+  {at:  1,   is: '15 20 25'},
+  {at:  1.2, is: '17 22 29 16 23 28'},
+]);
+
+// Lowest common multiple of list lengths not equal to multiple of list lengths
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: '5 10 15 20',
+  to: '25 30 35 40 45 50'
+}, [
+  {at: -0.2, is: ' 1  6 11 16  0  2 13 18  0  4  9 14'},  // Values must be non-negative.
+  {at:  0,   is: ' 5 10 15 20'},
+  {at:  0.2, is: ' 9 14 19 24 13 18 17 22 11 16 21 26'},
+  {at:  0.4, is: '13 18 23 28 21 26 19 24 17 22 27 32'},
+  {at:  0.6, is: '17 22 27 32 29 34 21 26 23 28 33 38'},
+  {at:  0.8, is: '21 26 31 36 37 42 23 28 29 34 39 44'},
+  {at:  1,   is: '25 30 35 40 45 50'},
+  {at:  1.2, is: '29 34 39 44 53 58 27 32 41 46 51 56'},
+]);
+
+// One list has odd length
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: '5 10 15',
+  to: '20 25 30 35'
+}, [
+  {at: -0.2, is: ' 2  7 12  0  8 13  0  5 14  1  6 11'},  // Values must be non-negative.
+  {at:  0,   is: ' 5 10 15'},
+  {at:  0.2, is: ' 8 13 18 11 12 17 10 15 16  9 14 19'},
+  {at:  0.4, is: '11 16 21 17 14 19 15 20 17 13 18 23'},
+  {at:  0.6, is: '14 19 24 23 16 21 20 25 18 17 22 27'},
+  {at:  0.8, is: '17 22 27 29 18 23 25 30 19 21 26 31'},
+  {at:  1,   is: '20 25 30 35'},
+  {at:  1.2, is: '23 28 33 41 22 27 35 40 21 29 34 39'},
+]);
+
+// Both lists have odd length
+assertInterpolation({
+  property: 'stroke-dasharray',
+  from: '5 10 15',
+  to: '20 25 30 35 40'
+}, [
+  {at: -0.2, is: ' 2  7 12  0  4 14  1  6 11  0  8 13  0  5 10'},  // Values must be non-negative.
+  {at:  0,   is: ' 5 10 15'},
+  {at:  0.2, is: ' 8 13 18 11 16 16  9 14 19 12 12 17 10 15 20'},
+  {at:  0.4, is: '11 16 21 17 22 17 13 18 23 19 14 19 15 20 25'},
+  {at:  0.6, is: '14 19 24 23 28 18 17 22 27 26 16 21 20 25 30'},
+  {at:  0.8, is: '17 22 27 29 34 19 21 26 31 33 18 23 25 30 35'},
+  {at:  1,   is: '20 25 30 35 40'},
+  {at:  1.2, is: '23 28 33 41 46 21 29 34 39 47 22 27 35 40 45'},
+]);
+
+</script>
+</body>

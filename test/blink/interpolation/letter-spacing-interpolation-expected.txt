@@ -1,0 +1,16 @@
+CSS Animations:
+PASS: letter-spacing from [-10px] to [10px] was [-16px] at -0.3
+PASS: letter-spacing from [-10px] to [10px] was [-10px] at 0
+PASS: letter-spacing from [-10px] to [10px] was [-4px] at 0.3
+PASS: letter-spacing from [-10px] to [10px] was [2px] at 0.6
+PASS: letter-spacing from [-10px] to [10px] was [10px] at 1
+PASS: letter-spacing from [-10px] to [10px] was [20px] at 1.5
+
+Web Animations API:
+PASS: letterSpacing from [-10px] to [10px] was [-16px] at -0.3
+PASS: letterSpacing from [-10px] to [10px] was [-10px] at 0
+PASS: letterSpacing from [-10px] to [10px] was [-4px] at 0.3
+PASS: letterSpacing from [-10px] to [10px] was [2px] at 0.6
+PASS: letterSpacing from [-10px] to [10px] was [10px] at 1
+PASS: letterSpacing from [-10px] to [10px] was [20px] at 1.5
+

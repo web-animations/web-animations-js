@@ -1,0 +1,16 @@
+CSS Animations:
+PASS: width from [1em] to [10vw] was [0.00px] at -0.3
+PASS: width from [1em] to [10vw] was [16.00px] at 0
+PASS: width from [1em] to [10vw] was [35.20px] at 0.3
+PASS: width from [1em] to [10vw] was [54.40px] at 0.6
+PASS: width from [1em] to [10vw] was [80.00px] at 1
+PASS: width from [1em] to [10vw] was [112.00px] at 1.5
+
+Web Animations API:
+PASS: width from [1em] to [10vw] was [0.00px] at -0.3
+PASS: width from [1em] to [10vw] was [16.00px] at 0
+PASS: width from [1em] to [10vw] was [35.20px] at 0.3
+PASS: width from [1em] to [10vw] was [54.40px] at 0.6
+PASS: width from [1em] to [10vw] was [80.00px] at 1
+PASS: width from [1em] to [10vw] was [112.00px] at 1.5
+

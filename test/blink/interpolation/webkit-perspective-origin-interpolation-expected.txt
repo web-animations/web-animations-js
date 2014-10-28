@@ -1,0 +1,16 @@
+CSS Animations:
+PASS: -webkit-perspective-origin from [0% 50%] to [100% 150%] was [-30% 20%] at -0.3
+PASS: -webkit-perspective-origin from [0% 50%] to [100% 150%] was [0% 50%] at 0
+PASS: -webkit-perspective-origin from [0% 50%] to [100% 150%] was [30% 80%] at 0.3
+PASS: -webkit-perspective-origin from [0% 50%] to [100% 150%] was [60% 110%] at 0.6
+PASS: -webkit-perspective-origin from [0% 50%] to [100% 150%] was [100% 150%] at 1
+PASS: -webkit-perspective-origin from [0% 50%] to [100% 150%] was [150% 200%] at 1.5
+
+Web Animations API:
+FAIL: webkitPerspectiveOrigin from [0% 50%] to [100% 150%] was [25px 25px] at -0.3, expected [-30% 20%] (parsed as [-15px 10px])
+FAIL: webkitPerspectiveOrigin from [0% 50%] to [100% 150%] was [25px 25px] at 0, expected [0% 50%] (parsed as [0px 25px])
+FAIL: webkitPerspectiveOrigin from [0% 50%] to [100% 150%] was [25px 25px] at 0.3, expected [30% 80%] (parsed as [15px 40px])
+FAIL: webkitPerspectiveOrigin from [0% 50%] to [100% 150%] was [25px 25px] at 0.6, expected [60% 110%] (parsed as [30px 55px])
+FAIL: webkitPerspectiveOrigin from [0% 50%] to [100% 150%] was [25px 25px] at 1, expected [100% 150%] (parsed as [50px 75px])
+FAIL: webkitPerspectiveOrigin from [0% 50%] to [100% 150%] was [25px 25px] at 1.5, expected [150% 200%] (parsed as [75px 100px])
+

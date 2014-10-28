@@ -1,0 +1,26 @@
+CSS Animations:
+PASS: fill from [orange] to [blue] was [#ffff00] at -5
+PASS: fill from [orange] to [blue] was [#ffe700] at -0.4
+PASS: fill from [orange] to [blue] was [orange] at 0
+PASS: fill from [orange] to [blue] was [#cc8433] at 0.2
+PASS: fill from [orange] to [blue] was [#664299] at 0.6
+PASS: fill from [orange] to [blue] was [blue] at 1
+PASS: fill from [orange] to [blue] was [blue] at 1.5
+PASS: fill from [orange] to [url(#gradient)] was [orange] at 0
+PASS: fill from [orange] to [url(#gradient)] was [orange] at 0.2
+PASS: fill from [orange] to [url(#gradient)] was [url(#gradient)] at 0.6
+PASS: fill from [orange] to [url(#gradient)] was [url(#gradient)] at 1
+
+Web Animations API:
+PASS: fill from [orange] to [blue] was [#ffff00] at -5
+PASS: fill from [orange] to [blue] was [#ffe700] at -0.4
+PASS: fill from [orange] to [blue] was [orange] at 0
+PASS: fill from [orange] to [blue] was [#cc8433] at 0.2
+PASS: fill from [orange] to [blue] was [#664299] at 0.6
+PASS: fill from [orange] to [blue] was [blue] at 1
+PASS: fill from [orange] to [blue] was [blue] at 1.5
+PASS: fill from [orange] to [url(#gradient)] was [orange] at 0
+PASS: fill from [orange] to [url(#gradient)] was [orange] at 0.2
+PASS: fill from [orange] to [url(#gradient)] was [url(#gradient)] at 0.6
+PASS: fill from [orange] to [url(#gradient)] was [url(#gradient)] at 1
+

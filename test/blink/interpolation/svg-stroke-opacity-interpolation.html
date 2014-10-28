@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  fill: white;
+  stroke: orange;
+  stroke-width: 50px;
+}
+.replica {
+  margin-right: 15px;
+}
+</style>
+<body>
+<template id="target-template">
+<svg width="100px" height="100px">
+    <rect x="0" y="0" width="100" height="100" />
+</svg>
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: 'stroke-opacity',
+  from: '0',
+  to: '1'
+}, [
+  {at: -0.3, is: '0'},
+  {at: 0, is: '0'},
+  {at: 0.3, is: '0.3'},
+  {at: 0.6, is: '0.6'},
+  {at: 1, is: '1'},
+  {at: 1.5, is: '1'},
+]);
+</script>
+</body

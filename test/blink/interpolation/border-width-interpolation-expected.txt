@@ -1,0 +1,16 @@
+CSS Animations:
+PASS: border-width from [0px] to [10px] was [0px] at -0.3
+PASS: border-width from [0px] to [10px] was [0px] at 0
+PASS: border-width from [0px] to [10px] was [3px] at 0.3
+PASS: border-width from [0px] to [10px] was [6px] at 0.6
+PASS: border-width from [0px] to [10px] was [10px] at 1
+PASS: border-width from [0px] to [10px] was [15px] at 1.5
+
+Web Animations API:
+PASS: borderWidth from [0px] to [10px] was [0px] at -0.3
+PASS: borderWidth from [0px] to [10px] was [0px] at 0
+PASS: borderWidth from [0px] to [10px] was [3px] at 0.3
+PASS: borderWidth from [0px] to [10px] was [6px] at 0.6
+PASS: borderWidth from [0px] to [10px] was [10px] at 1
+PASS: borderWidth from [0px] to [10px] was [15px] at 1.5
+

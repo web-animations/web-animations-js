@@ -1,0 +1,36 @@
+CSS Animations:
+PASS: -webkit-mask-box-image-width from [0px] to [20px] was [0px] at -0.3
+PASS: -webkit-mask-box-image-width from [0px] to [20px] was [0px] at 0
+PASS: -webkit-mask-box-image-width from [0px] to [20px] was [6px] at 0.3
+PASS: -webkit-mask-box-image-width from [0px] to [20px] was [12px] at 0.6
+PASS: -webkit-mask-box-image-width from [0px] to [20px] was [20px] at 1
+PASS: -webkit-mask-box-image-width from [0px] to [20px] was [30px] at 1.5
+PASS: -webkit-mask-box-image-width from [0px] to [20px] was [100px] at 5
+PASS: -webkit-mask-box-image-width from [0px] to [20px] was [200px] at 10
+PASS: -webkit-mask-box-image-width from [0] to [20] was [0] at -0.3
+PASS: -webkit-mask-box-image-width from [0] to [20] was [0] at 0
+PASS: -webkit-mask-box-image-width from [0] to [20] was [6] at 0.3
+PASS: -webkit-mask-box-image-width from [0] to [20] was [12] at 0.6
+PASS: -webkit-mask-box-image-width from [0] to [20] was [20] at 1
+PASS: -webkit-mask-box-image-width from [0] to [20] was [30] at 1.5
+PASS: -webkit-mask-box-image-width from [0] to [20] was [100] at 5
+PASS: -webkit-mask-box-image-width from [0] to [20] was [200] at 10
+
+Web Animations API:
+FAIL: webkitMaskBoxImageWidth from [0px] to [20px] was [5px] at -0.3, expected [0px]
+FAIL: webkitMaskBoxImageWidth from [0px] to [20px] was [5px] at 0, expected [0px]
+FAIL: webkitMaskBoxImageWidth from [0px] to [20px] was [5px] at 0.3, expected [6px]
+FAIL: webkitMaskBoxImageWidth from [0px] to [20px] was [5px] at 0.6, expected [12px]
+FAIL: webkitMaskBoxImageWidth from [0px] to [20px] was [5px] at 1, expected [20px]
+FAIL: webkitMaskBoxImageWidth from [0px] to [20px] was [5px] at 1.5, expected [30px]
+FAIL: webkitMaskBoxImageWidth from [0px] to [20px] was [5px] at 5, expected [100px]
+FAIL: webkitMaskBoxImageWidth from [0px] to [20px] was [5px] at 10, expected [200px]
+FAIL: webkitMaskBoxImageWidth from [0] to [20] was [5px] at -0.3, expected [0]
+FAIL: webkitMaskBoxImageWidth from [0] to [20] was [5px] at 0, expected [0]
+FAIL: webkitMaskBoxImageWidth from [0] to [20] was [5px] at 0.3, expected [6]
+FAIL: webkitMaskBoxImageWidth from [0] to [20] was [5px] at 0.6, expected [12]
+FAIL: webkitMaskBoxImageWidth from [0] to [20] was [5px] at 1, expected [20]
+FAIL: webkitMaskBoxImageWidth from [0] to [20] was [5px] at 1.5, expected [30]
+FAIL: webkitMaskBoxImageWidth from [0] to [20] was [5px] at 5, expected [100]
+FAIL: webkitMaskBoxImageWidth from [0] to [20] was [5px] at 10, expected [200]
+

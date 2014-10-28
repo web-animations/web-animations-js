@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  stroke: black;
+  fill: white;
+}
+.replica {
+  stroke: green;
+}
+</style>
+<body>
+<template id="target-template">
+  <svg width="70" height="70">
+    <rect x="10" y="10" width="50" height="50"/>
+  </svg>
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: 'stroke-width',
+  from: '0px',
+  to: '20px'
+}, [
+  {at: -0.3, is: '0px'}, // SVG stroke-width can't be negative.
+  {at: 0, is: '0px'},
+  {at: 0.3, is: '6px'},
+  {at: 0.6, is: '12px'},
+  {at: 1, is: '20px'},
+  {at: 1.5, is: '30px'},
+]);
+</script>
+</body>

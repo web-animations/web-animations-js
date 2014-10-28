@@ -1,0 +1,28 @@
+CSS Animations:
+PASS: -webkit-clip-path from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [circle(0px at 17.5px 82.5px)] at -0.3
+PASS: -webkit-clip-path from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [circle(10px at 25px 75px)] at 0
+PASS: -webkit-clip-path from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [circle(22px at 32.5px 67.5px)] at 0.3
+PASS: -webkit-clip-path from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [circle(34px at 40px 60px)] at 0.6
+PASS: -webkit-clip-path from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [circle(50px at 50px 50px)] at 1
+PASS: -webkit-clip-path from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [circle(70px at 62.5px 37.5px)] at 1.5
+PASS: -webkit-clip-path from [none] to [circle(3px at 1px 2px)] was [none] at -0.3
+PASS: -webkit-clip-path from [none] to [circle(3px at 1px 2px)] was [none] at 0
+PASS: -webkit-clip-path from [none] to [circle(3px at 1px 2px)] was [none] at 0.3
+PASS: -webkit-clip-path from [none] to [circle(3px at 1px 2px)] was [circle(3px at 1px 2px)] at 0.6
+PASS: -webkit-clip-path from [none] to [circle(3px at 1px 2px)] was [circle(3px at 1px 2px)] at 1
+PASS: -webkit-clip-path from [none] to [circle(3px at 1px 2px)] was [circle(3px at 1px 2px)] at 1.5
+
+Web Animations API:
+FAIL: webkitClipPath from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [none] at -0.3, expected [circle(0px at 17.5px 82.5px)]
+FAIL: webkitClipPath from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [none] at 0, expected [circle(10px at 25px 75px)]
+FAIL: webkitClipPath from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [none] at 0.3, expected [circle(22px at 32.5px 67.5px)]
+FAIL: webkitClipPath from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [none] at 0.6, expected [circle(34px at 40px 60px)]
+FAIL: webkitClipPath from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [none] at 1, expected [circle(50px at 50px 50px)]
+FAIL: webkitClipPath from [circle(10px at 25px 75px)] to [circle(50px at 50px 50px)] was [none] at 1.5, expected [circle(70px at 62.5px 37.5px)]
+PASS: webkitClipPath from [none] to [circle(3px at 1px 2px)] was [none] at -0.3
+PASS: webkitClipPath from [none] to [circle(3px at 1px 2px)] was [none] at 0
+PASS: webkitClipPath from [none] to [circle(3px at 1px 2px)] was [none] at 0.3
+FAIL: webkitClipPath from [none] to [circle(3px at 1px 2px)] was [none] at 0.6, expected [circle(3px at 1px 2px)]
+FAIL: webkitClipPath from [none] to [circle(3px at 1px 2px)] was [none] at 1, expected [circle(3px at 1px 2px)]
+FAIL: webkitClipPath from [none] to [circle(3px at 1px 2px)] was [none] at 1.5, expected [circle(3px at 1px 2px)]
+

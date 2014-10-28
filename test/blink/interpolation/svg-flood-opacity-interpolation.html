@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+svg {
+  width: 100px;
+  height: 100px;
+  background: red;
+}
+svg rect {
+  fill: black;
+  filter: url(#test);
+}
+</style>
+<body>
+<template id="target-template">
+  <svg>
+    <defs>
+      <filter id="test">
+        <feFlood x="10" y="10" width="80" height="80" flood-color="blue" class="target" />
+      </filter>
+    </defs>
+    <rect width="100" height="100"></rect>
+  </svg>
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: 'flood-opacity',
+  from: '0.25',
+  to: '0.75'
+}, [
+  {at: -1, is: '0'}, // SVG Opacity ranges from 0.0 to 1.0
+  {at: -0.25, is: '0.125'},
+  {at: 0, is: '0.25'},
+  {at: 0.25, is: '0.375'},
+  {at: 1, is: '0.75'},
+  {at: 1.25, is: '0.875'},
+  {at: 2, is: '1'}, // SVG Opacity ranges from 0.0 to 1.0
+]);
+</script>
+</body>

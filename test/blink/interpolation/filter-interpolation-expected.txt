@@ -1,0 +1,194 @@
+CSS Animations:
+PASS: -webkit-filter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [hue-rotate(-90deg) blur(4px)] at -0.5
+PASS: -webkit-filter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [hue-rotate(0deg) blur(6px)] at 0
+PASS: -webkit-filter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [hue-rotate(45deg) blur(7px)] at 0.25
+PASS: -webkit-filter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [hue-rotate(90deg) blur(8px)] at 0.5
+PASS: -webkit-filter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [hue-rotate(180deg) blur(10px)] at 1
+PASS: -webkit-filter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [hue-rotate(270deg) blur(12px)] at 1.5
+PASS: -webkit-filter from [grayscale(0) blur(0px)] to [blur(10px)] was [grayscale(0) blur(0px)] at -0.5
+PASS: -webkit-filter from [grayscale(0) blur(0px)] to [blur(10px)] was [grayscale(0) blur(0px)] at 0
+PASS: -webkit-filter from [grayscale(0) blur(0px)] to [blur(10px)] was [grayscale(0) blur(0px)] at 0.25
+PASS: -webkit-filter from [grayscale(0) blur(0px)] to [blur(10px)] was [blur(10px)] at 0.5
+PASS: -webkit-filter from [grayscale(0) blur(0px)] to [blur(10px)] was [blur(10px)] at 1
+PASS: -webkit-filter from [grayscale(0) blur(0px)] to [blur(10px)] was [blur(10px)] at 1.5
+PASS: -webkit-filter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [blur(4px) hue-rotate(-90deg)] at -0.5
+PASS: -webkit-filter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [blur(6px)] at 0
+PASS: -webkit-filter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [blur(7px) hue-rotate(45deg)] at 0.25
+PASS: -webkit-filter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [blur(8px) hue-rotate(90deg)] at 0.5
+PASS: -webkit-filter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [blur(10px) hue-rotate(180deg)] at 1
+PASS: -webkit-filter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [blur(12px) hue-rotate(270deg)] at 1.5
+PASS: -webkit-filter from [none] to [hue-rotate(180deg)] was [hue-rotate(-90deg)] at -0.5
+PASS: -webkit-filter from [none] to [hue-rotate(180deg)] was [none] at 0
+PASS: -webkit-filter from [none] to [hue-rotate(180deg)] was [hue-rotate(45deg)] at 0.25
+PASS: -webkit-filter from [none] to [hue-rotate(180deg)] was [hue-rotate(90deg)] at 0.5
+PASS: -webkit-filter from [none] to [hue-rotate(180deg)] was [hue-rotate(180deg)] at 1
+PASS: -webkit-filter from [none] to [hue-rotate(180deg)] was [hue-rotate(270deg)] at 1.5
+PASS: -webkit-filter from [hue-rotate(180deg)] to [none] was [hue-rotate(270deg)] at -0.5
+PASS: -webkit-filter from [hue-rotate(180deg)] to [none] was [hue-rotate(180deg)] at 0
+PASS: -webkit-filter from [hue-rotate(180deg)] to [none] was [hue-rotate(135deg)] at 0.25
+PASS: -webkit-filter from [hue-rotate(180deg)] to [none] was [hue-rotate(90deg)] at 0.5
+PASS: -webkit-filter from [hue-rotate(180deg)] to [none] was [none] at 1
+PASS: -webkit-filter from [hue-rotate(180deg)] to [none] was [hue-rotate(-90deg)] at 1.5
+PASS: -webkit-filter from [none] to [blur(10px)] was [blur(0px)] at -1
+PASS: -webkit-filter from [none] to [blur(10px)] was [none] at 0
+PASS: -webkit-filter from [none] to [blur(10px)] was [blur(5px)] at 0.5
+PASS: -webkit-filter from [none] to [blur(10px)] was [blur(10px)] at 1
+PASS: -webkit-filter from [none] to [blur(10px)] was [blur(15px)] at 1.5
+PASS: -webkit-filter from [brightness(0)] to [none] was [brightness(0)] at -1
+PASS: -webkit-filter from [brightness(0)] to [none] was [brightness(0)] at 0
+PASS: -webkit-filter from [brightness(0)] to [none] was [brightness(0.5)] at 0.5
+PASS: -webkit-filter from [brightness(0)] to [none] was [none] at 1
+PASS: -webkit-filter from [brightness(0)] to [none] was [brightness(1.5)] at 1.5
+PASS: -webkit-filter from [contrast(0)] to [none] was [contrast(0)] at -1
+PASS: -webkit-filter from [contrast(0)] to [none] was [contrast(0)] at 0
+PASS: -webkit-filter from [contrast(0)] to [none] was [contrast(0.5)] at 0.5
+PASS: -webkit-filter from [contrast(0)] to [none] was [none] at 1
+PASS: -webkit-filter from [contrast(0)] to [none] was [contrast(1.5)] at 1.5
+FAIL: -webkit-filter from [none] to [drop-shadow(20px 10px green)] was [drop-shadow(rgba(0, 0, 0, 0) -20px -10px 0px)] at -1, expected [drop-shadow(-20px -10px white)] (parsed as [drop-shadow(rgb(255, 255, 255) -20px -10px 0px)])
+PASS: -webkit-filter from [none] to [drop-shadow(20px 10px green)] was [none] at 0
+FAIL: -webkit-filter from [none] to [drop-shadow(20px 10px green)] was [drop-shadow(rgba(0, 127, 0, 0.501961) 10px 5px 0px)] at 0.5, expected [drop-shadow(10px 5px #80C080)] (parsed as [drop-shadow(rgb(128, 192, 128) 10px 5px 0px)])
+PASS: -webkit-filter from [none] to [drop-shadow(20px 10px green)] was [drop-shadow(20px 10px green)] at 1
+FAIL: -webkit-filter from [none] to [drop-shadow(20px 10px green)] was [drop-shadow(rgb(0, 192, 0) 30px 15px 0px)] at 1.5, expected [drop-shadow(30px 15px #004000)] (parsed as [drop-shadow(rgb(0, 64, 0) 30px 15px 0px)])
+PASS: -webkit-filter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [drop-shadow(-20px -10px white)] at -1
+PASS: -webkit-filter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [drop-shadow(0px 0px 0px currentcolor)] at 0
+PASS: -webkit-filter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [drop-shadow(10px 5px #80C080)] at 0.5
+PASS: -webkit-filter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [drop-shadow(20px 10px green)] at 1
+FAIL: -webkit-filter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [drop-shadow(rgb(0, 65, 0) 30px 15px 0px)] at 1.5, expected [drop-shadow(30px 15px #004000)] (parsed as [drop-shadow(rgb(0, 64, 0) 30px 15px 0px)])
+PASS: -webkit-filter from [none] to [grayscale(1)] was [grayscale(0)] at -1
+PASS: -webkit-filter from [none] to [grayscale(1)] was [none] at 0
+PASS: -webkit-filter from [none] to [grayscale(1)] was [grayscale(0.5)] at 0.5
+PASS: -webkit-filter from [none] to [grayscale(1)] was [grayscale(1)] at 1
+PASS: -webkit-filter from [none] to [grayscale(1)] was [grayscale(1)] at 1.5
+PASS: -webkit-filter from [none] to [hue-rotate(360deg)] was [hue-rotate(-360deg)] at -1
+PASS: -webkit-filter from [none] to [hue-rotate(360deg)] was [none] at 0
+PASS: -webkit-filter from [none] to [hue-rotate(360deg)] was [hue-rotate(180deg)] at 0.5
+PASS: -webkit-filter from [none] to [hue-rotate(360deg)] was [hue-rotate(360deg)] at 1
+PASS: -webkit-filter from [none] to [hue-rotate(360deg)] was [hue-rotate(540deg)] at 1.5
+PASS: -webkit-filter from [none] to [invert(1)] was [invert(0)] at -1
+PASS: -webkit-filter from [none] to [invert(1)] was [none] at 0
+PASS: -webkit-filter from [none] to [invert(1)] was [invert(0.5)] at 0.5
+PASS: -webkit-filter from [none] to [invert(1)] was [invert(1)] at 1
+PASS: -webkit-filter from [none] to [invert(1)] was [invert(1)] at 1.5
+PASS: -webkit-filter from [opacity(0)] to [none] was [opacity(0)] at -1
+PASS: -webkit-filter from [opacity(0)] to [none] was [opacity(0)] at 0
+PASS: -webkit-filter from [opacity(0)] to [none] was [opacity(0.5)] at 0.5
+PASS: -webkit-filter from [opacity(0)] to [none] was [none] at 1
+PASS: -webkit-filter from [opacity(0)] to [none] was [opacity(1)] at 1.5
+PASS: -webkit-filter from [saturate(0)] to [none] was [saturate(0)] at -1
+PASS: -webkit-filter from [saturate(0)] to [none] was [saturate(0)] at 0
+PASS: -webkit-filter from [saturate(0)] to [none] was [saturate(0.5)] at 0.5
+PASS: -webkit-filter from [saturate(0)] to [none] was [none] at 1
+PASS: -webkit-filter from [saturate(0)] to [none] was [saturate(1.5)] at 1.5
+PASS: -webkit-filter from [none] to [sepia(1)] was [sepia(0)] at -1
+PASS: -webkit-filter from [none] to [sepia(1)] was [none] at 0
+PASS: -webkit-filter from [none] to [sepia(1)] was [sepia(0.5)] at 0.5
+PASS: -webkit-filter from [none] to [sepia(1)] was [sepia(1)] at 1
+PASS: -webkit-filter from [none] to [sepia(1)] was [sepia(1)] at 1.5
+PASS: -webkit-filter from [url(#svgfilter)] to [none] was [url(#svgfilter)] at -1
+PASS: -webkit-filter from [url(#svgfilter)] to [none] was [url(#svgfilter)] at 0
+PASS: -webkit-filter from [url(#svgfilter)] to [none] was [none] at 0.5
+PASS: -webkit-filter from [url(#svgfilter)] to [none] was [none] at 1
+PASS: -webkit-filter from [url(#svgfilter)] to [none] was [none] at 1.5
+PASS: -webkit-filter from [url(#svgfilter)] to [blur(5px)] was [url(#svgfilter)] at -1
+PASS: -webkit-filter from [url(#svgfilter)] to [blur(5px)] was [url(#svgfilter)] at 0
+PASS: -webkit-filter from [url(#svgfilter)] to [blur(5px)] was [blur(5px)] at 0.5
+PASS: -webkit-filter from [url(#svgfilter)] to [blur(5px)] was [blur(5px)] at 1
+PASS: -webkit-filter from [url(#svgfilter)] to [blur(5px)] was [blur(5px)] at 1.5
+
+Web Animations API:
+FAIL: webkitFilter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [none] at -0.5, expected [hue-rotate(-90deg) blur(4px)]
+FAIL: webkitFilter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [none] at 0, expected [hue-rotate(0deg) blur(6px)]
+FAIL: webkitFilter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [none] at 0.25, expected [hue-rotate(45deg) blur(7px)]
+FAIL: webkitFilter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [none] at 0.5, expected [hue-rotate(90deg) blur(8px)]
+FAIL: webkitFilter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [none] at 1, expected [hue-rotate(180deg) blur(10px)]
+FAIL: webkitFilter from [hue-rotate(0deg) blur(6px)] to [hue-rotate(180deg) blur(10px)] was [none] at 1.5, expected [hue-rotate(270deg) blur(12px)]
+FAIL: webkitFilter from [grayscale(0) blur(0px)] to [blur(10px)] was [none] at -0.5, expected [grayscale(0) blur(0px)]
+FAIL: webkitFilter from [grayscale(0) blur(0px)] to [blur(10px)] was [none] at 0, expected [grayscale(0) blur(0px)]
+FAIL: webkitFilter from [grayscale(0) blur(0px)] to [blur(10px)] was [none] at 0.25, expected [grayscale(0) blur(0px)]
+FAIL: webkitFilter from [grayscale(0) blur(0px)] to [blur(10px)] was [none] at 0.5, expected [blur(10px)]
+FAIL: webkitFilter from [grayscale(0) blur(0px)] to [blur(10px)] was [none] at 1, expected [blur(10px)]
+FAIL: webkitFilter from [grayscale(0) blur(0px)] to [blur(10px)] was [none] at 1.5, expected [blur(10px)]
+FAIL: webkitFilter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [none] at -0.5, expected [blur(4px) hue-rotate(-90deg)]
+FAIL: webkitFilter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [none] at 0, expected [blur(6px)]
+FAIL: webkitFilter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [none] at 0.25, expected [blur(7px) hue-rotate(45deg)]
+FAIL: webkitFilter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [none] at 0.5, expected [blur(8px) hue-rotate(90deg)]
+FAIL: webkitFilter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [none] at 1, expected [blur(10px) hue-rotate(180deg)]
+FAIL: webkitFilter from [blur(6px)] to [blur(10px) hue-rotate(180deg)] was [none] at 1.5, expected [blur(12px) hue-rotate(270deg)]
+FAIL: webkitFilter from [none] to [hue-rotate(180deg)] was [none] at -0.5, expected [hue-rotate(-90deg)]
+PASS: webkitFilter from [none] to [hue-rotate(180deg)] was [none] at 0
+FAIL: webkitFilter from [none] to [hue-rotate(180deg)] was [none] at 0.25, expected [hue-rotate(45deg)]
+FAIL: webkitFilter from [none] to [hue-rotate(180deg)] was [none] at 0.5, expected [hue-rotate(90deg)]
+FAIL: webkitFilter from [none] to [hue-rotate(180deg)] was [none] at 1, expected [hue-rotate(180deg)]
+FAIL: webkitFilter from [none] to [hue-rotate(180deg)] was [none] at 1.5, expected [hue-rotate(270deg)]
+FAIL: webkitFilter from [hue-rotate(180deg)] to [none] was [none] at -0.5, expected [hue-rotate(270deg)]
+FAIL: webkitFilter from [hue-rotate(180deg)] to [none] was [none] at 0, expected [hue-rotate(180deg)]
+FAIL: webkitFilter from [hue-rotate(180deg)] to [none] was [none] at 0.25, expected [hue-rotate(135deg)]
+FAIL: webkitFilter from [hue-rotate(180deg)] to [none] was [none] at 0.5, expected [hue-rotate(90deg)]
+PASS: webkitFilter from [hue-rotate(180deg)] to [none] was [none] at 1
+FAIL: webkitFilter from [hue-rotate(180deg)] to [none] was [none] at 1.5, expected [hue-rotate(-90deg)]
+FAIL: webkitFilter from [none] to [blur(10px)] was [none] at -1, expected [blur(0px)]
+PASS: webkitFilter from [none] to [blur(10px)] was [none] at 0
+FAIL: webkitFilter from [none] to [blur(10px)] was [none] at 0.5, expected [blur(5px)]
+FAIL: webkitFilter from [none] to [blur(10px)] was [none] at 1, expected [blur(10px)]
+FAIL: webkitFilter from [none] to [blur(10px)] was [none] at 1.5, expected [blur(15px)]
+FAIL: webkitFilter from [brightness(0)] to [none] was [none] at -1, expected [brightness(0)]
+FAIL: webkitFilter from [brightness(0)] to [none] was [none] at 0, expected [brightness(0)]
+FAIL: webkitFilter from [brightness(0)] to [none] was [none] at 0.5, expected [brightness(0.5)]
+PASS: webkitFilter from [brightness(0)] to [none] was [none] at 1
+FAIL: webkitFilter from [brightness(0)] to [none] was [none] at 1.5, expected [brightness(1.5)]
+FAIL: webkitFilter from [contrast(0)] to [none] was [none] at -1, expected [contrast(0)]
+FAIL: webkitFilter from [contrast(0)] to [none] was [none] at 0, expected [contrast(0)]
+FAIL: webkitFilter from [contrast(0)] to [none] was [none] at 0.5, expected [contrast(0.5)]
+PASS: webkitFilter from [contrast(0)] to [none] was [none] at 1
+FAIL: webkitFilter from [contrast(0)] to [none] was [none] at 1.5, expected [contrast(1.5)]
+FAIL: webkitFilter from [none] to [drop-shadow(20px 10px green)] was [none] at -1, expected [drop-shadow(-20px -10px white)] (parsed as [drop-shadow(rgb(255, 255, 255) -20px -10px 0px)])
+PASS: webkitFilter from [none] to [drop-shadow(20px 10px green)] was [none] at 0
+FAIL: webkitFilter from [none] to [drop-shadow(20px 10px green)] was [none] at 0.5, expected [drop-shadow(10px 5px #80C080)] (parsed as [drop-shadow(rgb(128, 192, 128) 10px 5px 0px)])
+FAIL: webkitFilter from [none] to [drop-shadow(20px 10px green)] was [none] at 1, expected [drop-shadow(20px 10px green)] (parsed as [drop-shadow(rgb(0, 128, 0) 20px 10px 0px)])
+FAIL: webkitFilter from [none] to [drop-shadow(20px 10px green)] was [none] at 1.5, expected [drop-shadow(30px 15px #004000)] (parsed as [drop-shadow(rgb(0, 64, 0) 30px 15px 0px)])
+FAIL: webkitFilter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [none] at -1, expected [drop-shadow(-20px -10px white)] (parsed as [drop-shadow(rgb(255, 255, 255) -20px -10px 0px)])
+FAIL: webkitFilter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [none] at 0, expected [drop-shadow(0px 0px 0px currentcolor)] (parsed as [drop-shadow(rgb(255, 255, 255) 0px 0px 0px)])
+FAIL: webkitFilter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [none] at 0.5, expected [drop-shadow(10px 5px #80C080)] (parsed as [drop-shadow(rgb(128, 192, 128) 10px 5px 0px)])
+FAIL: webkitFilter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [none] at 1, expected [drop-shadow(20px 10px green)] (parsed as [drop-shadow(rgb(0, 128, 0) 20px 10px 0px)])
+FAIL: webkitFilter from [drop-shadow(0px 0px 0px currentcolor)] to [drop-shadow(20px 10px green)] was [none] at 1.5, expected [drop-shadow(30px 15px #004000)] (parsed as [drop-shadow(rgb(0, 64, 0) 30px 15px 0px)])
+FAIL: webkitFilter from [none] to [grayscale(1)] was [none] at -1, expected [grayscale(0)]
+PASS: webkitFilter from [none] to [grayscale(1)] was [none] at 0
+FAIL: webkitFilter from [none] to [grayscale(1)] was [none] at 0.5, expected [grayscale(0.5)]
+FAIL: webkitFilter from [none] to [grayscale(1)] was [none] at 1, expected [grayscale(1)]
+FAIL: webkitFilter from [none] to [grayscale(1)] was [none] at 1.5, expected [grayscale(1)]
+FAIL: webkitFilter from [none] to [hue-rotate(360deg)] was [none] at -1, expected [hue-rotate(-360deg)]
+PASS: webkitFilter from [none] to [hue-rotate(360deg)] was [none] at 0
+FAIL: webkitFilter from [none] to [hue-rotate(360deg)] was [none] at 0.5, expected [hue-rotate(180deg)]
+FAIL: webkitFilter from [none] to [hue-rotate(360deg)] was [none] at 1, expected [hue-rotate(360deg)]
+FAIL: webkitFilter from [none] to [hue-rotate(360deg)] was [none] at 1.5, expected [hue-rotate(540deg)]
+FAIL: webkitFilter from [none] to [invert(1)] was [none] at -1, expected [invert(0)]
+PASS: webkitFilter from [none] to [invert(1)] was [none] at 0
+FAIL: webkitFilter from [none] to [invert(1)] was [none] at 0.5, expected [invert(0.5)]
+FAIL: webkitFilter from [none] to [invert(1)] was [none] at 1, expected [invert(1)]
+FAIL: webkitFilter from [none] to [invert(1)] was [none] at 1.5, expected [invert(1)]
+FAIL: webkitFilter from [opacity(0)] to [none] was [none] at -1, expected [opacity(0)]
+FAIL: webkitFilter from [opacity(0)] to [none] was [none] at 0, expected [opacity(0)]
+FAIL: webkitFilter from [opacity(0)] to [none] was [none] at 0.5, expected [opacity(0.5)]
+PASS: webkitFilter from [opacity(0)] to [none] was [none] at 1
+FAIL: webkitFilter from [opacity(0)] to [none] was [none] at 1.5, expected [opacity(1)]
+FAIL: webkitFilter from [saturate(0)] to [none] was [none] at -1, expected [saturate(0)]
+FAIL: webkitFilter from [saturate(0)] to [none] was [none] at 0, expected [saturate(0)]
+FAIL: webkitFilter from [saturate(0)] to [none] was [none] at 0.5, expected [saturate(0.5)]
+PASS: webkitFilter from [saturate(0)] to [none] was [none] at 1
+FAIL: webkitFilter from [saturate(0)] to [none] was [none] at 1.5, expected [saturate(1.5)]
+FAIL: webkitFilter from [none] to [sepia(1)] was [none] at -1, expected [sepia(0)]
+PASS: webkitFilter from [none] to [sepia(1)] was [none] at 0
+FAIL: webkitFilter from [none] to [sepia(1)] was [none] at 0.5, expected [sepia(0.5)]
+FAIL: webkitFilter from [none] to [sepia(1)] was [none] at 1, expected [sepia(1)]
+FAIL: webkitFilter from [none] to [sepia(1)] was [none] at 1.5, expected [sepia(1)]
+FAIL: webkitFilter from [url(#svgfilter)] to [none] was [none] at -1, expected [url(#svgfilter)] (parsed as [url(file:///.../'#svgfilter')])
+FAIL: webkitFilter from [url(#svgfilter)] to [none] was [none] at 0, expected [url(#svgfilter)] (parsed as [url(file:///.../'#svgfilter')])
+PASS: webkitFilter from [url(#svgfilter)] to [none] was [none] at 0.5
+PASS: webkitFilter from [url(#svgfilter)] to [none] was [none] at 1
+PASS: webkitFilter from [url(#svgfilter)] to [none] was [none] at 1.5
+FAIL: webkitFilter from [url(#svgfilter)] to [blur(5px)] was [none] at -1, expected [url(#svgfilter)] (parsed as [url(file:///.../'#svgfilter')])
+FAIL: webkitFilter from [url(#svgfilter)] to [blur(5px)] was [none] at 0, expected [url(#svgfilter)] (parsed as [url(file:///.../'#svgfilter')])
+FAIL: webkitFilter from [url(#svgfilter)] to [blur(5px)] was [none] at 0.5, expected [blur(5px)]
+FAIL: webkitFilter from [url(#svgfilter)] to [blur(5px)] was [none] at 1, expected [blur(5px)]
+FAIL: webkitFilter from [url(#svgfilter)] to [blur(5px)] was [none] at 1.5, expected [blur(5px)]
+

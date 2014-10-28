@@ -1,0 +1,18 @@
+CSS Animations:
+PASS: -webkit-column-rule-color from [orange] to [blue] was [#ffff00] at -5
+PASS: -webkit-column-rule-color from [orange] to [blue] was [#ffe700] at -0.4
+PASS: -webkit-column-rule-color from [orange] to [blue] was [orange] at 0
+PASS: -webkit-column-rule-color from [orange] to [blue] was [#cc8433] at 0.2
+PASS: -webkit-column-rule-color from [orange] to [blue] was [#664299] at 0.6
+PASS: -webkit-column-rule-color from [orange] to [blue] was [blue] at 1
+PASS: -webkit-column-rule-color from [orange] to [blue] was [blue] at 1.5
+
+Web Animations API:
+FAIL: webkitColumnRuleColor from [orange] to [blue] was [rgb(255, 165, 0)] at -5, expected [#ffff00] (parsed as [rgb(255, 255, 0)])
+FAIL: webkitColumnRuleColor from [orange] to [blue] was [rgb(255, 165, 0)] at -0.4, expected [#ffe700] (parsed as [rgb(255, 231, 0)])
+PASS: webkitColumnRuleColor from [orange] to [blue] was [orange] at 0
+FAIL: webkitColumnRuleColor from [orange] to [blue] was [rgb(255, 165, 0)] at 0.2, expected [#cc8433] (parsed as [rgb(204, 132, 51)])
+FAIL: webkitColumnRuleColor from [orange] to [blue] was [rgb(255, 165, 0)] at 0.6, expected [#664299] (parsed as [rgb(102, 66, 153)])
+FAIL: webkitColumnRuleColor from [orange] to [blue] was [rgb(255, 165, 0)] at 1, expected [blue] (parsed as [rgb(0, 0, 255)])
+FAIL: webkitColumnRuleColor from [orange] to [blue] was [rgb(255, 165, 0)] at 1.5, expected [blue] (parsed as [rgb(0, 0, 255)])
+

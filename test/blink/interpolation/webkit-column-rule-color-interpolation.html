@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  width: 300px;
+  height: 80px;
+  background-color: black;
+  display: inline-block;
+  margin: 18px;
+  color: orange;
+  overflow: hidden;
+  -webkit-column-rule-style: solid;
+  -webkit-column-count: 2;
+}
+.replica {
+  background-color: green;
+}
+</style>
+<body>
+<template id="target-template">
+  <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: '-webkit-column-rule-color',
+  from: 'orange',
+  to: 'blue'
+}, [
+  {at: -5, is: '#ffff00'},
+  {at: -0.4, is: '#ffe700'},
+  {at: 0, is: 'orange'}, // ffa500
+  {at: 0.2, is: '#cc8433'},
+  {at: 0.6, is: '#664299'},
+  {at: 1, is: 'blue'}, // 0000ff
+  {at: 1.5, is: 'blue'}
+]);
+</script>
+</body>

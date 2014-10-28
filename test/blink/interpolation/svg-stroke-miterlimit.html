@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+svg {
+  width: 50px;
+  height: 100px;
+}
+.target {
+  fill: white;
+  stroke: black;
+  stroke-width: 20px;
+  stroke-linejoin: miter;
+}
+.replica {
+  stroke: green;
+}
+</style>
+<body>
+<template id="target-template">
+<svg><path d="M0,100 l25,-50 l25,50" />
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: 'stroke-miterlimit',
+  from: '1',
+  to: '3',
+}, [
+  {at: -0.4, is: '1'},
+  {at: 0, is: '1'},
+  {at: 0.2, is: '1.4'},
+  {at: 0.6, is: '2.2'},
+  {at: 1, is: '3'},
+  {at: 1.5, is: '4'}
+]);
+</script>
+</body>

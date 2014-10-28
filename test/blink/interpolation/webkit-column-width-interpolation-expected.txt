@@ -1,0 +1,18 @@
+CSS Animations:
+PASS: -webkit-column-width from [1px] to [101px] was [0.000000119px] at -0.3
+PASS: -webkit-column-width from [1px] to [101px] was [1px] at 0
+PASS: -webkit-column-width from [1px] to [101px] was [31px] at 0.3
+PASS: -webkit-column-width from [1px] to [101px] was [61px] at 0.6
+PASS: -webkit-column-width from [1px] to [101px] was [101px] at 1
+PASS: -webkit-column-width from [1px] to [101px] was [151px] at 1.5
+PASS: -webkit-column-width from [0px] to [100px] was [20px] at 0
+
+Web Animations API:
+FAIL: webkitColumnWidth from [1px] to [101px] was [20px] at -0.3, expected [0.000000119px] (parsed as [1.19e-7px])
+FAIL: webkitColumnWidth from [1px] to [101px] was [20px] at 0, expected [1px]
+FAIL: webkitColumnWidth from [1px] to [101px] was [20px] at 0.3, expected [31px]
+FAIL: webkitColumnWidth from [1px] to [101px] was [20px] at 0.6, expected [61px]
+FAIL: webkitColumnWidth from [1px] to [101px] was [20px] at 1, expected [101px]
+FAIL: webkitColumnWidth from [1px] to [101px] was [20px] at 1.5, expected [151px]
+PASS: webkitColumnWidth from [0px] to [100px] was [20px] at 0
+

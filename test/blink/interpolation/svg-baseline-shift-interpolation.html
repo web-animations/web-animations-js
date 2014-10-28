@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  stroke: black;
+  /*
+  CSS transitions and animations for baseline-shift are broken unless a
+  numerical underlying value is specified. See crbug.com/304007.
+  */
+  baseline-shift: 0;
+}
+.replica {
+  stroke: green;
+}
+svg:nth-child(2n) {
+  margin-right: 10px;
+}
+</style>
+<body>
+<template id="target-template">
+  <svg width="30" height="50">
+    <!--
+    We have to specify the target class on the text element because numerical
+    values of baseline-shift are not inherited properly. See crbug.com/304006.
+    -->
+    <text x="0" y="25" font-size="20" class="target">
+      <tspan>T</tspan>T
+    </text>
+  </svg>
+</template>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: 'baseline-shift',
+  from: '-10px',
+  to: '10px'
+}, [
+  {at: -0.25, is: '-15px'},
+  {at: 0, is: '-10px'},
+  {at: 0.25, is: '-5px'},
+  {at: 0.5, is: '0px'},
+  {at: 0.75, is: '5px'},
+  {at: 1, is: '10px'},
+  {at: 1.25, is: '15px'},
+]);
+</script>
+</body>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  -webkit-column-count: 2;
+  -webkit-column-gap: 20px;
+  column-count: 2;
+  column-gap: 20px;
+}
+.replica div {
+  opacity: 0.7;
+}
+.target div {
+  height: 20px;
+  background-color: green;
+}
+
+.target div ~ div {
+  background-color: black;
+}
+</style>
+<body>
+<template id='target-template'>
+  <div></div><div></div>
+</template>
+<script src='resources/interpolation-test.js'></script>
+<script>
+assertInterpolation({
+  property: '-webkit-column-gap',
+  from: '0px',
+  to: '100px'
+}, [
+  {at: -0.3, is: '0'}, // -webkit-column-gap can't be negative.
+  {at: 0, is: '0'},
+  {at: 0.3, is: '30px'},
+  {at: 0.6, is: '60px'},
+  {at: 1, is: '100px'},
+  {at: 1.5, is: '150px'}
+]);
+</script>
+</body>

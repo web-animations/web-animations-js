@@ -1,0 +1,34 @@
+CSS Animations:
+PASS: vertical-align from [0px] to [100px] was [-50px] at -0.5
+PASS: vertical-align from [0px] to [100px] was [0px] at 0
+PASS: vertical-align from [0px] to [100px] was [30px] at 0.3
+PASS: vertical-align from [0px] to [100px] was [60px] at 0.6
+PASS: vertical-align from [0px] to [100px] was [100px] at 1
+PASS: vertical-align from [0px] to [100px] was [150px] at 1.5
+PASS: vertical-align from [40px] to [40%] was [calc(60px - 20%)] at -0.5
+PASS: vertical-align from [40px] to [40%] was [40px] at 0
+PASS: vertical-align from [40px] to [40%] was [calc(28px + 12%)] at 0.3
+PASS: vertical-align from [40px] to [40%] was [40%] at 1
+PASS: vertical-align from [40px] to [40%] was [calc(-20px + 60%)] at 1.5
+PASS: vertical-align from [super] to [40%] was [super] at 0
+PASS: vertical-align from [super] to [40%] was [super] at 0.3
+PASS: vertical-align from [super] to [40%] was [40%] at 0.5
+PASS: vertical-align from [super] to [40%] was [40%] at 1
+
+Web Animations API:
+PASS: verticalAlign from [0px] to [100px] was [-50px] at -0.5
+PASS: verticalAlign from [0px] to [100px] was [0px] at 0
+PASS: verticalAlign from [0px] to [100px] was [30px] at 0.3
+PASS: verticalAlign from [0px] to [100px] was [60px] at 0.6
+PASS: verticalAlign from [0px] to [100px] was [100px] at 1
+PASS: verticalAlign from [0px] to [100px] was [150px] at 1.5
+PASS: verticalAlign from [40px] to [40%] was [calc(60px - 20%)] at -0.5
+PASS: verticalAlign from [40px] to [40%] was [40px] at 0
+PASS: verticalAlign from [40px] to [40%] was [calc(28px + 12%)] at 0.3
+PASS: verticalAlign from [40px] to [40%] was [40%] at 1
+PASS: verticalAlign from [40px] to [40%] was [calc(-20px + 60%)] at 1.5
+PASS: verticalAlign from [super] to [40%] was [super] at 0
+PASS: verticalAlign from [super] to [40%] was [super] at 0.3
+PASS: verticalAlign from [super] to [40%] was [40%] at 0.5
+PASS: verticalAlign from [super] to [40%] was [40%] at 1
+

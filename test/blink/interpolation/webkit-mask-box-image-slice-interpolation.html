@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+.target {
+  width: 50px;
+  height: 50px;
+  background-color: black;
+  display: inline-block;
+  border: 25px;
+  -webkit-mask-box-image-source: linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+}
+.replica {
+  background-color: green;
+  margin-right: 2px;
+}
+</style>
+<body>
+<script src="resources/interpolation-test.js"></script>
+<script>
+assertInterpolation({
+  property: '-webkit-mask-box-image-slice',
+  from: '0%',
+  to: '50%',
+}, [
+  {at: -0.3, is: '0%'}, // CSS webkit-mask-box-image-slice can't be negative.
+  {at: 0, is: '0%'},
+  {at: 0.4, is: '20%'},
+  {at: 0.6, is: '30%'},
+  {at: 1, is: '50%'},
+  {at: 1.5, is: '75%'},
+  {at: 10, is: '500%'},
+]);
+
+assertInterpolation({
+  property: '-webkit-mask-box-image-slice',
+  from: '0%',
+  to: '50% fill',
+}, [
+  {at: -0.3, is: '0%'},
+  {at: 0, is: '0%'},
+  {at: 0.4, is: '0%'},
+  {at: 0.6, is: '50% fill'},
+  {at: 1, is: '50% fill'},
+  {at: 1.5, is: '50% fill'},
+]);
+</script>
+</body>
