@@ -113,6 +113,7 @@
       var cssResultString = 'CSS Animations:\n';
       var waResultString = 'Web Animations API:\n';
       for (var i = 0; i < targets.length; i++) {
+        var resultString = [];
         if (targets[i].testType === 'css') {
           cssResultString += targets[i].getResultString() + '\n';
         } else {
@@ -199,20 +200,14 @@
   function assertInterpolation(params, expectations) {
     var testId = defineKeyframes(params);
     var nextCaseId = 0;
-    var cssTestContainer = createTestContainer(describeCSSTest(params), testId);
-    cssTests.appendChild(cssTestContainer);
     if (webAnimationsTest) {
       var waTestContainer = createTestContainer(describeWATest(params), testId);
       waTests.appendChild(waTestContainer);
     }
-    expectations.forEach(function(expectation) {
-      cssTestContainer.appendChild(makeInterpolationTest(
-          'css', expectation.at, testId, 'case-' + ++nextCaseId, params, expectation.is));
-    });
     if (webAnimationsTest) {
       expectations.forEach(function(expectation) {
-        waTestContainer.appendChild(makeInterpolationTest(
-            'web-animations', expectation.at, testId, 'case-' + ++nextCaseId, params, expectation.is));
+          waTestContainer.appendChild(makeInterpolationTest(
+              'web-animations', expectation.at, testId, 'case-' + ++nextCaseId, params, expectation.is));
       });
     }
     maybeScheduleUpdate();
@@ -287,6 +282,7 @@
   }
 
   function makeInterpolationTest(testType, fraction, testId, caseId, params, expectation) {
+    var t = async_test(testId + ' ' + caseId + ', f = ' + fraction);
     console.assert(expectation === undefined || !isRefTest);
     var targetContainer = createTargetContainer(caseId);
     var target = targetContainer.querySelector('.target') || targetContainer;
@@ -304,18 +300,21 @@
         return 'FAIL: [' + params.property + ': ' + expectation + '] is not supported';
       }
       var value = getComputedStyle(this).getPropertyValue(params.property);
+      var originalValue = value;
       var result = '';
       var reason = '';
       var property = testType === 'css' ? params.property : convertPropertyToCamelCase(params.property);
-      if (expectation !== undefined) {
-        var parsedExpectation = getComputedStyle(replica).getPropertyValue(params.property);
-        var pass = normalizeValue(value) === normalizeValue(parsedExpectation);
-        result = pass ? 'PASS: ' : 'FAIL: ';
-        reason = pass ? '' : ', expected [' + expectation + ']' +
-            (expectation === parsedExpectation ? '' : ' (parsed as [' + sanitizeUrls(roundNumbers(parsedExpectation)) + '])');
-        value = pass ? expectation : sanitizeUrls(value);
-        assert_true(pass);
-      }
+      // FIXME: What happens if expectation === undefined?
+      var parsedExpectation = getComputedStyle(replica).getPropertyValue(params.property);
+      var pass = normalizeValue(value) === normalizeValue(parsedExpectation);
+      result = pass ? 'PASS: ' : 'FAIL: ';
+      reason = pass ? '' : ', expected [' + expectation + ']' +
+          (expectation === parsedExpectation ? '' : ' (parsed as [' + sanitizeUrls(roundNumbers(parsedExpectation)) + '])');
+      value = pass ? expectation : sanitizeUrls(value);
+      t.step(function() {
+        assert_equals(normalizeValue(originalValue), normalizeValue(parsedExpectation));
+        t.done();
+      });
       return result + property + ' from [' + params.from + '] to ' +
           '[' + params.to + '] was [' + value + ']' +
           ' at ' + fraction + reason;
@@ -325,28 +324,21 @@
     };
     var easing = createEasing(fraction);
     testCount++;
-    if (testType === 'css') {
-      cssText += '.' + testId + ' .' + caseId + '.active {\n' +
-          '  ' + webkitPrefix + 'animation: ' + testId + ' ' + durationSeconds + 's forwards;\n' +
-          '  ' + webkitPrefix + 'animation-timing-function: ' + easing + ';\n' +
-          '  ' + webkitPrefix + 'animation-iteration-count: ' + iterationCount + ';\n' +
-          '  ' + webkitPrefix + 'animation-delay: ' + delaySeconds + 's;\n' +
-          '}\n';
-    } else {
-      var keyframes = [{}, {}];
-      keyframes[0][convertPropertyToCamelCase(params.property)] = params.from;
-      keyframes[1][convertPropertyToCamelCase(params.property)] = params.to;
-      fragmentAttachedListeners.push(function() {
-        target.animate(keyframes, {
-            fill: 'forwards',
-            duration: 1,
-            easing: easing,
-            delay: -0.5,
-            iterations: 0.5,
-          });
-        animationEnded();
-      });
-    }
+    if (testType === 'css')
+      return;
+    var keyframes = [{}, {}];
+    keyframes[0][convertPropertyToCamelCase(params.property)] = params.from;
+    keyframes[1][convertPropertyToCamelCase(params.property)] = params.to;
+    fragmentAttachedListeners.push(function() {
+      target.animate(keyframes, {
+          fill: 'forwards',
+          duration: 1,
+          easing: easing,
+          delay: -0.5,
+          iterations: 0.5,
+        });
+      animationEnded();
+    });
     var testFragment = document.createDocumentFragment();
     testFragment.appendChild(targetContainer);
     replica && testFragment.appendChild(replicaContainer);

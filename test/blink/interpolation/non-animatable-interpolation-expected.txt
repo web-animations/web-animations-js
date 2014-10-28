@@ -1,8 +1,0 @@
-CSS Animations:
-PASS: float from [left] to [right] was [none] at -0.3
-PASS: float from [left] to [right] was [none] at 0
-PASS: float from [left] to [right] was [none] at 0.3
-PASS: float from [left] to [right] was [none] at 0.6
-PASS: float from [left] to [right] was [none] at 1
-PASS: float from [left] to [right] was [none] at 1.5
-

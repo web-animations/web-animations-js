@@ -172,7 +172,6 @@
     var leftResult = [];
     var rightResult = [];
     var types = [];
-
     if (left.length != right.length) {
       if (!matrixModulesLoaded)
         return;

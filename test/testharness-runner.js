@@ -16,44 +16,58 @@
   var assert = chai.assert;
   mocha.setup({ ui: 'tdd' });
 
-  addEventListener('load', function() {
-    suite('testharness tests', function() {
-      var iframe;
-      setup(function() {
-        iframe = document.createElement('iframe');
-        document.body.appendChild(iframe);
-      });
-      teardown(function() {
-        iframe.remove();
-      });
-      function defineTestharnessTest(shouldPass, testFile) {
-        var name = shouldPass ? testFile : 'Expected Failure: ' + testFile;
-        test(name, function(done) {
-          window.initTestHarness = function(child) {
-            child.add_completion_callback(function(tests, harness_status) {
-              var failures = tests.filter(function(result) {
-                return result.status != 0;
-              }).map(function(failure) {
-                return failure.name + ':\n' + failure.message;
-              });
-              var error;
-              if (shouldPass && failures.length) {
-                error = new Error('\n' + failures.join('\n\n'));
-                error.stack = null;
-              } else if (!shouldPass && failures.length == 0) {
-                error = new Error('\nExpected to fail, but passed');
-                error.stack = null;
-              }
-              done(error);
-            });
-          };
-          iframe.src = testFile;
+  var iframe;
+  function defineTestharnessTest(shouldPass, testFile) {
+    // console.log(testFile);
+    var name = shouldPass ? testFile : 'Expected Failure: ' + testFile;
+    test(name, function(done) {
+      window.initTestHarness = function(child) {
+        child.add_completion_callback(function(tests, harness_status) {
+          var failures = tests.filter(function(result) {
+            return result.status != 0;
+          }).map(function(failure) {
+            return failure.name + ':\n' + failure.message;
+          });
+          var error;
+          if (shouldPass && failures.length) {
+            error = new Error('\n' + failures.join('\n\n'));
+            error.stack = null;
+          } else if (!shouldPass && failures.length == 0) {
+            error = new Error('\nExpected to fail, but passed');
+            error.stack = null;
+          }
+          done(error);
         });
-      }
-      testHarnessTests.forEach(defineTestharnessTest.bind(null, true));
-      testHarnessFailures.forEach(defineTestharnessTest.bind(null, false));
+      };
+      iframe.src = testFile;
     });
+  }
 
+  suite('testharness tests', function() {
+    setup(function() {
+      iframe = document.createElement('iframe');
+      document.body.appendChild(iframe);
+    });
+    teardown(function() {
+      iframe.remove();
+    });
+    testHarnessTests.forEach(defineTestharnessTest.bind(null, true));
+    testHarnessFailures.forEach(defineTestharnessTest.bind(null, false));
+  });
+
+  suite('interpolation tests', function() {
+    setup(function() {
+      iframe = document.createElement('iframe');
+      document.body.appendChild(iframe);
+    });
+    teardown(function() {
+      iframe.remove();
+    });
+    interpolationTests.forEach(defineTestharnessTest.bind(null, true));
+    interpolationFailures.forEach(defineTestharnessTest.bind(null, false));
+  });
+
+  addEventListener('load', function() {
     mocha.run();
   });
 })();

@@ -370,6 +370,27 @@ suite('matrix interpolation', function() {
 
     interp = webAnimationsMinifill.propertyInterpolation(
         'transform',
+        'translatex(10px)',
+        'translatex(100px) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 1, 55, 0], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translatey(10px)',
+        'translatey(100px) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 1, 0, 55], 6);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
+        'translatez(20px)',
+        'translatez(200px) matrix(1, 0, 0, 1, 0, 0)');
+    evaluatedInterp = interp(0.5);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 110, 1], 16);
+
+    interp = webAnimationsMinifill.propertyInterpolation(
+        'transform',
         'translate3d(10px, 10px, 10px)',
         'translate3d(20px, 20px, 20px) matrix(1, 0, 0, 1, 0, 0)');
     evaluatedInterp = interp(0.5);
@@ -427,6 +448,21 @@ suite('matrix interpolation', function() {
     compareInterpolatedTransforms(
         ['translate(10in, 20in)', 'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)'],
         ['translate(0px, 0px)', 'translate(100px, 200px) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
+
+    compareInterpolatedTransforms(
+        ['translatex(20in)', 'translatex(200px) matrix(1, 0, 0, 1, 0, 0)'],
+        ['translatex(0px)', 'translatex(200px) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
+
+    compareInterpolatedTransforms(
+        ['translatey(10in)', 'translatey(100px) matrix(1, 0, 0, 1, 0, 0)'],
+        ['translatey(0px)', 'translatey(100px) matrix(1, 0, 0, 1, 0, 0)'],
+        0.5);
+
+    compareInterpolatedTransforms(
+        ['translatez(10em)', 'translatez(100px) matrix(1, 0, 0, 1, 0, 0)'],
+        ['translatez(0px)', 'translatez(100px) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(

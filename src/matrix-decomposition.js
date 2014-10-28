@@ -386,6 +386,24 @@
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 x, y, 0, 1];
+      case 'translatex':
+        var x = item.d[0].px || 0;
+        return [1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                x, 0, 0, 1];
+      case 'translatey':
+        var y = item.d[0].px || 0;
+        return [1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, y, 0, 1];
+      case 'translatez':
+        var z = item.d[0].px || 0;
+        return [1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, z, 1];
       case 'translate3d':
         var x = item.d[0].px || 0;
         var y = item.d[1].px || 0;
