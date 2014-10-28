@@ -104,13 +104,13 @@
     ]
   };
 
-  var shorthandExpanderElem = document.createElement('div');;
+  var shorthandExpanderElem = document.createElement('div');
 
   // This delegates parsing shorthand value syntax to the browser.
   function expandShorthand(property, value, result) {
     shorthandExpanderElem.style[property] = value;
     var longProperties = shorthandToLonghand[property];
-    if(longProperties) {
+    if (longProperties) {
       for (var i in longProperties) {
         var longProperty = longProperties[i];
         var longhandValue = shorthandExpanderElem.style[longProperty];
