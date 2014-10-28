@@ -104,23 +104,20 @@
     ]
   };
 
-  function createDummyElement() {
-    var SVG_NS = 'http://www.w3.org/2000/svg';
-    return document.documentElement.namespaceURI == SVG_NS ?
-           document.createElementNS(SVG_NS, 'g') :
-           document.createElement('div');
-  }
+  var shorthandExpanderElem = document.createElement('div');;
 
   // This delegates parsing shorthand value syntax to the browser.
-  var shorthandExpanderElem = createDummyElement();
-
-  var expandShorthand = function(property, value, result) {
+  function expandShorthand(property, value, result) {
     shorthandExpanderElem.style[property] = value;
     var longProperties = shorthandToLonghand[property];
-    for (var i in longProperties) {
-      var longProperty = longProperties[i];
-      var longhandValue = shorthandExpanderElem.style[longProperty];
-      result[longProperty] = longhandValue;
+    if(longProperties) {
+      for (var i in longProperties) {
+        var longProperty = longProperties[i];
+        var longhandValue = shorthandExpanderElem.style[longProperty];
+        result[longProperty] = longhandValue;
+      }
+    } else {
+      result[property] = value;
     }
   };
 
@@ -152,12 +149,7 @@
         } else {
           memberValue = '' + memberValue;
         }
-
-        if (member in shorthandToLonghand) {
-          expandShorthand(member, memberValue, keyframe);
-        } else {
-          keyframe[member] = memberValue;
-        }
+        expandShorthand(member, memberValue, keyframe);
       }
       if (keyframe.offset == undefined)
         keyframe.offset = null;
