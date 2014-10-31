@@ -83,6 +83,6 @@
   }
 
   var mergeShadowList = scope.mergeNestedRepeated.bind(null, mergeShadow, ', ');
-  scope.addPropertiesHandler(parseShadowList, mergeShadowList, ['box-shadow']);
+  scope.addPropertiesHandler(parseShadowList, mergeShadowList, ['box-shadow', 'text-shadow']);
 
 })(webAnimationsMinifill);

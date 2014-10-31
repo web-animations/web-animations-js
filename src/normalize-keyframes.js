@@ -77,6 +77,11 @@
       'borderBottomWidth',
       'borderLeftWidth'
     ],
+    flex: [
+      'flexGrow',
+      'flexShrink',
+      'flexBasis'
+    ],
     font: [
       'fontFamily',
       'fontSize',
