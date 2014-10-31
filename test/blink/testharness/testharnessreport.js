@@ -377,6 +377,8 @@ var metadata_generator = {
     }
 };
 
+// FIXME: Is there a better way to do this?
+document.write('<script src="../../web-animations-forced.min.js"></script>');
 document.write('<script src="../../../web-animations-forced.min.js"></script>');
 if (window.parent && parent.window.initTestHarness) {
   parent.window.initTestHarness(window);
