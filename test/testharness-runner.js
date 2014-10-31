@@ -18,7 +18,6 @@
 
   var iframe;
   function defineTestharnessTest(shouldPass, testFile) {
-    // console.log(testFile);
     var name = shouldPass ? testFile : 'Expected Failure: ' + testFile;
     test(name, function(done) {
       window.initTestHarness = function(child) {

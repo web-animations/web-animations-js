@@ -377,9 +377,14 @@ var metadata_generator = {
     }
 };
 
-// FIXME: Is there a better way to do this?
-document.write('<script src="../../web-animations-forced.min.js"></script>');
-document.write('<script src="../../../web-animations-forced.min.js"></script>');
+var url = document.URL;
+var path = url.slice(0, url.lastIndexOf('/'));
+if (path.slice(-13).indexOf('interpolation') != -1) {
+    document.write('<script src="../../../web-animations-forced.min.js"></script>');
+} else {
+    document.write('<script src="../../web-animations-forced.min.js"></script>');
+}
+
 if (window.parent && parent.window.initTestHarness) {
   parent.window.initTestHarness(window);
 } else {

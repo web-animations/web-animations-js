@@ -42,14 +42,10 @@
  */
 'use strict';
 (function() {
-  var webkitPrefix = 'webkitAnimation' in document.documentElement.style ? '-webkit-' : '';
-  var startEvent = webkitPrefix ? 'webkitAnimationStart' : 'animationstart';
-  var endEvent = webkitPrefix ? 'webkitAnimationEnd' : 'animationend';
+  var endEvent = 'animationend';
   var testCount = 0;
   var animationEventCount = 0;
-  // FIXME: This should be 0, but 0 duration animations are broken in at least
-  // pre-Web-Animations Blink, WebKit and Gecko.
-  var durationSeconds = 0.001;
+  var durationSeconds = 0;
   var iterationCount = 0.5;
   var delaySeconds = 0;
   var fragment = document.createDocumentFragment();
@@ -287,23 +283,7 @@
     finishTest();
   }
 
-  if (window.internals) {
-    durationSeconds = 0;
-    document.documentElement.addEventListener(endEvent, animationEnded);
-  } else if (webkitPrefix) {
-    durationSeconds = 1e9;
-    iterationCount = 1;
-    delaySeconds = -durationSeconds / 2;
-    document.documentElement.addEventListener(startEvent, function() {
-      animationEventCount++;
-      if (!isLastAnimationEvent()) {
-        return;
-      }
-      setTimeout(finishTest, 0);
-    });
-  } else {
-    document.documentElement.addEventListener(endEvent, animationEnded);
-  }
+  document.documentElement.addEventListener(endEvent, animationEnded);
 
   if (!window.testRunner) {
     setTimeout(function() {
