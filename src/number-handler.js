@@ -51,10 +51,10 @@
   }
 
   scope.clamp = clamp;
-  scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'shapeImageThreshold']);
-  scope.addPropertiesHandler(parseNumber, mergeFlex, ['flexGrow', 'flexShrink']);
+  scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'shape-image-threshold']);
+  scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
   scope.addPropertiesHandler(parseNumber, mergeNumbers, ['zoom']);
-  scope.addPropertiesHandler(parseNumber, round, ['orphans', 'widows', 'zIndex']);
+  scope.addPropertiesHandler(parseNumber, round, ['orphans', 'widows', 'z-index']);
 
   scope.parseNumber = parseNumber;
   scope.mergeNumbers = mergeNumbers;

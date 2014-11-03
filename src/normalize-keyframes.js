@@ -16,96 +16,96 @@
 
   var shorthandToLonghand = {
     background: [
-      'backgroundImage',
-      'backgroundPosition',
-      'backgroundSize',
-      'backgroundRepeat',
-      'backgroundAttachment',
-      'backgroundOrigin',
-      'backgroundClip',
-      'backgroundColor'
+      'background-image',
+      'background-position',
+      'background-size',
+      'background-repeat',
+      'background-attachment',
+      'background-origin',
+      'background-clip',
+      'background-color'
     ],
     border: [
-      'borderTopColor',
-      'borderTopStyle',
-      'borderTopWidth',
-      'borderRightColor',
-      'borderRightStyle',
-      'borderRightWidth',
-      'borderBottomColor',
-      'borderBottomStyle',
-      'borderBottomWidth',
-      'borderLeftColor',
-      'borderLeftStyle',
-      'borderLeftWidth'
+      'border-top-color',
+      'border-top-style',
+      'border-top-width',
+      'border-right-color',
+      'border-right-style',
+      'border-right-width',
+      'border-bottom-color',
+      'border-bottom-style',
+      'border-bottom-width',
+      'border-left-color',
+      'border-left-style',
+      'border-left-width'
     ],
     borderBottom: [
-      'borderBottomWidth',
-      'borderBottomStyle',
-      'borderBottomColor'
+      'border-bottom-width',
+      'border-bottom-style',
+      'border-bottom-color'
     ],
     borderColor: [
-      'borderTopColor',
-      'borderRightColor',
-      'borderBottomColor',
-      'borderLeftColor'
+      'border-top-color',
+      'border-right-color',
+      'border-bottom-color',
+      'border-left-color'
     ],
     borderLeft: [
-      'borderLeftWidth',
-      'borderLeftStyle',
-      'borderLeftColor'
+      'border-left-width',
+      'border-left-style',
+      'border-left-color'
     ],
     borderRadius: [
-      'borderTopLeftRadius',
-      'borderTopRightRadius',
-      'borderBottomRightRadius',
-      'borderBottomLeftRadius'
+      'border-top-left-radius',
+      'border-top-right-radius',
+      'border-bottom-right-radius',
+      'border-bottom-left-radius'
     ],
     borderRight: [
-      'borderRightWidth',
-      'borderRightStyle',
-      'borderRightColor'
+      'border-right-width',
+      'border-right-style',
+      'border-right-color'
     ],
     borderTop: [
-      'borderTopWidth',
-      'borderTopStyle',
-      'borderTopColor'
+      'border-top-width',
+      'border-top-style',
+      'border-top-color'
     ],
     borderWidth: [
-      'borderTopWidth',
-      'borderRightWidth',
-      'borderBottomWidth',
-      'borderLeftWidth'
+      'border-top-width',
+      'border-right-width',
+      'border-bottom-width',
+      'border-left-width'
     ],
     flex: [
-      'flexGrow',
-      'flexShrink',
-      'flexBasis'
+      'flex-grow',
+      'flex-shrink',
+      'flex-basis'
     ],
     font: [
-      'fontFamily',
-      'fontSize',
-      'fontStyle',
-      'fontVariant',
-      'fontWeight',
-      'lineHeight'
+      'font-family',
+      'font-size',
+      'font-style',
+      'font-variant',
+      'font-weight',
+      'line-height'
     ],
     margin: [
-      'marginTop',
-      'marginRight',
-      'marginBottom',
-      'marginLeft'
+      'margin-top',
+      'margin-right',
+      'margin-bottom',
+      'margin-left'
     ],
     outline: [
-      'outlineColor',
-      'outlineStyle',
-      'outlineWidth'
+      'outline-color',
+      'outline-style',
+      'outline-width'
     ],
     padding: [
-      'paddingTop',
-      'paddingRight',
-      'paddingBottom',
-      'paddingLeft'
+      'padding-top',
+      'padding-right',
+      'padding-bottom',
+      'padding-left'
     ]
   };
 
