@@ -22,8 +22,8 @@
   }
   function addPropertiesHandler(parser, merger, properties) {
     for (var i = 0; i < properties.length; i++) {
-      WEB_ANIMATIONS_TESTING && console.assert(!/-/.test(property));
       var property = properties[i];
+      WEB_ANIMATIONS_TESTING && console.assert(property.toLowerCase() === property);
       addPropertyHandler(parser, merger, property);
       if (/-/.test(property)) {
         // Add camel cased variant.
