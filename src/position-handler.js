@@ -109,6 +109,6 @@
   }
 
   var mergePositionList = scope.mergeNestedRepeated.bind(null, mergeOffsetList, ', ');
-  scope.addPropertiesHandler(parsePositionList, mergePositionList, ['background-position']);
+  scope.addPropertiesHandler(parsePositionList, mergePositionList, ['background-position', 'object-position']);
 
 })(webAnimationsMinifill);

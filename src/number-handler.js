@@ -31,6 +31,13 @@
     return [left, right, numberToString];
   }
 
+  // FIXME: This should probably go in it's own handler.
+  function mergeFlex(left, right) {
+    if (left == 0)
+      return;
+    return mergeNumbers(left, right);
+  }
+
   function clampedMergeNumbers(min, max) {
     return function(left, right) {
       return [left, right, function(x) {
@@ -44,8 +51,10 @@
   }
 
   scope.clamp = clamp;
-  scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity']);
-  scope.addPropertiesHandler(parseNumber, round, ['z-index']);
+  scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'shape-image-threshold']);
+  scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
+  scope.addPropertiesHandler(parseNumber, mergeNumbers, ['zoom']);
+  scope.addPropertiesHandler(parseNumber, round, ['orphans', 'widows', 'z-index']);
 
   scope.parseNumber = parseNumber;
   scope.mergeNumbers = mergeNumbers;

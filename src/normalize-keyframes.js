@@ -13,7 +13,6 @@
 // limitations under the License.
 
 (function(shared, testing) {
-
   var shorthandToLonghand = {
     background: [
       'backgroundImage',
@@ -76,6 +75,11 @@
       'borderRightWidth',
       'borderBottomWidth',
       'borderLeftWidth'
+    ],
+    flex: [
+      'flexGrow',
+      'flexShrink',
+      'flexBasis'
     ],
     font: [
       'fontFamily',

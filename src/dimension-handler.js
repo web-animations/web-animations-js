@@ -94,6 +94,14 @@
   scope.mergeDimensions = mergeDimensions;
 
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions,
-      'left|right|top|bottom|width|height'.split('|'));
+      ['left', 'right', 'top', 'bottom', 'width', 'height', 'font-size', 'text-indent',
+       'letter-spacing', 'flex-basis', 'outline-offset', 'outline-width', 'perspective',
+       'shape-margin', 'vertical-align', 'word-spacing',
+       'max-height', 'max-width', 'min-height', 'min-width',
+       'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+       'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+       'border-top-left-radius', 'border-top-right-radius',
+       'border-bottom-right-radius', 'border-bottom-left-radius',
+       'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width']);
 
 })(webAnimationsMinifill, webAnimationsTesting);
