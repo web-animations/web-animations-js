@@ -50,8 +50,8 @@
   }
 
   scope.addPropertiesHandler(parseColor, mergeColors,
-      ('background-color|border-bottom-color|border-left-color|border-right-color|' +
-      'border-top-color|color|outline-color|text-decoration-color').split('|'));
+      ['background-color', 'border-bottom-color', 'border-left-color', 'border-right-color',
+      'border-top-color', 'color', 'outline-color', 'text-decoration-color']);
   scope.consumeColor = scope.consumeParenthesised.bind(null, parseColor);
   scope.mergeColors = mergeColors;
 
