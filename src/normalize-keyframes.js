@@ -13,99 +13,98 @@
 // limitations under the License.
 
 (function(shared, testing) {
-
   var shorthandToLonghand = {
     background: [
-      'background-image',
-      'background-position',
-      'background-size',
-      'background-repeat',
-      'background-attachment',
-      'background-origin',
-      'background-clip',
-      'background-color'
+      'backgroundImage',
+      'backgroundPosition',
+      'backgroundSize',
+      'backgroundRepeat',
+      'backgroundAttachment',
+      'backgroundOrigin',
+      'backgroundClip',
+      'backgroundColor'
     ],
     border: [
-      'border-top-color',
-      'border-top-style',
-      'border-top-width',
-      'border-right-color',
-      'border-right-style',
-      'border-right-width',
-      'border-bottom-color',
-      'border-bottom-style',
-      'border-bottom-width',
-      'border-left-color',
-      'border-left-style',
-      'border-left-width'
+      'borderTopColor',
+      'borderTopStyle',
+      'borderTopWidth',
+      'borderRightColor',
+      'borderRightStyle',
+      'borderRightWidth',
+      'borderBottomColor',
+      'borderBottomStyle',
+      'borderBottomWidth',
+      'borderLeftColor',
+      'borderLeftStyle',
+      'borderLeftWidth'
     ],
     borderBottom: [
-      'border-bottom-width',
-      'border-bottom-style',
-      'border-bottom-color'
+      'borderBottomWidth',
+      'borderBottomStyle',
+      'borderBottomColor'
     ],
     borderColor: [
-      'border-top-color',
-      'border-right-color',
-      'border-bottom-color',
-      'border-left-color'
+      'borderTopColor',
+      'borderRightColor',
+      'borderBottomColor',
+      'borderLeftColor'
     ],
     borderLeft: [
-      'border-left-width',
-      'border-left-style',
-      'border-left-color'
+      'borderLeftWidth',
+      'borderLeftStyle',
+      'borderLeftColor'
     ],
     borderRadius: [
-      'border-top-left-radius',
-      'border-top-right-radius',
-      'border-bottom-right-radius',
-      'border-bottom-left-radius'
+      'borderTopLeftRadius',
+      'borderTopRightRadius',
+      'borderBottomRightRadius',
+      'borderBottomLeftRadius'
     ],
     borderRight: [
-      'border-right-width',
-      'border-right-style',
-      'border-right-color'
+      'borderRightWidth',
+      'borderRightStyle',
+      'borderRightColor'
     ],
     borderTop: [
-      'border-top-width',
-      'border-top-style',
-      'border-top-color'
+      'borderTopWidth',
+      'borderTopStyle',
+      'borderTopColor'
     ],
     borderWidth: [
-      'border-top-width',
-      'border-right-width',
-      'border-bottom-width',
-      'border-left-width'
+      'borderTopWidth',
+      'borderRightWidth',
+      'borderBottomWidth',
+      'borderLeftWidth'
     ],
     flex: [
-      'flex-grow',
-      'flex-shrink',
-      'flex-basis'
+      'flexGrow',
+      'flexShrink',
+      'flexBasis'
     ],
     font: [
-      'font-family',
-      'font-size',
-      'font-style',
-      'font-variant',
-      'font-weight',
-      'line-height'
+      'fontFamily',
+      'fontSize',
+      'fontStyle',
+      'fontVariant',
+      'fontWeight',
+      'lineHeight'
     ],
     margin: [
-      'margin-top',
-      'margin-right',
-      'margin-bottom',
-      'margin-left'
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft'
     ],
     outline: [
-      'outline-color',
-      'outline-style',
-      'outline-width'
+      'outlineColor',
+      'outlineStyle',
+      'outlineWidth'
     ],
     padding: [
-      'padding-top',
-      'padding-right',
-      'padding-bottom',
-      'padding-left'
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft'
     ]
   };
 
