@@ -20,15 +20,14 @@
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
     return function(target, fraction) {
       if (fraction != null) {
-        interpolations.filter(function(interpolation, i) {
-          return (fraction < 0 && i == 0 ||
-                 fraction > 1 && i == interpolations.length - 1 ||
-                 interpolation.startTime <= fraction && interpolation.endTime >= fraction) &&
-                     interpolation.startTime != interpolation.endTime;
+        interpolations.filter(function(interpolation) {
+          return (fraction <= 0 && interpolation.startTime == 0) ||
+                 (fraction >= 1 && interpolation.endTime == 1) ||
+                 (fraction >= interpolation.startTime && fraction <= interpolation.endTime);
         }).forEach(function(interpolation) {
           var offsetFraction = fraction - interpolation.startTime;
           var localDuration = interpolation.endTime - interpolation.startTime;
-          var scaledLocalTime = interpolation.easing(offsetFraction / localDuration);
+          var scaledLocalTime = localDuration == 0 ? 0 : interpolation.easing(offsetFraction / localDuration);
           scope.apply(target, interpolation.property, interpolation.interpolation(scaledLocalTime));
         });
       } else {
@@ -76,12 +75,23 @@
     for (var groupName in propertySpecificKeyframeGroups) {
       var group = propertySpecificKeyframeGroups[groupName];
       for (var i = 0; i < group.length - 1; i++) {
+        var startTime = group[i].offset;
+        var endTime = group[i + 1].offset;
+        var startValue = group[i].value;
+        var endValue = group[i + 1].value;
+        if (startTime == endTime) {
+          if (endTime == 1) {
+            startValue = endValue;
+          } else {
+            endValue = startValue;
+          }
+        }
         interpolations.push({
-          startTime: group[i].offset,
-          endTime: group[i + 1].offset,
+          startTime: startTime,
+          endTime: endTime,
           easing: group[i].easing,
           property: groupName,
-          interpolation: scope.propertyInterpolation(groupName, group[i].value, group[i + 1].value)
+          interpolation: scope.propertyInterpolation(groupName, startValue, endValue)
         });
       }
     }

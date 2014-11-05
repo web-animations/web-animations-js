@@ -472,9 +472,9 @@ suite('effect-convertEffectInput', function() {
       ]);
     });
     effectFunction(this.target, 1);
-    assert.equal(getComputedStyle(this.target).left, '20px');
+    assert.equal(getComputedStyle(this.target).left, '30px');
     effectFunction(this.target, 2);
-    assert.equal(getComputedStyle(this.target).left, '20px');
+    assert.equal(getComputedStyle(this.target).left, '30px');
   });
 
   test('Convert effect input and apply effect at fraction null.', function() {
