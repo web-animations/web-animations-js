@@ -21,10 +21,10 @@
     return function(target, fraction) {
       if (fraction != null) {
         interpolations.filter(function(interpolation, i) {
-          return fraction < 0 && i == 0 ||
+          return (fraction < 0 && i == 0 ||
                  fraction > 1 && i == interpolations.length - 1 ||
-                 (interpolation.startTime <= fraction && interpolation.endTime >= fraction &&
-                     interpolation.startTime != interpolation.endTime);
+                 interpolation.startTime <= fraction && interpolation.endTime >= fraction) &&
+                     interpolation.startTime != interpolation.endTime;
         }).forEach(function(interpolation) {
           var offsetFraction = fraction - interpolation.startTime;
           var localDuration = interpolation.endTime - interpolation.startTime;
