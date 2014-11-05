@@ -20,13 +20,17 @@
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
     return function(target, fraction) {
       if (fraction != null) {
-        for (var i = 0; i < interpolations.length && interpolations[i].startTime <= fraction; i++)
-          if (interpolations[i].endTime >= fraction && interpolations[i].endTime != interpolations[i].startTime) {
-            var offsetFraction = fraction - interpolations[i].startTime;
-            var localDuration = interpolations[i].endTime - interpolations[i].startTime;
-            var scaledLocalTime = interpolations[i].easing(offsetFraction / localDuration);
-            scope.apply(target, interpolations[i].property, interpolations[i].interpolation(scaledLocalTime));
-          }
+        interpolations.filter(function(interpolation, i) {
+          return fraction < 0 && i == 0 ||
+                 fraction > 1 && i == interpolations.length - 1 ||
+                 (interpolation.startTime <= fraction && interpolation.endTime >= fraction &&
+                     interpolation.startTime != interpolation.endTime);
+        }).forEach(function(interpolation) {
+          var offsetFraction = fraction - interpolation.startTime;
+          var localDuration = interpolation.endTime - interpolation.startTime;
+          var scaledLocalTime = interpolation.easing(offsetFraction / localDuration);
+          scope.apply(target, interpolation.property, interpolation.interpolation(scaledLocalTime));
+        });
       } else {
         for (var property in propertySpecificKeyframeGroups)
           if (property != 'offset' && property != 'easing' && property != 'composite')
