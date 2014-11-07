@@ -72,16 +72,11 @@
     }, 0);
   }
 
-  function dumpResults() {
+  function evaluateTests() {
     var targets = document.querySelectorAll('.target.active');
-    var resultString = 'Interpolation Tests:\n';
     for (var i = 0; i < targets.length; i++) {
-      resultString += targets[i].getResultString() + '\n';
+      targets[i].evaluate();
     }
-    var results = document.createElement('pre');
-    results.textContent = resultString;
-    results.id = 'results';
-    document.body.appendChild(results);
   }
 
   function afterTest(callback) {
@@ -121,7 +116,7 @@
   }
 
   function describeTest(params) {
-    return 'element.animate() ' + convertPropertyToCamelCase(params.property) + ': from [' + params.from + '] to [' + params.to + ']';
+    return convertPropertyToCamelCase(params.property) + ': from [' + params.from + '] to [' + params.to + ']';
   }
 
   var nextKeyframeId = 0;
@@ -195,7 +190,7 @@
   }
 
   function makeInterpolationTest(fraction, testId, caseId, params, expectation) {
-    var t = async_test(testId + ' ' + caseId + ', f = ' + fraction);
+    var t = async_test(describeTest(params) + ' at ' + fraction);
     var targetContainer = createTargetContainer(caseId);
     var target = targetContainer.querySelector('.target') || targetContainer;
     target.classList.add('active');
@@ -205,28 +200,17 @@
     replica.classList.add('replica');
     replica.style.setProperty(params.property, expectation);
 
-    target.getResultString = function() {
+    target.evaluate = function() {
       if (!CSS.supports(params.property, expectation)) {
         return 'FAIL: [' + params.property + ': ' + expectation + '] is not supported';
       }
       var value = getComputedStyle(this).getPropertyValue(params.property);
       var originalValue = value;
-      var result = '';
-      var reason = '';
-      var property = convertPropertyToCamelCase(params.property);
       var parsedExpectation = getComputedStyle(replica).getPropertyValue(params.property);
-      var pass = normalizeValue(value) === normalizeValue(parsedExpectation);
-      result = pass ? 'PASS: ' : 'FAIL: ';
-      reason = pass ? '' : ', expected [' + expectation + ']' +
-          (expectation === parsedExpectation ? '' : ' (parsed as [' + sanitizeUrls(roundNumbers(parsedExpectation)) + '])');
-      value = pass ? expectation : sanitizeUrls(value);
       t.step(function() {
         assert_equals(normalizeValue(originalValue), normalizeValue(parsedExpectation));
         t.done();
       });
-      return result + property + ' from [' + params.from + '] to ' +
-          '[' + params.to + '] was [' + value + ']' +
-          ' at ' + fraction + reason;
     };
 
     var easing = createEasing(fraction);
@@ -254,7 +238,7 @@
   var finished = false;
   function finishTest() {
     finished = true;
-    dumpResults();
+    evaluateTests();
     if (afterTestCallback) {
       afterTestCallback();
     }
