@@ -62,7 +62,11 @@
     return matchedUnits;
   }
 
-  function mergeDimensions(left, right) {
+  function mergeDimensionsNonNegative(left, right) {
+    return mergeDimensions(left, right, true);
+  }
+
+  function mergeDimensions(left, right, nonNegative) {
     var units = [], unit;
     for (unit in left)
       units.push(unit);
@@ -75,6 +79,9 @@
     right = units.map(function(unit) { return right[unit] || 0; });
     return [left, right, function(values) {
       var result = values.map(function(value, i) {
+        if (values.length == 1 && nonNegative) {
+          value = Math.max(value, 0);
+        }
         // Scientific notation (e.g. 1e2) is not yet widely supported by browser vendors.
         return scope.numberToString(value) + units[i];
       }).join(' + ');
@@ -93,8 +100,13 @@
   scope.parseAngle = parseAngle;
   scope.mergeDimensions = mergeDimensions;
 
+  scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensionsNonNegative, [
+    'width',
+    'border-image-width',
+  ]);
+
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions,
-      ['left', 'right', 'top', 'bottom', 'width', 'height', 'font-size', 'text-indent',
+      ['left', 'right', 'top', 'bottom', 'height', 'font-size', 'text-indent',
        'letter-spacing', 'flex-basis', 'outline-offset', 'outline-width', 'perspective',
        'shape-margin', 'vertical-align', 'word-spacing',
        'max-height', 'max-width', 'min-height', 'min-width',

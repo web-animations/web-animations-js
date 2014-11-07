@@ -51,6 +51,7 @@
   }
 
   scope.clamp = clamp;
+  scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, Infinity), ['border-image-width']);
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'shape-image-threshold']);
   scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
   scope.addPropertiesHandler(parseNumber, mergeNumbers, ['zoom']);
