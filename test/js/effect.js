@@ -459,7 +459,7 @@ suite('effect-convertEffectInput', function() {
     effectFunction(this.target, 1);
     assert.closeTo(leftAsNumber(this.target), 100, 0.001);
     effectFunction(this.target, 2);
-    assert.closeTo(leftAsNumber(this.target), 100, 0.001);
+    assert.closeTo(leftAsNumber(this.target), -42.856, 0.01);
   });
 
   test('Convert effect input where one property is animated and the property has two keyframes at offset 1.', function() {
@@ -472,9 +472,9 @@ suite('effect-convertEffectInput', function() {
       ]);
     });
     effectFunction(this.target, 1);
-    assert.equal(getComputedStyle(this.target).left, '20px');
+    assert.equal(getComputedStyle(this.target).left, '30px');
     effectFunction(this.target, 2);
-    assert.equal(getComputedStyle(this.target).left, '20px');
+    assert.equal(getComputedStyle(this.target).left, '30px');
   });
 
   test('Convert effect input and apply effect at fraction null.', function() {
