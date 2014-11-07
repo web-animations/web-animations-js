@@ -72,10 +72,10 @@ module.exports = function(grunt) {
     config.wrap[target] = {
       source: source,
       preamble: '(function() {\n' +
-                '  if (document.body.animate !== undefined) {\n' +
-                '    var player = document.body.animate([], 0);\n' +
+                '  if (document.documentElement.animate) {\n' +
+                '    var player = document.documentElement.animate([], 0);\n' +
                 '    var load = true;\n' +
-                '    if (player !== undefined && player !== null) {\n' +
+                '    if (player) {\n' +
                 '      load = false;\n' +
                 '      "play|currentTime|pause|reverse|playbackRate|cancel|finish|startTime|playState".split("|").forEach(function(t) {\n' +
                 '        if (player[t] === undefined) {\n' +

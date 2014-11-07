@@ -6,10 +6,10 @@
   // Native implementation detection.
 
   var load = true;
-  if (document.body.animate !== undefined) {
-    var player = document.body.animate([], 0);
+  if (document.documentElement.animate) {
+    var player = document.documentElement.animate([], 0);
 
-    if (player !== undefined && player !== null) {
+    if (player) {
       load = false;
       "play|currentTime|pause|reverse|playbackRate|cancel|finish|startTime|playState".split('|').forEach(function(t) {
         if (player[t] === undefined) {
