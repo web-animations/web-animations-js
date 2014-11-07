@@ -103,13 +103,16 @@
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensionsNonNegative, [
     'width',
     'border-image-width',
+    'height',
+    'max-height',
+    'max-width',
   ]);
 
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions,
-      ['left', 'right', 'top', 'bottom', 'height', 'font-size', 'text-indent',
+      ['left', 'right', 'top', 'bottom', 'font-size', 'text-indent',
        'letter-spacing', 'flex-basis', 'outline-offset', 'outline-width', 'perspective',
        'shape-margin', 'vertical-align', 'word-spacing',
-       'max-height', 'max-width', 'min-height', 'min-width',
+       'min-height', 'min-width',
        'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
        'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
        'border-top-left-radius', 'border-top-right-radius',
