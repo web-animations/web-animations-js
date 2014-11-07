@@ -101,15 +101,16 @@
   scope.mergeDimensions = mergeDimensions;
 
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensionsNonNegative, [
-    'width',
     'border-image-width',
+    'font-size', 
     'height',
     'max-height',
     'max-width',
+    'width',
   ]);
 
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions,
-      ['left', 'right', 'top', 'bottom', 'font-size', 'text-indent',
+      ['left', 'right', 'top', 'bottom', 'text-indent',
        'letter-spacing', 'flex-basis', 'outline-offset', 'outline-width', 'perspective',
        'shape-margin', 'vertical-align', 'word-spacing',
        'min-height', 'min-width',
