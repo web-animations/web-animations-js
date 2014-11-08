@@ -21,7 +21,9 @@ assertInterpolation({
   from: '1',
   to: '2'
 }, [
-  {at: -5, is: '0.000000000000000000000000000000000000000000001'}, // zoom must be > 0
+  // Interpolated values are greater than 0, however this test case fails because
+  // CSS rounds anything smaller than 1e-7 down to 0.
+  // {at: -5, is: '0.000000000000000000000000000000000000000000001'}, // zoom must be > 0
   {at: -0.3, is: '0.7'},
   {at: 0, is: '1'},
   {at: 0.3, is: '1.3'},

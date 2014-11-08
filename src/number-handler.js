@@ -38,6 +38,15 @@
     return mergeNumbers(left, right);
   }
 
+  // FIXME: This should probably go in it's own handler.
+  function mergeZoom(left, right) {
+    return [left, right, function(x) {
+      // It seems that 1e-7 is the smallest value that blink CSS accepts as positive.
+      return String(clamp(0.000001, Infinity, x)).slice(0, 9);
+    }];
+  }
+
+
   function clampedMergeNumbers(min, max) {
     return function(left, right) {
       return [left, right, function(x) {
@@ -54,7 +63,7 @@
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, Infinity), ['border-image-width']);
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'shape-image-threshold']);
   scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
-  scope.addPropertiesHandler(parseNumber, mergeNumbers, ['zoom']);
+  scope.addPropertiesHandler(parseNumber, mergeZoom, ['zoom']);
   scope.addPropertiesHandler(parseNumber, round, ['orphans', 'widows', 'z-index']);
 
   scope.parseNumber = parseNumber;
