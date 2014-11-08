@@ -35,7 +35,7 @@
   function mergeFlex(left, right) {
     if (left == 0)
       return;
-    return mergeNumbers(left, right);
+    return clampedMergeNumbers(0, Infinity)(left, right);
   }
 
   function clampedMergeNumbers(min, max) {

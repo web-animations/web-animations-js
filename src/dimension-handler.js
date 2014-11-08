@@ -101,7 +101,12 @@
   scope.mergeDimensions = mergeDimensions;
 
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensionsNonNegative, [
+    'border-bottom-width',
     'border-image-width',
+    'border-left-width',
+    'border-right-width',
+    'border-top-width',
+    'flex-basis',
     'font-size',
     'height',
     'max-height',
@@ -109,15 +114,33 @@
     'width',
   ]);
 
-  scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions,
-      ['left', 'right', 'top', 'bottom', 'text-indent',
-       'letter-spacing', 'flex-basis', 'outline-offset', 'outline-width', 'perspective',
-       'shape-margin', 'vertical-align', 'word-spacing',
-       'min-height', 'min-width',
-       'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
-       'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-       'border-top-left-radius', 'border-top-right-radius',
-       'border-bottom-right-radius', 'border-bottom-left-radius',
-       'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width']);
+  scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensions, [
+    'border-bottom-left-radius',
+    'border-bottom-right-radius',
+    'border-top-left-radius',
+    'border-top-right-radius',
+    'bottom',
+    'left',
+    'letter-spacing',
+    'margin-bottom',
+    'margin-left',
+    'margin-right',
+    'margin-top',
+    'min-height',
+    'min-width',
+    'outline-offset',
+    'outline-width',
+    'padding-bottom',
+    'padding-left',
+    'padding-right',
+    'padding-top',
+    'perspective',
+    'right',
+    'shape-margin',
+    'text-indent',
+    'top',
+    'vertical-align',
+    'word-spacing',
+  ]);
 
 })(webAnimationsMinifill, webAnimationsTesting);
