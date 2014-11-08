@@ -41,7 +41,6 @@
   // FIXME: This should probably go in it's own handler.
   function mergeOrphans(left, right) {
     return [left, right, function(x) {
-      console.log(Math.round(clamp(1, Infinity, x)));
       return Math.round(clamp(1, Infinity, x));
     }];
   }
