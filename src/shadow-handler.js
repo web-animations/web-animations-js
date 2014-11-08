@@ -59,16 +59,16 @@
     var matchingLeft = [[], 0];
     var matchingRight = [[], 0];
     for (var i = 0; i < left.lengths.length; i++) {
-      var thing = scope.mergeDimensions(left.lengths[i], right.lengths[i]);
-      matchingLeft[0].push(thing[0]);
-      matchingRight[0].push(thing[1]);
-      lengthReconstitution.push(thing[2]);
+      var mergedDimensions = scope.mergeDimensions(left.lengths[i], right.lengths[i], i == 2);
+      matchingLeft[0].push(mergedDimensions[0]);
+      matchingRight[0].push(mergedDimensions[1]);
+      lengthReconstitution.push(mergedDimensions[2]);
     }
     if (left.color && right.color) {
-      var thing = scope.mergeColors(left.color, right.color);
-      matchingLeft[1] = thing[0];
-      matchingRight[1] = thing[1];
-      colorReconstitution = thing[2];
+      var mergedColor = scope.mergeColors(left.color, right.color);
+      matchingLeft[1] = mergedColor[0];
+      matchingRight[1] = mergedColor[1];
+      colorReconstitution = mergedColor[2];
     }
     return [matchingLeft, matchingRight, function(value) {
       var result = left.inset ? 'inset ' : ' ';
