@@ -102,7 +102,7 @@
 
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensionsNonNegative, [
     'border-image-width',
-    'font-size', 
+    'font-size',
     'height',
     'max-height',
     'max-width',

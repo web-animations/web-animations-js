@@ -43,7 +43,7 @@
       if (parsedLeft !== undefined && parsedRight !== undefined) {
         var interpolationArgs = handlers[i][1](parsedLeft, parsedRight);
         if (interpolationArgs) {
-          var interp =  scope.Interpolation.apply(null, interpolationArgs);
+          var interp = scope.Interpolation.apply(null, interpolationArgs);
           return function(t) {
             if (t == 0) return left;
             if (t == 1) return right;
