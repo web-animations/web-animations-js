@@ -71,12 +71,22 @@
     return parsed ? [parsed, string.substr(n)] : undefined;
   }
 
+  function lcm(a, b) {
+    var c = a;
+    var d = b;
+    while (c && d)
+      c > d ? c %= d : d %= c;
+    c = (a * b) / (c + d);
+    return c;
+  }
+
   function mergeNestedRepeated(nestedMerge, separator, left, right) {
     var matchingLeft = [];
     var matchingRight = [];
     var reconsititution = [];
-    for (var i = 0; i < left.length; i++) {
-      var thing = nestedMerge(left[i], right[i]);
+    var length = lcm(left.length, right.length);
+    for (var i = 0; i < length; i++) {
+      var thing = nestedMerge(left[i % left.length], right[i % right.length]);
       if (!thing) {
         return;
       }
