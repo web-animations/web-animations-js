@@ -38,7 +38,8 @@
     return mergeNumbers(left, right);
   }
 
-  // FIXME: This should probably go in it's own handler.
+  // FIXME: This should go in it's own handler. Zoom can also have percent
+  // values, which are currently not supported.
   function mergeZoom(left, right) {
     return [left, right, function(x) {
       // It seems that 1e-7 is the smallest value that blink CSS accepts as positive.
