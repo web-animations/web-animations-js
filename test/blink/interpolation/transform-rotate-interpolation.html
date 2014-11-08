@@ -98,7 +98,7 @@ assertInterpolation({
   to: 'rotate(90deg)'
 }, [
   {at: -1, is: 'rotate(-90deg)'},
-  {at: 0, is: 'rotate(0deg)'},
+  {at: 0, is: 'none'},
   {at: 0.25, is: 'rotate(22.5deg)'},
   {at: 0.75, is: 'rotate(67.5deg)'},
   {at: 1, is: 'rotate(90deg)'},
@@ -113,7 +113,7 @@ assertInterpolation({
   {at: 0, is: 'rotate(90deg)'},
   {at: 0.25, is: 'rotate(67.5deg)'},
   {at: 0.75, is: 'rotate(22.5deg)'},
-  {at: 1, is: 'rotate(0deg)'},
+  {at: 1, is: 'none'},
   {at: 2, is: 'rotate(-90deg)'},
 ]);
 assertInterpolation({
