@@ -38,6 +38,14 @@
     return clampedMergeNumbers(0, Infinity)(left, right);
   }
 
+  // FIXME: This should probably go in it's own handler.
+  function mergeOrphans(left, right) {
+    return [left, right, function(x) {
+      console.log(Math.round(clamp(1, Infinity, x)));
+      return Math.round(clamp(1, Infinity, x));
+    }];
+  }
+
   function clampedMergeNumbers(min, max) {
     return function(left, right) {
       return [left, right, function(x) {
@@ -55,7 +63,9 @@
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'shape-image-threshold']);
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0.01, Infinity), ['zoom']);
   scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
-  scope.addPropertiesHandler(parseNumber, round, ['orphans', 'widows', 'z-index']);
+  scope.addPropertiesHandler(parseNumber, mergeNumbers, ['zoom']);
+  scope.addPropertiesHandler(parseNumber, mergeOrphans, ['orphans']);
+  scope.addPropertiesHandler(parseNumber, round, ['widows', 'z-index']);
 
   scope.parseNumber = parseNumber;
   scope.mergeNumbers = mergeNumbers;
