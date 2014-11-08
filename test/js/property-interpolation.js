@@ -24,7 +24,7 @@ suite('property-interpolation', function() {
       return [a, b, function(x) { return a + b; }];
     };
     webAnimationsMinifill.addPropertiesHandler(Number, merge, ['dummy-property']);
-    assert.equal(webAnimationsMinifill.propertyInterpolation('dummy-property', 1, 2)(0), 3);
-    assert.equal(webAnimationsMinifill.propertyInterpolation('dummyProperty', 5, 3)(0), 8);
+    assert.equal(webAnimationsMinifill.propertyInterpolation('dummy-property', 1, 2)(0.5), 3);
+    assert.equal(webAnimationsMinifill.propertyInterpolation('dummyProperty', 5, 3)(0.5), 8);
   });
 });

@@ -28,12 +28,8 @@ suite('number-handler', function() {
     assert.isUndefined(webAnimationsMinifill.parseNumber('1.2.3'));
   });
   test('opacity clamping', function() {
-    var interpolation = webAnimationsMinifill.propertyInterpolation('opacity', '-1', '3');
-    assert.equal(interpolation(0), '0');
-    assert.equal(interpolation(0.25), '0');
-    assert.equal(interpolation(0.375), '0.500');
-    assert.equal(interpolation(0.5), '1');
-    assert.equal(interpolation(0.75), '1');
-    assert.equal(interpolation(1), '1');
+    var interpolation = webAnimationsMinifill.propertyInterpolation('opacity', '0', '1');
+    assert.equal(interpolation(-1), '0');
+    assert.equal(interpolation(2), '1');
   });
 });
