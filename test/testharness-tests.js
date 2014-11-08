@@ -54,6 +54,7 @@ var interpolationTests = [
   'blink/interpolation/vertical-align-interpolation.html',
   'blink/interpolation/viewport-unit-interpolation.html',
   'blink/interpolation/visibility-interpolation.html',
+  'blink/interpolation/widows-interpolation.html',
   'blink/interpolation/width-interpolation.html',
   'blink/interpolation/word-spacing-interpolation.html',
   'blink/interpolation/z-index-interpolation.html',
@@ -84,5 +85,4 @@ var interpolationFailures = [
   'blink/interpolation/transform-rotate-interpolation.html',
   'blink/interpolation/transform-scale-interpolation.html',
   'blink/interpolation/transform-translate-interpolation.html',
-  'blink/interpolation/widows-interpolation.html',
 ];

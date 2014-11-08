@@ -111,6 +111,7 @@
     'height',
     'max-height',
     'max-width',
+    'outline-width',
     'width',
   ]);
 
@@ -129,7 +130,6 @@
     'min-height',
     'min-width',
     'outline-offset',
-    'outline-width',
     'padding-bottom',
     'padding-left',
     'padding-right',

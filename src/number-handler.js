@@ -39,7 +39,7 @@
   }
 
   // FIXME: This should probably go in it's own handler.
-  function mergeOrphans(left, right) {
+  function mergePositiveIntegers(left, right) {
     return [left, right, function(x) {
       return Math.round(clamp(1, Infinity, x));
     }];
@@ -63,7 +63,7 @@
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0.01, Infinity), ['zoom']);
   scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
   scope.addPropertiesHandler(parseNumber, mergeNumbers, ['zoom']);
-  scope.addPropertiesHandler(parseNumber, mergeOrphans, ['orphans']);
+  scope.addPropertiesHandler(parseNumber, mergePositiveIntegers, ['orphans', 'widows']);
   scope.addPropertiesHandler(parseNumber, round, ['widows', 'z-index']);
 
   scope.parseNumber = parseNumber;
