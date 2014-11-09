@@ -38,7 +38,6 @@
     return clampedMergeNumbers(0, Infinity)(left, right);
   }
 
-  // FIXME: This should probably go in it's own handler.
   function mergePositiveIntegers(left, right) {
     return [left, right, function(x) {
       return Math.round(clamp(1, Infinity, x));
