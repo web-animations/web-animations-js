@@ -35,7 +35,13 @@
   function mergeFlex(left, right) {
     if (left == 0)
       return;
-    return mergeNumbers(left, right);
+    return clampedMergeNumbers(0, Infinity)(left, right);
+  }
+
+  function mergePositiveIntegers(left, right) {
+    return [left, right, function(x) {
+      return Math.round(clamp(1, Infinity, x));
+    }];
   }
 
   function clampedMergeNumbers(min, max) {
@@ -55,7 +61,9 @@
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'shape-image-threshold']);
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0.01, Infinity), ['zoom']);
   scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
-  scope.addPropertiesHandler(parseNumber, round, ['orphans', 'widows', 'z-index']);
+  scope.addPropertiesHandler(parseNumber, mergeNumbers, ['zoom']);
+  scope.addPropertiesHandler(parseNumber, mergePositiveIntegers, ['orphans', 'widows']);
+  scope.addPropertiesHandler(parseNumber, round, ['z-index']);
 
   scope.parseNumber = parseNumber;
   scope.mergeNumbers = mergeNumbers;
