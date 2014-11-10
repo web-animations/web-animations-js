@@ -38,15 +38,8 @@
     return clampedMergeNumbers(0, Infinity)(left, right);
   }
 
-<<<<<<< HEAD
   function mergePositiveIntegers(left, right) {
     return [left, right, function(x) {
-=======
-  // FIXME: This should probably go in it's own handler.
-  function mergePositiveIntegers(left, right) {
-    return [left, right, function(x) {
-      console.log(Math.round(clamp(1, Infinity, x)));
->>>>>>> Make orphans interp test pass
       return Math.round(clamp(1, Infinity, x));
     }];
   }
