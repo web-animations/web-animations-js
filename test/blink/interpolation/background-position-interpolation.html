@@ -43,11 +43,11 @@ assertInterpolation({
   to: 'left 80px top 80px',
 }, [
   {at: -0.25, is: '-20px -20px, -20px -20px, -20px -20px, -20px -20px'},
-  {at: 0, is:     '  0px   0px,   0px   0px,   0px   0px,   0px   0px'},
+  {at: 0, is:     ' top 0px left 0px,   0px   0px,   0px   0px,   0px   0px'},
   {at: 0.25, is:  ' 20px  20px,  20px  20px,  20px  20px,  20px  20px'},
   {at: 0.5, is:   ' 40px  40px,  40px  40px,  40px  40px,  40px  40px'},
   {at: 0.75, is:  ' 60px  60px,  60px  60px,  60px  60px,  60px  60px'},
-  {at: 1, is:     ' 80px  80px,  80px  80px,  80px  80px,  80px  80px'},
+  {at: 1, is:     ' left 80px top 80px,  80px  80px,  80px  80px,  80px  80px'},
   {at: 1.25, is:  '100px 100px, 100px 100px, 100px 100px, 100px 100px'},
 ]);
 
