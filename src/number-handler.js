@@ -63,7 +63,7 @@
   scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
   scope.addPropertiesHandler(parseNumber, mergeNumbers, ['zoom']);
   scope.addPropertiesHandler(parseNumber, mergePositiveIntegers, ['orphans', 'widows']);
-  scope.addPropertiesHandler(parseNumber, round, ['widows', 'z-index']);
+  scope.addPropertiesHandler(parseNumber, round, ['z-index']);
 
   scope.parseNumber = parseNumber;
   scope.mergeNumbers = mergeNumbers;
