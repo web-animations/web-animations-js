@@ -110,18 +110,58 @@
 
   var shorthandExpanderElem = document.createElement('div');
 
+  var borderWidthAliases = {
+    thin: '1px',
+    medium: '3px',
+    thick: '5px'
+  };
+
+  var aliases = {
+    borderBottomWidth: borderWidthAliases,
+    borderLeftWidth: borderWidthAliases,
+    borderRightWidth: borderWidthAliases,
+    borderTopWidth: borderWidthAliases,
+    fontSize: {
+      'xx-small': '60%',
+      'x-small': '75%',
+      'small': '89%',
+      'medium': '100%',
+      'large': '120%',
+      'x-large': '150%',
+      'xx-large': '200%'
+    },
+    fontWeight: {
+      normal: '400',
+      bold: '700'
+    },
+    lineHeight: {
+      normal: '120%'
+    },
+    outlineWidth: borderWidthAliases,
+    textShadow: {
+      none: '0px 0px 0px transparent'
+    }
+  };
+
+  function antiAlias(property, value) {
+    if (property in aliases) {
+      return aliases[property][value] || value;
+    }
+    return value;
+  }
+
   // This delegates parsing shorthand value syntax to the browser.
-  function expandShorthand(property, value, result) {
-    shorthandExpanderElem.style[property] = value;
+  function expandShorthandAndAntiAlias(property, value, result) {
     var longProperties = shorthandToLonghand[property];
     if (longProperties) {
+      shorthandExpanderElem.style[property] = value;
       for (var i in longProperties) {
         var longProperty = longProperties[i];
         var longhandValue = shorthandExpanderElem.style[longProperty];
-        result[longProperty] = longhandValue;
+        result[longProperty] = antiAlias(longProperty, longhandValue);
       }
     } else {
-      result[property] = value;
+      result[property] = antiAlias(property, value);
     }
   };
 
@@ -153,7 +193,7 @@
         } else {
           memberValue = '' + memberValue;
         }
-        expandShorthand(member, memberValue, keyframe);
+        expandShorthandAndAntiAlias(member, memberValue, keyframe);
       }
       if (keyframe.offset == undefined)
         keyframe.offset = null;

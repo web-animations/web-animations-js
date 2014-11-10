@@ -217,15 +217,15 @@ suite('effect', function() {
     });
     assert.equal(normalizedKeyframes[0].fontStyle, 'italic');
     assert.equal(normalizedKeyframes[0].fontVariant, 'normal');
-    assert.equal(normalizedKeyframes[0].fontWeight, 'bold');
+    assert.equal(normalizedKeyframes[0].fontWeight, '700');
     assert.equal(normalizedKeyframes[0].fontSize, '20pt');
     assert.equal(normalizedKeyframes[0].lineHeight, '200%');
     assert.equal(normalizedKeyframes[0].fontFamily, 'serif');
     assert.equal(normalizedKeyframes[1].fontStyle, 'italic');
     assert.equal(normalizedKeyframes[1].fontVariant, 'normal');
-    assert.equal(normalizedKeyframes[1].fontWeight, 'bold');
+    assert.equal(normalizedKeyframes[1].fontWeight, '700');
     assert.equal(normalizedKeyframes[1].fontSize, '50pt');
-    assert.equal(normalizedKeyframes[1].lineHeight, 'normal');
+    assert.equal(normalizedKeyframes[1].lineHeight, '120%');
     assert.equal(normalizedKeyframes[1].fontFamily, 'serif');
   });
 
