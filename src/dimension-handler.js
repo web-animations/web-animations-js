@@ -100,6 +100,24 @@
   scope.parseAngle = parseAngle;
   scope.mergeDimensions = mergeDimensions;
 
+  var consumeLength = scope.consumeParenthesised.bind(null, parseLength);
+  var consumeSizePair = scope.consumeList.bind(undefined, consumeLength, /^/);
+  var consumeSizePairList = scope.consumeList.bind(undefined, consumeSizePair, /^,/);
+
+  var parseSizePairList = function(input) {
+    var result = consumeSizePairList(input);
+    if (result && result[1] == '') {
+      return result[0];
+    }
+  };
+
+  var mergeSizePair = scope.mergeNestedRepeated.bind(undefined, mergeDimensionsNonNegative, ' ');
+  var mergeSizePairList = scope.mergeNestedRepeated.bind(undefined, mergeSizePair, ',');
+
+  scope.addPropertiesHandler(parseSizePairList, mergeSizePairList, [
+    'background-size'
+  ]);
+
   scope.addPropertiesHandler(parseLengthOrPercent, mergeDimensionsNonNegative, [
     'border-bottom-width',
     'border-image-width',

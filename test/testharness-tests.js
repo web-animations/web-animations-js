@@ -20,6 +20,7 @@ var interpolationTests = [
   'blink/interpolation/background-color-interpolation.html',
   'blink/interpolation/background-position-interpolation.html',
   'blink/interpolation/background-position-origin-interpolation.html',
+  'blink/interpolation/background-size-interpolation.html',
   'blink/interpolation/border-color-interpolation.html',
   'blink/interpolation/border-radius-interpolation.html',
   'blink/interpolation/border-width-interpolation.html',
@@ -69,7 +70,6 @@ var interpolationTests = [
 
 var interpolationFailures = [
   'blink/interpolation/background-image-interpolation.html',
-  'blink/interpolation/background-size-interpolation.html',
   'blink/interpolation/border-image-outset-interpolation.html',
   'blink/interpolation/border-image-slice-interpolation.html',
   'blink/interpolation/border-image-source-interpolation.html',
