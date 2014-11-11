@@ -201,9 +201,10 @@
     replica.style.setProperty(params.property, expectation);
 
     target.evaluate = function() {
+      var target = this;
       t.step(function() {
         assert_true(CSS.supports(params.property, expectation));
-        var value = getComputedStyle(this).getPropertyValue(params.property);
+        var value = getComputedStyle(target).getPropertyValue(params.property);
         var originalValue = value;
         var parsedExpectation = getComputedStyle(replica).getPropertyValue(params.property);
         assert_equals(normalizeValue(originalValue), normalizeValue(parsedExpectation));
