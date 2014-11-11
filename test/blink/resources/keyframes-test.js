@@ -3,6 +3,7 @@
 
 function createElement() {
   var element = document.createElement('div');
+  element.style.position = 'absolute';
   document.documentElement.appendChild(element);
   return element;
 }

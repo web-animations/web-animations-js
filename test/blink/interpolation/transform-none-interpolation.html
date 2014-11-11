@@ -35,6 +35,7 @@
 // Mismatched interpolation with an empty list should not use decomposition.
 assertInterpolation({
   property: 'transform',
+  prefixedProperty: ['-webkit-transform'],
   from: 'none',
   to: 'rotate(180deg)'
 }, [
@@ -47,6 +48,7 @@ assertInterpolation({
 ]);
 assertInterpolation({
   property: 'transform',
+  prefixedProperty: ['-webkit-transform'],
   from: 'rotate(180deg)',
   to: 'none'
 }, [
@@ -59,6 +61,7 @@ assertInterpolation({
 ]);
 assertInterpolation({
   property: 'transform',
+  prefixedProperty: ['-webkit-transform'],
   from: 'none',
   to: 'rotate(360deg)'
 }, [

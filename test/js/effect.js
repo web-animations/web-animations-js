@@ -365,6 +365,8 @@ suite('effect', function() {
   test('Apply keyframe easings.', function() {
     var target1 = document.createElement('div');
     var target2 = document.createElement('div');
+    target1.style.position = 'absolute';
+    target2.style.position = 'absolute';
     document.body.appendChild(target1);
     document.body.appendChild(target2);
 
@@ -431,6 +433,7 @@ suite('effect', function() {
 suite('effect-convertEffectInput', function() {
   setup(function() {
     this.target = document.createElement('div');
+    this.target.style.position = 'absolute';
     document.documentElement.appendChild(this.target);
   });
   teardown(function() {
@@ -479,6 +482,7 @@ suite('effect-convertEffectInput', function() {
 
   test('Convert effect input and apply effect at fraction null.', function() {
     var effectFunction;
+    var underlying = getComputedStyle(this.target).left;
     assert.doesNotThrow(function() {
       effectFunction = webAnimationsMinifill.convertEffectInput([
         {left: '0px'},
@@ -489,6 +493,6 @@ suite('effect-convertEffectInput', function() {
     effectFunction(this.target, 1);
     assert.equal(getComputedStyle(this.target).left, '100px');
     effectFunction(this.target, null);
-    assert.equal(getComputedStyle(this.target).left, 'auto');
+    assert.equal(getComputedStyle(this.target).left, underlying);
   });
 });

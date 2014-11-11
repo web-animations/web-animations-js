@@ -255,7 +255,7 @@ suite('matrix interpolation', function() {
     player.currentTime = 500;
     player.pause();
 
-    var styleTransform = getComputedStyle(target).transform;
+    var styleTransform = getComputedStyle(target).transform || getComputedStyle(target).webkitTransform;
     var elements = styleTransform.slice(
         styleTransform.indexOf('(') + 1, styleTransform.lastIndexOf(')')).split(',');
     assert.equal(elements.length, 6);
