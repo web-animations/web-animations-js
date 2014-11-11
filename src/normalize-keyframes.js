@@ -140,6 +140,9 @@
     outlineWidth: borderWidthAliases,
     textShadow: {
       none: '0px 0px 0px transparent'
+    },
+    boxShadow: {
+      none: '0px 0px 0px 0px transparent'
     }
   };
 

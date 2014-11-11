@@ -51,7 +51,12 @@
   }
 
   function mergeShadow(left, right) {
-    if (left.inset != right.inset || !!left.color != !!right.color || left.lengths.length != right.lengths.length) {
+    while (left.lengths.length < Math.max(left.lengths.length, right.lengths.length))
+      left.lengths.push({px: 0});
+    while (right.lengths.length < Math.max(left.lengths.length, right.lengths.length))
+      right.lengths.push({px: 0});
+
+    if (left.inset != right.inset || !!left.color != !!right.color) {
       return;
     }
     var lengthReconstitution = [];
@@ -82,7 +87,22 @@
     }];
   }
 
-  var mergeShadowList = scope.mergeNestedRepeated.bind(null, mergeShadow, ', ');
+  function mergeNestedRepeatedShadow(nestedMerge, separator, left, right) {
+    var leftCopy = [];
+    var rightCopy = [];
+    function defaultShadow(inset) {
+      return {inset: inset, color: [0, 0, 0, 0], lengths: [{px: 0}, {px: 0}, {px: 0}, {px: 0}]};
+    }
+    for (var i = 0; i < left.length || i < right.length; i++) {
+      var l = left[i] || defaultShadow(right[i].inset);
+      var r = right[i] || defaultShadow(left[i].inset);
+      leftCopy.push(l);
+      rightCopy.push(r);
+    }
+    return scope.mergeNestedRepeated(nestedMerge, separator, leftCopy, rightCopy);
+  }
+
+  var mergeShadowList = mergeNestedRepeatedShadow.bind(null, mergeShadow, ', ');
   scope.addPropertiesHandler(parseShadowList, mergeShadowList, ['box-shadow', 'text-shadow']);
 
 })(webAnimationsMinifill);
