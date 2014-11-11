@@ -47,7 +47,7 @@
     return 'rect(' + result + ')';
   }
 
-  var mergeBoxes = scope.mergeWrappedNestedRepeated.bind(null, wrap, mergeComponent, ',');
+  var mergeBoxes = scope.mergeWrappedNestedRepeated.bind(null, wrap, mergeComponent, ', ');
 
   scope.parseBox = parseBox;
   scope.mergeBoxes = mergeBoxes;
