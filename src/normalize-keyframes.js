@@ -134,9 +134,6 @@
       normal: '400',
       bold: '700'
     },
-    lineHeight: {
-      normal: '120%'
-    },
     outlineWidth: borderWidthAliases,
     textShadow: {
       none: '0px 0px 0px transparent'

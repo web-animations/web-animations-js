@@ -129,6 +129,7 @@
     'flex-basis',
     'font-size',
     'height',
+    'line-height',
     'max-height',
     'max-width',
     'outline-width',
