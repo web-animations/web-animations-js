@@ -44,7 +44,7 @@
         for (var i = 0; i < 3; i++)
           x[i] = Math.round(clamp(x[i] / x[3]));
       }
-      x[3] = scope.numberToString(clamp(x[3]));
+      x[3] = scope.numberToString(scope.clamp(0, 1, x[3]));
       return 'rgba(' + x.join(',') + ')';
     }];
   }

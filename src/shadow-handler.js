@@ -51,7 +51,12 @@
   }
 
   function mergeShadow(left, right) {
-    if (left.inset != right.inset || !!left.color != !!right.color || left.lengths.length != right.lengths.length) {
+    while(left.lengths.length < Math.max(left.lengths.length, right.lengths.length))
+      left.lengths.push({px: 0});
+    while(right.lengths.length < Math.max(left.lengths.length, right.lengths.length))
+      right.lengths.push({px: 0});
+
+    if (left.inset != right.inset || !!left.color != !!right.color) {
       return;
     }
     var lengthReconstitution = [];
@@ -82,7 +87,7 @@
     }];
   }
 
-  var mergeShadowList = scope.mergeNestedRepeated.bind(null, mergeShadow, ', ');
+  var mergeShadowList = scope.mergeNestedRepeatedShadow.bind(null, mergeShadow, ', ');
   scope.addPropertiesHandler(parseShadowList, mergeShadowList, ['box-shadow', 'text-shadow']);
 
 })(webAnimationsMinifill);
