@@ -36,18 +36,20 @@ assertInterpolation({
   {at: 1, is: '14px'},
   {at: 1.5, is: '19px'},
 ]);
-assertInterpolation({
-  property: 'font-size',
-  from: 'inherit',
-  to: '20px'
-}, [
-  {at: -2, is: '0px'},  // CSS font-size can't be negative.
-  {at: -0.3, is: '7px'},
-  {at: 0, is: '10px'},
-  {at: 0.3, is: '13px'},
-  {at: 0.6, is: '16px'},
-  {at: 1, is: '20px'},
-  {at: 1.5, is: '25px'},
-]);
+
+// The minifill does not support inherit.
+// assertInterpolation({
+//   property: 'font-size',
+//   from: 'inherit',
+//   to: '20px'
+// }, [
+//   {at: -2, is: '0px'},  // CSS font-size can't be negative.
+//   {at: -0.3, is: '7px'},
+//   {at: 0, is: '10px'},
+//   {at: 0.3, is: '13px'},
+//   {at: 0.6, is: '16px'},
+//   {at: 1, is: '20px'},
+//   {at: 1.5, is: '25px'},
+// ]);
 </script>
 </body>
