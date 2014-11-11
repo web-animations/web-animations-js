@@ -61,10 +61,10 @@
         nesting++;
       } else if (string[n] == ')') {
         nesting--;
-        if (nesting <= 0) {
+        if (nesting == 0)
           n++;
+        if (nesting <= 0)
           break;
-        }
       }
     }
     var parsed = parser(string.substr(0, n));

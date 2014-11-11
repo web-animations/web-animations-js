@@ -108,6 +108,9 @@
     }
   }
 
+  scope.consumePosition = consumePosition;
+  scope.mergeOffsetList = mergeOffsetList;
+
   var mergePositionList = scope.mergeNestedRepeated.bind(null, mergeOffsetList, ', ');
   scope.addPropertiesHandler(parsePositionList, mergePositionList, ['background-position', 'object-position']);
 
