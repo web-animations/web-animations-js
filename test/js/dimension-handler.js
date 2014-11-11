@@ -67,7 +67,6 @@ suite('dimension-handler', function() {
   });
   test('consume fails on invalid input', function() {
     assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('()'));
-    assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('10px)'));
     assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('(10px'));
     assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('(10px)'));
     assert.isUndefined(webAnimationsMinifill.consumeLengthOrPercent('calc(10px,10px)'));
