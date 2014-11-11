@@ -16,11 +16,17 @@
 
   var aliased = {};
 
-  ['webkitTransform', 'msTransform', 'transform'].forEach(function(candidate) {
-    if (candidate in document.documentElement.style) {
-      aliased['transform'] = candidate;
-    }
-  });
+  function alias(name, aliases) {
+    aliases.concat([name]).forEach(function(candidate) {
+      if (candidate in document.documentElement.style) {
+	aliased[name] = candidate;
+      }
+    });
+  }
+  alias('transform', ['webkitTransform', 'msTransform']);
+  alias('transformOrigin', ['webkitTransformOrigin']);
+  alias('perspective', ['webkitPerspective']);
+  alias('perspectiveOrigin', ['webkitPerspectiveOrigin']);
 
   function propertyName(property) {
     return aliased[property] || property;

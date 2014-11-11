@@ -18,6 +18,7 @@
   background-color: black;
 }
 .replica {
+  position: absolute;
   background-color: green;
 }
 </style>
@@ -32,7 +33,7 @@
 <script src="resources/interpolation-test.js"></script>
 <script>
 assertInterpolation({
-  property: 'left',
+  property: 'margin-left',
   from: 'calc(50% - 25px)',
   to: 'calc(100% - 10px)'
 }, [

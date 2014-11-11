@@ -23,6 +23,8 @@ suite('animation-constructor', function() {
 
     var target1 = document.createElement('div');
     var target2 = document.createElement('div');
+    target1.style.position = 'absolute';
+    target2.style.position = 'absolute';
     document.body.appendChild(target1);
     document.body.appendChild(target2);
 

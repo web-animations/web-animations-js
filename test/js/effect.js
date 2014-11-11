@@ -365,6 +365,8 @@ suite('effect', function() {
   test('Apply keyframe easings.', function() {
     var target1 = document.createElement('div');
     var target2 = document.createElement('div');
+    target1.style.position = 'absolute';
+    target2.style.position = 'absolute';
     document.body.appendChild(target1);
     document.body.appendChild(target2);
 
@@ -431,6 +433,7 @@ suite('effect', function() {
 suite('effect-convertEffectInput', function() {
   setup(function() {
     this.target = document.createElement('div');
+    this.target.style.position = 'absolute';
     document.documentElement.appendChild(this.target);
   });
   teardown(function() {

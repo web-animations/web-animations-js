@@ -34,6 +34,7 @@
 
 assertInterpolation({
   property: 'transform',
+  prefixedProperty: ['-webkit-transform'],
   from: 'skewX(10rad)',
   to: 'skewX(20rad)'
 }, [
@@ -46,6 +47,7 @@ assertInterpolation({
 ]);
 assertInterpolation({
   property: 'transform',
+  prefixedProperty: ['-webkit-transform'],
   from: 'skewY(10rad)',
   to: 'skewY(20rad)'
 }, [

@@ -199,14 +199,30 @@
     replica = replicaContainer.querySelector('.target') || replicaContainer;
     replica.classList.add('replica');
     replica.style.setProperty(params.property, expectation);
+    if (params.prefixedProperty) {
+      for (var i = 0; i < params.prefixedProperty.length; i++) {
+	replica.style.setProperty(params.prefixedProperty[i], expectation);
+      }
+    }
 
     target.evaluate = function() {
       var target = this;
       t.step(function() {
-        assert_true(CSS.supports(params.property, expectation));
+        window.CSS && assert_true(CSS.supports(params.property, expectation));
         var value = getComputedStyle(target).getPropertyValue(params.property);
+	var property = params.property;
+	if (params.prefixedProperty) {
+	  var i = 0;
+	  while (i < params.prefixedProperty.length && !value) {
+	    property = params.prefixedProperty[i++];
+	    value = getComputedStyle(target).getPropertyValue(property)
+	  }
+	}
+	if (!value) {
+	  assert_false(params.property + ' not supported by this browser');
+	}
         var originalValue = value;
-        var parsedExpectation = getComputedStyle(replica).getPropertyValue(params.property);
+        var parsedExpectation = getComputedStyle(replica).getPropertyValue(property);
         assert_equals(normalizeValue(originalValue), normalizeValue(parsedExpectation));
         t.done();
       });
