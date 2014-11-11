@@ -19,7 +19,7 @@
   function alias(name, aliases) {
     aliases.concat([name]).forEach(function(candidate) {
       if (candidate in document.documentElement.style) {
-	aliased[name] = candidate;
+        aliased[name] = candidate;
       }
     });
   }
