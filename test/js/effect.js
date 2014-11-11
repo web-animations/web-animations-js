@@ -482,6 +482,7 @@ suite('effect-convertEffectInput', function() {
 
   test('Convert effect input and apply effect at fraction null.', function() {
     var effectFunction;
+    var underlying = getComputedStyle(this.target).left;
     assert.doesNotThrow(function() {
       effectFunction = webAnimationsMinifill.convertEffectInput([
         {left: '0px'},
@@ -492,6 +493,6 @@ suite('effect-convertEffectInput', function() {
     effectFunction(this.target, 1);
     assert.equal(getComputedStyle(this.target).left, '100px');
     effectFunction(this.target, null);
-    assert.equal(getComputedStyle(this.target).left, 'auto');
+    assert.equal(getComputedStyle(this.target).left, underlying);
   });
 });
