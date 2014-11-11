@@ -201,13 +201,11 @@
     replica.style.setProperty(params.property, expectation);
 
     target.evaluate = function() {
-      if (!CSS.supports(params.property, expectation)) {
-        return 'FAIL: [' + params.property + ': ' + expectation + '] is not supported';
-      }
-      var value = getComputedStyle(this).getPropertyValue(params.property);
-      var originalValue = value;
-      var parsedExpectation = getComputedStyle(replica).getPropertyValue(params.property);
       t.step(function() {
+        assert_true(CSS.supports(params.property, expectation));
+        var value = getComputedStyle(this).getPropertyValue(params.property);
+        var originalValue = value;
+        var parsedExpectation = getComputedStyle(replica).getPropertyValue(params.property);
         assert_equals(normalizeValue(originalValue), normalizeValue(parsedExpectation));
         t.done();
       });
