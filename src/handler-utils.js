@@ -33,7 +33,7 @@
     }
   }
 
-  function consumeList(consumer, separator, string) {
+  function consumeRepeated(consumer, separator, string) {
     consumer = consumeTrimmed.bind(null, consumer);
     var list = [];
     while (true) {
@@ -80,6 +80,39 @@
     return c;
   }
 
+  function ignore(value) {
+    return function(input) {
+      var result = value(input);
+      if (result)
+        result[0] = undefined;
+      return result;
+    }
+  }
+
+  function optional(value, defaultValue) {
+    return function(input) {
+      var result = value(input);
+      if (result)
+        return result;
+      return [defaultValue, input];
+    }
+  }
+
+  function consumeList(list, input) {
+    var output = [];
+    for (var i = 0; i < list.length; i++) {
+      var result = scope.consumeTrimmed(list[i], input);
+      if (!result || result[0] == '')
+        return;
+      if (result[0] !== undefined)
+        output.push(result[0]);
+      input = result[1];
+    }
+    if (input == '') {
+      return output;
+    }
+  }
+
   function mergeNestedRepeated(nestedMerge, separator, left, right) {
     var matchingLeft = [];
     var matchingRight = [];
@@ -101,10 +134,42 @@
     }];
   }
 
+  function mergeList(left, right, list) {
+    var lefts = [];
+    var rights = [];
+    var functions = [];
+    var j = 0;
+    for (var i = 0; i < list.length; i++) {
+      if (typeof list[i] == 'function') {
+        var result = list[i](left[j], right[j++]);
+        lefts.push(result[0]);
+        rights.push(result[1]);
+        functions.push(result[2]);
+      } else {
+        (function(pos) {
+          lefts.push(false);
+          rights.push(false);
+          functions.push(function() { return list[pos]; });
+        })(i);
+      }
+    }
+    return [lefts, rights, function(results) {
+      var result = '';
+      for (var i = 0; i < results.length; i++) {
+        result += functions[i](results[i]);
+      }
+      return result;
+    }];
+  }
+
   scope.consumeToken = consumeToken;
   scope.consumeTrimmed = consumeTrimmed;
-  scope.consumeList = consumeList;
+  scope.consumeRepeated = consumeRepeated;
   scope.consumeParenthesised = consumeParenthesised;
+  scope.ignore = ignore;
+  scope.optional = optional;
+  scope.consumeList = consumeList;
   scope.mergeNestedRepeated = mergeNestedRepeated;
+  scope.mergeList = mergeList;
 
 })(webAnimationsMinifill);

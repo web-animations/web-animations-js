@@ -42,6 +42,7 @@ var interpolationTests = [
   'blink/interpolation/orphans-interpolation.html',
   'blink/interpolation/outline-color-interpolation.html',
   'blink/interpolation/outline-offset-interpolation.html',
+  'blink/interpolation/outline-width-interpolation.html',
   'blink/interpolation/padding-interpolation.html',
   'blink/interpolation/perspective-interpolation.html',
   'blink/interpolation/perspective-origin-interpolation.html',
@@ -82,7 +83,6 @@ var interpolationFailures = [
   'blink/interpolation/font-size-interpolation.html',
   'blink/interpolation/line-height-interpolation.html',
   'blink/interpolation/list-style-image-interpolation.html',
-  'blink/interpolation/outline-width-interpolation.html',
   'blink/interpolation/transform-matrix-interpolation.html',
   'blink/interpolation/transform-translate-interpolation.html',
 ];

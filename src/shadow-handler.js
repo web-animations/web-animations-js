@@ -37,14 +37,14 @@
         return result;
       }
     }
-    var result = scope.consumeList(consumePart, /^/, string);
+    var result = scope.consumeRepeated(consumePart, /^/, string);
     if (result && result[0].length) {
       return [shadow, result[1]];
     }
   }
 
   function parseShadowList(string) {
-    var result = scope.consumeList(consumeShadow, /^,/, string);
+    var result = scope.consumeRepeated(consumeShadow, /^,/, string);
     if (result && result[1] == '') {
       return result[0];
     }

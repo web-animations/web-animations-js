@@ -101,8 +101,9 @@
   scope.mergeDimensions = mergeDimensions;
 
   var consumeLength = scope.consumeParenthesised.bind(null, parseLength);
-  var consumeSizePair = scope.consumeList.bind(undefined, consumeLength, /^/);
-  var consumeSizePairList = scope.consumeList.bind(undefined, consumeSizePair, /^,/);
+  var consumeSizePair = scope.consumeRepeated.bind(undefined, consumeLength, /^/);
+  var consumeSizePairList = scope.consumeRepeated.bind(undefined, consumeSizePair, /^,/);
+  scope.consumeSizePairList = consumeSizePairList;
 
   var parseSizePairList = function(input) {
     var result = consumeSizePairList(input);
@@ -111,10 +112,11 @@
     }
   };
 
-  var mergeSizePair = scope.mergeNestedRepeated.bind(undefined, mergeDimensionsNonNegative, ' ');
-  var mergeSizePairList = scope.mergeNestedRepeated.bind(undefined, mergeSizePair, ',');
+  var mergeNonNegativeSizePair = scope.mergeNestedRepeated.bind(undefined, mergeDimensionsNonNegative, ' ');
+  var mergeNonNegativeSizePairList = scope.mergeNestedRepeated.bind(undefined, mergeNonNegativeSizePair, ',');
+  scope.mergeNonNegativeSizePair = mergeNonNegativeSizePair;
 
-  scope.addPropertiesHandler(parseSizePairList, mergeSizePairList, [
+  scope.addPropertiesHandler(parseSizePairList, mergeNonNegativeSizePairList, [
     'background-size'
   ]);
 

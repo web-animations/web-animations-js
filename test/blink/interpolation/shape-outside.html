@@ -79,7 +79,7 @@ assertInterpolation({
   to: 'circle(30% at right 20% bottom 30px)',
 }, [
   {at: 0, is: 'circle(20% at right 10% bottom 20px)'},
-  {at: 0.5, is: 'circle(25% at left 85% bottom 25px)'},
+  {at: 0.5, is: 'circle(25% at 85% calc(-25px + 100%))'},
   {at: 1, is: 'circle(30% at right 20% bottom 30px)'},
 ]);
 </script>

@@ -15,87 +15,67 @@
 (function(scope) {
 
   var consumeLengthOrPercent = scope.consumeParenthesised.bind(null, scope.parseLengthOrPercent);
-  var consumeLengthOrPercentPair = scope.consumeList.bind(undefined, consumeLengthOrPercent, /^/);
+  var consumeLengthOrPercentPair = scope.consumeRepeated.bind(undefined, consumeLengthOrPercent, /^/);
 
-  function ignore(value) {
-    return function(input) {
-      var result = value(input);
-      if (result)
-        result[0] = undefined;
-      return result;
-    }
-  }
-
-  function consumeList(list, input) {
-    var output = [];
-    for (var i = 0; i < list.length; i++) {
-      //console.log(input);
-      var result = scope.consumeTrimmed(list[i], input);
-      //console.log(JSON.stringify(result));
-      if (!result || result[0] == '')
-        return;
-      if (result[0] !== undefined)
-        output.push(result[0]);
-      input = result[1];
-    }
-    if (input == '') {
-      return output;
-    }
-  }
+  var mergeSizePair = scope.mergeNestedRepeated.bind(undefined, scope.mergeDimensions, ' ');
+  var mergeSizePairList = scope.mergeNestedRepeated.bind(undefined, mergeSizePair, ',');
 
   function parseShape(input) {
     var circle = scope.consumeToken(/^circle/, input);
     if (circle && circle[0]) {
-      return ['circle'].concat(consumeList([
-        ignore(scope.consumeToken.bind(undefined, /^\(/)),
+      return ['circle'].concat(scope.consumeList([
+        scope.ignore(scope.consumeToken.bind(undefined, /^\(/)),
         consumeLengthOrPercent,
-        ignore(scope.consumeToken.bind(undefined, /^at/)),
+        scope.ignore(scope.consumeToken.bind(undefined, /^at/)),
         scope.consumePosition,
-        ignore(scope.consumeToken.bind(undefined, /^\)/))
+        scope.ignore(scope.consumeToken.bind(undefined, /^\)/))
       ], circle[1]));
     }
-  }
-
-  function mergeList(left, right, list) {
-    console.log(JSON.stringify(left), JSON.stringify(right), list);
-    var lefts = [];
-    var rights = [];
-    var functions = [];
-    var j = 0;
-    for (var i = 0; i < list.length; i++) {
-      if (typeof list[i] == 'function') {
-        var result = list[i](left[j], right[j++]);
-        lefts.push(result[0]);
-        rights.push(result[1]);
-        functions.push(result[2]);
-      } else {
-        (function(pos) {
-          lefts.push(false);
-          rights.push(false);
-          functions.push(function() { return list[pos]; });
-        })(i);
-      }
+    var ellipse = scope.consumeToken(/^ellipse/, input);
+    if (ellipse && ellipse[0]) {
+      return ['ellipse'].concat(scope.consumeList([
+        scope.ignore(scope.consumeToken.bind(undefined, /^\(/)),
+        consumeLengthOrPercentPair,
+        scope.ignore(scope.consumeToken.bind(undefined, /^at/)),
+        scope.consumePosition,
+        scope.ignore(scope.consumeToken.bind(undefined, /^\)/))
+      ], ellipse[1]));
     }
-    console.log(JSON.stringify(lefts), JSON.stringify(rights), functions);
-    return [lefts, rights, function(results) {
-      var result = '';
-      for (var i = 0; i < results.length; i++) {
-        result += functions[i](results[i]);
-      }
-      console.log(result);
-      return result;
-    }];
+    var polygon = scope.consumeToken(/^polygon/, input);
+    if (polygon && polygon[0]) {
+      return ['polygon'].concat(scope.consumeList([
+        scope.ignore(scope.consumeToken.bind(undefined, /^\(/)),
+        scope.optional(scope.consumeToken.bind(undefined, /^nonzero\s*,|^evenodd\s*,/), 'nonzero,'),
+        scope.consumeSizePairList,
+        scope.ignore(scope.consumeToken.bind(undefined, /^\)/))
+      ], polygon[1]));
+    }
   }
 
   function mergeShapes(left, right) {
     if (left[0] !== right[0])
       return;
     if (left[0] == 'circle') {
-      return mergeList(left.slice(1), right.slice(1), [
+      return scope.mergeList(left.slice(1), right.slice(1), [
         'circle(',
         scope.mergeDimensions,
         ' at ',
         scope.mergeOffsetList,
+        ')']);
+    }
+    if (left[0] == 'ellipse') {
+      return scope.mergeList(left.slice(1), right.slice(1), [
+        'ellipse(',
+        scope.mergeNonNegativeSizePair,
+        ' at ',
+        scope.mergeOffsetList,
+        ')']);
+    }
+    if (left[0] == 'polygon' && left[1] == right[1]) {
+      return scope.mergeList(left.slice(2), right.slice(2), [
+        'polygon(',
+        left[1],
+        mergeSizePairList,
         ')']);
     }
   }
