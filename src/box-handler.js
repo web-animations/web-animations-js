@@ -13,40 +13,41 @@
 // limitations under the License.
 
 (function(scope, testing) {
+  function consumeLengthPercentOrAuto(string) {
+    return scope.consumeLengthOrPercent(string) || scope.consumeToken(/^auto/, string);
+  }
   function parseBox(string) {
-    var rectangleRegExp = /rect\((.+), (.+), (.+), (.+)\)/;
-    var match = rectangleRegExp.exec(string);
-    if (!match) {
-      return undefined;
+    var result = scope.consumeList([
+      scope.ignore(scope.consumeToken.bind(null, /^rect/)),
+      scope.ignore(scope.consumeToken.bind(null, /^\(/)),
+      scope.consumeRepeated.bind(null, consumeLengthPercentOrAuto, /^,/),
+      scope.ignore(scope.consumeToken.bind(null, /^\)/)),
+    ], string);
+    if (result && result[0].length == 4) {
+      return result[0];
     }
-    var out = [
-      scope.parseLengthOrPercent(match[1]),
-      scope.parseLengthOrPercent(match[2]),
-      scope.parseLengthOrPercent(match[3]),
-      scope.parseLengthOrPercent(match[4])
-    ];
-    if (out[0] && out[1] && out[2] && out[3]) {
-      return out;
-    }
-    return undefined;
   }
 
-  function mergeBoxes(left, right) {
-    var mergedTop = scope.mergeDimensions(left[0], right[0]);
-    var mergedRight = scope.mergeDimensions(left[1], right[1]);
-    var mergedBottom = scope.mergeDimensions(left[2], right[2]);
-    var mergedLeft = scope.mergeDimensions(left[3], right[3]);
-    return [
-      [mergedTop[0], mergedRight[0], mergedBottom[0], mergedLeft[0]],
-      [mergedTop[1], mergedRight[1], mergedBottom[1], mergedLeft[1]],
-      function(rectValue) {
-        return 'rect(' + mergedTop[2](rectValue[0]) + ', ' +
-            mergedRight[2](rectValue[1]) + ', ' +
-            mergedBottom[2](rectValue[2]) + ', ' +
-            mergedLeft[2](rectValue[3]) + ')';
-      }
-    ];
+  function mergeComponent(left, right) {
+    if (left == 'auto' || right == 'auto') {
+      return [true, false, function(t) {
+        var result = t ? left : right;
+        if (result == 'auto') {
+          return 'auto';
+        }
+        // FIXME: There's probably a better way to turn a dimension back into a string.
+        var merged = scope.mergeDimensions(result, result);
+        return merged[2](merged[0]);
+      }];
+    }
+    return scope.mergeDimensions(left, right);
   }
+
+  function wrap(result) {
+    return 'rect(' + result + ')';
+  }
+
+  var mergeBoxes = scope.mergeWrappedNestedRepeated.bind(null, wrap, mergeComponent, ', ');
 
   scope.parseBox = parseBox;
   scope.mergeBoxes = mergeBoxes;

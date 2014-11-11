@@ -113,7 +113,7 @@
     }
   }
 
-  function mergeNestedRepeated(nestedMerge, separator, left, right) {
+  function mergeWrappedNestedRepeated(wrap, nestedMerge, separator, left, right) {
     var matchingLeft = [];
     var matchingRight = [];
     var reconsititution = [];
@@ -128,9 +128,10 @@
       reconsititution.push(thing[2]);
     }
     return [matchingLeft, matchingRight, function(positions) {
-      return positions.map(function(position, i) {
+      var result = positions.map(function(position, i) {
         return reconsititution[i](position);
       }).join(separator);
+      return wrap ? wrap(result) : result;
     }];
   }
 
@@ -169,7 +170,8 @@
   scope.ignore = ignore;
   scope.optional = optional;
   scope.consumeList = consumeList;
-  scope.mergeNestedRepeated = mergeNestedRepeated;
+  scope.mergeNestedRepeated = mergeWrappedNestedRepeated.bind(null, null);
+  scope.mergeWrappedNestedRepeated = mergeWrappedNestedRepeated;
   scope.mergeList = mergeList;
 
 })(webAnimationsMinifill);

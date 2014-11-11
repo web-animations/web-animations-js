@@ -17,7 +17,6 @@ suite('box-handler', function() {
     assert.isUndefined(webAnimationsMinifill.parseBox('rect(0px, 0px, 0px, 0px, 0px)'));
     assert.isUndefined(webAnimationsMinifill.parseBox('rect()'));
     assert.isUndefined(webAnimationsMinifill.parseBox('rect(calc(10px + 5), 0px, 0px, 0px)'));
-    assert.isUndefined(webAnimationsMinifill.parseBox('rect (0px, 0px, 0px, 0px)'));
     assert.isUndefined(webAnimationsMinifill.parseBox('Rect(0px, 0px, 0px, 0px)'));
   });
   test('interpolate lengths, percents and calcs in rectangles', function() {
