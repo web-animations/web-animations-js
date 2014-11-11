@@ -171,7 +171,7 @@
   scope.optional = optional;
   scope.consumeList = consumeList;
   scope.mergeNestedRepeated = mergeWrappedNestedRepeated.bind(null, null);
-  scope.mergeWrappedNestedRepeated = mergeWrappedNestedRepeated.bind(null);
+  scope.mergeWrappedNestedRepeated = mergeWrappedNestedRepeated;
   scope.mergeList = mergeList;
 
 })(webAnimationsMinifill);
