@@ -87,7 +87,22 @@
     }];
   }
 
-  var mergeShadowList = scope.mergeNestedRepeatedShadow.bind(null, mergeShadow, ', ');
+  function mergeNestedRepeatedShadow(nestedMerge, separator, left, right) {
+    var leftCopy = [];
+    var rightCopy = [];
+    function defaultShadow(inset) {
+      return {inset: inset, color: [0, 0, 0, 0], lengths: [{px: 0}, {px: 0}, {px: 0}, {px: 0}]};
+    }
+    for (var i = 0; i < left.length || i < right.length; i++) {
+      var l = left[i] || defaultShadow(right[i].inset);
+      var r = right[i] || defaultShadow(left[i].inset);
+      leftCopy.push(l);
+      rightCopy.push(r);
+    }
+    return scope.mergeNestedRepeated(nestedMerge, separator, leftCopy, rightCopy);
+  }
+
+  var mergeShadowList = mergeNestedRepeatedShadow.bind(null, mergeShadow, ', ');
   scope.addPropertiesHandler(parseShadowList, mergeShadowList, ['box-shadow', 'text-shadow']);
 
 })(webAnimationsMinifill);
