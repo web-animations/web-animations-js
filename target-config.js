@@ -24,7 +24,8 @@
       'src/box-handler.js',
       'src/transform-handler.js',
       'src/font-weight-handler.js',
-      'src/position-handler.js'];
+      'src/position-handler.js',
+      'src/shape-handler.js'];
 
   var sharedSrc = [
       'src/timing-utilities.js',

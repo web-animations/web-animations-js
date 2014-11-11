@@ -35,7 +35,7 @@
   };
 
   function parseOrigin(slots, string) {
-    var result = scope.consumeList(consumeOffset, /^/, string);
+    var result = scope.consumeRepeated(consumeOffset, /^/, string);
     if (!result || result[1] != '') return;
     var tokens = result[0];
     tokens[0] = tokens[0] || 'center';
@@ -67,7 +67,7 @@
   scope.addPropertiesHandler(parseOrigin.bind(null, 2), mergeOffsetList, ['perspective-origin']);
 
   function consumePosition(string) {
-    var result = scope.consumeList(consumeOffset, /^/, string);
+    var result = scope.consumeRepeated(consumeOffset, /^/, string);
     if (!result) {
       return;
     }
@@ -102,11 +102,14 @@
   }
 
   function parsePositionList(string) {
-    var result = scope.consumeList(consumePosition, /^,/, string);
+    var result = scope.consumeRepeated(consumePosition, /^,/, string);
     if (result && result[1] == '') {
       return result[0];
     }
   }
+
+  scope.consumePosition = consumePosition;
+  scope.mergeOffsetList = mergeOffsetList;
 
   var mergePositionList = scope.mergeNestedRepeated.bind(null, mergeOffsetList, ', ');
   scope.addPropertiesHandler(parsePositionList, mergePositionList, ['background-position', 'object-position']);
