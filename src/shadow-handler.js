@@ -51,9 +51,9 @@
   }
 
   function mergeShadow(left, right) {
-    while(left.lengths.length < Math.max(left.lengths.length, right.lengths.length))
+    while (left.lengths.length < Math.max(left.lengths.length, right.lengths.length))
       left.lengths.push({px: 0});
-    while(right.lengths.length < Math.max(left.lengths.length, right.lengths.length))
+    while (right.lengths.length < Math.max(left.lengths.length, right.lengths.length))
       right.lengths.push({px: 0});
 
     if (left.inset != right.inset || !!left.color != !!right.color) {
