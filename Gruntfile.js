@@ -48,11 +48,12 @@ module.exports = function(grunt) {
     return name;
   }
 
-  function gen(sources, target) {
-    var suffix = target == targetConfig.defaultTarget ? '' : '-' + target
-    var newGens = [generateFromTemplate('templates/web-animations.js', {target: target}, 'web-animations' + suffix + '.js'),
-      generateFromTemplate('templates/web-animations.html', {src: sources}, 'web-animations' + suffix + '.html'),
-      generateFromTemplate('templates/runner.html', {target: target}, 'test/runner' + suffix + '.html')];
+  function genTarget(target) {
+    var config = targetConfig[target];
+    var newGens = [
+      generateFromTemplate('templates/web-animations.js', {target: target}, 'web-animations' + config.suffix + '.dev.js'),
+      generateFromTemplate('templates/web-animations.html', {src: config.src}, 'web-animations' + config.suffix + '.dev.html'),
+      generateFromTemplate('templates/runner.html', {target: target}, 'test/runner' + config.suffix + '.html')];
     return newGens;
   }
 
@@ -101,15 +102,15 @@ module.exports = function(grunt) {
     WEB_ANIMATIONS_TESTING: false
   };
 
-  // build the minifill
+  // build the uglified minifill
   grunt.registerTask('minifill.min',
       [
         concat(targetConfig.scopeSrc.concat(targetConfig.sharedSrc).concat(targetConfig.minifillSrc), 'inter-raw-minifill.js', concatDefines),
         guard('inter-raw-minifill.js', 'inter-web-animations-minifill.js'),
-        compress('inter-web-animations-minifill.js', 'web-animations-minifill.min.js', concatDefines)
+        compress('inter-web-animations-minifill.js', 'web-animations.min.js', concatDefines)
       ]);
 
-  // build the maxifill
+  // build the uglified maxifill
   grunt.registerTask('maxifill.min',
       [
         concat(targetConfig.scopeSrc.concat(targetConfig.sharedSrc), 'inter-maxifill-preamble.js', concatDefines),
@@ -118,11 +119,11 @@ module.exports = function(grunt) {
         concat(targetConfig.maxifillSrc, 'inter-component-maxifill.js', concatDefines),
         concatWithMaps(['inter-maxifill-preamble.js', 'inter-guarded-component-minifill.js', 'inter-component-maxifill.js'],
             'inter-web-animations-maxifill.js'),
-        compress('inter-web-animations-maxifill.js', 'web-animations.min.js', concatDefines)
+        compress('inter-web-animations-maxifill.js', 'web-animations-next.min.js', concatDefines)
       ]);
 
-  grunt.registerTask('minifill', gen(targetConfig.minifill.src, 'minifill'));
-  grunt.registerTask('maxifill', gen(targetConfig.maxifill.src, 'maxifill'));
+  grunt.registerTask('minifill', genTarget('minifill'));
+  grunt.registerTask('maxifill', genTarget('maxifill'));
 
   var testTargets = {'minifill': {}, 'maxifill': {}};
 

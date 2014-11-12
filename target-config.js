@@ -66,23 +66,18 @@
     minifill: {
       src: scopeSrc.concat(sharedSrc).concat(minifillSrc),
       test: minifillTest,
+      suffix: '',
     },
     maxifill: {
       src: scopeSrc.concat(sharedSrc).concat(minifillSrc).concat(maxifillSrc),
       test: maxifillTest,
+      suffix: '-next',
     },
     scopeSrc: scopeSrc,
     sharedSrc: sharedSrc,
     minifillSrc: minifillSrc,
     maxifillSrc: maxifillSrc
   };
-
-  // The default target will be used for files without target suffixes, eg. web-animations.js
-  Object.defineProperty(targetConfig, 'defaultTarget', {
-    configurable: true,
-    enumerable: false,
-    value: 'maxifill',
-  });
 
   if (typeof module != 'undefined')
     module.exports = targetConfig;
