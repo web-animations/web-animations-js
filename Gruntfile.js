@@ -48,11 +48,12 @@ module.exports = function(grunt) {
     return name;
   }
 
-  function gen(sources, target) {
-    var suffix = target == targetConfig.defaultTarget ? '' : '-' + target
-    var newGens = [generateFromTemplate('templates/web-animations.js', {target: target}, 'web-animations' + suffix + '.js'),
-      generateFromTemplate('templates/web-animations.html', {src: sources}, 'web-animations' + suffix + '.html'),
-      generateFromTemplate('templates/runner.html', {target: target}, 'test/runner' + suffix + '.html')];
+  function genTarget(target) {
+    var config = targetConfig[target];
+    var newGens = [
+      generateFromTemplate('templates/web-animations.js', {target: target}, target + '.dev.js'),
+      generateFromTemplate('templates/web-animations.html', {src: config.src}, target + '.dev.html'),
+      generateFromTemplate('templates/runner.html', {target: target}, 'test/runner-' + target + '.html')];
     return newGens;
   }
 
@@ -101,43 +102,33 @@ module.exports = function(grunt) {
     WEB_ANIMATIONS_TESTING: false
   };
 
-  // build the minifill
-  grunt.registerTask('minifill.min',
-      [
-        concat(targetConfig.scopeSrc.concat(targetConfig.sharedSrc).concat(targetConfig.minifillSrc), 'inter-raw-minifill.js', concatDefines),
-        guard('inter-raw-minifill.js', 'inter-web-animations-minifill.js'),
-        compress('inter-web-animations-minifill.js', 'web-animations-minifill.min.js', concatDefines)
-      ]);
+  function buildMinifill(target) {
+    var config = targetConfig[target];
+    return genTarget(target).concat([
+      concat(config.scopeSrc.concat(config.sharedSrc).concat(config.minifillSrc), 'inter-raw-' + target + '.js', concatDefines),
+      guard('inter-raw-' + target + '.js', 'inter-' + target + '.js'),
+      compress('inter-' + target + '.js', target + '.min.js', concatDefines)
+    ]);
+  }
 
-  // build the maxifill
-  grunt.registerTask('maxifill.min',
-      [
-        concat(targetConfig.scopeSrc.concat(targetConfig.sharedSrc), 'inter-maxifill-preamble.js', concatDefines),
-        concat(targetConfig.minifillSrc, 'inter-component-minifill.js', concatDefines),
-        guard('inter-component-minifill.js', 'inter-guarded-component-minifill.js'),
-        concat(targetConfig.maxifillSrc, 'inter-component-maxifill.js', concatDefines),
-        concatWithMaps(['inter-maxifill-preamble.js', 'inter-guarded-component-minifill.js', 'inter-component-maxifill.js'],
-            'inter-web-animations-maxifill.js'),
-        compress('inter-web-animations-maxifill.js', 'web-animations.min.js', concatDefines)
-      ]);
+  function buildMaxifill(target) {
+    var config = targetConfig[target];
+    return genTarget(target).concat([
+      concat(config.scopeSrc.concat(config.sharedSrc), 'inter-' + target + '-preamble.js', concatDefines),
+      concat(config.minifillSrc, 'inter-component-' + target + 'minifill.js', concatDefines),
+      guard('inter-component-' + target + 'minifill.js', 'inter-guarded-' + target + '-minifill.js'),
+      concat(config.maxifillSrc, 'inter-component-' + target + '.js', concatDefines),
+      concatWithMaps(['inter-' + target + '-preamble.js', 'inter-guarded-' + target + '-minifill.js', 'inter-component-' + target + '.js'],
+          'inter-' + target + '.js'),
+      compress('inter-' + target + '.js', target + '.min.js', concatDefines)
+    ]);
+  }
 
-  grunt.registerTask('minifill', gen(targetConfig.minifill.src, 'minifill'));
-  grunt.registerTask('maxifill', gen(targetConfig.maxifill.src, 'maxifill'));
+  grunt.registerTask('web-animations', buildMinifill('web-animations'));
+  grunt.registerTask('web-animations-next', buildMaxifill('web-animations-next'));
+  grunt.registerTask('web-animations-next-lite', buildMaxifill('web-animations-next-lite'));
 
-  grunt.registerTask('minifill.forced',
-      [
-        concat(targetConfig.scopeSrc.concat(targetConfig.sharedSrc).concat(targetConfig.minifillSrc), 'inter-forced-minifill.js', concatDefines),
-        compress('inter-forced-minifill.js', 'web-animations-forced-minifill.min.js', concatDefines)
-      ]);
-
-  grunt.registerTask('maxifill.forced',
-      [
-        concat(targetConfig.scopeSrc.concat(targetConfig.sharedSrc).concat(targetConfig.minifillSrc).concat(targetConfig.maxifillSrc),
-            'inter-forced.js', concatDefines),
-        compress('inter-forced.js', 'web-animations-forced.min.js', concatDefines)
-      ]);
-
-  var testTargets = {'minifill': {}, 'maxifill': {}};
+  var testTargets = {'web-animations': {}, 'web-animations-next': {}};
 
   grunt.initConfig({
     uglify: config.uglify,
@@ -284,5 +275,5 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.task.registerTask('default', ['minifill', 'maxifill', 'minifill.min', 'maxifill.min', 'minifill.forced', 'maxifill.forced', 'gjslint']);
+  grunt.task.registerTask('default', ['web-animations', 'web-animations-next', 'web-animations-next-lite', 'gjslint']);
 };

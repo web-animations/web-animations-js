@@ -27,6 +27,26 @@
       'src/position-handler.js',
       'src/shape-handler.js'];
 
+  var liteMinifillSrc = [
+      'src/animation-node.js',
+      'src/effect.js',
+      'src/property-interpolation.js',
+      'src/animation.js',
+      'src/apply.js',
+      'src/element-animatable.js',
+      'src/interpolation.js',
+      'src/player.js',
+      'src/tick.js',
+      'src/handler-utils.js',
+      'src/shadow-handler.js',
+      'src/number-handler.js',
+      'src/visibility-handler.js',
+      'src/color-handler.js',
+      'src/dimension-handler.js',
+      'src/box-handler.js',
+      'src/transform-handler.js'];
+
+
   var sharedSrc = [
       'src/timing-utilities.js',
       'src/normalize-keyframes.js'];
@@ -63,26 +83,31 @@
 
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {
-    minifill: {
+    'web-animations': {
+      scopeSrc: scopeSrc,
+      sharedSrc: sharedSrc,
+      minifillSrc: minifillSrc,
+      maxifillSrc: [],
       src: scopeSrc.concat(sharedSrc).concat(minifillSrc),
       test: minifillTest,
     },
-    maxifill: {
+    'web-animations-next': {
+      scopeSrc: scopeSrc,
+      sharedSrc: sharedSrc,
+      minifillSrc: minifillSrc,
+      maxifillSrc: maxifillSrc,
       src: scopeSrc.concat(sharedSrc).concat(minifillSrc).concat(maxifillSrc),
       test: maxifillTest,
     },
-    scopeSrc: scopeSrc,
-    sharedSrc: sharedSrc,
-    minifillSrc: minifillSrc,
-    maxifillSrc: maxifillSrc
+    'web-animations-next-lite': {
+      scopeSrc: scopeSrc,
+      sharedSrc: sharedSrc,
+      minifillSrc: liteMinifillSrc,
+      maxifillSrc: maxifillSrc,
+      src: scopeSrc.concat(sharedSrc).concat(liteMinifillSrc).concat(maxifillSrc),
+      test: [],
+    },
   };
-
-  // The default target will be used for files without target suffixes, eg. web-animations.js
-  Object.defineProperty(targetConfig, 'defaultTarget', {
-    configurable: true,
-    enumerable: false,
-    value: 'maxifill',
-  });
 
   if (typeof module != 'undefined')
     module.exports = targetConfig;
