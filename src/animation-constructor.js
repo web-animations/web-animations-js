@@ -30,7 +30,7 @@
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
     this._timing = shared.normalizeTimingInput(timingInput);
-    this.timing = timingInput;
+    this.timing = shared.makeTiming(timingInput);
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
     if (typeof effect == 'function')
