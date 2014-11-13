@@ -13,15 +13,15 @@ suite('timing-tests', function() {
     assert.equal(timing.iterations, 1.0);
 
     var player = document.timeline.play(animation);
-    assert(!player.paused);
+    tick(50);
     assert.equal(player.currentTime, 0);
-    tick(300);
-    assert.equal(player.startTime, 300);  // why does this pass? the anim is running?
-    assert.equal(player.currentTime, 300, 'after 300ms tick, currentTime should be 300ms');  // this fails -- what, what?
+
+    tick(350);
+    assert.equal(player.currentTime, 300);
 
     timing.iterations = 0.5;
     animation.timing.iterations = 0.5;
-    tick(300);
+    tick(850);
     assert.equal(player.currentTime, 500);
   });
 });
