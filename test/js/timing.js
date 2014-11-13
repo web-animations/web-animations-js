@@ -25,7 +25,7 @@ suite('timing-tests', function() {
     assert.equal(player.currentTime, 500);
   });
 
-  test('immediate pause iteration', function() {
+  test('immediate pause and play later', function() {
     var animation = new Animation(document.body, [], { duration: 1000 });
     var player = document.timeline.play(animation);
     player.pause();
@@ -93,6 +93,17 @@ suite('timing-tests', function() {
   });
 
   test('pause and scrub', function() {
+    // note that this functions natively. However, note that AnimationGroup
+    // is not native on M41, so it still fails there.
+    var animation = new Animation(document.body, [], { duration: 1000 });
+    var player = document.timeline.play(animation);
+    player.pause();
+
+    player.currentTime = 500;
+    assert.equal(player.currentTime, 500);
+  });
+
+  test('pause, scrub and play', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
 
