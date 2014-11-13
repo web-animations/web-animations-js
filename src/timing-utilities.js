@@ -17,7 +17,7 @@
   var fills = 'backwards|forwards|both'.split('|');
   var directions = 'reverse|alternate|alternate-reverse'.split('|');
 
-  function defaultTiming(timingInput, forGroup) {
+  function makeTiming(timingInput, forGroup) {
     var timing = {
       delay: 0,
       endDelay: 0,
@@ -51,7 +51,7 @@
   }
 
   function normalizeTimingInput(timingInput, forGroup) {
-    var timing = defaultTiming(timingInput, forGroup);
+    var timing = makeTiming(timingInput, forGroup);
     timing.easing = toTimingFunction(timing.easing);
     return timing;
   }
@@ -211,7 +211,7 @@
     return calculateTransformedTime(currentIteration, timing.duration, iterationTime, timing) / timing.duration;
   }
 
-  shared.defaultTiming = defaultTiming;
+  shared.makeTiming = makeTiming;
   shared.normalizeTimingInput = normalizeTimingInput;
   shared.calculateActiveDuration = calculateActiveDuration;
   shared.calculateTimeFraction = calculateTimeFraction;
