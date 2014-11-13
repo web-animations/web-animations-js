@@ -4,10 +4,7 @@ suite('timing-tests', function() {
   });
 
   test('pause and scrub', function() {
-    // note that this functions natively. However, note that AnimationGroup
-    // is not native on M41, so it still fails there.
-    var animation = new Animation(document.body, [], { duration: 1000 });
-    var player = document.timeline.play(animation);
+    var player = document.body.animate([], { duration: 1000 });
     player.pause();
 
     player.currentTime = 500;
@@ -18,11 +15,10 @@ suite('timing-tests', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
 
-    var animation = new Animation(target, [
+    var player = target.animate([
       { background: 'blue' },
       { background: 'red' }
     ], { duration: 1000 });
-    var player = document.timeline.play(animation);
     tick(100);
     player.pause();
 
