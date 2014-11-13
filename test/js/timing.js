@@ -45,6 +45,53 @@ suite('timing-tests', function() {
     assert.equal(player.startTime, 150);
   });
 
+  test('composing playbackRate', function() {
+    var target = document.createElement('div');
+    target.style.position = 'absolute';
+    document.body.appendChild(target);
+
+    var timing = { duration: 1000, playbackRate: 0.5 };
+    var animation = new Animation(target, [
+      { left: '0px' },
+      { left: '1000px' }
+    ], timing);
+
+    // 0.5 * 2.0 == 1, so offsetLeft==currentTime
+    var group = new AnimationGroup([animation], { playbackRate: 2.0 });
+    var player = document.timeline.play(animation);
+
+    tick(50);
+    assert.equal(player.startTime, 50);
+
+    tick(150);
+    assert.equal(player.currentTime, 100);
+    assert.equal(target.offsetLeft, 100);
+  });
+
+  test('player playbackRate', function() {
+    var target = document.createElement('div');
+    target.style.position = 'absolute';
+    document.body.appendChild(target);
+
+    var timing = { duration: 1000, playbackRate: 0.5 };
+    var animation = new Animation(target, [
+      { left: '0px' },
+      { left: '1000px' }
+    ], timing);
+
+    var player = document.timeline.play(animation);
+
+    // 0.5 * 2.0 == 1, so offsetLeft==currentTime
+    player.playbackRate = 2.0;
+
+    tick(50);
+    assert.equal(player.startTime, 50);
+
+    tick(150);
+    assert.equal(player.currentTime, 100);
+    assert.equal(target.offsetLeft, 100);
+  });
+
   test('pause and scrub', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
