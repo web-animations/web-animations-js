@@ -47,4 +47,20 @@ suite('animation-constructor', function() {
     assert.closeTo(leftAsNumber(target2), 15.25, 1);
   });
 
+  test('Timing is always converted to AnimationTimingInput', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+
+    var keyframes = [{background: 'blue'}, {background: 'red'}];
+
+    var animation = new Animation(target, keyframes, 200);
+    assert.equal(animation.timing.duration, 200);
+
+    animation = new Animation(target, keyframes);
+    assert.isDefined(animation.timing);
+
+    animation = new Animation(target, keyframes, {duration: 200});
+    var group = new AnimationGroup([animation]);
+    assert.equal(group.timing.duration, 'auto');
+  });
 });

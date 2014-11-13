@@ -16,8 +16,8 @@
 
   function constructor(children, timingInput) {
     this.children = children || [];
-    this.timing = timingInput;
     this._timing = shared.normalizeTimingInput(timingInput, true);
+    this.timing = shared.makeTiming(timingInput, true);
 
     if (this._timing.duration === 'auto')
       this._timing.duration = this.activeDuration;
