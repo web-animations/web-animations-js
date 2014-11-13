@@ -128,7 +128,7 @@ module.exports = function(grunt) {
   grunt.registerTask('web-animations-next', buildMaxifill('web-animations-next'));
   grunt.registerTask('web-animations-next-lite', buildMaxifill('web-animations-next-lite'));
 
-  var testTargets = {'minifill': {}, 'maxifill': {}};
+  var testTargets = {'web-animations': {}, 'web-animations-next': {}};
 
   grunt.initConfig({
     uglify: config.uglify,
