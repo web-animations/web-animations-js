@@ -57,10 +57,12 @@ suite('animation-constructor', function() {
     assert.equal(animation.timing.duration, 200);
 
     animation = new Animation(target, steps);
+    console.log(animation.timing);
     assert.isDefined(animation.timing);
 
     animation = new Animation(target, steps, {duration: 200});
     var group = new AnimationGroup([animation]);
+    console.log(group.timing);
     assert.equal(group.timing.duration, 'auto');
   });
 });
