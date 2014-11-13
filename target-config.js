@@ -84,7 +84,6 @@
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {
     'web-animations': {
-      suffix: '',
       scopeSrc: scopeSrc,
       sharedSrc: sharedSrc,
       minifillSrc: minifillSrc,
@@ -93,7 +92,6 @@
       test: minifillTest,
     },
     'web-animations-next': {
-      suffix: '-next',
       scopeSrc: scopeSrc,
       sharedSrc: sharedSrc,
       minifillSrc: minifillSrc,
@@ -102,7 +100,6 @@
       test: maxifillTest,
     },
     'web-animations-next-lite': {
-      suffix: '-next-lite',
       scopeSrc: scopeSrc,
       sharedSrc: sharedSrc,
       minifillSrc: liteMinifillSrc,
