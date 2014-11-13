@@ -51,18 +51,16 @@ suite('animation-constructor', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
 
-    var steps = [{background: 'blue'}, {background: 'red'}];
+    var keyframes = [{background: 'blue'}, {background: 'red'}];
 
-    var animation = new Animation(target, steps, 200);
+    var animation = new Animation(target, keyframes, 200);
     assert.equal(animation.timing.duration, 200);
 
-    animation = new Animation(target, steps);
-    console.log(animation.timing);
+    animation = new Animation(target, keyframes);
     assert.isDefined(animation.timing);
 
-    animation = new Animation(target, steps, {duration: 200});
+    animation = new Animation(target, keyframes, {duration: 200});
     var group = new AnimationGroup([animation]);
-    console.log(group.timing);
     assert.equal(group.timing.duration, 'auto');
   });
 });
