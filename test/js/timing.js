@@ -59,8 +59,8 @@ suite('timing-tests', function() {
 
     player.currentTime = 200;
     // http://www.w3.org/TR/web-animations/#the-current-time-of-a-player
-    // currentTime should now mean 'hold time'?
-    assert.equal(player.currentTime, 500);
+    // currentTime should now mean 'hold time' - this allows scrubbing.
+    assert.equal(player.currentTime, 200);
     player.play();
 
     tick(200);
