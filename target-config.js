@@ -79,8 +79,7 @@
       'test/js/group-constructors.js',
       'test/js/group-player.js',
       'test/js/group-player-finish-event.js',
-      'test/js/timeline.js',
-      'test/js/timing.js');
+      'test/js/timeline.js');
 
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {
