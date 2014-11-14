@@ -73,6 +73,7 @@
       if (!this.paused && this._startTime != null) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
+      this._currentTimePending = false;
       if (this._currentTime == newTime)
         return;
       this._tickCurrentTime(newTime, true);

@@ -71,6 +71,7 @@
       'test/js/player-finish-event.js',
       'test/js/property-interpolation.js',
       'test/js/tick.js',
+      'test/js/timing.js',
       'test/js/transform-handler.js'];
 
   var maxifillTest = minifillTest.concat(
