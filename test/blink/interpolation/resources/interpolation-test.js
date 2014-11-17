@@ -155,7 +155,12 @@
     var targetContainer = document.createElement('div');
     var template = document.querySelector('#target-template');
     if (template) {
-      targetContainer.appendChild(template.content.cloneNode(true));
+      if (template.content)
+        targetContainer.appendChild(template.content.cloneNode(true));
+      else if (template.querySelector('div'))
+        targetContainer.appendChild(template.querySelector('div').cloneNode(true));
+      else
+        targetContainer.appendChild(template.cloneNode(true));
       // Remove whitespace text nodes at start / end.
       while (targetContainer.firstChild.nodeType != Node.ELEMENT_NODE && !/\S/.test(targetContainer.firstChild.nodeValue)) {
         targetContainer.removeChild(targetContainer.firstChild);
@@ -166,7 +171,7 @@
       // If the template contains just one element, use that rather than a wrapper div.
       if (targetContainer.children.length == 1 && targetContainer.childNodes.length == 1) {
         targetContainer = targetContainer.firstChild;
-        targetContainer.remove();
+        targetContainer.parentNode.removeChild(targetContainer);
       }
     }
     var target = targetContainer.querySelector('.target') || targetContainer;
@@ -201,7 +206,7 @@
     replica.style.setProperty(params.property, expectation);
     if (params.prefixedProperty) {
       for (var i = 0; i < params.prefixedProperty.length; i++) {
-	replica.style.setProperty(params.prefixedProperty[i], expectation);
+        replica.style.setProperty(params.prefixedProperty[i], expectation);
       }
     }
 
@@ -210,17 +215,17 @@
       t.step(function() {
         window.CSS && assert_true(CSS.supports(params.property, expectation));
         var value = getComputedStyle(target).getPropertyValue(params.property);
-	var property = params.property;
-	if (params.prefixedProperty) {
-	  var i = 0;
-	  while (i < params.prefixedProperty.length && !value) {
-	    property = params.prefixedProperty[i++];
-	    value = getComputedStyle(target).getPropertyValue(property)
-	  }
-	}
-	if (!value) {
-	  assert_false(params.property + ' not supported by this browser');
-	}
+        var property = params.property;
+        if (params.prefixedProperty) {
+          var i = 0;
+          while (i < params.prefixedProperty.length && !value) {
+            property = params.prefixedProperty[i++];
+            value = getComputedStyle(target).getPropertyValue(property)
+          }
+        }
+        if (!value) {
+          assert_false(params.property + ' not supported by this browser');
+        }
         var originalValue = value;
         var parsedExpectation = getComputedStyle(replica).getPropertyValue(property);
         assert_equals(normalizeValue(originalValue), normalizeValue(parsedExpectation));
