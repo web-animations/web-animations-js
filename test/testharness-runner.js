@@ -48,7 +48,7 @@
       document.body.appendChild(iframe);
     });
     teardown(function() {
-      iframe.remove();
+      iframe.parentNode.removeChild(iframe);
     });
     testHarnessTests.forEach(defineTestharnessTest.bind(null, true));
     testHarnessFailures.forEach(defineTestharnessTest.bind(null, false));
@@ -60,7 +60,7 @@
       document.body.appendChild(iframe);
     });
     teardown(function() {
-      iframe.remove();
+      iframe.parentNode.removeChild(iframe);
     });
     interpolationTests.forEach(defineTestharnessTest.bind(null, true));
     interpolationFailures.forEach(defineTestharnessTest.bind(null, false));
