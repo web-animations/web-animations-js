@@ -63,4 +63,16 @@ suite('animation-constructor', function() {
     var group = new AnimationGroup([animation]);
     assert.equal(group.timing.duration, 'auto');
   });
+
+  test('Handle null target on Animation', function() {
+    var animation = new Animation(null, function(tf) {
+      // noop
+    }, 200);
+
+    var player = document.timeline.play(animation);
+    assert.isNotNull(player);
+    tick(50);
+    tick(150);
+    assert.equal(player.currentTime, 100);
+  });
 });
