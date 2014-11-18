@@ -194,12 +194,12 @@
     var currentDirectionIsForwards = timing.direction == 'normal' || timing.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
     var directedTime = currentDirectionIsForwards ? iterationTime : iterationDuration - iterationTime;
     var timeFraction = directedTime / iterationDuration;
-    if (isNaN(timeFraction))
-      return null;
     return iterationDuration * timing.easing(timeFraction);
   }
 
   function calculateTimeFraction(activeDuration, localTime, timing) {
+    if (isNaN(timing.duration))
+      return null;
     var phase = calculatePhase(activeDuration, localTime, timing);
     var activeTime = calculateActiveTime(activeDuration, timing.fill, localTime, phase, timing.delay);
     if (activeTime === null)
