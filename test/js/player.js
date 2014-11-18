@@ -424,4 +424,14 @@ suite('player', function() {
     assert.equal(p.currentTime, null);
     assert.equal(p.startTime, null);
   });
+  test('Players ignore NaN times', function() {
+    var p = document.body.animate([], 300);
+    p.startTime = 100;
+    tick(110);
+    assert.equal(p.currentTime, 10);
+    p.startTime = NaN;
+    assert.equal(p.startTime, 100);
+    p.currentTime = undefined;
+    assert.equal(p.currentTime, 10);
+  });
 });

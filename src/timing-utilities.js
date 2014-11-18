@@ -29,13 +29,15 @@
       direction: 'normal',
       easing: 'linear',
     };
-    if (typeof timingInput == 'number') {
+    if (typeof timingInput == 'number' && !isNaN(timingInput)) {
       timing.duration = timingInput;
     } else if (timingInput !== undefined) {
       Object.getOwnPropertyNames(timingInput).forEach(function(property) {
         if (timingInput[property] != 'auto') {
-          if (typeof timing[property] == 'number' && typeof timingInput[property] != 'number' && property != 'duration') {
-            return;
+          if (typeof timing[property] == 'number' || property == 'duration') {
+            if (typeof timingInput[property] != 'number' || isNaN(timingInput[property])) {
+              return;
+            }
           }
           if ((property == 'fill') && (fills.indexOf(timingInput[property]) == -1)) {
             return;
