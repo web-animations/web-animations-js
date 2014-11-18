@@ -194,8 +194,6 @@
     var currentDirectionIsForwards = timing.direction == 'normal' || timing.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
     var directedTime = currentDirectionIsForwards ? iterationTime : iterationDuration - iterationTime;
     var timeFraction = directedTime / iterationDuration;
-    if (isNaN(timeFraction))
-      return null;
     return iterationDuration * timing.easing(timeFraction);
   }
 
