@@ -16,7 +16,7 @@
 
   function negateDimension(dimension) {
     var result = {};
-    for (k in dimension) {
+    for (var k in dimension) {
       result[k] = -dimension[k];
     }
     return result;
