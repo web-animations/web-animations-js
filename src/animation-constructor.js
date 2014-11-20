@@ -140,7 +140,7 @@
 
   window.Element.prototype.getAnimationPlayers = function() {
     return document.timeline.getAnimationPlayers().filter(function(player) {
-      return player._player.source !== null && player._player.source.target == this;
+      return player.source !== null && player.source.target == this;
     }.bind(this));
   };
 

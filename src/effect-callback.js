@@ -24,15 +24,13 @@
     } else {
       player = new scope.Player(originalAnimate.apply(this, [effect, timing]));
     }
-    // FIXME: See if we can just use the maxifill player source and remove this all together.
-    player._player.source = {target: this};
+    player.source = new Animation(this, effect, timing);
     window.document.timeline._addPlayer(player);
     return player;
   };
 
   var sequenceNumber = 0;
   function bind(player, target, effect, timing) {
-    var animation = 'fixme';
     var last = undefined;
     timing = shared.normalizeTimingInput(timing);
     var callback = function() {
@@ -45,7 +43,7 @@
       // FIXME: There are actually more conditions under which the effect
       // should be called.
       if (t !== last)
-        effect(t, target, animation);
+        effect(t, target, player.source);
       last = t;
     };
 
