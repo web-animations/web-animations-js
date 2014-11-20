@@ -14,12 +14,22 @@
 
 (function(scope, testing) {
 
-  scope.apply = function(element, property, value) {
-    element.style[scope.propertyName(property)] = value;
-  };
+  var aliased = {};
 
-  scope.clear = function(element, property) {
-    element.style[scope.propertyName(property)] = '';
+  function alias(name, aliases) {
+    aliases.concat([name]).forEach(function(candidate) {
+      if (candidate in document.documentElement.style) {
+        aliased[name] = candidate;
+      }
+    });
+  }
+  alias('transform', ['webkitTransform', 'msTransform']);
+  alias('transformOrigin', ['webkitTransformOrigin']);
+  alias('perspective', ['webkitPerspective']);
+  alias('perspectiveOrigin', ['webkitPerspectiveOrigin']);
+
+  scope.propertyName = function(property) {
+    return aliased[property] || property;
   };
 
 })(webAnimationsMinifill, webAnimationsTesting);
