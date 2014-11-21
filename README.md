@@ -85,7 +85,7 @@ A cut down version of web-animations-next, it removes several lesser used proper
 Caveats
 -------
 
-Some things won’t ever be faithful to the implementation due to browser and CSS API limitations. These include:
+Some things won’t ever be faithful to the native implementation due to browser and CSS API limitations. These include:
 
 ### Inline Style
 
