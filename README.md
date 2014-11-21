@@ -43,19 +43,6 @@ Native Fallback
 When the polyfill runs on a browser that implements Element.animate and AnimationPlayer Playback
 Control it will detect and use the underlying native features.
 
-API and Specification Feedback
-------------------------------
-
-File an issue on GitHub: <https://github.com/w3c/web-animations/issues/new>.
-Alternatively, send an email to <public-fx@w3.org> with subject line “[web-animations]
-… message topic …” ([archives](http://lists.w3.org/Archives/Public/public-fx/)).
-
-Polyfill Issues
----------------
-
-Report any issues with this implementation on GitHub: 
-<https://github.com/web-animations/web-animations-next/issues/new>.
-
 Different Build Targets
 -----------------------
 
@@ -115,6 +102,18 @@ will work in all browsers that implement a conforming version of transform, but
     var animation = new Animation(elem, {"-webkit-transform": "translate(100px, 100px)"}, 2000);
 
 will not work anywhere.
+
+API and Specification Feedback
+------------------------------
+
+File an issue on GitHub: <https://github.com/w3c/web-animations/issues/new>.
+Alternatively, send an email to <public-fx@w3.org> with subject line “[web-animations]
+… message topic …” ([archives](http://lists.w3.org/Archives/Public/public-fx/)).
+
+Polyfill Issues
+---------------
+
+Report any issues with this implementation on GitHub: <https://github.com/web-animations/web-animations-next/issues/new>.
 
 Breaking changes
 ----------------
