@@ -74,6 +74,8 @@ Contains all of the features that the polyfill implements.
 
 Provides a powerful set of features with a small code size.
 
+## Build Target Comparison
+
 |                        | web-animations | web-animations-next | web-animations-next-lite |
 |------------------------|:--------------:|:-------------------:|:------------------------:|
 |Size (gzipped)          | 12.5kb         | 14kb                | 10.5kb                   |
