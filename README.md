@@ -74,7 +74,7 @@ Contains all of the features that the polyfill implements.
 
 Provides a powerful set of features with a small code size.
 
-## Build Target Comparison
+### Build Target Comparison
 
 |                        | web-animations | web-animations-next | web-animations-next-lite |
 |------------------------|:--------------:|:-------------------:|:------------------------:|
