@@ -13,6 +13,11 @@ Web Animations is a new JavaScript API for driving animated content on the web. 
 
 For more details see the [W3C specification](http://w3c.github.io/web-animations/).
 
+What is the polyfill?
+---------------------
+
+The polyfill is a JavaScript implementation of the Web Animations API. It works on modern versions of all major browsers. For more details about browser support see <https://www.polymer-project.org/resources/compatibility.html>.
+
 Getting Started
 ---------------
 
@@ -33,11 +38,6 @@ Here's a simple example of an animation that scales and changes the opacity of a
     </script>
 
 Web Animations supports off-main-thread animations, and also allows procedural generation of animations and fine-grained control of animation playback. See <http://web-animations.github.io> for ideas and inspiration!
-
-What is the polyfill?
----------------------
-
-The polyfill is a JavaScript implementation of the Web Animations API. It works on modern versions of all major browsers. For more details about browser support see <https://www.polymer-project.org/resources/compatibility.html>.
 
 Native Fallback
 ---------------
@@ -63,16 +63,15 @@ Different Build Targets
 
 ### web-animations.min.js
 
-Contains the features that are implemented natively in Chrome. If you’re not sure what features you
-will need, start with this.
+Tracks the Web Animations features that are supported natively in browsers. Today that means Element.animate and Playback Control in Chrome. If you’re not sure what features you will need, start with this.
 
 ### web-animations-next.min.js
 
-Contains all of the features that the polyfill implements.
+Contains all of web-animations.min.js plus features that are still undergoing discussion or have yet to be implemented natively.
 
 ### web-animations-next-lite.min.js
 
-Provides a powerful set of features with a small code size.
+A cut down version of web-animations-next, it removes several lesser used property handlers and some of the larger and less used features such as matrix interpolation/decomposition.
 
 ### Build Target Comparison
 
@@ -119,14 +118,12 @@ will work in all browsers that implement a conforming version of transform, but
 
 will not work anywhere.
 
-
 Breaking changes
 ----------------
 
 When we make a potentially breaking change to the polyfill's API surface (like a rename) we'll continue supporting the old version, deprecated, for three months, and ensure that there are console warnings to indicate that a change is pending. After three months, the old version of the API surface (e.g. the old version of a function name) will be removed. If you see deprecation warnings you can't avoid it by not updating.
 
 We also announce anything that isn't a bug fix on [web-animations-changes@googlegroups.com](https://groups.google.com/forum/#!forum/web-animations-changes).
-
 
 Building
 --------
