@@ -1,8 +1,6 @@
-web-animations-next
-===================
 
 Quick Start
----------------
+-----------
 
 To provide native Chrome Web Animation features (`Element.animate` and Playback Control) in other browsers, use `web-animations.min.js`. To explore all of the proposed Web Animations API, use `web-animations-next.min.js`.
 
@@ -124,15 +122,3 @@ Breaking changes
 When we make a potentially breaking change to the polyfill's API surface (like a rename) we'll continue supporting the old version, deprecated, for three months, and ensure that there are console warnings to indicate that a change is pending. After three months, the old version of the API surface (e.g. the old version of a function name) will be removed. If you see deprecation warnings you can't avoid it by not updating.
 
 We also announce anything that isn't a bug fix on [web-animations-changes@googlegroups.com](https://groups.google.com/forum/#!forum/web-animations-changes).
-
-Building
---------
-
-* Install grunt: `npm install -g grunt-cli`
-* Install dev dependencies: `npm install`
-* Run grunt: `grunt`
-
-Testing
--------
-
-* Open test/runner.html
