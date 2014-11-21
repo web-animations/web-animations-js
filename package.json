@@ -1,8 +1,9 @@
 {
-  "name": "web-animations",
+  "name": "web-animations-js",
+  "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/web-animations/web-animations-next.git"
+    "url": "https://github.com/web-animations/web-animations-js.git"
   },
   "devDependencies": {
     "mocha": "1.21.4",
