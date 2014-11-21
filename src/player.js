@@ -68,6 +68,9 @@
       return this._currentTime;
     },
     set currentTime(newTime) {
+      newTime = +newTime;
+      if (isNaN(newTime))
+        return;
       if (scope.restart())
         this._startTime = null;
       if (!this.paused && this._startTime != null) {
@@ -83,6 +86,9 @@
       return this._startTime;
     },
     set startTime(newTime) {
+      newTime = +newTime;
+      if (isNaN(newTime))
+        return;
       if (this.paused || this._idle)
         return;
       this._startTime = newTime;

@@ -1,6 +1,6 @@
 suite('timing-tests', function() {
   setup(function() {
-    document.timeline._players = [];
+    webAnimationsMinifill.timeline._players = [];
   });
 
   test('pause and scrub', function() {
@@ -31,5 +31,20 @@ suite('timing-tests', function() {
     tick(200);
     assert.equal(player.currentTime, 300);
     assert.equal(player.startTime, -100);
+  });
+
+  test('sanity-check NaN timing', function() {
+    // This has no actual tests, but will infinite loop without fix.
+
+    var player = document.body.animate([], {
+      duration: 2000,
+      easing: 'ease-in'  // fails only with cubic easing, not linear
+    });
+    tick(100);
+    player.currentTime = NaN;
+    tick(200);
+
+    player = document.body.animate([], { duration: NaN, easing: 'ease-out' });
+    tick(300);
   });
 });
