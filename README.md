@@ -81,21 +81,21 @@ interpolation/decomposition.
 |                        | web-animations | web-animations-next | web-animations-next-lite |
 |------------------------|:--------------:|:-------------------:|:------------------------:|
 |Size (gzipped)          | 12.5kb         | 14kb                | 10.5kb                   |
-|<div style='width: 180px'>Element.animate</div>|&#10003;|&#10003;|&#10003;|
-|<div style='width: 180px'>Timing input (easings, duration, fillMode, etc.) for animations</div>|&#10003;|&#10003;|&#10003;|
-|<div style='width: 180px'>Playback control</div>|&#10003;|&#10003;|&#10003;|
-|<div style='width: 180px'>Support for animating lengths, transforms and opacity</div>|&#10003;|&#10003;|&#10003;|
-|<div style='width: 180px'>Support for Animating other CSS properties</div>|&#10003;|&#10003;|&#10007;|
-|<div style='width: 180px'>Matrix fallback for transform animations</div>|&#10003;|&#10003;|&#10007;|
-|<div style='width: 180px'>Animation constructor</div>|&#10007;|&#10003;|&#10003;|
-|<div style='width: 180px'>Simple Groups</div>|&#10007;|&#10003;|&#10003;|
-|<div style='width: 180px'>Custom Effects</div>|&#10007;|&#10003;|&#10003;|
-|<div style='width: 180px'>Timing input (easings, duration, fillMode, etc.) for groups</div>|&#10007;|&#10007;\*|&#10007;|
-|<div style='width: 180px'>Additive animation</div>|&#10007;|&#10007;\*|&#10007;|
-|<div style='width: 180px'>Motion path</div>|&#10007;\*|&#10007;\*|&#10007;|
-|<div style='width: 180px'>Modifiable animation timing</div>|&#10007;|&#10007;\*|&#10007;\*|
-|<div style='width: 180px'>Modifiable group timing</div>|&#10007;|&#10007;\*|&#10007;\*|
-|<div style='width: 180px'>Usable inline style\*\*</div>|&#10003;|&#10003;|&#10007;|
+|Element.animate         | ✔             | ✔                  | ✔                       |
+|Timing input (easings, duration, fillMode, etc.) for animations| ✔ | ✔ | ✔             | 
+|Playback control        | ✔             | ✔                  | ✔                       |
+|Support for animating lengths, transforms and opacity| ✔ | ✔ | ✔                       |
+|Support for Animating other CSS properties| ✔ | ✔            | 🚫                       |
+|Matrix fallback for transform animations | ✔ | ✔             | 🚫                       |
+|Animation constructor   | 🚫             | ✔                  | ✔                       |
+|Simple Groups           | 🚫             | ✔                  | ✔                       |
+|Custom Effects          | 🚫             | ✔                  | ✔                       |
+|Timing input (easings, duration, fillMode, etc.) for groups</div>| 🚫 | 🚫\* | 🚫         |
+|Additive animation      | 🚫             | 🚫\*                | 🚫                       |
+|Motion path             | 🚫\*           | 🚫\*                | 🚫                       |
+|Modifiable animation timing| 🚫          | 🚫\*                | 🚫\*                     |
+|Modifiable group timing | 🚫             | 🚫\*                | 🚫\*                     |
+|Usable inline style\*\* | ✔             | ✔                  | 🚫                       |
 
 \* support is planned for these features.
 \*\* see inline style caveat below.
