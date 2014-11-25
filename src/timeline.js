@@ -63,11 +63,6 @@
   var timeline = new scope.AnimationTimeline();
   scope.timeline = timeline;
 
-  scope.originalElementAnimate = Element.prototype.animate;
-  Element.prototype.animate = function(effect, timing) {
-    return timeline.play(new scope.Animation(this, effect, timing));
-  };
-
   try {
     Object.defineProperty(window.document, 'timeline', {
       configurable: true,

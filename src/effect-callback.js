@@ -15,13 +15,6 @@
 
   var nullTarget = document.createElement('div');
 
-  scope.newUnderlyingPlayerForCustomEffect = function(animation, timing) {
-    var target = animation.target || nullTarget;
-    var player = scope.originalElementAnimate.apply(target, [[], animation._timing]);
-    bind(player, this, effect, timing);
-    return player;
-  };
-
   var sequenceNumber = 0;
   scope.bindPlayerForCustomEffect = function(player) {
     var target = player.source.target;

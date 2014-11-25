@@ -43,6 +43,11 @@
     return this;
   };
 
+  var originalElementAnimate = Element.prototype.animate;
+  Element.prototype.animate = function(effect, timing) {
+    return scope.timeline.play(new scope.Animation(this, effect, timing));
+  };
+
   var nullTarget = document.createElement('div');
   scope.newUnderlyingPlayerForAnimation = function(animation) {
     var target = animation.target || nullTarget;
@@ -50,7 +55,7 @@
     if (typeof effect == 'function') {
       effect = [];
     }
-    return scope.originalElementAnimate.apply(target, [effect, animation.timing]);
+    return originalElementAnimate.apply(target, [effect, animation.timing]);
   };
 
   scope.bindPlayerForAnimation = function(player) {
