@@ -41,13 +41,14 @@ suite('group-player-finish-event', function() {
   test('fire when reversed player completes', function(done) {
     this.player.onfinish = function(event) {
       assert.equal(event.currentTime, 0);
-      assert.equal(event.timelineTime, 1000);
+      assert.equal(event.timelineTime, 1001);
       done();
     };
     tick(0);
     tick(500);
     this.player.reverse();
-    tick(1000);
+    tick(501);
+    tick(1001);
   });
 
   test('fire after player is cancelled', function(done) {

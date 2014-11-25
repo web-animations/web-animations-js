@@ -1,4 +1,4 @@
-suite('timing-tests', function() {
+suite('timing', function() {
   setup(function() {
     webAnimationsMinifill.timeline._players = [];
   });
@@ -29,8 +29,9 @@ suite('timing-tests', function() {
     player.play();
 
     tick(200);
+    tick(300);
     assert.equal(player.currentTime, 300);
-    assert.equal(player.startTime, -100);
+    assert.equal(player.startTime, 0);
   });
 
   test('sanity-check NaN timing', function() {

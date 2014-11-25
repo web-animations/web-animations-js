@@ -1,6 +1,8 @@
 suite('animation-constructor', function() {
   setup(function() {
-    document.timeline._players = [];
+    document.timeline.getAnimationPlayers().forEach(function(player) {
+      player.cancel();
+    });
   });
 
   test('Playing an Animation makes a Player', function() {

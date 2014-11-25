@@ -25,10 +25,10 @@
     // TODO: Does this need to be sorted?
     // TODO: Do we need to consider needsRetick?
     getAnimationPlayers: function() {
-      this.filterPlayers();
+      this._discardPlayers();
       return this._players.slice();
     },
-    filterPlayers: function() {
+    _discardPlayers: function() {
       this._players = this._players.filter(function(player) {
         return player.playState != 'finished' && player.playState != 'idle';
       });
@@ -37,6 +37,7 @@
       var player = new scope.Player(source);
       this._players.push(player);
       scope.restartMaxifillTick();
+      player.play();
       return player;
     },
   };
@@ -53,7 +54,7 @@
   function maxifillTick(t) {
     var timeline = window.document.timeline;
     timeline.currentTime = t;
-    timeline.filterPlayers();
+    timeline._discardPlayers();
     if (timeline._players.length == 0)
       ticking = false;
     else

@@ -24,6 +24,8 @@
     this._childPlayers = [];
     this._callback = null;
     this._rebuildUnderlyingPlayer();
+    // Players are constructed in the idle state.
+    this._player.cancel();
   };
 
   // TODO: add a source getter/setter
@@ -34,11 +36,7 @@
         this._player = null;
       }
 
-      if (!this.source) {
-        return;
-      }
-
-      if (this.source instanceof window.Animation) {
+      if (!this.source || this.source instanceof window.Animation) {
         this._player = scope.newUnderlyingPlayerForAnimation(this.source);
         scope.bindPlayerForAnimation(this);
       }
@@ -46,6 +44,8 @@
         this._player = scope.newUnderlyingPlayerForGroup(this.source);
         scope.bindPlayerForGroup(this);
       }
+
+      // FIXME: move existing currentTime/startTime/playState to new player
     },
     get paused() {
       return this._player.paused;
@@ -118,11 +118,7 @@
     },
     cancel: function() {
       this._player.cancel();
-      if (this._callback) {
-        this._register();
-        this._callback._player = null;
-      }
-      this.source = null;
+      this._register();
       this._removePlayers();
     },
     reverse: function() {

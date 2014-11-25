@@ -71,8 +71,7 @@
       newTime = +newTime;
       if (isNaN(newTime))
         return;
-      if (scope.restart())
-        this._startTime = null;
+      scope.restart();
       if (!this.paused && this._startTime != null) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
@@ -116,14 +115,11 @@
       this.paused = false;
       if (this.finished || this._idle) {
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
+        this._startTime = null;
         scope.invalidateEffects();
       }
       this._finishedFlag = false;
-      if (!scope.restart()) {
-        this._startTime = this._timeline.currentTime - this._currentTime / this._playbackRate;
-      }
-      else
-        this._startTime = null;
+      scope.restart();
       this._idle = false;
       this._ensureAlive();
     },
@@ -149,6 +145,7 @@
     },
     reverse: function() {
       this._playbackRate *= -1;
+      this._startTime = null;
       this.play();
     },
     addEventListener: function(type, handler) {
