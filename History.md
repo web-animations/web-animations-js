@@ -1,3 +1,9 @@
+### 1.0.1 - *November 26 2014*
+
+  * Players should be constructed in idle state
+  * `play()` and `reverse()` should not force a start times
+  * Add `requestAnimationFrame` ids and `cancelAnimationFrame`
+
 ### 1.0.0 — *November 21 2014*
 
   The web-animations-js hackers are pleased to announce the release of
