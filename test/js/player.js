@@ -440,4 +440,22 @@ suite('player', function() {
     p.currentTime = undefined;
     assert.equal(p.currentTime, 10);
   });
+  test('play() should not set a start time', function() {
+    var p = document.body.animate([], 1000);
+    p.cancel();
+    assert.equal(p.startTime, null);
+    assert.equal(p.playState, 'idle');
+    p.play();
+    assert.equal(p.startTime, null);
+    assert.equal(p.playState, 'pending');
+  });
+  test('reverse() should not set a start time', function() {
+    var p = document.body.animate([], 1000);
+    p.cancel();
+    assert.equal(p.startTime, null);
+    assert.equal(p.playState, 'idle');
+    p.reverse();
+    assert.equal(p.startTime, null);
+    assert.equal(p.playState, 'pending');
+  });
 });
