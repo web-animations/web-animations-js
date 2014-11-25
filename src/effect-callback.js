@@ -41,7 +41,7 @@
     callback._sequenceNumber = sequenceNumber++;
     player._callback = callback;
     register(callback);
-  }
+  };
 
   var callbacks = [];
   var ticking = false;
