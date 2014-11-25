@@ -35,14 +35,14 @@ effect.
     <div class="pulse" style="width:150px;">Hello world!</div>
     <script>
         var elem = document.querySelector('.pulse');
-        var player = document.timeline.play(new Animation(elem, [
+        var player = elem.animate([
             {opacity: 0.5, transform: "scale(0.5)"},
             {opacity: 1.0, transform: "scale(1)"}
         ], {
-            direction: "alternate",
+            direction: 'alternate',
             duration: 500,
             iterations: Infinity
-        }));
+        });
     </script>
 
 Web Animations supports off-main-thread animations, and also allows procedural
