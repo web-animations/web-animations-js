@@ -21,7 +21,6 @@
 
     if (this._timing.duration === 'auto')
       this._timing.duration = this.activeDuration;
-    this._internalPlayer = null;
   }
 
   window.AnimationSequence = function() {
