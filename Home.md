@@ -5,7 +5,24 @@
 
 ## Publishing a release
 
-    git log `git describe --tags --abbrev=0 web-animations-js/master`..web-animations-next/master --pretty=format:"  * %s"
+1.  Determine the version number for the release
+
+    * Increment the first number and reset others to 0 when there are large breaking changes
+    * Increment the second number and reset the third to 0 when there are significant new, but backwards compatible features
+    * Otherwise, increment the third number
+
+2.  Add versioned release notes to History.md, for example:
+
+        ### 1.0.1 — *November 26, 2014*
+
+          * Fixed the GitHub publishing of tags in the jake task
+
+    Use the following to generate a summary of commits, but edit the list to contain only
+    relevant information.
+
+        git log `git describe --tags --abbrev=0 web-animations-js/master`..web-animations-next/master --pretty=format:"  * %s"
+
+3.  Commit the History.md change, and push to web-animations-js
 
 ## Pushing from web-animations-next to web-animations-js
 
