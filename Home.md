@@ -13,9 +13,9 @@
 
 2.  Add versioned release notes to History.md, for example:
 
-        ### 1.0.1 — *November 26, 2014*
+        ### 3.13.37 — *November 1, 2001*
 
-          * Fixed the GitHub publishing of tags in the jake task
+          * Fixed a bug where nothing worked
 
     Use the following to generate a summary of commits, but edit the list to contain only
     relevant information.
