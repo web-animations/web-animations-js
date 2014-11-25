@@ -13,16 +13,40 @@
 // limitations under the License.
 
 (function(shared, scope, testing) {
-  scope.Player = function(player) {
-    this.source = null;
+  scope.Player = function(source) {
+    this.source = source;
+    if (source) {
+      // FIXME: detach existing player.
+      source.player = this;
+    }
     this._isGroup = false;
-    this._player = player;
+    this._player = null;
     this._childPlayers = [];
     this._callback = null;
+    this._rebuildUnderlyingPlayer();
+    // Players are constructed in the idle state.
+    this._player.cancel();
   };
 
   // TODO: add a source getter/setter
   scope.Player.prototype = {
+    _rebuildUnderlyingPlayer: function() {
+      if (this._player) {
+        this._player.cancel();
+        this._player = null;
+      }
+
+      if (!this.source || this.source instanceof window.Animation) {
+        this._player = scope.newUnderlyingPlayerForAnimation(this.source);
+        scope.bindPlayerForAnimation(this);
+      }
+      if (this.source instanceof window.AnimationSequence || this.source instanceof window.AnimationGroup) {
+        this._player = scope.newUnderlyingPlayerForGroup(this.source);
+        scope.bindPlayerForGroup(this);
+      }
+
+      // FIXME: move existing currentTime/startTime/playState to new player
+    },
     get paused() {
       return this._player.paused;
     },
@@ -94,11 +118,7 @@
     },
     cancel: function() {
       this._player.cancel();
-      if (this._callback) {
-        this._register();
-        this._callback._player = null;
-      }
-      this.source = null;
+      this._register();
       this._removePlayers();
     },
     reverse: function() {

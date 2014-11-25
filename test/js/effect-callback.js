@@ -49,4 +49,28 @@ suite('effect-callback', function() {
     tick(501);
     assert.deepEqual(fractions, [0, 0.5, null]);
   });
+
+  test('element.animate is given animation', function() {
+    var callbackAnim;
+    var player = document.body.animate(function(t, target, a) {
+      callbackAnim = a;
+    }, 100);
+    tick(50);
+    tick(150);
+    assert.equal(isTicking(), false);
+    assert(callbackAnim, 'callback should be set');
+    assert.equal(callbackAnim.target, document.body);
+  });
+
+  test('effect callback on animation is given source animation', function() {
+    var callbackAnim;
+    var anim = new Animation(document.body, function(t, target, a) {
+      callbackAnim = a;
+    }, 1000);
+    var player = document.timeline.play(anim);
+    tick(50);
+    tick(550);
+    assert.equal(player.currentTime, 500);
+    assert.equal(callbackAnim, anim);
+  });
 });

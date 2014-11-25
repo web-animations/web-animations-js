@@ -13,26 +13,13 @@
 // limitations under the License.
 (function(shared, scope, testing) {
 
-  var element = document.createElement('div');
-  var originalAnimate = Element.prototype.animate;
-
-  Element.prototype.animate = function(effect, timing) {
-    var player;
-    if (typeof effect == 'function') {
-      player = new scope.Player(originalAnimate.apply(element, [[], timing]));
-      bind(player, this, effect, timing);
-    } else {
-      player = new scope.Player(originalAnimate.apply(this, [effect, timing]));
-    }
-    // FIXME: See if we can just use the maxifill player source and remove this all together.
-    player._player.source = {target: this};
-    window.document.timeline._addPlayer(player);
-    return player;
-  };
+  var nullTarget = document.createElement('div');
 
   var sequenceNumber = 0;
-  function bind(player, target, effect, timing) {
-    var animation = 'fixme';
+  scope.bindPlayerForCustomEffect = function(player) {
+    var target = player.source.target;
+    var effect = player.source.effect;
+    var timing = player.source.timing;
     var last = undefined;
     timing = shared.normalizeTimingInput(timing);
     var callback = function() {
@@ -45,7 +32,7 @@
       // FIXME: There are actually more conditions under which the effect
       // should be called.
       if (t !== last)
-        effect(t, target, animation);
+        effect(t, target, player.source);
       last = t;
     };
 
@@ -54,7 +41,7 @@
     callback._sequenceNumber = sequenceNumber++;
     player._callback = callback;
     register(callback);
-  }
+  };
 
   var callbacks = [];
   var ticking = false;

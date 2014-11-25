@@ -38,10 +38,11 @@ suite('player', function() {
     assert.equal(p.currentTime, null);
     tick(700);
     p.play();
+    tick(701);
     assert.equal(p.currentTime, 1000);
     tick(800);
-    assert.equal(p.currentTime, 1100);
-    assert.equal(p.startTime, -300);
+    assert.equal(p.currentTime, 1099);
+    assert.equal(p.startTime, -299);
   });
   test('pausing works as expected', function() {
     tick(190);
@@ -75,6 +76,7 @@ suite('player', function() {
     assert.equal(p.currentTime, 300);
     assert.equal(p.playbackRate, 1);
     p.reverse();
+    tick(600);
     assert.equal(p.startTime, 900);
     assert.equal(p.currentTime, 300);
     assert.equal(p.playbackRate, -1);
@@ -90,8 +92,8 @@ suite('player', function() {
     p.reverse();
     tick(601);
     tick(700);
-    assert.equal(p.startTime, 1100);
-    assert.equal(p.currentTime, 400);
+    assert.equal(p.startTime, 1101);
+    assert.equal(p.currentTime, 401);
   });
   test('reversing after finishing works as expected', function() {
     tick(90);
@@ -172,7 +174,8 @@ suite('player', function() {
     assert.equal(p.playbackRate, 1);
     setTicking(true);
     p.play();
-    assert.equal(p.startTime, 2600);
+    tick(2700);
+    assert.equal(p.startTime, 2700);
     assert.equal(p.currentTime, 0);
     assert.equal(p.finished, false);
     assert.equal(p.playbackRate, 1);
@@ -183,14 +186,16 @@ suite('player', function() {
     tick(600);
     tick(700);
     p.reverse();
+    tick(701);
     tick(900);
-    assert.equal(p.startTime, 800);
+    assert.equal(p.startTime, 801);
     assert.equal(p.currentTime, 0);
     assert.equal(p.finished, true);
     assert.equal(p.playbackRate, -1);
     setTicking(true);
     p.play();
-    assert.equal(p.startTime, 3900);
+    tick(1000);
+    assert.equal(p.startTime, 4000);
     assert.equal(p.currentTime, 3000);
     assert.equal(p.finished, false);
     assert.equal(p.playbackRate, -1);
@@ -205,10 +210,11 @@ suite('player', function() {
     assert.equal(p.currentTime, 600);
     assert.equal(p.startTime, 300);
     p.reverse();
-    assert.equal(p.startTime, 1500);
+    tick(1000);
+    assert.equal(p.startTime, 1600);
     p.currentTime = 300;
     assert.equal(p.currentTime, 300);
-    assert.equal(p.startTime, 1200);
+    assert.equal(p.startTime, 1300);
   });
   test('seeking while paused works as expected', function() {
     tick(790);
@@ -433,5 +439,23 @@ suite('player', function() {
     assert.equal(p.startTime, 100);
     p.currentTime = undefined;
     assert.equal(p.currentTime, 10);
+  });
+  test('play() should not set a start time', function() {
+    var p = document.body.animate([], 1000);
+    p.cancel();
+    assert.equal(p.startTime, null);
+    assert.equal(p.playState, 'idle');
+    p.play();
+    assert.equal(p.startTime, null);
+    assert.equal(p.playState, 'pending');
+  });
+  test('reverse() should not set a start time', function() {
+    var p = document.body.animate([], 1000);
+    p.cancel();
+    assert.equal(p.startTime, null);
+    assert.equal(p.playState, 'idle');
+    p.reverse();
+    assert.equal(p.startTime, null);
+    assert.equal(p.playState, 'pending');
   });
 });

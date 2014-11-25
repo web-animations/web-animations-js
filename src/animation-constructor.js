@@ -26,7 +26,7 @@
     getFrames: function() { return this._frames; }
   };
 
-  window.Animation = function(target, effect, timingInput) {
+  scope.Animation = function(target, effect, timingInput) {
     this.target = target;
     // TODO: Make modifications to specified update the underlying player
     this._timing = shared.normalizeTimingInput(timingInput);
@@ -38,9 +38,29 @@
     else
       this.effect = new KeyframeEffect(effect);
     this._effect = effect;
-    this._internalPlayer = null;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
+  };
+
+  var originalElementAnimate = Element.prototype.animate;
+  Element.prototype.animate = function(effect, timing) {
+    return scope.timeline.play(new scope.Animation(this, effect, timing));
+  };
+
+  var nullTarget = document.createElement('div');
+  scope.newUnderlyingPlayerForAnimation = function(animation) {
+    var target = animation.target || nullTarget;
+    var effect = animation._effect;
+    if (typeof effect == 'function') {
+      effect = [];
+    }
+    return originalElementAnimate.apply(target, [effect, animation.timing]);
+  };
+
+  scope.bindPlayerForAnimation = function(player) {
+    if (player.source && typeof player.source.effect == 'function') {
+      scope.bindPlayerForCustomEffect(player);
+    }
   };
 
   var pendingGroups = [];
@@ -103,44 +123,10 @@
     }
   };
 
-  var nullTarget = document.createElement('div');
-
-  window.document.timeline.play = function(source) {
-    // TODO: Handle effect callback.
-    if (source instanceof window.Animation) {
-      var target = source.target ? source.target : nullTarget;
-      var player = target.animate(source._effect, source.timing);
-      player.source = source;
-      source.player = player;
-      return player;
-    }
-    // FIXME: Move this code out of this module
-    if (source instanceof window.AnimationSequence || source instanceof window.AnimationGroup) {
-      var ticker = function(tf) {
-        if (!player.source)
-          return;
-        if (tf == null) {
-          player._removePlayers();
-          return;
-        }
-        if (player.startTime === null)
-          return;
-
-        player._updateChildren();
-      };
-
-      var player = nullTarget.animate(ticker, source._timing);
-      player.source = source;
-      player._isGroup = true;
-      source.player = player;
-      scope.awaitStartTime(player);
-      return player;
-    }
-  };
-
+  window.Animation = scope.Animation;
   window.Element.prototype.getAnimationPlayers = function() {
     return document.timeline.getAnimationPlayers().filter(function(player) {
-      return player._player.source !== null && player._player.source.target == this;
+      return player.source !== null && player.source.target == this;
     }.bind(this));
   };
 
