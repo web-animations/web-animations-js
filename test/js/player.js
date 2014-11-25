@@ -38,11 +38,11 @@ suite('player', function() {
     assert.equal(p.currentTime, null);
     tick(700);
     p.play();
-    tick(700);
+    tick(701);
     assert.equal(p.currentTime, 1000);
     tick(800);
-    assert.equal(p.currentTime, 1100);
-    assert.equal(p.startTime, -300);
+    assert.equal(p.currentTime, 1099);
+    assert.equal(p.startTime, -299);
   });
   test('pausing works as expected', function() {
     tick(190);
