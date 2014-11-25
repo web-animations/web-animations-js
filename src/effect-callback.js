@@ -13,24 +13,20 @@
 // limitations under the License.
 (function(shared, scope, testing) {
 
-  var element = document.createElement('div');
-  var originalAnimate = Element.prototype.animate;
+  var nullTarget = document.createElement('div');
 
-  Element.prototype.animate = function(effect, timing) {
-    var player;
-    if (typeof effect == 'function') {
-      player = new scope.Player(originalAnimate.apply(element, [[], timing]));
-      bind(player, this, effect, timing);
-    } else {
-      player = new scope.Player(originalAnimate.apply(this, [effect, timing]));
-    }
-    player.source = new Animation(this, effect, timing);
-    window.document.timeline._addPlayer(player);
+  scope.newUnderlyingPlayerForCustomEffect = function(animation, timing) {
+    var target = animation.target || nullTarget;
+    var player = scope.originalElementAnimate.apply(target, [[], animation._timing]);
+    bind(player, this, effect, timing);
     return player;
   };
 
   var sequenceNumber = 0;
-  function bind(player, target, effect, timing) {
+  scope.bindPlayerForCustomEffect = function(player) {
+    var target = player.source.target;
+    var effect = player.source.effect;
+    var timing = player.source.timing;
     var last = undefined;
     timing = shared.normalizeTimingInput(timing);
     var callback = function() {
