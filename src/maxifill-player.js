@@ -13,16 +13,40 @@
 // limitations under the License.
 
 (function(shared, scope, testing) {
-  scope.Player = function(player) {
-    this.source = null;
+  scope.Player = function(source) {
+    this.source = source;
+    if (source) {
+      // FIXME: detach existing player.
+      source.player = this;
+    }
     this._isGroup = false;
-    this._player = player;
+    this._player = null;
     this._childPlayers = [];
     this._callback = null;
+    this._rebuildUnderlyingPlayer();
   };
 
   // TODO: add a source getter/setter
   scope.Player.prototype = {
+    _rebuildUnderlyingPlayer: function() {
+      if (this._player) {
+        this._player.cancel();
+        this._player = null;
+      }
+
+      if (!this.source) {
+        return;
+      }
+
+      if (this.source instanceof window.Animation) {
+        this._player = scope.newUnderlyingPlayerForAnimation(this.source);
+        scope.bindPlayerForAnimation(this);
+      }
+      if (this.source instanceof window.AnimationSequence || this.source instanceof window.AnimationGroup) {
+        this._player = scope.newUnderlyingPlayerForGroup(this.source);
+        scope.bindPlayerForGroup(this);
+      }
+    },
     get paused() {
       return this._player.paused;
     },
