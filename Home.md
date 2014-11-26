@@ -24,6 +24,10 @@
 
 3.  Commit the `History.md` change, and push to web-animations-js
 
+4.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
+    commit pushed to web-animations-js in step #3. Copy the release notes from `History.md`
+    added in step #2.
+
 ## Pushing from web-animations-next to web-animations-js
 
     git fetch web-animations-next
