@@ -98,6 +98,8 @@
 
   // TODO: Call into this less frequently.
   scope.Player.prototype._updateChildren = function() {
+    console.log(this._player._player.playState);
+    // if (this.paused || !this.source || !this._isGroup)
     if (this.startTime === null || !this.source || !this._isGroup)
       return;
     var offset = this.source._timing.delay;
@@ -105,7 +107,7 @@
       var child = this.source.children[i];
       var childPlayer;
 
-      if (i >= this._childPlayers.length) {
+      if (i >= this._childPlayers.length || child.player != this.source.player) {
         childPlayer = window.document.timeline.play(child);
         child.player = this.source.player;
         this._childPlayers.push(childPlayer);
