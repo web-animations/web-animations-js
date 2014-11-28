@@ -105,16 +105,21 @@
       var child = this.source.children[i];
       var childPlayer;
 
-      if (i >= this._childPlayers.length || child.player != this.source.player) {
+      if (i >= this._childPlayers.length) {
         childPlayer = window.document.timeline.play(child);
-        child.player = this.source.player;
         this._childPlayers.push(childPlayer);
       } else {
         childPlayer = this._childPlayers[i];
       }
+      child.player = this.source.player;
 
       if (childPlayer.startTime != this.startTime + offset) {
-        childPlayer.startTime = this.startTime + offset;
+        if (this.startTime === null) {
+          childPlayer._startTime = null;
+          childPlayer.currentTime = childPlayer._startTime - offset;
+        } else {
+          childPlayer.startTime = this.startTime + offset;
+        }
         childPlayer._updateChildren();
       }
 

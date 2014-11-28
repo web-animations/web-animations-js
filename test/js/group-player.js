@@ -183,7 +183,7 @@ suite('group-player', function() {
   test('playing an animationGroup works as expected', function() {
     tick(90);
     var p = document.timeline.play(simpleAnimationGroup());
-    checkTimes(p, [null, 0], []);
+    checkTimes(p, [null, 0], [[null, 0], [null, 0], [null, 0]]);
     tick(100);
     checkTimes(p, [100, 0], [[100, 0], [100, 0], [100, 0]]);
     tick(300);
