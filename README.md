@@ -147,12 +147,13 @@ Report any issues with this implementation on GitHub:
 Breaking changes
 ----------------
 
-When we make a potentially breaking change to the polyfill's API surface (like
-a rename) we'll continue supporting the old version, deprecated, for three
-months, and ensure that there are console warnings to indicate that a change is
-pending. After three months, the old version of the API surface (e.g. the old
-version of a function name) will be removed. If you see deprecation warnings
-you can't avoid it by not updating.
+When we make a potentially breaking change to the polyfill's API
+surface (like a rename) where possible we will continue supporting the
+old version, deprecated, for three months, and ensure that there are
+console warnings to indicate that a change is pending. After three
+months, the old version of the API surface (e.g. the old version of a
+function name) will be removed. *If you see deprecation warnings you
+can't avoid it by not updating*.
 
 We also announce anything that isn't a bug fix on
 [web-animations-changes@googlegroups.com](https://groups.google.com/forum/#!forum/web-animations-changes).

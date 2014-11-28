@@ -27,6 +27,7 @@
       'src/position-handler.js',
       'src/shape-handler.js',
       'src/property-names.js',
+      'src/deprecation.js',
   ];
 
   var liteMinifillSrc = [
@@ -48,6 +49,7 @@
       'src/box-handler.js',
       'src/transform-handler.js',
       'src/property-names.js',
+      'src/deprecation.js',
   ];
 
 
