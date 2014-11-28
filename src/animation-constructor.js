@@ -98,9 +98,7 @@
 
   // TODO: Call into this less frequently.
   scope.Player.prototype._updateChildren = function() {
-    console.log(this._player._player.playState);
-    // if (this.paused || !this.source || !this._isGroup)
-    if (this.startTime === null || !this.source || !this._isGroup)
+    if (this.paused || !this.source || !this._isGroup)
       return;
     var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
