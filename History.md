@@ -1,3 +1,8 @@
+### 1.0.3 - *December 4 2014*
+
+  * Fix a critical bug on iOS 7 and Safari <= 6. Due to limitations,
+    inline style patching is not supported on these platforms.
+
 ### 1.0.2 - *November 28 2014*
 
   * Deprecated `AnimationTiming.playbackRate`.
