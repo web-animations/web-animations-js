@@ -28,8 +28,12 @@
 
   scope.Animation = function(target, effect, timingInput) {
     this.target = target;
-    // TODO: Make modifications to specified update the underlying player
+
+    // TODO: Store a clone, not the same instance.
+    this._timingInput = timingInput;
     this._timing = shared.normalizeTimingInput(timingInput);
+
+    // TODO: Make modifications to timing update the underlying player
     this.timing = shared.makeTiming(timingInput);
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
@@ -54,7 +58,7 @@
     if (typeof effect == 'function') {
       effect = [];
     }
-    return originalElementAnimate.apply(target, [effect, animation.timing]);
+    return originalElementAnimate.apply(target, [effect, animation._timingInput]);
   };
 
   scope.bindPlayerForAnimation = function(player) {

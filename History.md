@@ -1,3 +1,32 @@
+### 1.0.3 - *December 4 2014*
+
+  * Fix a critical bug on iOS 7 and Safari <= 6. Due to limitations,
+    inline style patching is not supported on these platforms.
+
+### 1.0.2 - *November 28 2014*
+
+  * Deprecated `AnimationTiming.playbackRate`.
+
+    For example, this is no longer supported:
+
+        var player = element.animate(
+            keyframes,
+            {duration: 1000, playbackRate: 2});
+
+    Use `AnimationPlayer.playbackRate` instead:
+
+        var player = element.animate(
+            keyframes,
+            {duration: 1000});
+        player.playbackRate = 2;
+
+    If you have any feedback on this change, please start a discussion
+    on the public-fx mailing list:
+    http://lists.w3.org/Archives/Public/public-fx/
+
+    Or file an issue against the specification on GitHub:
+    https://github.com/w3c/web-animations/issues/new
+
 ### 1.0.1 - *November 26 2014*
 
   * Players should be constructed in idle state
