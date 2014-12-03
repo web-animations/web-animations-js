@@ -16,19 +16,25 @@
 
   var silenced = {};
 
-  shared.deprecated = function(feature, date, advice, plural) {
-    if (feature in silenced) {
-      return;
-    }
+  shared.isDeprecated = function(feature, date, advice, plural) {
     var auxVerb = plural ? 'are' : 'is';
     var today = new Date();
     var expiry = new Date(date);
     expiry.setMonth(expiry.getMonth() + 3); // 3 months grace period
 
     if (today < expiry) {
-      console.warn('Web Animations: ' + feature + ' ' + auxVerb + ' deprecated and will stop working on ' + expiry.toDateString() + '. ' + advice);
+      if (!(feature in silenced)) {
+        console.warn('Web Animations: ' + feature + ' ' + auxVerb + ' deprecated and will stop working on ' + expiry.toDateString() + '. ' + advice);
+      }
       silenced[feature] = true;
+      return false;
     } else {
+      return true;
+    }
+  };
+
+  shared.deprecated = function(feature, date, advice, plural) {
+    if (shared.isDeprecated(feature, date, advice, plural)) {
       throw new Error(feature + ' ' + auxVerb + ' no longer supported. ' + advice);
     }
   };
