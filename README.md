@@ -115,6 +115,8 @@ JavaScript can still work in the presence of animations. However, to keep the
 size of web-animations-next-lite as small as possible, the style emulation
 module is not included. When using this version of the polyfill, JavaScript
 inline style modification will be overwritten by animations.
+Due to browser constraints inline style modification is not supported on iOS 7
+or Safari 6 (or earlier versions).
 
 ### Prefix handling
 
