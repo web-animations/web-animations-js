@@ -27,7 +27,6 @@
       'src/position-handler.js',
       'src/shape-handler.js',
       'src/property-names.js',
-      'src/deprecation.js',
   ];
 
   var liteMinifillSrc = [
@@ -49,13 +48,14 @@
       'src/box-handler.js',
       'src/transform-handler.js',
       'src/property-names.js',
-      'src/deprecation.js',
   ];
 
 
   var sharedSrc = [
       'src/timing-utilities.js',
-      'src/normalize-keyframes.js'];
+      'src/normalize-keyframes.js',
+      'src/deprecation.js',
+  ];
 
   var maxifillSrc = [
       'src/timeline.js',
