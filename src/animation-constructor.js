@@ -116,7 +116,7 @@
       if (childPlayer.startTime != this.startTime + offset) {
         if (this.startTime === null) {
           childPlayer._startTime = null;
-          childPlayer.currentTime = childPlayer._startTime - offset;
+          childPlayer.currentTime = -offset;
         } else {
           childPlayer.startTime = this.startTime + offset;
         }

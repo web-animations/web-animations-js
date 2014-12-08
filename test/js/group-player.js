@@ -547,6 +547,15 @@ suite('group-player', function() {
     checkTimes(player, [101, 599], [[101, 500], [601, 99]], 't = 700');
   });
 
+  test('pausing before ticking works as expected with a simple AnimationSequence', function() {
+    var player = document.timeline.play(this.seqSimple_source);
+    checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 0');
+    player.pause();
+    checkTimes(player, [null, null], [[null, null], [null, null]], 't = 0');
+    tick(10);
+    checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
+  });
+
   test('pausing works as expected with an AnimationSequence inside an AnimationSequence', function() {
     var player = document.timeline.play(this.seqWithSeq_source);
     tick(0);
