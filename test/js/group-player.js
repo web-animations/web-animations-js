@@ -550,10 +550,22 @@ suite('group-player', function() {
   test('pausing before ticking works as expected with a simple AnimationSequence', function() {
     var player = document.timeline.play(this.seqSimple_source);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 0');
+
     player.pause();
     checkTimes(player, [null, null], [[null, null], [null, null]], 't = 0');
+
     tick(10);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
+
+    player.currentTime = 250;
+    checkTimes(player, [null, 250], [[null, 250], [null, -250]], 't = 10');
+
+    player.currentTime = 500;
+    checkTimes(player, [null, 500], [[null, 500], [null, 0]], 't = 10');
+
+    // FIXME: Expectation should be [null, 1000], [[null, 500], [null, 500]]
+    player.currentTime = 1000;
+    checkTimes(player, [null, 1000], [[null, 1000], [null, 500]], 't = 10');
   });
 
   test('pausing works as expected with an AnimationSequence inside an AnimationSequence', function() {
