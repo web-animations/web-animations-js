@@ -547,7 +547,7 @@ suite('group-player', function() {
     checkTimes(player, [101, 599], [[101, 500], [601, 99]], 't = 700');
   });
 
-  test('pausing before ticking works as expected with a simple AnimationSequence', function() {
+  test('pausing before tick works as expected with a simple AnimationSequence', function() {
     var player = document.timeline.play(this.seqSimple_source);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 0');
 
@@ -556,6 +556,14 @@ suite('group-player', function() {
 
     tick(10);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
+  });
+
+  test('pausing and seeking before tick works as expected with a simple AnimationSequence', function() {
+    var player = document.timeline.play(this.seqSimple_source);
+    player.pause();
+
+    player.currentTime = 0;
+    checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
 
     player.currentTime = 250;
     checkTimes(player, [null, 250], [[null, 250], [null, -250]], 't = 10');
@@ -563,7 +571,7 @@ suite('group-player', function() {
     player.currentTime = 500;
     checkTimes(player, [null, 500], [[null, 500], [null, 0]], 't = 10');
 
-    // FIXME: Expectation should be [null, 1000], [[null, 500], [null, 500]]
+    // FIXME: Expectation should be [null, 1000], [[null, 500], [null, 500]].
     player.currentTime = 1000;
     checkTimes(player, [null, 1000], [[null, 1000], [null, 500]], 't = 10');
   });
