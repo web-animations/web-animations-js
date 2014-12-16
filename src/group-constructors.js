@@ -75,6 +75,7 @@
     player._player._wrapper = player;
     player._isGroup = true;
     scope.awaitStartTime(player);
+    player._updateChildren();
   };
 
 
