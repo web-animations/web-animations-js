@@ -189,4 +189,4 @@
   if (WEB_ANIMATIONS_TESTING)
     testing.ensureStyleIsPatched = ensureStyleIsPatched;
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);

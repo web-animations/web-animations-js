@@ -74,4 +74,4 @@
     window.document.timeline = timeline;
   } catch (e) { }
 
-})(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);
+})(webAnimationsShared, webAnimationsNext, webAnimationsTesting);

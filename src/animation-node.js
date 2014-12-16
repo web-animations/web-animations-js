@@ -28,4 +28,4 @@
     return animationNode;
   };
 
-})(webAnimationsShared, webAnimationsMinifill);
+})(webAnimationsShared, webAnimations1);

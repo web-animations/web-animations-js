@@ -62,4 +62,4 @@
     testing.minifillAnimation = scope.Animation;
   }
 
-})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);
+})(webAnimationsShared, webAnimations1, webAnimationsTesting);

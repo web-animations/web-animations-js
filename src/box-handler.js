@@ -54,4 +54,4 @@
 
   scope.addPropertiesHandler(parseBox, mergeBoxes, ['clip']);
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);

@@ -105,4 +105,4 @@
   var mergeShadowList = mergeNestedRepeatedShadow.bind(null, mergeShadow, ', ');
   scope.addPropertiesHandler(parseShadowList, mergeShadowList, ['box-shadow', 'text-shadow']);
 
-})(webAnimationsMinifill);
+})(webAnimations1);

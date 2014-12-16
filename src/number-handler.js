@@ -69,4 +69,4 @@
   scope.mergeNumbers = mergeNumbers;
   scope.numberToString = numberToString;
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);

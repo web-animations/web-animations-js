@@ -145,4 +145,4 @@
   var timeline = new InternalTimeline();
   scope.timeline = timeline;
 
-})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);
+})(webAnimationsShared, webAnimations1, webAnimationsTesting);

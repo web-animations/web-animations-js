@@ -141,4 +141,4 @@
 
   scope.groupChildDuration = groupChildDuration;
 
-}(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting));
+}(webAnimationsShared, webAnimationsNext, webAnimationsTesting));
