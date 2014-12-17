@@ -1,7 +1,7 @@
 suite('timeline-tests', function() {
   setup(function() {
     document.timeline._players = [];
-    webAnimationsMinifill.timeline._players = [];
+    webAnimations1.timeline._players = [];
   });
 
   test('no current players', function() {

@@ -39,4 +39,4 @@
 
   scope.addPropertiesHandler(parse, merge, ['font-weight']);
 
-})(webAnimationsMinifill);
+})(webAnimations1);

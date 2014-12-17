@@ -164,4 +164,4 @@
     'word-spacing',
   ]);
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);

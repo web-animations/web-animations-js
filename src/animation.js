@@ -59,7 +59,7 @@
   };
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.minifillAnimation = scope.Animation;
+    testing.webAnimations1Animation = scope.Animation;
   }
 
-})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);
+})(webAnimationsShared, webAnimations1, webAnimationsTesting);

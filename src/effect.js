@@ -107,4 +107,4 @@
     testing.makeInterpolations = makeInterpolations;
   }
 
-})(webAnimationsShared, webAnimationsMinifill, webAnimationsTesting);
+})(webAnimationsShared, webAnimations1, webAnimationsTesting);

@@ -16,19 +16,19 @@ suite('number-handler', function() {
       '-12.34': -12.34,
     };
     for (var string in tests) {
-      assert.equal(webAnimationsMinifill.parseNumber(string), tests[string], 'Parsing "' + string + '"');
+      assert.equal(webAnimations1.parseNumber(string), tests[string], 'Parsing "' + string + '"');
     }
   });
   test('invalid numbers fail to parse', function() {
-    assert.isUndefined(webAnimationsMinifill.parseNumber(''));
-    assert.isUndefined(webAnimationsMinifill.parseNumber('nine'));
-    assert.isUndefined(webAnimationsMinifill.parseNumber('1 2'));
-    assert.isUndefined(webAnimationsMinifill.parseNumber('+-0'));
-    assert.isUndefined(webAnimationsMinifill.parseNumber('50px'));
-    assert.isUndefined(webAnimationsMinifill.parseNumber('1.2.3'));
+    assert.isUndefined(webAnimations1.parseNumber(''));
+    assert.isUndefined(webAnimations1.parseNumber('nine'));
+    assert.isUndefined(webAnimations1.parseNumber('1 2'));
+    assert.isUndefined(webAnimations1.parseNumber('+-0'));
+    assert.isUndefined(webAnimations1.parseNumber('50px'));
+    assert.isUndefined(webAnimations1.parseNumber('1.2.3'));
   });
   test('opacity clamping', function() {
-    var interpolation = webAnimationsMinifill.propertyInterpolation('opacity', '0', '1');
+    var interpolation = webAnimations1.propertyInterpolation('opacity', '0', '1');
     assert.equal(interpolation(-1), '0');
     assert.equal(interpolation(2), '1');
   });

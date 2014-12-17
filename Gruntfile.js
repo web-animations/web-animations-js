@@ -102,31 +102,31 @@ module.exports = function(grunt) {
     WEB_ANIMATIONS_TESTING: false
   };
 
-  function buildMinifill(target) {
+  function buildWebAnimations1(target) {
     var config = targetConfig[target];
     return genTarget(target).concat([
-      concat(config.scopeSrc.concat(config.sharedSrc).concat(config.minifillSrc), 'inter-raw-' + target + '.js', concatDefines),
+      concat(config.scopeSrc.concat(config.sharedSrc).concat(config.webAnimations1Src), 'inter-raw-' + target + '.js', concatDefines),
       guard('inter-raw-' + target + '.js', 'inter-' + target + '.js'),
       compress('inter-' + target + '.js', target + '.min.js', concatDefines)
     ]);
   }
 
-  function buildMaxifill(target) {
+  function buildWebAnimationsNext(target) {
     var config = targetConfig[target];
     return genTarget(target).concat([
       concat(config.scopeSrc.concat(config.sharedSrc), 'inter-' + target + '-preamble.js', concatDefines),
-      concat(config.minifillSrc, 'inter-component-' + target + 'minifill.js', concatDefines),
-      guard('inter-component-' + target + 'minifill.js', 'inter-guarded-' + target + '-minifill.js'),
-      concat(config.maxifillSrc, 'inter-component-' + target + '.js', concatDefines),
-      concatWithMaps(['inter-' + target + '-preamble.js', 'inter-guarded-' + target + '-minifill.js', 'inter-component-' + target + '.js'],
+      concat(config.webAnimations1Src, 'inter-component-' + target + 'web-animations-1.js', concatDefines),
+      guard('inter-component-' + target + 'web-animations-1.js', 'inter-guarded-' + target + '-web-animations-1.js'),
+      concat(config.webAnimationsNextSrc, 'inter-component-' + target + '.js', concatDefines),
+      concatWithMaps(['inter-' + target + '-preamble.js', 'inter-guarded-' + target + '-web-animations-1.js', 'inter-component-' + target + '.js'],
           'inter-' + target + '.js'),
       compress('inter-' + target + '.js', target + '.min.js', concatDefines)
     ]);
   }
 
-  grunt.registerTask('web-animations', buildMinifill('web-animations'));
-  grunt.registerTask('web-animations-next', buildMaxifill('web-animations-next'));
-  grunt.registerTask('web-animations-next-lite', buildMaxifill('web-animations-next-lite'));
+  grunt.registerTask('web-animations', buildWebAnimations1('web-animations'));
+  grunt.registerTask('web-animations-next', buildWebAnimationsNext('web-animations-next'));
+  grunt.registerTask('web-animations-next-lite', buildWebAnimationsNext('web-animations-next-lite'));
 
   var testTargets = {'web-animations': {}, 'web-animations-next': {}};
 

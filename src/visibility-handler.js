@@ -25,5 +25,5 @@
 
   scope.addPropertiesHandler(String, merge, ['visibility']);
 
-})(webAnimationsMinifill);
+})(webAnimations1);
 

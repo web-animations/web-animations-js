@@ -449,4 +449,4 @@
   scope.dot = dot;
   scope.makeMatrixDecomposition = makeMatrixDecomposition;
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);
