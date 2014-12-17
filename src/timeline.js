@@ -21,7 +21,7 @@
   };
 
   scope.AnimationTimeline.prototype = {
-    // FIXME: This needs to return the wrapped players in web-animations-next
+    // FIXME: This needs to return the wrapped players in Web Animations Next
     // TODO: Does this need to be sorted?
     // TODO: Do we need to consider needsRetick?
     getAnimationPlayers: function() {
