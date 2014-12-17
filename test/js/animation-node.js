@@ -93,8 +93,8 @@ suite('animation-node', function() {
   test('Animation Node', function() {
     var timing = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});
     var timing2 = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'ease', direction: 'alternate', delay: 100, fill: 'forwards'});
-    var node = webAnimationsMinifill.AnimationNode(timing);
-    var node2 = webAnimationsMinifill.AnimationNode(timing2);
+    var node = webAnimations1.AnimationNode(timing);
+    var node2 = webAnimations1.AnimationNode(timing2);
     assert.equal(node(0), null);
     assert.equal(node(100), 0.5);
     assert.closeTo(node2(100), 0.8, 0.005);

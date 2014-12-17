@@ -1,7 +1,7 @@
 suite('group-player', function() {
   setup(function() {
     document.timeline._players = [];
-    webAnimationsMinifill.timeline._players = [];
+    webAnimations1.timeline._players = [];
     this.elements = [];
 
     var animationMargin = function(target) {
