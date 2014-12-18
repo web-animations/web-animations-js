@@ -74,12 +74,13 @@
   };
 
   scope.bindPlayerForGroup = function(player) {
-    console.log('bind');
     player._player._wrapper = player;
     player._isGroup = true;
-    scope.awaitStartTime(player);
     player._constructChildren();
-    // console.log(player);
+    player._setExternalPlayer(player);
+    // FIXME: Do I need to update here?
+    // player._updateChildren();
+    scope.awaitStartTime(player);
   };
 
 

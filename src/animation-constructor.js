@@ -98,11 +98,15 @@
 
   // TODO: Call into this less frequently.
   scope.Player.prototype._updateChildren = function() {
-    if (!this.source || !this._isGroup || this.playState == 'idle')
+    // FIXME: added !this._childPlayers.length so that we don't update children before constructing
+    // them. Should I instead make sure that that never happens?
+    if (!this.source || !this._isGroup || this.playState == 'idle' || !this._childPlayers.length)
       return;
     var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
       var child = this.source.children[i];
+      var childPlayer = this._childPlayers[i];
+
       // var childPlayer = this._childPlayers[i];
 
       // if (i >= this._childPlayers.length) {
@@ -137,20 +141,15 @@
   };
 
   scope.Player.prototype._constructChildren = function() {
-    console.log('construct!');
     if (!this.source || !this._isGroup)
       return;
     var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
-      console.log('i: ' + i);
       var child = this.source.children[i];
-      console.log(child);
       var childPlayer;
 
-      // How are all the children getting assigned the right external player!?
       childPlayer = window.document.timeline.play(child);
       this._childPlayers.push(childPlayer);
-      console.log(this.source.player._player._player._sequenceNumber);
       child.player = this.source.player;
 
       childPlayer.currentTime = this.source.player.currentTime - offset;
@@ -164,6 +163,15 @@
         offset += groupChildDuration(child);
     }
   };
+
+  scope.Player.prototype._setExternalPlayer = function(player) {
+    if (!this.source || !this._isGroup)
+      return;
+    for (var i = 0; i < this.source.children.length; i++) {
+      this.source.children[i].player = player;
+      this._childPlayers[i]._setExternalPlayer(player);
+    }
+  }
 
   window.Animation = scope.Animation;
   window.Element.prototype.getAnimationPlayers = function() {
