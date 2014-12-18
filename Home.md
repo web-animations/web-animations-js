@@ -36,6 +36,7 @@
     git merge web-animations-next/master --no-edit --quiet
     npm install
     grunt
-    git add -f *.min.js* &&
+    git add -f *.min.js*
+    git rm .gitignore
     git commit -m 'Add build artifacts from '`cat .git/refs/remotes/web-animations-next/master`
     git push web-animations-js HEAD:refs/heads/master
