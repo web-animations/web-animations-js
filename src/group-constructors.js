@@ -68,14 +68,18 @@
     };
 
     underlyingPlayer = scope.timeline.play(new scope.Animation(null, ticker, group._timing));
+    // underlyingPlayer._constructChildren();
+
     return underlyingPlayer;
   };
 
   scope.bindPlayerForGroup = function(player) {
+    console.log('bind');
     player._player._wrapper = player;
     player._isGroup = true;
     scope.awaitStartTime(player);
-    player._updateChildren();
+    player._constructChildren();
+    // console.log(player);
   };
 
 

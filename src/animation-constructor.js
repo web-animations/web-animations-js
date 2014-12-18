@@ -103,19 +103,19 @@
     var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
       var child = this.source.children[i];
-      var childPlayer;
+      // var childPlayer = this._childPlayers[i];
 
-      if (i >= this._childPlayers.length) {
-        childPlayer = window.document.timeline.play(child);
-        this._childPlayers.push(childPlayer);
-        childPlayer.playbackRate = this.playbackRate;
-        if (this.paused) {
-          childPlayer.pause();
-        }
-      } else {
-        childPlayer = this._childPlayers[i];
-      }
-      child.player = this.source.player;
+      // if (i >= this._childPlayers.length) {
+      //   childPlayer = window.document.timeline.play(child);
+      //   this._childPlayers.push(childPlayer);
+      //   childPlayer.playbackRate = this.playbackRate;
+      //   if (this.paused) {
+      //     childPlayer.pause();
+      //   }
+      // } else {
+      //   childPlayer = this._childPlayers[i];
+      // }
+      // child.player = this.source.player;
 
       if (childPlayer.startTime != this.startTime + offset) {
         if (this.startTime === null) {
@@ -126,6 +126,35 @@
         }
         childPlayer._updateChildren();
       }
+
+      if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
+        childPlayer.currentTime = -1;
+      }
+
+      if (this.source instanceof window.AnimationSequence)
+        offset += groupChildDuration(child);
+    }
+  };
+
+  scope.Player.prototype._constructChildren = function() {
+    console.log('construct!');
+    if (!this.source || !this._isGroup)
+      return;
+    var offset = this.source._timing.delay;
+    for (var i = 0; i < this.source.children.length; i++) {
+      console.log('i: ' + i);
+      var child = this.source.children[i];
+      console.log(child);
+      var childPlayer;
+
+      // How are all the children getting assigned the right external player!?
+      childPlayer = window.document.timeline.play(child);
+      this._childPlayers.push(childPlayer);
+      console.log(this.source.player._player._player._sequenceNumber);
+      child.player = this.source.player;
+
+      childPlayer.currentTime = this.source.player.currentTime - offset;
+      childPlayer._startTime = null;
 
       if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
         childPlayer.currentTime = -1;
