@@ -8,7 +8,7 @@ suite('property-interpolation', function() {
       var property = tests[i][0];
       var left = tests[i][1];
       var right = tests[i][2];
-      interpolation = webAnimationsMinifill.propertyInterpolation(property, left, right);
+      interpolation = webAnimations1.propertyInterpolation(property, left, right);
       assert.equal(interpolation(-1), left);
       assert.equal(interpolation(0), left);
       assert.equal(interpolation(0.45), left);
@@ -23,8 +23,8 @@ suite('property-interpolation', function() {
     function merge(a, b) {
       return [a, b, function(x) { return a + b; }];
     };
-    webAnimationsMinifill.addPropertiesHandler(Number, merge, ['dummy-property']);
-    assert.equal(webAnimationsMinifill.propertyInterpolation('dummy-property', 1, 2)(0.5), 3);
-    assert.equal(webAnimationsMinifill.propertyInterpolation('dummyProperty', 5, 3)(0.5), 8);
+    webAnimations1.addPropertiesHandler(Number, merge, ['dummy-property']);
+    assert.equal(webAnimations1.propertyInterpolation('dummy-property', 1, 2)(0.5), 3);
+    assert.equal(webAnimations1.propertyInterpolation('dummyProperty', 5, 3)(0.5), 8);
   });
 });

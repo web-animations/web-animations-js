@@ -190,4 +190,4 @@
     testing.Player = scope.Player;
   }
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);

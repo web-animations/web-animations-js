@@ -58,5 +58,5 @@
   }
   scope.propertyInterpolation = propertyInterpolation;
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);
 

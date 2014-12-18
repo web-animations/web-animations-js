@@ -444,7 +444,7 @@ suite('effect-convertEffectInput', function() {
   test('Convert effect input for a simple effect with one property.', function() {
     var effectFunction;
     assert.doesNotThrow(function() {
-      effectFunction = webAnimationsMinifill.convertEffectInput([
+      effectFunction = webAnimations1.convertEffectInput([
         {left: '0px'},
         {left: '200px', offset: 0.3},
         {left: '100px'}
@@ -468,7 +468,7 @@ suite('effect-convertEffectInput', function() {
   test('Convert effect input where one property is animated and the property has two keyframes at offset 1.', function() {
     var effectFunction;
     assert.doesNotThrow(function() {
-      effectFunction = webAnimationsMinifill.convertEffectInput([
+      effectFunction = webAnimations1.convertEffectInput([
         {left: '0px', offset: 0},
         {left: '20px', offset: 1},
         {left: '30px'}
@@ -484,7 +484,7 @@ suite('effect-convertEffectInput', function() {
     var effectFunction;
     var underlying = getComputedStyle(this.target).left;
     assert.doesNotThrow(function() {
-      effectFunction = webAnimationsMinifill.convertEffectInput([
+      effectFunction = webAnimations1.convertEffectInput([
         {left: '0px'},
         {left: '100px'}
       ]);

@@ -59,4 +59,4 @@
     testing.parseColor = parseColor;
   }
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);

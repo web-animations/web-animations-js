@@ -127,4 +127,4 @@
   scope.composeMatrix = composeMatrix;
   scope.quat = quat;
 
-})(webAnimationsMinifill, webAnimationsTesting);
+})(webAnimations1, webAnimationsTesting);

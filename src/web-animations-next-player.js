@@ -159,4 +159,4 @@
     },
   };
 
-})(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);
+})(webAnimationsShared, webAnimationsNext, webAnimationsTesting);

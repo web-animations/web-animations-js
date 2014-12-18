@@ -83,4 +83,4 @@
       register(this._callback);
   };
 
-})(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting);
+})(webAnimationsShared, webAnimationsNext, webAnimationsTesting);

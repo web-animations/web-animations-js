@@ -98,7 +98,7 @@
 
   // TODO: Call into this less frequently.
   scope.Player.prototype._updateChildren = function() {
-    if (this.startTime === null || !this.source || !this._isGroup)
+    if (this.paused || !this.source || !this._isGroup)
       return;
     var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
@@ -107,14 +107,19 @@
 
       if (i >= this._childPlayers.length) {
         childPlayer = window.document.timeline.play(child);
-        child.player = this.source.player;
         this._childPlayers.push(childPlayer);
       } else {
         childPlayer = this._childPlayers[i];
       }
+      child.player = this.source.player;
 
       if (childPlayer.startTime != this.startTime + offset) {
-        childPlayer.startTime = this.startTime + offset;
+        if (this.startTime === null) {
+          childPlayer.currentTime = this.source.player.currentTime - offset;
+          childPlayer._startTime = null;
+        } else {
+          childPlayer.startTime = this.startTime + offset;
+        }
         childPlayer._updateChildren();
       }
 
@@ -136,4 +141,4 @@
 
   scope.groupChildDuration = groupChildDuration;
 
-}(webAnimationsShared, webAnimationsMaxifill, webAnimationsTesting));
+}(webAnimationsShared, webAnimationsNext, webAnimationsTesting));

@@ -1,7 +1,7 @@
 suite('group-player', function() {
   setup(function() {
     document.timeline._players = [];
-    webAnimationsMinifill.timeline._players = [];
+    webAnimations1.timeline._players = [];
     this.elements = [];
 
     var animationMargin = function(target) {
@@ -183,7 +183,7 @@ suite('group-player', function() {
   test('playing an animationGroup works as expected', function() {
     tick(90);
     var p = document.timeline.play(simpleAnimationGroup());
-    checkTimes(p, [null, 0], []);
+    checkTimes(p, [null, 0], [[null, 0], [null, 0], [null, 0]]);
     tick(100);
     checkTimes(p, [100, 0], [[100, 0], [100, 0], [100, 0]]);
     tick(300);
@@ -545,6 +545,35 @@ suite('group-player', function() {
 
     tick(700);
     checkTimes(player, [101, 599], [[101, 500], [601, 99]], 't = 700');
+  });
+
+  test('pausing before tick works as expected with a simple AnimationSequence', function() {
+    var player = document.timeline.play(this.seqSimple_source);
+    checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 0');
+
+    player.pause();
+    checkTimes(player, [null, null], [[null, null], [null, null]], 't = 0');
+
+    tick(10);
+    checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
+  });
+
+  test('pausing and seeking before tick works as expected with a simple AnimationSequence', function() {
+    var player = document.timeline.play(this.seqSimple_source);
+    player.pause();
+
+    player.currentTime = 0;
+    checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
+
+    player.currentTime = 250;
+    checkTimes(player, [null, 250], [[null, 250], [null, -250]], 't = 10');
+
+    player.currentTime = 500;
+    checkTimes(player, [null, 500], [[null, 500], [null, 0]], 't = 10');
+
+    // FIXME: Expectation should be [null, 1000], [[null, 500], [null, 500]].
+    player.currentTime = 1000;
+    checkTimes(player, [null, 1000], [[null, 1000], [null, 500]], 't = 10');
   });
 
   test('pausing works as expected with an AnimationSequence inside an AnimationSequence', function() {
