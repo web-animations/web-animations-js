@@ -14,7 +14,7 @@
 
 (function(scope, testing) {
 
-  var canvas = document.createElement('canvas');
+  var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
   canvas.width = canvas.height = 1;
   var context = canvas.getContext('2d');
 

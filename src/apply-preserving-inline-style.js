@@ -47,8 +47,7 @@
     // Stores the inline style of the element on its behalf while the
     // polyfill uses the element's inline style to simulate web animations.
     // This is needed to fake regular inline style CSSOM access on the element.
-    this._surrogateElement = document.createElement('div');
-    this._surrogateStyle = this._surrogateElement.style;
+    this._surrogateStyle = document.createElementNS('http://www.w3.org/1999/xhtml', 'div').style;
     this._style = element.style;
     this._length = 0;
     this._isAnimatedProperty = {};
