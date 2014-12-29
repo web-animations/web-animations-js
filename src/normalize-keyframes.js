@@ -108,7 +108,7 @@
     ]
   };
 
-  var shorthandExpanderElem = document.createElement('div');
+  var shorthandExpanderElem = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
 
   var borderWidthAliases = {
     thin: '1px',

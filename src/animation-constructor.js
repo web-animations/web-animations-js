@@ -51,7 +51,7 @@
     return scope.timeline.play(new scope.Animation(this, effect, timing));
   };
 
-  var nullTarget = document.createElement('div');
+  var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
   scope.newUnderlyingPlayerForAnimation = function(animation) {
     var target = animation.target || nullTarget;
     var effect = animation._effect;
