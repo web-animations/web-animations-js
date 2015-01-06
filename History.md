@@ -1,3 +1,9 @@
+### 1.0.5 - *January 6 2015*
+
+  * Fix loading the polyfill in an SVG document
+  * Fix a problem where groups didn't take effect in their first frame
+  * Don't rely on performance.now
+
 ### 1.0.4 - *December 8 2014*
 
   * Fix a critical bug where deprecation logic wasn't being loaded
