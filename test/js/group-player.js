@@ -375,6 +375,19 @@ suite('group-player', function() {
       this.target.parent.removeChild(target);
   });
 
+  test('setting the playbackRate on group players', function() {
+    var group = new AnimationGroup([
+      new Animation(null, [], 1234),
+      new Animation(null, [], 1234),
+    ]);
+    var p = document.timeline.play(group);
+    p.playbackRate = 2;
+    assert.equal(p._player.playbackRate, 2, 'Updates the playbackRate of the inner player');
+    p._childPlayers.forEach(function(childPlayer) {
+      assert.equal(childPlayer.playbackRate, 2, 'It also updates the child players');
+    });
+  });
+
   test('delays on groups work correctly', function() {
     //   444
     //  1
