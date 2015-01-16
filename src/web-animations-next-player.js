@@ -91,6 +91,12 @@
     get playbackRate() {
       return this._player.playbackRate;
     },
+    set playbackRate(value) {
+      this._player.playbackRate = value;
+      this._forEachChild(function(childPlayer) {
+        childPlayer.playbackRate = value;
+      });
+    },
     get finished() {
       return this._player.finished;
     },

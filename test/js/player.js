@@ -239,6 +239,15 @@ suite('player', function() {
     assert.equal(p.startTime, null);
     assert.equal(p.currentTime, null);
   });
+  test('setting playbackRate does preserves the current time', function() {
+    tick(900);
+    var p = document.body.animate([], 1000);
+    tick(1100);
+    var oldCurrentTime = p.currentTime;
+    p.playbackRate = 2;
+    assert.equal(p.playbackRate, 2);
+    assert.equal(p.currentTime, oldCurrentTime);
+  });
   test('finishing works as expected', function() {
     tick(1000);
     var p = document.body.animate([], 2000);
