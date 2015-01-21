@@ -14,7 +14,6 @@
   "license": "Apache-2.0",
   "ignore": [
     "node_modules",
-    "src",
     "templates",
     "test",
     ".travis.yml",
