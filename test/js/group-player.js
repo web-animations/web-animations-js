@@ -577,17 +577,14 @@ suite('group-player', function() {
     player.pause();
     checkTimes(player, [null, null], [[null, null], [null, null]], 't = 0');
     assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
-    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
 
     tick(10);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
     assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
-    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
 
     tick(20);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
     assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
-    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
   });
 
   test('pausing and seeking before tick works as expected with a simple AnimationSequence', function() {
