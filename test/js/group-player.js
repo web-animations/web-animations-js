@@ -45,8 +45,9 @@ suite('group-player', function() {
 
     var seqEmpty_source = sequenceEmpty();
 
-    var seqSimple_target = document.createElement('div');
-    var seqSimple_source = sequenceWithEffects(seqSimple_target);
+    this.seqSimple_target = document.createElement('div');
+    this.elements.push(this.seqSimple_target);
+    var seqSimple_source = sequenceWithEffects(this.seqSimple_target);
 
     var seqWithSeq_target = document.createElement('div');
     this.elements.push(seqWithSeq_target);
@@ -546,18 +547,33 @@ suite('group-player', function() {
 
     player.pause();
     checkTimes(player, [null, null], [[null, null], [null, null]], 't = 200');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '40px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
 
     tick(300);
     checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 300');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '40px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
 
     player.play();
     checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 300');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '40px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
 
     tick(301);
     checkTimes(player, [101, 200], [[101, 200], [601, -300]], 't = 301');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '40px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
+
+    tick(601);
+    checkTimes(player, [101, 500], [[101, 500], [601, 0]], 't = 601');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgb(0, 0, 0)');
 
     tick(700);
     checkTimes(player, [101, 599], [[101, 500], [601, 99]], 't = 700');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgb(50, 50, 50)');
   });
 
   test('pausing before tick works as expected with a simple AnimationSequence', function() {
@@ -566,9 +582,18 @@ suite('group-player', function() {
 
     player.pause();
     checkTimes(player, [null, null], [[null, null], [null, null]], 't = 0');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
 
     tick(10);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
+
+    tick(20);
+    checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
+    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(this.seqSimple_target).backgroundColor, 'rgba(0, 0, 0, 0)');
   });
 
   test('pausing and seeking before tick works as expected with a simple AnimationSequence', function() {
