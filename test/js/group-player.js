@@ -45,9 +45,9 @@ suite('group-player', function() {
 
     var seqEmpty_source = sequenceEmpty();
 
-    this.seqSimple_target = document.createElement('div');
-    this.elements.push(this.seqSimple_target);
-    var seqSimple_source = sequenceWithEffects(this.seqSimple_target);
+    var seqSimple_target = document.createElement('div');
+    this.elements.push(seqSimple_target);
+    var seqSimple_source = sequenceWithEffects(seqSimple_target);
 
     var seqWithSeq_target = document.createElement('div');
     this.elements.push(seqWithSeq_target);
@@ -539,6 +539,7 @@ suite('group-player', function() {
 
   test('pausing works as expected with a simple AnimationSequence', function() {
     var player = document.timeline.play(this.seqSimple_source);
+    var target = this.seqSimple_source.children[0].target;
     tick(0);
     checkTimes(player, [0, 0], [[0, 0], [500, -500]], 't = 0');
 
@@ -547,44 +548,45 @@ suite('group-player', function() {
 
     player.pause();
     checkTimes(player, [null, null], [[null, null], [null, null]], 't = 200');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '40px');
+    assert.equal(getComputedStyle(target).marginLeft, '40px');
 
     tick(300);
     checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 300');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '40px');
+    assert.equal(getComputedStyle(target).marginLeft, '40px');
 
     player.play();
     checkTimes(player, [null, 200], [[null, 200], [null, -300]], 't = 300');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '40px');
+    assert.equal(getComputedStyle(target).marginLeft, '40px');
 
     tick(301);
     checkTimes(player, [101, 200], [[101, 200], [601, -300]], 't = 301');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '40px');
+    assert.equal(getComputedStyle(target).marginLeft, '40px');
 
     tick(401);
     checkTimes(player, [101, 300], [[101, 300], [601, -200]], 't = 401');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '60px');
+    assert.equal(getComputedStyle(target).marginLeft, '60px');
 
     tick(700);
     checkTimes(player, [101, 599], [[101, 500], [601, 99]], 't = 700');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
   });
 
   test('pausing before tick works as expected with a simple AnimationSequence', function() {
     var player = document.timeline.play(this.seqSimple_source);
+    var target = this.seqSimple_source.children[0].target;
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 0');
 
     player.pause();
     checkTimes(player, [null, null], [[null, null], [null, null]], 't = 0');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
 
     tick(10);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
 
     tick(20);
     checkTimes(player, [null, 0], [[null, 0], [null, -500]], 't = 10');
-    assert.equal(getComputedStyle(this.seqSimple_target).marginLeft, '0px');
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
   });
 
   test('pausing and seeking before tick works as expected with a simple AnimationSequence', function() {
