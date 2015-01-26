@@ -14,7 +14,7 @@
 
 (function(shared, testing) {
 
-  var fills = 'backwards|forwards|both'.split('|');
+  var fills = 'backwards|forwards|both|none'.split('|');
   var directions = 'reverse|alternate|alternate-reverse'.split('|');
 
   function makeTiming(timingInput, forGroup) {
