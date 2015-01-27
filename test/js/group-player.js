@@ -985,4 +985,20 @@ suite('group-player', function() {
     assert.equal(p._childPlayers[0]._player.playState, 'finished');
     assert.equal(p._childPlayers[1]._player.playState, 'finished');
   });
+
+  test('pausing then seeking out of range then seeking into range works', function() {
+    var target = document.createElement('div');
+    var anim = new Animation(target, [], {duration: 2000, fill: 'both'});
+    var group = new AnimationGroup([anim], {fill: 'none'});
+    var player = document.timeline.play(group);
+
+    player.pause();
+    player.currentTime = 3000;
+    tick(100);
+    player.currentTime = 1000;
+    assert.equal(player._childPlayers.length, 1);
+    assert.equal(player._childPlayers[0]._player.playState, 'paused');
+    assert.equal(player._childPlayers[0]._player.currentTime, 1000);
+
+  });
 });
