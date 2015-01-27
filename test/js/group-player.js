@@ -332,6 +332,17 @@ suite('group-player', function() {
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
   });
 
+  test('cancelling group players before tick', function() {
+    tick(0);
+    var player = document.timeline.play(this.complexSource);
+    player.cancel();
+    assert.equal(player.currentTime, null);
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
+    tick(4);
+    assert.equal(player.currentTime, null);
+    assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
+  });
+
   test('redundant animation node wrapping', function() {
     tick(100);
     var animation = new AnimationSequence([
