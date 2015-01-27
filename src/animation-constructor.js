@@ -98,7 +98,7 @@
 
   // TODO: Call into this less frequently.
   scope.Player.prototype._updateChildren = function() {
-    if (this.paused || !this.source || !this._isGroup)
+    if (this.paused || !this.source || !this._isGroup || this.playState == 'idle')
       return;
     var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
