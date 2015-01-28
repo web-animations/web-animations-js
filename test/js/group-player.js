@@ -1001,4 +1001,24 @@ suite('group-player', function() {
     assert.equal(player._childPlayers[0]._player.currentTime, 1000);
 
   });
+
+  test('reversing then seeking out of range then seeking into range works', function() {
+    var target = document.createElement('div');
+    var anim = new Animation(target, [], {duration: 2000, fill: 'both'});
+    var group = new AnimationGroup([anim], {fill: 'none'});
+    var player = document.timeline.play(group);
+
+    player.currentTime = 1000;
+    tick(100);
+    player.reverse();
+    player.currentTime = 3000;
+    tick(110);
+    player.currentTime = 1000;
+    assert.equal(player.playbackRate, -1);
+    assert.equal(player._childPlayers.length, 1);
+    assert.equal(player._childPlayers[0]._player.playState, 'running');
+    assert.equal(player._childPlayers[0]._player.currentTime, 1000);
+    assert.equal(player._childPlayers[0]._player.playbackRate, -1);
+
+  }); 
 });
