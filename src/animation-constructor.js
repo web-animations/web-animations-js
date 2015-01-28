@@ -108,14 +108,14 @@
       if (i >= this._childPlayers.length) {
         childPlayer = window.document.timeline.play(child);
         this._childPlayers.push(childPlayer);
+        childPlayer.playbackRate = this.playbackRate;
+        if (this.paused) {
+          childPlayer.pause();
+        }
       } else {
         childPlayer = this._childPlayers[i];
       }
       child.player = this.source.player;
-
-      if (this.paused) {
-        childPlayer.pause();
-      }
 
       if (childPlayer.startTime != this.startTime + offset) {
         if (this.startTime === null) {
