@@ -114,7 +114,7 @@
       child.player = this.source.player;
 
       if (this.paused) {
-          childPlayer.pause();
+        childPlayer.pause();
       }
 
       if (childPlayer.startTime != this.startTime + offset) {
