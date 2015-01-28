@@ -1020,5 +1020,5 @@ suite('group-player', function() {
     assert.equal(player._childPlayers[0]._player.currentTime, 1000);
     assert.equal(player._childPlayers[0]._player.playbackRate, -1);
 
-  }); 
+  });
 });
