@@ -63,8 +63,6 @@
         player._removePlayers();
         return;
       }
-      if (player.startTime === null)
-        return;
 
       player._updateChildren();
     };
