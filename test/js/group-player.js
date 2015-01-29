@@ -1024,9 +1024,9 @@ suite('group-player', function() {
 
   test('fill none groups with fill none children do not fill', function() {
     var anim = new Animation(
-      this.target,
-      [{marginLeft: '0px'}, {marginLeft: '100px'}],
-      {duration: 500, fill: 'none'});
+        this.target,
+        [{marginLeft: '0px'}, {marginLeft: '100px'}],
+        {duration: 500, fill: 'none'});
     var group = new AnimationGroup([anim], {fill: 'none'});
     var player = document.timeline.play(group);
 

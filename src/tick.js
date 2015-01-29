@@ -126,6 +126,7 @@
       return player._inTimeline;
     });
 
+    // FIXME: Should remove dupliactes from pendingEffects.
     pendingEffects.push.apply(pendingEffects, newPendingClears);
     pendingEffects.push.apply(pendingEffects, newPendingEffects);
 
