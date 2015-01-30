@@ -1036,7 +1036,5 @@ suite('group-player', function() {
     assert.equal(getComputedStyle(this.target).marginLeft, '50px');
     tick(501);
     assert.equal(getComputedStyle(this.target).marginLeft, '0px');
-    if (this.target.parent)
-      this.target.parent.removeChild(target);
   });
 });
