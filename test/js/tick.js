@@ -10,7 +10,6 @@ suite('tick-tests', function() {
     assert.equal(isTicking(), true);
     tick(1100);
     assert.equal(player.finished, true);
-    console.log(webAnimations1.timeline._players.length);
     assert.equal(webAnimations1.timeline._players.length, 1);
     assert.equal(isTicking(), false);
   });
