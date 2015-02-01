@@ -62,7 +62,7 @@
     updating.sort(function(left, right) {
       return left._sequenceNumber - right._sequenceNumber;
     });
-    updating.filter(function(callback) {
+    updating = updating.filter(function(callback) {
       callback();
       if (!callback._player || callback._player.finished || callback._player.paused)
         callback._registered = false;

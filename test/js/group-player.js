@@ -1021,4 +1021,21 @@ suite('group-player', function() {
     assert.equal(player._childPlayers[0]._player.playbackRate, -1);
 
   });
+
+  test('fill none groups with fill none children do not fill', function() {
+    var anim = new Animation(
+        this.target,
+        [{marginLeft: '0px'}, {marginLeft: '100px'}],
+        {duration: 500, fill: 'none'});
+    var group = new AnimationGroup([anim], {fill: 'none'});
+    var player = document.timeline.play(group);
+
+    tick(0);
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
+    tick(250);
+    assert.equal(getComputedStyle(this.target).marginLeft, '50px');
+    tick(501);
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
+    tick(502);
+  });
 });
