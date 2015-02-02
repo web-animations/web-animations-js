@@ -98,7 +98,7 @@
 
   // TODO: Call into this less frequently.
   scope.Player.prototype._updateChildren = function() {
-    if (this.paused || !this.source || !this._isGroup || this.playState == 'idle')
+    if (!this.source || !this._isGroup || this.playState == 'idle')
       return;
     var offset = this.source._timing.delay;
     for (var i = 0; i < this.source.children.length; i++) {
@@ -108,6 +108,10 @@
       if (i >= this._childPlayers.length) {
         childPlayer = window.document.timeline.play(child);
         this._childPlayers.push(childPlayer);
+        childPlayer.playbackRate = this.playbackRate;
+        if (this.paused) {
+          childPlayer.pause();
+        }
       } else {
         childPlayer = this._childPlayers[i];
       }

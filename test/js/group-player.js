@@ -985,4 +985,57 @@ suite('group-player', function() {
     assert.equal(p._childPlayers[0]._player.playState, 'finished');
     assert.equal(p._childPlayers[1]._player.playState, 'finished');
   });
+
+  test('pausing then seeking out of range then seeking into range works', function() {
+    var target = document.createElement('div');
+    var anim = new Animation(target, [], {duration: 2000, fill: 'both'});
+    var group = new AnimationGroup([anim], {fill: 'none'});
+    var player = document.timeline.play(group);
+
+    player.pause();
+    player.currentTime = 3000;
+    tick(100);
+    player.currentTime = 1000;
+    assert.equal(player._childPlayers.length, 1);
+    assert.equal(player._childPlayers[0]._player.playState, 'paused');
+    assert.equal(player._childPlayers[0]._player.currentTime, 1000);
+
+  });
+
+  test('reversing then seeking out of range then seeking into range works', function() {
+    var target = document.createElement('div');
+    var anim = new Animation(target, [], {duration: 2000, fill: 'both'});
+    var group = new AnimationGroup([anim], {fill: 'none'});
+    var player = document.timeline.play(group);
+
+    player.currentTime = 1000;
+    tick(100);
+    player.reverse();
+    player.currentTime = 3000;
+    tick(110);
+    player.currentTime = 1000;
+    assert.equal(player.playbackRate, -1);
+    assert.equal(player._childPlayers.length, 1);
+    assert.equal(player._childPlayers[0]._player.playState, 'running');
+    assert.equal(player._childPlayers[0]._player.currentTime, 1000);
+    assert.equal(player._childPlayers[0]._player.playbackRate, -1);
+
+  });
+
+  test('fill none groups with fill none children do not fill', function() {
+    var anim = new Animation(
+        this.target,
+        [{marginLeft: '0px'}, {marginLeft: '100px'}],
+        {duration: 500, fill: 'none'});
+    var group = new AnimationGroup([anim], {fill: 'none'});
+    var player = document.timeline.play(group);
+
+    tick(0);
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
+    tick(250);
+    assert.equal(getComputedStyle(this.target).marginLeft, '50px');
+    tick(501);
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
+    tick(502);
+  });
 });
