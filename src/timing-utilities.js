@@ -45,7 +45,7 @@
           if ((property == 'direction') && (directions.indexOf(timingInput[property]) == -1)) {
             return;
           }
-          if (property == 'playbackRate' && shared.isDeprecated('AnimationTiming.playbackRate', '2014-11-28', 'Use AnimationPlayer.playbackRate instead.')) {
+          if (property == 'playbackRate' && timingInput[property] !== 1 && shared.isDeprecated('AnimationTiming.playbackRate', '2014-11-28', 'Use AnimationPlayer.playbackRate instead.')) {
             return;
           }
           timing[property] = timingInput[property];
