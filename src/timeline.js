@@ -37,7 +37,7 @@
       var player = new scope.Player(source);
       this._players.push(player);
       scope.restartWebAnimationsNextTick();
-      player.play();
+      player._player.play();
       return player;
     },
   };

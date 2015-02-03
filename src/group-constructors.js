@@ -54,7 +54,6 @@
   scope.newUnderlyingPlayerForGroup = function(group) {
     var underlyingPlayer;
     var ticker = function(tf) {
-      // console.log('tick group', tf);
       var player = underlyingPlayer._wrapper;
       if (player.playState == 'pending') return;
 
@@ -68,6 +67,7 @@
 
     underlyingPlayer = scope.timeline.play(new scope.Animation(null, ticker, group._timing));
     return underlyingPlayer;
+
   };
 
   scope.bindPlayerForGroup = function(player) {

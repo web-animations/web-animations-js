@@ -14,7 +14,6 @@
 
 (function(shared, scope, testing) {
   scope.Player = function(source) {
-    console.log('NEW PLAYER', source);
     this.source = source;
     if (source) {
       // FIXME: detach existing player.
@@ -31,8 +30,39 @@
 
   // TODO: add a source getter/setter
   scope.Player.prototype = {
+    _updateChildTiming: function(childPlayer, offset) {
+      if (childPlayer.startTime != this.startTime + offset) {
+        if (this.startTime === null) {
+          childPlayer.currentTime = this.source.player.currentTime - offset;
+          childPlayer._startTime = null;
+        } else {
+          childPlayer.startTime = this.startTime + offset;
+        }
+      }
+      // FIXME: What is this for?
+      if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
+        childPlayer.currentTime = -1;
+      }
+    },
+    _constructChildren: function() {
+      if (!this.source || !this._isGroup)
+        return;
+      var offset = this.source._timing.delay;
+      this.source.children.forEach(function(child) {
+        var childPlayer = window.document.timeline.play(child);
+        this._childPlayers.push(childPlayer);
+        childPlayer.playbackRate = this.playbackRate;
+        if (this.paused)
+          childPlayer.pause();
+        child.player = this.source.player;
+
+        this._updateChildTiming(childPlayer, offset);
+
+        if (this.source instanceof window.AnimationSequence)
+          offset += scope.groupChildDuration(child);
+      }.bind(this));
+    },
     _rebuildUnderlyingPlayer: function() {
-      console.log('rebuild', this.source);
       if (this._player) {
         this._player.cancel();
         this._player = null;
@@ -159,13 +189,21 @@
     },
     _forEachChild: function(f) {
       var offset = 0;
-      if(this.source.children && this._childPlayers.length < this.source.children.length)
+      if (this.source.children && this._childPlayers.length < this.source.children.length)
         this._constructChildren();
       this._childPlayers.forEach(function(child) {
         f.call(this, child, offset);
         if (this.source instanceof window.AnimationSequence)
           offset += child.source.activeDuration;
       }.bind(this));
+
+      if (this._player.playState == 'pending') return;
+      var timing = this.source._timing;
+      var t = this._player.currentTime;
+      if (t !== null)
+        t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
+      if (t == null || isNaN(t))
+        this._removePlayers();
     },
   };
 

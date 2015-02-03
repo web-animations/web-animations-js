@@ -96,58 +96,15 @@
     },
   });
 
-  scope.Player.prototype._updateChildTiming = function(childPlayer, offset) {
-    // console.log('UPDATE T', childPlayer);
-    if (childPlayer.startTime != this.startTime + offset) {
-      if (this.startTime === null) {
-        childPlayer.currentTime = this.source.player.currentTime - offset;
-        childPlayer._startTime = null;
-      } else {
-        childPlayer.startTime = this.startTime + offset;
-      }
-    }
-
-    // FIXME: What is this for?
-    if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
-      childPlayer.currentTime = -1;
-    }
-  };
-
-  // FIXME: This doesn't recurse any more. It is only called from updatePendingGroups. Pending
-  // groups needs to be FIFO & populated in tree-order.
   scope.Player.prototype._updateChildren = function() {
-    // console.log('UPDATE', this);
     if (!this.source || this.playState == 'idle')
       return;
 
     var offset = this.source._timing.delay;
     this._childPlayers.forEach(function(childPlayer) {
       this._updateChildTiming(childPlayer, offset);
-      // FIXME: Do we need to recurse?
-      // childPlayer._updateChildren();
       if (this.source instanceof window.AnimationSequence)
         offset += groupChildDuration(childPlayer.source);
-    }.bind(this));
-  };
-
-  scope.Player.prototype._constructChildren = function() {
-    // console.log('construct children', window.document.timeline.currentTime);
-    if (!this.source || !this._isGroup)
-      return;
-    var offset = this.source._timing.delay;
-    this.source.children.forEach(function(child) {
-      // console.log('add child player', window.document.timeline.currentTime);
-      var childPlayer = window.document.timeline.play(child);
-      this._childPlayers.push(childPlayer);
-      childPlayer.playbackRate = this.playbackRate;
-      if (this.paused)
-        childPlayer.pause();
-      child.player = this.source.player;
-
-      this._updateChildTiming(childPlayer, offset);
-
-      if (this.source instanceof window.AnimationSequence)
-        offset += groupChildDuration(child);
     }.bind(this));
   };
 

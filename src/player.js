@@ -68,7 +68,6 @@
       return this._currentTime;
     },
     set currentTime(newTime) {
-      // console.log('SETTING CURRENT TIME', newTime);
       newTime = +newTime;
       if (isNaN(newTime))
         return;
@@ -79,7 +78,6 @@
       this._currentTimePending = false;
       if (this._currentTime == newTime)
         return;
-      // console.log('tick current time', newTime);
       this._tickCurrentTime(newTime, true);
       scope.invalidateEffects();
     },
