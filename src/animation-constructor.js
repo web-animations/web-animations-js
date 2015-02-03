@@ -97,7 +97,7 @@
   });
 
   scope.Player.prototype._updateChildTiming = function(childPlayer, offset) {
-    // Set child player start time and current time
+    // console.log('UPDATE T', childPlayer);
     if (childPlayer.startTime != this.startTime + offset) {
       if (this.startTime === null) {
         childPlayer.currentTime = this.source.player.currentTime - offset;
@@ -106,46 +106,38 @@
         childPlayer.startTime = this.startTime + offset;
       }
     }
-    // Set child player currentTime to -1 if my playback rate is -1 and my current time is
-    // less than the offset. WTF?
+
+    // FIXME: What is this for?
     if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
       childPlayer.currentTime = -1;
     }
   };
 
-  // TODO: Call into this less frequently.
-  // This now just recursively updates children's timing parameters
+  // FIXME: This doesn't recurse any more. It is only called from updatePendingGroups. Pending
+  // groups needs to be FIFO & populated in tree-order.
   scope.Player.prototype._updateChildren = function() {
-    console.log('UPDATE');
-    // FIXME: added !this._childPlayers.length so that we don't update children before constructing
-    // them. Should I instead make sure that that never happens?
-    if (!this.source || !this._isGroup || this.playState == 'idle' || !this._childPlayers.length)
+    // console.log('UPDATE', this);
+    if (!this.source || this.playState == 'idle')
       return;
 
     var offset = this.source._timing.delay;
-    for (var i = 0; i < this.source.children.length; i++) {
-      var childPlayer = this._childPlayers[i];
+    this._childPlayers.forEach(function(childPlayer) {
       this._updateChildTiming(childPlayer, offset);
-      childPlayer._updateChildren();
-      // Set the offset if we are a sequence
+      // FIXME: Do we need to recurse?
+      // childPlayer._updateChildren();
       if (this.source instanceof window.AnimationSequence)
         offset += groupChildDuration(childPlayer.source);
-    }
+    }.bind(this));
   };
 
   scope.Player.prototype._constructChildren = function() {
-    console.log('construct children', window.document.timeline.currentTime);
+    // console.log('construct children', window.document.timeline.currentTime);
     if (!this.source || !this._isGroup)
       return;
     var offset = this.source._timing.delay;
-    // TODO: Change to use foreach.
-    for (var i = 0; i < this.source.children.length; i++) {
-      console.log('add child player', window.document.timeline.currentTime);
-      var child = this.source.children[i];
-      var childPlayer;
-
-      // Make they player and set the source.
-      childPlayer = window.document.timeline.play(child);
+    this.source.children.forEach(function(child) {
+      // console.log('add child player', window.document.timeline.currentTime);
+      var childPlayer = window.document.timeline.play(child);
       this._childPlayers.push(childPlayer);
       childPlayer.playbackRate = this.playbackRate;
       if (this.paused)
@@ -154,10 +146,9 @@
 
       this._updateChildTiming(childPlayer, offset);
 
-      // Calculate offset for next child.
       if (this.source instanceof window.AnimationSequence)
         offset += groupChildDuration(child);
-    }
+    }.bind(this));
   };
 
   scope.Player.prototype._setExternalPlayer = function(player) {

@@ -54,33 +54,28 @@
   scope.newUnderlyingPlayerForGroup = function(group) {
     var underlyingPlayer;
     var ticker = function(tf) {
-      console.log('tick group', tf);
+      // console.log('tick group', tf);
       var player = underlyingPlayer._wrapper;
       if (player.playState == 'pending') return;
 
       if (!player.source)
         return;
       if (tf == null) {
-        console.log('remove');
         player._removePlayers();
         return;
       }
-      player._updateChildren();
     };
 
     underlyingPlayer = scope.timeline.play(new scope.Animation(null, ticker, group._timing));
-
     return underlyingPlayer;
   };
 
   scope.bindPlayerForGroup = function(player) {
     player._player._wrapper = player;
     player._isGroup = true;
+    scope.awaitStartTime(player);
     player._constructChildren();
     player._setExternalPlayer(player);
-    // FIXME: Do I need to update here?
-    // player._updateChildren();
-    scope.awaitStartTime(player);
   };
 
 

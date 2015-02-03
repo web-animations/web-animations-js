@@ -14,6 +14,7 @@
 
 (function(shared, scope, testing) {
   scope.Player = function(source) {
+    console.log('NEW PLAYER', source);
     this.source = source;
     if (source) {
       // FIXME: detach existing player.

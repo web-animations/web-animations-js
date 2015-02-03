@@ -143,7 +143,7 @@
   var PhaseActive = 3;
 
   function calculatePhase(activeDuration, localTime, timing) {
-    console.log(localTime, timing.delay, activeDuration);
+    // console.log(localTime, timing.delay, activeDuration);
     if (localTime == null) {
       return PhaseNone;
     }
