@@ -131,31 +131,6 @@
       if (this.source instanceof window.AnimationSequence)
         offset += groupChildDuration(childPlayer.source);
     }
-    // var offset = this.source._timing.delay;
-    // for (var i = 0; i < this.source.children.length; i++) {
-    //   var childPlayer = this._childPlayers[i];
-
-    //   // Recursively set child player start time and current time
-    //   if (childPlayer.startTime != this.startTime + offset) {
-    //     if (this.startTime === null) {
-    //       childPlayer.currentTime = this.source.player.currentTime - offset;
-    //       childPlayer._startTime = null;
-    //     } else {
-    //       childPlayer.startTime = this.startTime + offset;
-    //     }
-    //     childPlayer._updateChildren();
-    //   }
-
-    //   // Set child player currentTime to -1 if my playback rate is -1 and my current time is
-    //   // less than the offset. WTF?
-    //   if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
-    //     childPlayer.currentTime = -1;
-    //   }
-
-    //   // Set the offset if we are a sequence
-    //   if (this.source instanceof window.AnimationSequence)
-    //     offset += groupChildDuration(childPlayer.source);
-    // }
   };
 
   scope.Player.prototype._constructChildren = function() {
@@ -175,9 +150,10 @@
         childPlayer.pause();
       child.player = this.source.player;
 
-      // Set currentTime and startTime.
-      childPlayer.currentTime = this.source.player.currentTime - offset;
-      childPlayer._startTime = null;
+      this._updateChildTiming(childPlayer, offset);
+      // // Set currentTime and startTime.
+      // childPlayer.currentTime = this.source.player.currentTime - offset;
+      // childPlayer._startTime = null;
 
       // FIXME: Do I need to do these things or can I just rely on updateChildren?
       // This agian. Don't know what this is about (see updateChildren).
