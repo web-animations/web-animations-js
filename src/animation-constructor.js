@@ -97,7 +97,7 @@
   });
 
   scope.Player.prototype._updateChildTiming = function(childPlayer, offset) {
-    // Recursively set child player start time and current time
+    // Set child player start time and current time
     if (childPlayer.startTime != this.startTime + offset) {
       if (this.startTime === null) {
         childPlayer.currentTime = this.source.player.currentTime - offset;
@@ -106,7 +106,6 @@
         childPlayer.startTime = this.startTime + offset;
       }
     }
-
     // Set child player currentTime to -1 if my playback rate is -1 and my current time is
     // less than the offset. WTF?
     if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
@@ -117,6 +116,7 @@
   // TODO: Call into this less frequently.
   // This now just recursively updates children's timing parameters
   scope.Player.prototype._updateChildren = function() {
+    console.log('UPDATE');
     // FIXME: added !this._childPlayers.length so that we don't update children before constructing
     // them. Should I instead make sure that that never happens?
     if (!this.source || !this._isGroup || this.playState == 'idle' || !this._childPlayers.length)
@@ -134,11 +134,13 @@
   };
 
   scope.Player.prototype._constructChildren = function() {
+    console.log('construct children', window.document.timeline.currentTime);
     if (!this.source || !this._isGroup)
       return;
     var offset = this.source._timing.delay;
     // TODO: Change to use foreach.
     for (var i = 0; i < this.source.children.length; i++) {
+      console.log('add child player', window.document.timeline.currentTime);
       var child = this.source.children[i];
       var childPlayer;
 
@@ -151,14 +153,6 @@
       child.player = this.source.player;
 
       this._updateChildTiming(childPlayer, offset);
-      // // Set currentTime and startTime.
-      // childPlayer.currentTime = this.source.player.currentTime - offset;
-      // childPlayer._startTime = null;
-
-      // FIXME: Do I need to do these things or can I just rely on updateChildren?
-      // This agian. Don't know what this is about (see updateChildren).
-      // if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1)
-      //   childPlayer.currentTime = -1;
 
       // Calculate offset for next child.
       if (this.source instanceof window.AnimationSequence)

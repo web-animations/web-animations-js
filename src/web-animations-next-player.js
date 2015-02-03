@@ -31,6 +31,7 @@
   // TODO: add a source getter/setter
   scope.Player.prototype = {
     _rebuildUnderlyingPlayer: function() {
+      console.log('rebuild', this.source);
       if (this._player) {
         this._player.cancel();
         this._player = null;
@@ -157,6 +158,8 @@
     },
     _forEachChild: function(f) {
       var offset = 0;
+      if(this.source.children && this._childPlayers.length < this.source.children.length)
+        this._constructChildren();
       this._childPlayers.forEach(function(child) {
         f.call(this, child, offset);
         if (this.source instanceof window.AnimationSequence)

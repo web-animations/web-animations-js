@@ -54,21 +54,21 @@
   scope.newUnderlyingPlayerForGroup = function(group) {
     var underlyingPlayer;
     var ticker = function(tf) {
+      console.log('tick group', tf);
       var player = underlyingPlayer._wrapper;
       if (player.playState == 'pending') return;
 
       if (!player.source)
         return;
       if (tf == null) {
+        console.log('remove');
         player._removePlayers();
         return;
       }
-
       player._updateChildren();
     };
 
     underlyingPlayer = scope.timeline.play(new scope.Animation(null, ticker, group._timing));
-    // underlyingPlayer._constructChildren();
 
     return underlyingPlayer;
   };
