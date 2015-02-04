@@ -64,7 +64,8 @@
     });
     updating = updating.filter(function(callback) {
       callback();
-      if (!callback._player || callback._player.finished || callback._player.paused)
+      var playState = callback._player ? callback._player.playState : 'idle';
+      if (playState != 'running' && playState != 'pending')
         callback._registered = false;
       return callback._registered;
     });
