@@ -1,3 +1,11 @@
+### 1.0.6 - *February 5 2015*
+
+  * Implement playbackRate setter for group players.
+  * Fix pausing a group player before its first tick.
+  * Fix cancelling a group player before its first tick.
+  * Fix excess CPU use on idle pages where custom effects and groups were used.
+  * Suppress AnimationTiming.playbackRate deprecation warning for cases where AnimationTiming.playbackRate == 1.
+
 ### 1.0.5 - *January 6 2015*
 
   * Fix loading the polyfill in an SVG document
