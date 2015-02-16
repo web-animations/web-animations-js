@@ -197,7 +197,8 @@
           offset += child.source.activeDuration;
       }.bind(this));
 
-      if (this._player.playState == 'pending') return;
+      if (this._player.playState == 'pending')
+        return;
       var timing = this.source._timing;
       var t = this._player.currentTime;
       if (t !== null)

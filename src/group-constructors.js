@@ -67,7 +67,6 @@
 
     underlyingPlayer = scope.timeline.play(new scope.Animation(null, ticker, group._timing));
     return underlyingPlayer;
-
   };
 
   scope.bindPlayerForGroup = function(player) {
