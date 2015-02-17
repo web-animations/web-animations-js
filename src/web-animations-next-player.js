@@ -91,12 +91,6 @@
       } else if (childPlayer.startTime !== this.startTime + offset) {
         childPlayer.startTime = this.startTime + offset;
       }
-      // FIXME: This is for putting children into the before phase so they unfill (if necessary),
-      // but it doesn't work. It also needs to be moved to a different part of the code as it's not
-      // being called frequently enough.
-      if (this.playbackRate < 0 && this.currentTime < offset && childPlayer.currentTime !== -1) {
-        childPlayer.currentTime = -1;
-      }
     },
     get paused() {
       return this._player.paused;
