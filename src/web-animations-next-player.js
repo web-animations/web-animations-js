@@ -53,7 +53,7 @@
 
       var offset = this.source._timing.delay;
       this._childPlayers.forEach(function(childPlayer) {
-        this._updateChildTiming(childPlayer, offset);
+        this._arrangeChildren(childPlayer, offset);
         if (this.source instanceof window.AnimationSequence)
           offset += scope.groupChildDuration(childPlayer.source);
       }.bind(this));
@@ -78,13 +78,13 @@
           childPlayer.pause();
         child.player = this.source.player;
 
-        this._updateChildTiming(childPlayer, offset);
+        this._arrangeChildren(childPlayer, offset);
 
         if (this.source instanceof window.AnimationSequence)
           offset += scope.groupChildDuration(child);
       }.bind(this));
     },
-    _updateChildTiming: function(childPlayer, offset) {
+    _arrangeChildren: function(childPlayer, offset) {
       if (childPlayer.startTime != this.startTime + offset) {
         if (this.startTime === null) {
           childPlayer.currentTime = this.source.player.currentTime - offset;
