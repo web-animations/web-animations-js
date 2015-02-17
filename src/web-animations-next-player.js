@@ -30,18 +30,40 @@
 
   // TODO: add a source getter/setter
   scope.Player.prototype = {
-    _updateChildTiming: function(childPlayer, offset) {
-      if (childPlayer.startTime != this.startTime + offset) {
-        if (this.startTime === null) {
-          childPlayer.currentTime = this.source.player.currentTime - offset;
-          childPlayer._startTime = null;
-        } else {
-          childPlayer.startTime = this.startTime + offset;
-        }
+    _rebuildUnderlyingPlayer: function() {
+      if (this._player) {
+        this._player.cancel();
+        this._player = null;
       }
-      // FIXME: What is this for?
-      if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
-        childPlayer.currentTime = -1;
+
+      if (!this.source || this.source instanceof window.Animation) {
+        this._player = scope.newUnderlyingPlayerForAnimation(this.source);
+        scope.bindPlayerForAnimation(this);
+      }
+      if (this.source instanceof window.AnimationSequence || this.source instanceof window.AnimationGroup) {
+        this._player = scope.newUnderlyingPlayerForGroup(this.source);
+        scope.bindPlayerForGroup(this);
+      }
+
+      // FIXME: move existing currentTime/startTime/playState to new player
+    },
+    _updateChildren: function() {
+      if (!this.source || this.playState == 'idle')
+        return;
+
+      var offset = this.source._timing.delay;
+      this._childPlayers.forEach(function(childPlayer) {
+        this._updateChildTiming(childPlayer, offset);
+        if (this.source instanceof window.AnimationSequence)
+          offset += scope.groupChildDuration(childPlayer.source);
+      }.bind(this));
+    },
+    _setExternalPlayer: function(player) {
+      if (!this.source || !this._isGroup)
+        return;
+      for (var i = 0; i < this.source.children.length; i++) {
+        this.source.children[i].player = player;
+        this._childPlayers[i]._setExternalPlayer(player);
       }
     },
     _constructChildren: function() {
@@ -62,22 +84,19 @@
           offset += scope.groupChildDuration(child);
       }.bind(this));
     },
-    _rebuildUnderlyingPlayer: function() {
-      if (this._player) {
-        this._player.cancel();
-        this._player = null;
+    _updateChildTiming: function(childPlayer, offset) {
+      if (childPlayer.startTime != this.startTime + offset) {
+        if (this.startTime === null) {
+          childPlayer.currentTime = this.source.player.currentTime - offset;
+          childPlayer._startTime = null;
+        } else {
+          childPlayer.startTime = this.startTime + offset;
+        }
       }
-
-      if (!this.source || this.source instanceof window.Animation) {
-        this._player = scope.newUnderlyingPlayerForAnimation(this.source);
-        scope.bindPlayerForAnimation(this);
+      // FIXME: What is this for?
+      if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
+        childPlayer.currentTime = -1;
       }
-      if (this.source instanceof window.AnimationSequence || this.source instanceof window.AnimationGroup) {
-        this._player = scope.newUnderlyingPlayerForGroup(this.source);
-        scope.bindPlayerForGroup(this);
-      }
-
-      // FIXME: move existing currentTime/startTime/playState to new player
     },
     get paused() {
       return this._player.paused;

@@ -14,6 +14,10 @@
 
 (function(shared, scope, testing) {
 
+  function groupChildDuration(node) {
+    return node._timing.delay + node.activeDuration + node._timing.endDelay;
+  }
+
   function constructor(children, timingInput) {
     this.children = children || [];
     this._timing = shared.normalizeTimingInput(timingInput, true);
@@ -35,7 +39,7 @@
     get activeDuration() {
       var total = 0;
       this.children.forEach(function(child) {
-        total += scope.groupChildDuration(child);
+        total += groupChildDuration(child);
       });
       return Math.max(total, 0);
     }
@@ -45,7 +49,7 @@
     get activeDuration() {
       var max = 0;
       this.children.forEach(function(child) {
-        max = Math.max(max, scope.groupChildDuration(child));
+        max = Math.max(max, groupChildDuration(child));
       });
       return max;
     }
@@ -77,5 +81,6 @@
     player._setExternalPlayer(player);
   };
 
+  scope.groupChildDuration = groupChildDuration;
 
 })(webAnimationsShared, webAnimationsNext, webAnimationsTesting);

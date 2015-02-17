@@ -14,10 +14,6 @@
 
 (function(shared, scope, testing) {
 
-  function groupChildDuration(node) {
-    return node._timing.delay + node.activeDuration + node._timing.endDelay;
-  };
-
   function KeyframeEffect(effect) {
     this._frames = shared.normalizeKeyframes(effect);
   }
@@ -96,34 +92,11 @@
     },
   });
 
-  scope.Player.prototype._updateChildren = function() {
-    if (!this.source || this.playState == 'idle')
-      return;
-
-    var offset = this.source._timing.delay;
-    this._childPlayers.forEach(function(childPlayer) {
-      this._updateChildTiming(childPlayer, offset);
-      if (this.source instanceof window.AnimationSequence)
-        offset += groupChildDuration(childPlayer.source);
-    }.bind(this));
-  };
-
-  scope.Player.prototype._setExternalPlayer = function(player) {
-    if (!this.source || !this._isGroup)
-      return;
-    for (var i = 0; i < this.source.children.length; i++) {
-      this.source.children[i].player = player;
-      this._childPlayers[i]._setExternalPlayer(player);
-    }
-  };
-
   window.Animation = scope.Animation;
   window.Element.prototype.getAnimationPlayers = function() {
     return document.timeline.getAnimationPlayers().filter(function(player) {
       return player.source !== null && player.source.target == this;
     }.bind(this));
   };
-
-  scope.groupChildDuration = groupChildDuration;
 
 }(webAnimationsShared, webAnimationsNext, webAnimationsTesting));
