@@ -47,6 +47,51 @@
 
       // FIXME: move existing currentTime/startTime/playState to new player
     },
+    _updateChildren: function() {
+      if (!this.source || this.playState == 'idle')
+        return;
+
+      var offset = this.source._timing.delay;
+      this._childPlayers.forEach(function(childPlayer) {
+        this._arrangeChildren(childPlayer, offset);
+        if (this.source instanceof window.AnimationSequence)
+          offset += scope.groupChildDuration(childPlayer.source);
+      }.bind(this));
+    },
+    _setExternalPlayer: function(player) {
+      if (!this.source || !this._isGroup)
+        return;
+      for (var i = 0; i < this.source.children.length; i++) {
+        this.source.children[i].player = player;
+        this._childPlayers[i]._setExternalPlayer(player);
+      }
+    },
+    _constructChildren: function() {
+      if (!this.source || !this._isGroup)
+        return;
+      var offset = this.source._timing.delay;
+      this.source.children.forEach(function(child) {
+        var childPlayer = window.document.timeline.play(child);
+        this._childPlayers.push(childPlayer);
+        childPlayer.playbackRate = this.playbackRate;
+        if (this.paused)
+          childPlayer.pause();
+        child.player = this.source.player;
+
+        this._arrangeChildren(childPlayer, offset);
+
+        if (this.source instanceof window.AnimationSequence)
+          offset += scope.groupChildDuration(child);
+      }.bind(this));
+    },
+    _arrangeChildren: function(childPlayer, offset) {
+      if (this.startTime === null) {
+        childPlayer.currentTime = this.source.player.currentTime - offset;
+        childPlayer._startTime = null;
+      } else if (childPlayer.startTime !== this.startTime + offset) {
+        childPlayer.startTime = this.startTime + offset;
+      }
+    },
     get paused() {
       return this._player.paused;
     },
@@ -157,11 +202,22 @@
     },
     _forEachChild: function(f) {
       var offset = 0;
+      if (this.source.children && this._childPlayers.length < this.source.children.length)
+        this._constructChildren();
       this._childPlayers.forEach(function(child) {
         f.call(this, child, offset);
         if (this.source instanceof window.AnimationSequence)
           offset += child.source.activeDuration;
       }.bind(this));
+
+      if (this._player.playState == 'pending')
+        return;
+      var timing = this.source._timing;
+      var t = this._player.currentTime;
+      if (t !== null)
+        t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
+      if (t == null || isNaN(t))
+        this._removePlayers();
     },
   };
 

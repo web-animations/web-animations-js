@@ -994,6 +994,7 @@ suite('group-player', function() {
 
     player.pause();
     player.currentTime = 3000;
+    assert.equal(player._childPlayers.length, 0);
     tick(100);
     player.currentTime = 1000;
     assert.equal(player._childPlayers.length, 1);
@@ -1011,7 +1012,9 @@ suite('group-player', function() {
     player.currentTime = 1000;
     tick(100);
     player.reverse();
+    tick(105);
     player.currentTime = 3000;
+    assert.equal(player._childPlayers.length, 0);
     tick(110);
     player.currentTime = 1000;
     assert.equal(player.playbackRate, -1);

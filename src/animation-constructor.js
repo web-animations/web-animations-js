@@ -14,10 +14,6 @@
 
 (function(shared, scope, testing) {
 
-  function groupChildDuration(node) {
-    return node._timing.delay + node.activeDuration + node._timing.endDelay;
-  };
-
   function KeyframeEffect(effect) {
     this._frames = shared.normalizeKeyframes(effect);
   }
@@ -96,53 +92,11 @@
     },
   });
 
-  // TODO: Call into this less frequently.
-  scope.Player.prototype._updateChildren = function() {
-    if (!this.source || !this._isGroup || this.playState == 'idle')
-      return;
-    var offset = this.source._timing.delay;
-    for (var i = 0; i < this.source.children.length; i++) {
-      var child = this.source.children[i];
-      var childPlayer;
-
-      if (i >= this._childPlayers.length) {
-        childPlayer = window.document.timeline.play(child);
-        this._childPlayers.push(childPlayer);
-        childPlayer.playbackRate = this.playbackRate;
-        if (this.paused) {
-          childPlayer.pause();
-        }
-      } else {
-        childPlayer = this._childPlayers[i];
-      }
-      child.player = this.source.player;
-
-      if (childPlayer.startTime != this.startTime + offset) {
-        if (this.startTime === null) {
-          childPlayer.currentTime = this.source.player.currentTime - offset;
-          childPlayer._startTime = null;
-        } else {
-          childPlayer.startTime = this.startTime + offset;
-        }
-        childPlayer._updateChildren();
-      }
-
-      if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
-        childPlayer.currentTime = -1;
-      }
-
-      if (this.source instanceof window.AnimationSequence)
-        offset += groupChildDuration(child);
-    }
-  };
-
   window.Animation = scope.Animation;
   window.Element.prototype.getAnimationPlayers = function() {
     return document.timeline.getAnimationPlayers().filter(function(player) {
       return player.source !== null && player.source.target == this;
     }.bind(this));
   };
-
-  scope.groupChildDuration = groupChildDuration;
 
 }(webAnimationsShared, webAnimationsNext, webAnimationsTesting));
