@@ -85,13 +85,11 @@
       }.bind(this));
     },
     _arrangeChildren: function(childPlayer, offset) {
-      if (childPlayer.startTime != this.startTime + offset) {
-        if (this.startTime === null) {
-          childPlayer.currentTime = this.source.player.currentTime - offset;
-          childPlayer._startTime = null;
-        } else {
-          childPlayer.startTime = this.startTime + offset;
-        }
+      if (this.startTime === null) {
+        childPlayer.currentTime = this.source.player.currentTime - offset;
+        childPlayer._startTime = null;
+      } else if (childPlayer.startTime !== this.startTime + offset) {
+        childPlayer.startTime = this.startTime + offset;
       }
       // FIXME: What is this for?
       // If we need this I think it should be more like
