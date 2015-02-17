@@ -91,14 +91,10 @@
       } else if (childPlayer.startTime !== this.startTime + offset) {
         childPlayer.startTime = this.startTime + offset;
       }
-      // FIXME: What is this for?
-      // If we need this I think it should be more like
-      //
-      // if (this.playbackRate < 0 && this.currentTime < offset && childPlayer.currentTime !== -1)
-      //   childPlayer.currentTime = -1;
-      //
-      // and It should probably be in forEachChild, or in the group ticker.
-      if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
+      // FIXME: This is for putting children into the before state so they unfill (if necessary),
+      // but it doesn't work. It also needs to be moved to a different part of the code as it's not
+      // being called frequently enough.
+      if (this.playbackRate < 0 && this.currentTime < offset && childPlayer.currentTime !== -1) {
         childPlayer.currentTime = -1;
       }
     },
