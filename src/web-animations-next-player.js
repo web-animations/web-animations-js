@@ -94,6 +94,12 @@
         }
       }
       // FIXME: What is this for?
+      // If we need this I think it should be more like
+      //
+      // if (this.playbackRate < 0 && this.currentTime < offset && childPlayer.currentTime !== -1)
+      //   childPlayer.currentTime = -1;
+      //
+      // and It should probably be in forEachChild, or in the group ticker.
       if (this.playbackRate == -1 && this.currentTime < offset && childPlayer.currentTime !== -1) {
         childPlayer.currentTime = -1;
       }
