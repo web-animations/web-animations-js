@@ -6,7 +6,7 @@ suite('apply-preserving-inline-style', function() {
     document.documentElement.appendChild(this.element);
   });
   teardown(function() {
-    this.element.remove();
+    document.documentElement.removeChild(this.element);
   });
 
   test('Style is patched', function() {
