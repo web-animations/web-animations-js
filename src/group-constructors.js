@@ -14,6 +14,10 @@
 
 (function(shared, scope, testing) {
 
+  function groupChildDuration(node) {
+    return node._timing.delay + node.activeDuration + node._timing.endDelay;
+  }
+
   function constructor(children, timingInput) {
     this.children = children || [];
     this._timing = shared.normalizeTimingInput(timingInput, true);
@@ -35,7 +39,7 @@
     get activeDuration() {
       var total = 0;
       this.children.forEach(function(child) {
-        total += scope.groupChildDuration(child);
+        total += groupChildDuration(child);
       });
       return Math.max(total, 0);
     }
@@ -45,7 +49,7 @@
     get activeDuration() {
       var max = 0;
       this.children.forEach(function(child) {
-        max = Math.max(max, scope.groupChildDuration(child));
+        max = Math.max(max, groupChildDuration(child));
       });
       return max;
     }
@@ -63,8 +67,6 @@
         player._removePlayers();
         return;
       }
-
-      player._updateChildren();
     };
 
     underlyingPlayer = scope.timeline.play(new scope.Animation(null, ticker, group._timing));
@@ -75,8 +77,10 @@
     player._player._wrapper = player;
     player._isGroup = true;
     scope.awaitStartTime(player);
-    player._updateChildren();
+    player._constructChildren();
+    player._setExternalPlayer(player);
   };
 
+  scope.groupChildDuration = groupChildDuration;
 
 })(webAnimationsShared, webAnimationsNext, webAnimationsTesting);

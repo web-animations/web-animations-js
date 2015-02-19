@@ -37,7 +37,12 @@
       var player = new scope.Player(source);
       this._players.push(player);
       scope.restartWebAnimationsNextTick();
-      player.play();
+      // Use player._player.play() here, NOT player.play().
+      //
+      // Timeline.play calls new scope.Player(source) which (indirectly) calls Timeline.play on
+      // source's children, and Player.play is also recursive. We only need to call play on each
+      // player in the tree once.
+      player._player.play();
       return player;
     },
   };
