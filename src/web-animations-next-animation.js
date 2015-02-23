@@ -86,10 +86,10 @@
     },
     _arrangeChildren: function(childAnimation, offset) {
       if (this.startTime === null) {
-        childAnimation.currentTime = this.currentTime - offset;
+        childAnimation.currentTime = this.currentTime - offset / this.playbackRate;
         childAnimation._startTime = null;
-      } else if (childAnimation.startTime !== this.startTime + offset) {
-        childAnimation.startTime = this.startTime + offset;
+      } else if (childAnimation.startTime !== this.startTime + offset / this.playbackRate) {
+        childAnimation.startTime = this.startTime + offset / this.playbackRate;
       }
     },
     get paused() {
@@ -137,10 +137,17 @@
       return this._animation.playbackRate;
     },
     set playbackRate(value) {
+      var oldCurrentTime = this.currentTime;
       this._animation.playbackRate = value;
       this._forEachChild(function(childAnimation) {
         childAnimation.playbackRate = value;
       });
+      if (!this.paused) {
+        this.play();
+      }
+      if (oldCurrentTime !== null) {
+        this.currentTime = oldCurrentTime;
+      }
     },
     get finished() {
       return this._animation.finished;
@@ -173,14 +180,14 @@
       this._removeChildren();
     },
     reverse: function() {
+      var oldCurrentTime = this.currentTime;
       this._animation.reverse();
-      scope.awaitStartTime(this);
-      this._register();
-      this._forEachChild(function(child, offset) {
-        child.reverse();
-        child.startTime = this.startTime + offset * this.playbackRate;
-        child.currentTime = this.currentTime + offset * this.playbackRate;
+      this._forEachChild(function(childAnimation) {
+        childAnimation.reverse();
       });
+      if (oldCurrentTime !== null) {
+        this.currentTime = oldCurrentTime;
+      }
     },
     addEventListener: function(type, handler) {
       var wrapped = handler;
