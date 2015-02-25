@@ -172,7 +172,7 @@
       // https://github.com/web-animations/web-animations-next/issues/278.
       // Remove when Chrome 41 goes stable.
       var currentTime = this.currentTime;
-      this.currentTime = 0;
+      this.currentTime = this.source.activeDuration ? this.source.activeDuration / 2 : 1;
       this._player.cancel();
       this.currentTime = currentTime;
       this._register();
