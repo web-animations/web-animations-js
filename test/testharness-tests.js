@@ -71,7 +71,6 @@ var interpolationTests = [
   'blink/interpolation/width-interpolation.html',
   'blink/interpolation/word-spacing-interpolation.html',
   'blink/interpolation/z-index-interpolation.html',
-  'blink/interpolation/zoom-iterpolation.html',
 ];
 
 var interpolationFailures = [
