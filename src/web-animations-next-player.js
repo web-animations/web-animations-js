@@ -86,7 +86,7 @@
     },
     _arrangeChildren: function(childPlayer, offset) {
       if (this.startTime === null) {
-        childPlayer.currentTime = this.source.player.currentTime - offset;
+        childPlayer.currentTime = this.currentTime - offset;
         childPlayer._startTime = null;
       } else if (childPlayer.startTime !== this.startTime + offset) {
         childPlayer.startTime = this.startTime + offset;
