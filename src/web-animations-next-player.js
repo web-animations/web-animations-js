@@ -50,7 +50,6 @@
     _updateChildren: function() {
       if (!this.source || this.playState == 'idle')
         return;
-
       var offset = this.source._timing.delay;
       this._childPlayers.forEach(function(childPlayer) {
         this._arrangeChildren(childPlayer, offset);
@@ -86,7 +85,7 @@
     },
     _arrangeChildren: function(childPlayer, offset) {
       if (this.startTime === null) {
-        childPlayer.currentTime = this.source.player.currentTime - offset;
+        childPlayer.currentTime = this.currentTime - offset;
         childPlayer._startTime = null;
       } else if (childPlayer.startTime !== this.startTime + offset) {
         childPlayer.startTime = this.startTime + offset;
