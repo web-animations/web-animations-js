@@ -50,6 +50,7 @@
     _updateChildren: function() {
       if (!this.source || this.playState == 'idle')
         return;
+
       var offset = this.source._timing.delay;
       this._childPlayers.forEach(function(childPlayer) {
         this._arrangeChildren(childPlayer, offset);
