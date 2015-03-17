@@ -12,7 +12,7 @@ suite('effect-callback', function() {
     tick(200);
     tick(1000);
     tick(1100);
-    assert.deepEqual(fractions, [null, 0, 0.1]);
+    assert.deepEqual(fractions, [0, 0.1]);
   });
 
   test('duration 0 players get sampled at least once', function() {

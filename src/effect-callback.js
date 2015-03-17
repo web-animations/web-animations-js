@@ -20,7 +20,7 @@
     var target = player.source.target;
     var effect = player.source.effect;
     var timing = player.source.timing;
-    var last = undefined;
+    var last = null;
     timing = shared.normalizeTimingInput(timing);
     var callback = function() {
       var t = callback._player ? callback._player.currentTime : null;
