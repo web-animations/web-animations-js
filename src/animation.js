@@ -16,7 +16,7 @@
 
   var sequenceNumber = 0;
 
-  var AnimationPlayerEvent = function(target, currentTime, timelineTime) {
+  var AnimationEvent = function(target, currentTime, timelineTime) {
     this.target = target;
     this.currentTime = currentTime;
     this.timelineTime = timelineTime;
@@ -30,7 +30,7 @@
     this.timeStamp = Date.now();
   };
 
-  scope.Player = function(source) {
+  scope.Animation = function(source) {
     this._sequenceNumber = sequenceNumber++;
     this._currentTime = 0;
     this._startTime = null;
@@ -46,12 +46,12 @@
     this._currentTimePending = false;
   };
 
-  scope.Player.prototype = {
+  scope.Animation.prototype = {
     _ensureAlive: function() {
       this._inEffect = this._source._update(this.currentTime);
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
-        scope.timeline._players.push(this);
+        scope.timeline._animations.push(this);
       }
     },
     _tickCurrentTime: function(newTime, ignoreLimit) {
@@ -171,7 +171,7 @@
     _fireEvents: function(baseTime) {
       var finished = this.finished;
       if ((finished || this._idle) && !this._finishedFlag) {
-        var event = new AnimationPlayerEvent(this, this._currentTime, baseTime);
+        var event = new AnimationEvent(this, this._currentTime, baseTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {
@@ -196,7 +196,7 @@
   };
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.Player = scope.Player;
+    testing.Animation = scope.Animation;
   }
 
 })(webAnimations1, webAnimationsTesting);
