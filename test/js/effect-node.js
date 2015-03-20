@@ -1,4 +1,4 @@
-suite('animation-node', function() {
+suite('effect-node', function() {
   test('normalize timing input', function() {
     assert.equal(normalizeTimingInput(1).duration, 1);
     assert.equal(normalizeTimingInput(1).easing(0.2), 0.2);
@@ -90,11 +90,11 @@ suite('animation-node', function() {
     assert.closeTo(calculateTransformedTime(4, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 160, 0.0001);
     assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 360, 0.0001);
   });
-  test('Animation Node', function() {
+  test('Effect Node', function() {
     var timing = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});
     var timing2 = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'ease', direction: 'alternate', delay: 100, fill: 'forwards'});
-    var node = webAnimations1.AnimationNode(timing);
-    var node2 = webAnimations1.AnimationNode(timing2);
+    var node = webAnimations1.EffectNode(timing);
+    var node2 = webAnimations1.EffectNode(timing2);
     assert.equal(node(0), null);
     assert.equal(node(100), 0.5);
     assert.closeTo(node2(100), 0.8, 0.005);

@@ -343,7 +343,7 @@ suite('group-player', function() {
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
   });
 
-  test('redundant animation node wrapping', function() {
+  test('redundant effect node wrapping', function() {
     tick(100);
     var animation = new AnimationSequence([
       this.staticAnimation(this.target, '0px', 1),
