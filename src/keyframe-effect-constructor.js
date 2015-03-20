@@ -15,18 +15,17 @@
 (function(shared, scope, testing) {
 
   // FIXME: Make this shareable and rename to SharedKeyframeList.
-  function KeyframeList(effect) {
-    this._frames = shared.normalizeKeyframes(effect);
+  function KeyframeList(keyframes) {
+    this._frames = shared.normalizeKeyframes(keyframes);
   }
 
   KeyframeList.prototype = {
     getFrames: function() { return this._frames; }
   };
 
-  // FIXME: This constructor is also used for custom effects (including  in groups/sequences).
-  // Rename to Effect & add scope.KeyframeEffect alias? Won't matter once changes to  custom effects
-  // are added, so prob not worth it.
-  scope.KeyframeEffect = function(target, effect, timingInput) {
+  // FIXME: This constructor is also used for custom effects. This won't be the case once custom
+  // effects are change to callbacks.
+  scope.KeyframeEffect = function(target, effectInput, timingInput) {
     this.target = target;
 
     // TODO: Store a clone, not the same instance.
@@ -35,34 +34,36 @@
 
     // TODO: Make modifications to timing update the underlying animation
     this.timing = shared.makeTiming(timingInput);
-    // TODO: Make this a live object - will need to separate normalization of
-    // keyframes into a shared module.
-    if (typeof effect == 'function')
-      this.effect = effect;
+    // TODO: Make this a live object - will need to separate normalization of keyframes into a
+    // shared module.
+    // FIXME: This is a bit weird. Custom effects will soon be implemented as
+    // callbacks, and effectInput will no longer be allowed to be a function.
+    if (typeof effectInput == 'function')
+      this._normalizedKeyframes = effectInput;
     else
-      this.effect = new KeyframeList(effect);
-    this._effect = effect;
+      this._normalizedKeyframes = new KeyframeList(effectInput);
+    this._keyframes = effectInput;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
   };
 
   var originalElementAnimate = Element.prototype.animate;
-  Element.prototype.animate = function(effect, timing) {
-    return scope.timeline.play(new scope.KeyframeEffect(this, effect, timing));
+  Element.prototype.animate = function(effectInput, timing) {
+    return scope.timeline.play(new scope.KeyframeEffect(this, effectInput, timing));
   };
 
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
   scope.newUnderlyingAnimationForKeyframeEffect = function(keyframeEffect) {
     var target = keyframeEffect.target || nullTarget;
-    var effect = keyframeEffect._effect;
-    if (typeof effect == 'function') {
-      effect = [];
+    var keyframes = keyframeEffect._keyframes;
+    if (typeof keyframes == 'function') {
+      keyframes = [];
     }
-    return originalElementAnimate.apply(target, [effect, keyframeEffect._timingInput]);
+    return originalElementAnimate.apply(target, [keyframes, keyframeEffect._timingInput]);
   };
 
   scope.bindAnimationForKeyframeEffect = function(animation) {
-    if (animation.source && typeof animation.source.effect == 'function') {
+    if (animation.source && typeof animation.source._normalizedKeyframes == 'function') {
       scope.bindAnimationForCustomEffect(animation);
     }
   };
