@@ -14,52 +14,52 @@
 
 (function(shared, scope, testing) {
 
-  scope.Animation = function(target, effectInput, timingInput) {
+  scope.KeyframeEffect = function(target, effectInput, timingInput) {
     var effectNode = scope.EffectNode(shared.normalizeTimingInput(timingInput));
     var effect = scope.convertEffectInput(effectInput);
     var timeFraction;
-    var animation = function() {
+    var keyframeEffect = function() {
       WEB_ANIMATIONS_TESTING && console.assert(typeof timeFraction !== 'undefined');
       effect(target, timeFraction);
     };
-    // Returns whether the animation is in effect or not after the timing update.
-    animation._update = function(localTime) {
+    // Returns whether the keyframeEffect is in effect or not after the timing update.
+    keyframeEffect._update = function(localTime) {
       timeFraction = effectNode(localTime);
       return timeFraction !== null;
     };
-    animation._clear = function() {
+    keyframeEffect._clear = function() {
       effect(target, null);
     };
-    animation._hasSameTarget = function(otherTarget) {
+    keyframeEffect._hasSameTarget = function(otherTarget) {
       return target === otherTarget;
     };
-    animation._isCurrent = effectNode._isCurrent;
-    animation._totalDuration = effectNode._totalDuration;
-    return animation;
+    keyframeEffect._isCurrent = effectNode._isCurrent;
+    keyframeEffect._totalDuration = effectNode._totalDuration;
+    return keyframeEffect;
   };
 
-  scope.NullAnimation = function(clear) {
-    var nullAnimation = function() {
+  scope.NullEffect = function(clear) {
+    var nullEffect = function() {
       if (clear) {
         clear();
         clear = null;
       }
     };
-    nullAnimation._update = function() {
+    nullEffect._update = function() {
       return null;
     };
-    nullAnimation._totalDuration = 0;
-    nullAnimation._isCurrent = function() {
+    nullEffect._totalDuration = 0;
+    nullEffect._isCurrent = function() {
       return false;
     };
-    nullAnimation._hasSameTarget = function() {
+    nullEffect._hasSameTarget = function() {
       return false;
     };
-    return nullAnimation;
+    return nullEffect;
   };
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.webAnimations1Animation = scope.Animation;
+    testing.webAnimations1.KeyframeEffect = scope.KeyframeEffect;
   }
 
 })(webAnimationsShared, webAnimations1, webAnimationsTesting);
