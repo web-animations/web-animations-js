@@ -13,11 +13,11 @@
 // limitations under the License.
 
 (function(shared, scope, testing) {
-  scope.Animation = function(source) {
-    this.source = source;
-    if (source) {
+  scope.Animation = function(effect) {
+    this.effect = effect;
+    if (effect) {
       // FIXME: detach existing animation.
-      source.animation = this;
+      effect.animation = this;
     }
     this._isGroup = false;
     this._animation = null;
@@ -28,7 +28,7 @@
     this._animation.cancel();
   };
 
-  // TODO: add a source getter/setter
+  // TODO: add an effect getter/setter
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
       if (this._animation) {
@@ -36,51 +36,51 @@
         this._animation = null;
       }
 
-      if (!this.source || this.source instanceof window.KeyframeEffect) {
-        this._animation = scope.newUnderlyingAnimationForKeyframeEffect(this.source);
+      if (!this.effect || this.effect instanceof window.KeyframeEffect) {
+        this._animation = scope.newUnderlyingAnimationForKeyframeEffect(this.effect);
         scope.bindAnimationForKeyframeEffect(this);
       }
-      if (this.source instanceof window.SequenceEffect || this.source instanceof window.GroupEffect) {
-        this._animation = scope.newUnderlyingAnimationForGroup(this.source);
+      if (this.effect instanceof window.SequenceEffect || this.effect instanceof window.GroupEffect) {
+        this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
       }
 
       // FIXME: move existing currentTime/startTime/playState to new animation
     },
     _updateChildren: function() {
-      if (!this.source || this.playState == 'idle')
+      if (!this.effect || this.playState == 'idle')
         return;
 
-      var offset = this.source._timing.delay;
+      var offset = this.effect._timing.delay;
       this._childAnimations.forEach(function(childAnimation) {
         this._arrangeChildren(childAnimation, offset);
-        if (this.source instanceof window.SequenceEffect)
-          offset += scope.groupChildDuration(childAnimation.source);
+        if (this.effect instanceof window.SequenceEffect)
+          offset += scope.groupChildDuration(childAnimation.effect);
       }.bind(this));
     },
     _setExternalAnimation: function(animation) {
-      if (!this.source || !this._isGroup)
+      if (!this.effect || !this._isGroup)
         return;
-      for (var i = 0; i < this.source.children.length; i++) {
-        this.source.children[i].animation = animation;
+      for (var i = 0; i < this.effect.children.length; i++) {
+        this.effect.children[i].animation = animation;
         this._childAnimations[i]._setExternalAnimation(animation);
       }
     },
     _constructChildren: function() {
-      if (!this.source || !this._isGroup)
+      if (!this.effect || !this._isGroup)
         return;
-      var offset = this.source._timing.delay;
-      this.source.children.forEach(function(child) {
+      var offset = this.effect._timing.delay;
+      this.effect.children.forEach(function(child) {
         var childAnimation = window.document.timeline.play(child);
         this._childAnimations.push(childAnimation);
         childAnimation.playbackRate = this.playbackRate;
         if (this.paused)
           childAnimation.pause();
-        child.animation = this.source.animation;
+        child.animation = this.effect.animation;
 
         this._arrangeChildren(childAnimation, offset);
 
-        if (this.source instanceof window.SequenceEffect)
+        if (this.effect instanceof window.SequenceEffect)
           offset += scope.groupChildDuration(child);
       }.bind(this));
     },
@@ -202,17 +202,17 @@
     },
     _forEachChild: function(f) {
       var offset = 0;
-      if (this.source.children && this._childAnimations.length < this.source.children.length)
+      if (this.effect.children && this._childAnimations.length < this.effect.children.length)
         this._constructChildren();
       this._childAnimations.forEach(function(child) {
         f.call(this, child, offset);
-        if (this.source instanceof window.SequenceEffect)
-          offset += child.source.activeDuration;
+        if (this.effect instanceof window.SequenceEffect)
+          offset += child.effect.activeDuration;
       }.bind(this));
 
       if (this._animation.playState == 'pending')
         return;
-      var timing = this.source._timing;
+      var timing = this.effect._timing;
       var t = this._animation.currentTime;
       if (t !== null)
         t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);

@@ -30,7 +30,7 @@
     this.timeStamp = Date.now();
   };
 
-  scope.Animation = function(source) {
+  scope.Animation = function(effect) {
     this._sequenceNumber = sequenceNumber++;
     this._currentTime = 0;
     this._startTime = null;
@@ -40,15 +40,15 @@
     this._finishedFlag = false;
     this.onfinish = null;
     this._finishHandlers = [];
-    this._source = source;
-    this._inEffect = this._source._update(0);
+    this._effect = effect;
+    this._inEffect = this._effect._update(0);
     this._idle = true;
     this._currentTimePending = false;
   };
 
   scope.Animation.prototype = {
     _ensureAlive: function() {
-      this._inEffect = this._source._update(this.currentTime);
+      this._inEffect = this._effect._update(this.currentTime);
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
         scope.timeline._animations.push(this);
@@ -108,7 +108,7 @@
       return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
           this._playbackRate < 0 && this._currentTime <= 0);
     },
-    get _totalDuration() { return this._source._totalDuration; },
+    get _totalDuration() { return this._effect._totalDuration; },
     get playState() {
       if (this._idle)
         return 'idle';

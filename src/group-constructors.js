@@ -61,7 +61,7 @@
       var animation = underlyingAnimation._wrapper;
       if (animation.playState == 'pending') return;
 
-      if (!animation.source)
+      if (!animation.effect)
         return;
       if (tf == null) {
         animation._removeChildren();

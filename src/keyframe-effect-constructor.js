@@ -63,7 +63,7 @@
   };
 
   scope.bindAnimationForKeyframeEffect = function(animation) {
-    if (animation.source && typeof animation.source._normalizedKeyframes == 'function') {
+    if (animation.effect && typeof animation.effect._normalizedKeyframes == 'function') {
       scope.bindAnimationForCustomEffect(animation);
     }
   };
@@ -100,7 +100,7 @@
   window.KeyframeEffect = scope.KeyframeEffect;
   window.Element.prototype.getAnimations = function() {
     return document.timeline.getAnimations().filter(function(animation) {
-      return animation.source !== null && animation.source.target == this;
+      return animation.effect !== null && animation.effect.target == this;
     }.bind(this));
   };
 

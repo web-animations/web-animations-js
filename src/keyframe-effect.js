@@ -16,11 +16,11 @@
 
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
     var effectNode = scope.EffectNode(shared.normalizeTimingInput(timingInput));
-    var effect = scope.convertEffectInput(effectInput);
+    var keyframes = scope.convertEffectInput(effectInput);
     var timeFraction;
     var keyframeEffect = function() {
       WEB_ANIMATIONS_TESTING && console.assert(typeof timeFraction !== 'undefined');
-      effect(target, timeFraction);
+      keyframes(target, timeFraction);
     };
     // Returns whether the keyframeEffect is in effect or not after the timing update.
     keyframeEffect._update = function(localTime) {
@@ -28,7 +28,7 @@
       return timeFraction !== null;
     };
     keyframeEffect._clear = function() {
-      effect(target, null);
+      keyframes(target, null);
     };
     keyframeEffect._hasSameTarget = function(otherTarget) {
       return target === otherTarget;

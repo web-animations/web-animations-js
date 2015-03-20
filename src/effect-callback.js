@@ -17,9 +17,9 @@
 
   var sequenceNumber = 0;
   scope.bindAnimationForCustomEffect = function(animation) {
-    var target = animation.source.target;
-    var effectFunction  = animation.source._normalizedKeyframes;
-    var timing = animation.source.timing;
+    var target = animation.effect.target;
+    var effectFunction = animation.effect._normalizedKeyframes;
+    var timing = animation.effect.timing;
     var last = null;
     timing = shared.normalizeTimingInput(timing);
     var callback = function() {
@@ -32,7 +32,7 @@
       // FIXME: There are actually more conditions under which the effectFunction
       // should be called.
       if (t !== last)
-        effectFunction(t, target, animation.source);
+        effectFunction(t, target, animation.effect);
       last = t;
     };
 

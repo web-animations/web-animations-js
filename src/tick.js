@@ -55,9 +55,9 @@
   };
 
   InternalTimeline.prototype = {
-    _play: function(source) {
-      source._timing = shared.normalizeTimingInput(source.timing);
-      var animation = new scope.Animation(source);
+    _play: function(effect) {
+      effect._timing = shared.normalizeTimingInput(effect.timing);
+      var animation = new scope.Animation(effect);
       animation._idle = false;
       animation._timeline = this;
       this._animations.push(animation);
@@ -116,9 +116,9 @@
       animation._inTimeline = animation._tick(t);
 
       if (!animation._inEffect)
-        newPendingClears.push(animation._source);
+        newPendingClears.push(animation._effect);
       else
-        newPendingEffects.push(animation._source);
+        newPendingEffects.push(animation._effect);
 
       if (!animation.finished && !animation.paused && !animation._idle)
         ticking = true;
