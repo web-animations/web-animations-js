@@ -33,14 +33,14 @@
         return animation.playState != 'finished' && animation.playState != 'idle';
       });
     },
-    play: function(source) {
-      var animation = new scope.Animation(source);
+    play: function(effect) {
+      var animation = new scope.Animation(effect);
       this._animations.push(animation);
       scope.restartWebAnimationsNextTick();
       // Use animation._animation.play() here, NOT animation.play().
       //
-      // Timeline.play calls new scope.Animation(source) which (indirectly) calls Timeline.play on
-      // source's children, and Animation.play is also recursive. We only need to call play on each
+      // Timeline.play calls new scope.Animation(effect) which (indirectly) calls Timeline.play on
+      // effect's children, and Animation.play is also recursive. We only need to call play on each
       // animation in the tree once.
       animation._animation.play();
       return animation;
