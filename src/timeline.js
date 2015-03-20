@@ -21,29 +21,29 @@
   };
 
   scope.AnimationTimeline.prototype = {
-    // FIXME: This needs to return the wrapped players in Web Animations Next
+    // FIXME: This needs to return the wrapped animations in Web Animations Next
     // TODO: Does this need to be sorted?
     // TODO: Do we need to consider needsRetick?
-    getAnimationPlayers: function() {
-      this._discardPlayers();
+    getAnimationAnimations: function() {
+      this._discardAnimations();
       return this._animations.slice();
     },
-    _discardPlayers: function() {
-      this._animations = this._animations.filter(function(player) {
-        return player.playState != 'finished' && player.playState != 'idle';
+    _discardAnimations: function() {
+      this._animations = this._animations.filter(function(animation) {
+        return animation.playState != 'finished' && animation.playState != 'idle';
       });
     },
     play: function(source) {
-      var player = new scope.Player(source);
-      this._animations.push(player);
+      var animation = new scope.Animation(source);
+      this._animations.push(animation);
       scope.restartWebAnimationsNextTick();
-      // Use player._player.play() here, NOT player.play().
+      // Use animation._animation.play() here, NOT animation.play().
       //
-      // Timeline.play calls new scope.Player(source) which (indirectly) calls Timeline.play on
-      // source's children, and Player.play is also recursive. We only need to call play on each
-      // player in the tree once.
-      player._player.play();
-      return player;
+      // Timeline.play calls new scope.Animation(source) which (indirectly) calls Timeline.play on
+      // source's children, and Animation.play is also recursive. We only need to call play on each
+      // animation in the tree once.
+      animation._animation.play();
+      return animation;
     },
   };
 
@@ -59,7 +59,7 @@
   function webAnimationsNextTick(t) {
     var timeline = window.document.timeline;
     timeline.currentTime = t;
-    timeline._discardPlayers();
+    timeline._discardAnimations();
     if (timeline._animations.length == 0)
       ticking = false;
     else
