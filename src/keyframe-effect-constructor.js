@@ -14,15 +14,19 @@
 
 (function(shared, scope, testing) {
 
-  function KeyframeEffect(effect) {
+  // FIXME: Make this shareable and rename to SharedKeyframeList.
+  function KeyframeList(effect) {
     this._frames = shared.normalizeKeyframes(effect);
   }
 
-  KeyframeEffect.prototype = {
+  KeyframeList.prototype = {
     getFrames: function() { return this._frames; }
   };
 
-  scope.Animation = function(target, effect, timingInput) {
+  // FIXME: This constructor is also used for custom effects (including  in groups/sequences).
+  // Rename to Effect & add scope.KeyframeEffect alias? Won't matter once changes to  custom effects
+  // are added, so prob not worth it.
+  scope.KeyframeEffect = function(target, effect, timingInput) {
     this.target = target;
 
     // TODO: Store a clone, not the same instance.
@@ -36,7 +40,7 @@
     if (typeof effect == 'function')
       this.effect = effect;
     else
-      this.effect = new KeyframeEffect(effect);
+      this.effect = new KeyframeList(effect);
     this._effect = effect;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
@@ -44,20 +48,20 @@
 
   var originalElementAnimate = Element.prototype.animate;
   Element.prototype.animate = function(effect, timing) {
-    return scope.timeline.play(new scope.Animation(this, effect, timing));
+    return scope.timeline.play(new scope.KeyframeEffect(this, effect, timing));
   };
 
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
-  scope.newUnderlyingPlayerForAnimation = function(animation) {
-    var target = animation.target || nullTarget;
-    var effect = animation._effect;
+  scope.newUnderlyingPlayerForKeyframeEffect = function(keyframeEffect) {
+    var target = keyframeEffect.target || nullTarget;
+    var effect = keyframeEffect._effect;
     if (typeof effect == 'function') {
       effect = [];
     }
-    return originalElementAnimate.apply(target, [effect, animation._timingInput]);
+    return originalElementAnimate.apply(target, [effect, keyframeEffect._timingInput]);
   };
 
-  scope.bindPlayerForAnimation = function(player) {
+  scope.bindPlayerForKeyframeEffect = function(player) {
     if (player.source && typeof player.source.effect == 'function') {
       scope.bindPlayerForCustomEffect(player);
     }
@@ -92,7 +96,7 @@
     },
   });
 
-  window.Animation = scope.Animation;
+  window.KeyframeEffect = scope.KeyframeEffect;
   window.Element.prototype.getAnimationPlayers = function() {
     return document.timeline.getAnimationPlayers().filter(function(player) {
       return player.source !== null && player.source.target == this;

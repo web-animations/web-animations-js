@@ -14,18 +14,18 @@
 
 (function(shared, scope) {
 
-  scope.AnimationNode = function(timing) {
+  scope.EffectNode = function(timing) {
     var timeFraction = 0;
     var activeDuration = shared.calculateActiveDuration(timing);
-    var animationNode = function(localTime) {
+    var effectNode = function(localTime) {
       return shared.calculateTimeFraction(activeDuration, localTime, timing);
     };
-    animationNode._totalDuration = timing.delay + activeDuration + timing.endDelay;
-    animationNode._isCurrent = function(localTime) {
+    effectNode._totalDuration = timing.delay + activeDuration + timing.endDelay;
+    effectNode._isCurrent = function(localTime) {
       var phase = shared.calculatePhase(activeDuration, localTime, timing);
       return phase === PhaseActive || phase === PhaseBefore;
     };
-    return animationNode;
+    return effectNode;
   };
 
 })(webAnimationsShared, webAnimations1);
