@@ -27,15 +27,15 @@
       this._timing.duration = this.activeDuration;
   }
 
-  window.AnimationSequence = function() {
+  window.SequenceEffect = function() {
     constructor.apply(this, arguments);
   };
 
-  window.AnimationGroup = function() {
+  window.GroupEffect = function() {
     constructor.apply(this, arguments);
   };
 
-  window.AnimationSequence.prototype = {
+  window.SequenceEffect.prototype = {
     get activeDuration() {
       var total = 0;
       this.children.forEach(function(child) {
@@ -45,7 +45,7 @@
     }
   };
 
-  window.AnimationGroup.prototype = {
+  window.GroupEffect.prototype = {
     get activeDuration() {
       var max = 0;
       this.children.forEach(function(child) {
@@ -55,30 +55,30 @@
     }
   };
 
-  scope.newUnderlyingPlayerForGroup = function(group) {
-    var underlyingPlayer;
+  scope.newUnderlyingAnimationForGroup = function(group) {
+    var underlyingAnimation;
     var ticker = function(tf) {
-      var player = underlyingPlayer._wrapper;
-      if (player.playState == 'pending') return;
+      var animation = underlyingAnimation._wrapper;
+      if (animation.playState == 'pending') return;
 
-      if (!player.source)
+      if (!animation.source)
         return;
       if (tf == null) {
-        player._removePlayers();
+        animation._removeChildren();
         return;
       }
     };
 
-    underlyingPlayer = scope.timeline.play(new scope.Animation(null, ticker, group._timing));
-    return underlyingPlayer;
+    underlyingAnimation = scope.timeline.play(new scope.KeyframeEffect(null, ticker, group._timing));
+    return underlyingAnimation;
   };
 
-  scope.bindPlayerForGroup = function(player) {
-    player._player._wrapper = player;
-    player._isGroup = true;
-    scope.awaitStartTime(player);
-    player._constructChildren();
-    player._setExternalPlayer(player);
+  scope.bindAnimationForGroup = function(animation) {
+    animation._animation._wrapper = animation;
+    animation._isGroup = true;
+    scope.awaitStartTime(animation);
+    animation._constructChildren();
+    animation._setExternalAnimation(animation);
   };
 
   scope.groupChildDuration = groupChildDuration;

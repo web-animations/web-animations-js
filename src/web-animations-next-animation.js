@@ -170,7 +170,7 @@
     cancel: function() {
       this._player.cancel();
       this._register();
-      this._removePlayers();
+      this._removeChildren();
     },
     reverse: function() {
       this._player.reverse();
@@ -196,7 +196,7 @@
     removeEventListener: function(type, handler) {
       this._player.removeEventListener(type, (handler && handler._wrapper) || handler);
     },
-    _removePlayers: function() {
+    _removeChildren: function() {
       while (this._childPlayers.length)
         this._childPlayers.pop().cancel();
     },
@@ -217,7 +217,7 @@
       if (t !== null)
         t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
       if (t == null || isNaN(t))
-        this._removePlayers();
+        this._removeChildren();
     },
   };
 
