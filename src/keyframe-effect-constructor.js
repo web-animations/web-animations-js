@@ -33,7 +33,7 @@
     this._timingInput = timingInput;
     this._timing = shared.normalizeTimingInput(timingInput);
 
-    // TODO: Make modifications to timing update the underlying player
+    // TODO: Make modifications to timing update the underlying animation
     this.timing = shared.makeTiming(timingInput);
     // TODO: Make this a live object - will need to separate normalization of
     // keyframes into a shared module.
@@ -52,7 +52,7 @@
   };
 
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
-  scope.newUnderlyingPlayerForKeyframeEffect = function(keyframeEffect) {
+  scope.newUnderlyingAnimationForKeyframeEffect = function(keyframeEffect) {
     var target = keyframeEffect.target || nullTarget;
     var effect = keyframeEffect._effect;
     if (typeof effect == 'function') {
@@ -61,20 +61,20 @@
     return originalElementAnimate.apply(target, [effect, keyframeEffect._timingInput]);
   };
 
-  scope.bindPlayerForKeyframeEffect = function(player) {
-    if (player.source && typeof player.source.effect == 'function') {
-      scope.bindAnimationForCustomEffect(player);
+  scope.bindAnimationForKeyframeEffect = function(animation) {
+    if (animation.source && typeof animation.source.effect == 'function') {
+      scope.bindAnimationForCustomEffect(animation);
     }
   };
 
   var pendingGroups = [];
-  scope.awaitStartTime = function(groupPlayer) {
-    if (groupPlayer.startTime !== null || !groupPlayer._isGroup)
+  scope.awaitStartTime = function(groupAnimation) {
+    if (groupAnimation.startTime !== null || !groupAnimation._isGroup)
       return;
     if (pendingGroups.length == 0) {
       requestAnimationFrame(updatePendingGroups);
     }
-    pendingGroups.push(groupPlayer);
+    pendingGroups.push(groupAnimation);
   };
   function updatePendingGroups() {
     var updated = false;
@@ -97,9 +97,9 @@
   });
 
   window.KeyframeEffect = scope.KeyframeEffect;
-  window.Element.prototype.getAnimationPlayers = function() {
-    return document.timeline.getAnimationPlayers().filter(function(player) {
-      return player.source !== null && player.source.target == this;
+  window.Element.prototype.getAnimations = function() {
+    return document.timeline.getAnimations().filter(function(animation) {
+      return animation.source !== null && animation.source.target == this;
     }.bind(this));
   };
 
