@@ -13,57 +13,57 @@
 // limitations under the License.
 
 (function(shared, scope, testing) {
-  scope.Player = function(source) {
+  scope.Animation = function(source) {
     this.source = source;
     if (source) {
-      // FIXME: detach existing player.
-      source.player = this;
+      // FIXME: detach existing animation.
+      source.animation = this;
     }
     this._isGroup = false;
-    this._player = null;
-    this._childPlayers = [];
+    this._animation = null;
+    this._childAnimations = [];
     this._callback = null;
-    this._rebuildUnderlyingPlayer();
-    // Players are constructed in the idle state.
-    this._player.cancel();
+    this._rebuildUnderlyingAnimation();
+    // Animations are constructed in the idle state.
+    this._animation.cancel();
   };
 
   // TODO: add a source getter/setter
-  scope.Player.prototype = {
-    _rebuildUnderlyingPlayer: function() {
-      if (this._player) {
-        this._player.cancel();
-        this._player = null;
+  scope.Animation.prototype = {
+    _rebuildUnderlyingAnimation: function() {
+      if (this._animation) {
+        this._animation.cancel();
+        this._animation = null;
       }
 
-      if (!this.source || this.source instanceof window.Animation) {
-        this._player = scope.newUnderlyingPlayerForAnimation(this.source);
-        scope.bindPlayerForAnimation(this);
+      if (!this.source || this.source instanceof window.KeyframeEffect) {
+        this._animation = scope.newUnderlyingAnimationForKeyframeEffect(this.source);
+        scope.bindAnimationForKeyframeEffect(this);
       }
-      if (this.source instanceof window.AnimationSequence || this.source instanceof window.AnimationGroup) {
-        this._player = scope.newUnderlyingPlayerForGroup(this.source);
-        scope.bindPlayerForGroup(this);
+      if (this.source instanceof window.SequenceEffect || this.source instanceof window.GroupEffect) {
+        this._animation = scope.newUnderlyingAnimationForGroup(this.source);
+        scope.bindAnimationForGroup(this);
       }
 
-      // FIXME: move existing currentTime/startTime/playState to new player
+      // FIXME: move existing currentTime/startTime/playState to new animation
     },
     _updateChildren: function() {
       if (!this.source || this.playState == 'idle')
         return;
 
       var offset = this.source._timing.delay;
-      this._childPlayers.forEach(function(childPlayer) {
-        this._arrangeChildren(childPlayer, offset);
-        if (this.source instanceof window.AnimationSequence)
-          offset += scope.groupChildDuration(childPlayer.source);
+      this._childAnimations.forEach(function(childAnimation) {
+        this._arrangeChildren(childAnimation, offset);
+        if (this.source instanceof window.SequenceEffect)
+          offset += scope.groupChildDuration(childAnimation.source);
       }.bind(this));
     },
-    _setExternalPlayer: function(player) {
+    _setExternalAnimation: function(animation) {
       if (!this.source || !this._isGroup)
         return;
       for (var i = 0; i < this.source.children.length; i++) {
-        this.source.children[i].player = player;
-        this._childPlayers[i]._setExternalPlayer(player);
+        this.source.children[i].animation = animation;
+        this._childAnimations[i]._setExternalAnimation(animation);
       }
     },
     _constructChildren: function() {
@@ -71,32 +71,32 @@
         return;
       var offset = this.source._timing.delay;
       this.source.children.forEach(function(child) {
-        var childPlayer = window.document.timeline.play(child);
-        this._childPlayers.push(childPlayer);
-        childPlayer.playbackRate = this.playbackRate;
+        var childAnimation = window.document.timeline.play(child);
+        this._childAnimations.push(childAnimation);
+        childAnimation.playbackRate = this.playbackRate;
         if (this.paused)
-          childPlayer.pause();
-        child.player = this.source.player;
+          childAnimation.pause();
+        child.animation = this.source.animation;
 
-        this._arrangeChildren(childPlayer, offset);
+        this._arrangeChildren(childAnimation, offset);
 
-        if (this.source instanceof window.AnimationSequence)
+        if (this.source instanceof window.SequenceEffect)
           offset += scope.groupChildDuration(child);
       }.bind(this));
     },
-    _arrangeChildren: function(childPlayer, offset) {
+    _arrangeChildren: function(childAnimation, offset) {
       if (this.startTime === null) {
-        childPlayer.currentTime = this.currentTime - offset;
-        childPlayer._startTime = null;
-      } else if (childPlayer.startTime !== this.startTime + offset) {
-        childPlayer.startTime = this.startTime + offset;
+        childAnimation.currentTime = this.currentTime - offset;
+        childAnimation._startTime = null;
+      } else if (childAnimation.startTime !== this.startTime + offset) {
+        childAnimation.startTime = this.startTime + offset;
       }
     },
     get paused() {
-      return this._player.paused;
+      return this._animation.paused;
     },
     get playState() {
-      return this._player.playState;
+      return this._animation.playState;
     },
     get onfinish() {
       return this._onfinish;
@@ -104,49 +104,49 @@
     set onfinish(v) {
       if (typeof v == 'function') {
         this._onfinish = v;
-        this._player.onfinish = (function(e) {
+        this._animation.onfinish = (function(e) {
           e.target = this;
           v.call(this, e);
         }).bind(this);
       } else {
-        this._player.onfinish = v;
-        this.onfinish = this._player.onfinish;
+        this._animation.onfinish = v;
+        this.onfinish = this._animation.onfinish;
       }
     },
     get currentTime() {
-      return this._player.currentTime;
+      return this._animation.currentTime;
     },
     set currentTime(v) {
-      this._player.currentTime = v;
+      this._animation.currentTime = v;
       this._register();
       this._forEachChild(function(child, offset) {
         child.currentTime = v - offset;
       });
     },
     get startTime() {
-      return this._player.startTime;
+      return this._animation.startTime;
     },
     set startTime(v) {
-      this._player.startTime = v;
+      this._animation.startTime = v;
       this._register();
       this._forEachChild(function(child, offset) {
         child.startTime = v + offset;
       });
     },
     get playbackRate() {
-      return this._player.playbackRate;
+      return this._animation.playbackRate;
     },
     set playbackRate(value) {
-      this._player.playbackRate = value;
-      this._forEachChild(function(childPlayer) {
-        childPlayer.playbackRate = value;
+      this._animation.playbackRate = value;
+      this._forEachChild(function(childAnimation) {
+        childAnimation.playbackRate = value;
       });
     },
     get finished() {
-      return this._player.finished;
+      return this._animation.finished;
     },
     play: function() {
-      this._player.play();
+      this._animation.play();
       this._register();
       scope.awaitStartTime(this);
       this._forEachChild(function(child) {
@@ -156,24 +156,24 @@
       });
     },
     pause: function() {
-      this._player.pause();
+      this._animation.pause();
       this._register();
       this._forEachChild(function(child) {
         child.pause();
       });
     },
     finish: function() {
-      this._player.finish();
+      this._animation.finish();
       this._register();
-      // TODO: child players??
+      // TODO: child animations??
     },
     cancel: function() {
-      this._player.cancel();
+      this._animation.cancel();
       this._register();
       this._removeChildren();
     },
     reverse: function() {
-      this._player.reverse();
+      this._animation.reverse();
       scope.awaitStartTime(this);
       this._register();
       this._forEachChild(function(child, offset) {
@@ -191,29 +191,29 @@
         }).bind(this);
         handler._wrapper = wrapped;
       }
-      this._player.addEventListener(type, wrapped);
+      this._animation.addEventListener(type, wrapped);
     },
     removeEventListener: function(type, handler) {
-      this._player.removeEventListener(type, (handler && handler._wrapper) || handler);
+      this._animation.removeEventListener(type, (handler && handler._wrapper) || handler);
     },
     _removeChildren: function() {
-      while (this._childPlayers.length)
-        this._childPlayers.pop().cancel();
+      while (this._childs.length)
+        this._childAnimations.pop().cancel();
     },
     _forEachChild: function(f) {
       var offset = 0;
-      if (this.source.children && this._childPlayers.length < this.source.children.length)
+      if (this.source.children && this._childAnimations.length < this.source.children.length)
         this._constructChildren();
-      this._childPlayers.forEach(function(child) {
+      this._childAnimations.forEach(function(child) {
         f.call(this, child, offset);
-        if (this.source instanceof window.AnimationSequence)
+        if (this.source instanceof window.SequenceEffect)
           offset += child.source.activeDuration;
       }.bind(this));
 
-      if (this._player.playState == 'pending')
+      if (this._animation.playState == 'pending')
         return;
       var timing = this.source._timing;
-      var t = this._player.currentTime;
+      var t = this._animation.currentTime;
       if (t !== null)
         t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
       if (t == null || isNaN(t))
