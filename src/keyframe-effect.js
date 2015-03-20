@@ -15,7 +15,7 @@
 (function(shared, scope, testing) {
 
   scope.Animation = function(target, effectInput, timingInput) {
-    var animationNode = scope.EffectNode(shared.normalizeTimingInput(timingInput));
+    var effectNode = scope.EffectNode(shared.normalizeTimingInput(timingInput));
     var effect = scope.convertEffectInput(effectInput);
     var timeFraction;
     var animation = function() {
@@ -24,7 +24,7 @@
     };
     // Returns whether the animation is in effect or not after the timing update.
     animation._update = function(localTime) {
-      timeFraction = animationNode(localTime);
+      timeFraction = effectNode(localTime);
       return timeFraction !== null;
     };
     animation._clear = function() {
@@ -33,8 +33,8 @@
     animation._hasSameTarget = function(otherTarget) {
       return target === otherTarget;
     };
-    animation._isCurrent = animationNode._isCurrent;
-    animation._totalDuration = animationNode._totalDuration;
+    animation._isCurrent = effectNode._isCurrent;
+    animation._totalDuration = effectNode._totalDuration;
     return animation;
   };
 
