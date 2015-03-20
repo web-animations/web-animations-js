@@ -49,7 +49,7 @@
   }
 
   function InternalTimeline() {
-    this._players = [];
+    this._animations = [];
     // Android 4.3 browser has window.performance, but not window.performance.now
     this.currentTime = window.performance && performance.now ? performance.now() : 0;
   };
@@ -60,7 +60,7 @@
       var player = new scope.Player(source);
       player._idle = false;
       player._timeline = this;
-      this._players.push(player);
+      this._animations.push(player);
       scope.restart();
       scope.invalidateEffects();
       return player;
@@ -105,10 +105,10 @@
     hasRestartedThisFrame = false;
     var timeline = scope.timeline;
     timeline.currentTime = t;
-    timeline._players.sort(comparePlayers);
+    timeline._animations.sort(comparePlayers);
     ticking = false;
-    var updatingPlayers = timeline._players;
-    timeline._players = [];
+    var updatingPlayers = timeline._animations;
+    timeline._animations = [];
 
     var newPendingClears = [];
     var newPendingEffects = [];
@@ -130,7 +130,7 @@
     pendingEffects.push.apply(pendingEffects, newPendingClears);
     pendingEffects.push.apply(pendingEffects, newPendingEffects);
 
-    timeline._players.push.apply(timeline._players, updatingPlayers);
+    timeline._animations.push.apply(timeline._animations, updatingPlayers);
     needsRetick = false;
 
     if (ticking)

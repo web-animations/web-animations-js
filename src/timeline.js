@@ -16,7 +16,7 @@
 (function(shared, scope, testing) {
 
   scope.AnimationTimeline = function() {
-    this._players = [];
+    this._animations = [];
     this.currentTime = undefined;
   };
 
@@ -26,16 +26,16 @@
     // TODO: Do we need to consider needsRetick?
     getAnimationPlayers: function() {
       this._discardPlayers();
-      return this._players.slice();
+      return this._animations.slice();
     },
     _discardPlayers: function() {
-      this._players = this._players.filter(function(player) {
+      this._animations = this._animations.filter(function(player) {
         return player.playState != 'finished' && player.playState != 'idle';
       });
     },
     play: function(source) {
       var player = new scope.Player(source);
-      this._players.push(player);
+      this._animations.push(player);
       scope.restartWebAnimationsNextTick();
       // Use player._player.play() here, NOT player.play().
       //
@@ -60,7 +60,7 @@
     var timeline = window.document.timeline;
     timeline.currentTime = t;
     timeline._discardPlayers();
-    if (timeline._players.length == 0)
+    if (timeline._animations.length == 0)
       ticking = false;
     else
       requestAnimationFrame(webAnimationsNextTick);
