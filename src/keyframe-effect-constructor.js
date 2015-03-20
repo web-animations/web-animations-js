@@ -15,8 +15,8 @@
 (function(shared, scope, testing) {
 
   // FIXME: Make this shareable and rename to SharedKeyframeList.
-  function KeyframeList(keyframes) {
-    this._frames = shared.normalizeKeyframes(keyframes);
+  function KeyframeList(effectInput) {
+    this._frames = shared.normalizeKeyframes(effectInput);
   }
 
   KeyframeList.prototype = {

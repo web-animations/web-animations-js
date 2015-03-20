@@ -18,7 +18,7 @@
   var sequenceNumber = 0;
   scope.bindAnimationForCustomEffect = function(animation) {
     var target = animation.source.target;
-    var effect = animation.source.effect;
+    var effectFunction  = animation.source._normalizedKeyframes;
     var timing = animation.source.timing;
     var last = null;
     timing = shared.normalizeTimingInput(timing);
@@ -29,10 +29,10 @@
         if (isNaN(t))
           t = null;
       }
-      // FIXME: There are actually more conditions under which the effect
+      // FIXME: There are actually more conditions under which the effectFunction
       // should be called.
       if (t !== last)
-        effect(t, target, animation.source);
+        effectFunction(t, target, animation.source);
       last = t;
     };
 
