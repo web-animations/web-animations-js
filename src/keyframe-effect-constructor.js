@@ -63,7 +63,7 @@
 
   scope.bindPlayerForKeyframeEffect = function(player) {
     if (player.source && typeof player.source.effect == 'function') {
-      scope.bindPlayerForCustomEffect(player);
+      scope.bindAnimationForCustomEffect(player);
     }
   };
 
