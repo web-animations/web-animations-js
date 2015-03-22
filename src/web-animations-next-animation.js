@@ -221,8 +221,4 @@
     },
   };
 
-  if (WEB_ANIMATIONS_TESTING) {
-    testing.Player = scope.Animation;
-  }
-
 })(webAnimationsShared, webAnimationsNext, webAnimationsTesting);

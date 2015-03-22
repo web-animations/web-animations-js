@@ -105,11 +105,14 @@
   };
 
   // Alias KeyframeEffect to Animation, to support old constructor (Animation) for a deprecation
-  // period. Should be removed after <Day> <Month> 2015. FIXME: Explain more.
+  // period. Should be removed after <Day> <Month> 2015.
+  // FIXME: Renee: Explain more.
+  // scope.Animation = function(target, effectInput, timingInput) {
   window.Animation = function() {
     window.KeyframeEffect.apply(this, arguments);
   };
   window.Animation.prototype = Object.create(window.KeyframeEffect.prototype);
   window.Animation.prototype.constructor = window.Animation;
+  // window.Animation = scope.Animation;
 
 }(webAnimationsShared, webAnimationsNext, webAnimationsTesting));
