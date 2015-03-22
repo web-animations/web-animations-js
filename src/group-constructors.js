@@ -15,6 +15,7 @@
 (function(shared, scope, testing) {
 
   function groupChildDuration(node) {
+    console.log(node);
     return node._timing.delay + node.activeDuration + node._timing.endDelay;
   }
 
@@ -87,12 +88,14 @@
   // support old constructors (Animation*) for a deprecation period. Should be removed after <Day>
   // <Month> 2015.
   window.AnimationSequence = function() {
+    console.log('X');
     window.SequenceEffect.apply(this, arguments);
   };
   window.AnimationSequence.prototype = Object.create(window.SequenceEffect.prototype);
   window.AnimationSequence.prototype.constructor = window.AnimationSequence;
 
   window.AnimationGroup = function() {
+    console.log(arguments);
     window.GroupEffect.apply(this, arguments);
   };
   window.AnimationGroup.prototype = Object.create(window.GroupEffect.prototype);

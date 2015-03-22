@@ -41,7 +41,7 @@
     this.onfinish = null;
     this._finishHandlers = [];
     this._effect = effect;
-    console.log(this._effect);
+    console.log(effect);
     this._inEffect = this._effect._update(0);
     this._idle = true;
     this._currentTimePending = false;
@@ -197,7 +197,7 @@
   };
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.Animation = scope.Animation;
+    testing.Player = scope.Animation;
   }
 
 })(webAnimations1, webAnimationsTesting);
