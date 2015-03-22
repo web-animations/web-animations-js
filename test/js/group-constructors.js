@@ -16,11 +16,11 @@ suite('group-constructors', function() {
   test('player getter for children in groups, and __internalPlayer, work as expected', function() {
     var p = document.timeline.play(simpleAnimationGroup());
     tick(0);
-    assert.equal(p.source.player, p);
-    assert.equal(p._childPlayers[0].source.player, p);
-    assert.equal(p._childPlayers[1].source.player, p);
+    assert.equal(p.effect.animation, p);
+    assert.equal(p._childAnimations[0].effect.animation, p);
+    assert.equal(p._childAnimations[1].effect.animation, p);
     tick(2100);
-    assert.equal(p._childPlayers[1]._childPlayers[0].source.player, p);
-    assert.equal(p._childPlayers[1]._childPlayers[1].source.player, p);
+    assert.equal(p._childAnimations[1]._childAnimations[0].effect.animation, p);
+    assert.equal(p._childAnimations[1]._childAnimations[1].effect.animation, p);
   });
 });

@@ -41,7 +41,6 @@
     this.onfinish = null;
     this._finishHandlers = [];
     this._effect = effect;
-    console.log(effect);
     this._inEffect = this._effect._update(0);
     this._idle = true;
     this._currentTimePending = false;

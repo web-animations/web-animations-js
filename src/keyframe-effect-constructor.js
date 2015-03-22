@@ -104,4 +104,8 @@
     }.bind(this));
   };
 
+  if (WEB_ANIMATIONS_TESTING) {
+    testing.Animation = scope.KeyframeEffect;
+  }
+
 }(webAnimationsShared, webAnimationsNext, webAnimationsTesting));

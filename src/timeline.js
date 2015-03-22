@@ -34,7 +34,6 @@
       });
     },
     play: function(effect) {
-      console.log(effect);
       var animation = new scope.Animation(effect);
       this._animations.push(animation);
       scope.restartWebAnimationsNextTick();
