@@ -24,7 +24,7 @@
     // FIXME: This needs to return the wrapped animations in Web Animations Next
     // TODO: Does this need to be sorted?
     // TODO: Do we need to consider needsRetick?
-    getAnimationAnimations: function() {
+    getAnimations: function() {
       this._discardAnimations();
       return this._animations.slice();
     },

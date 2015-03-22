@@ -60,6 +60,7 @@
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.webAnimations1.KeyframeEffect = scope.KeyframeEffect;
+    // testing.webAnimations1.Animation = scope.KeyframeEffect;
   }
 
 })(webAnimationsShared, webAnimations1, webAnimationsTesting);

@@ -1,20 +1,20 @@
 suite('animation-constructor', function() {
   setup(function() {
-    document.timeline.getAnimationPlayers().forEach(function(player) {
+    document.timeline.getAnimations().forEach(function(player) {
       player.cancel();
     });
   });
 
   test('Playing an Animation makes a Player', function() {
     var animation = new Animation(document.body, [], 1000);
-    assert.equal(document.body.getAnimationPlayers().length, 0);
+    assert.equal(document.body.getAnimations().length, 0);
 
     var player = document.timeline.play(animation);
     tick(200);
-    assert.equal(document.body.getAnimationPlayers().length, 1);
+    assert.equal(document.body.getAnimations().length, 1);
 
     tick(1600);
-    assert.equal(document.body.getAnimationPlayers().length, 0);
+    assert.equal(document.body.getAnimations().length, 0);
   });
 
   test('Setting the timing function on an Animation works', function() {
