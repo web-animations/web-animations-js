@@ -197,7 +197,7 @@
       this._animation.removeEventListener(type, (handler && handler._wrapper) || handler);
     },
     _removeChildren: function() {
-      while (this._childs.length)
+      while (this._childAnimations.length)
         this._childAnimations.pop().cancel();
     },
     _forEachChild: function(f) {
