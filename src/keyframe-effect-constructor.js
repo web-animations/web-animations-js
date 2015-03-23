@@ -107,13 +107,14 @@
   // Alias KeyframeEffect to Animation, to support old constructor (Animation) for a deprecation
   // period. Should be removed after <Day> <Month> 2015.
   //
-  // FIXME: Renee: Explain more.
+  // This in only on window and not on scope because the constructor that was called Player (now
+  // webAnimationsNext.Animation) is already on the scope.
+  //
+  // FIXME: Make this scope.Animation.
   window.Animation = function() {
     window.KeyframeEffect.apply(this, arguments);
   };
   window.Animation.prototype = Object.create(window.KeyframeEffect.prototype);
-  // This has to be window.Animation. We can't put it on scope because the constructor that was
-  // called Player (now webAnimationsNext.Animation) is already on the scope.
   window.Animation.prototype.constructor = window.Animation;
 
 }(webAnimationsShared, webAnimationsNext, webAnimationsTesting));
