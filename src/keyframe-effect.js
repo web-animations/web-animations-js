@@ -59,7 +59,6 @@
   };
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.webAnimations1KeyframeEffect = scope.KeyframeEffect;
     testing.webAnimations1Animation = scope.KeyframeEffect;
   }
 

@@ -84,15 +84,21 @@
   scope.groupChildDuration = groupChildDuration;
 
   // Alias GroupEffect & SequenceEffect to AnimationGroup & AnimationSequence respectively, to
-  // support old constructors (Animation*) for a deprecation period. Should be removed after <Day>
-  // <Month> 2015.
+  // support old constructors (Animation*) for a deprecation period. Should be removed after 23 June
+  // 2015.
   window.AnimationSequence = function() {
+    if (shared.isDeprecated('window.AnimationSequence', '2015-03-23', 'Use window.SequenceEffect instead.')) {
+      return;
+    }
     window.SequenceEffect.apply(this, arguments);
   };
   window.AnimationSequence.prototype = Object.create(window.SequenceEffect.prototype);
   window.AnimationSequence.prototype.constructor = window.AnimationSequence;
 
   window.AnimationGroup = function() {
+    if (shared.isDeprecated('window.AnimationGroup', '2015-03-23', 'Use window.GroupEffect instead.')) {
+      return;
+    }
     window.GroupEffect.apply(this, arguments);
   };
   window.AnimationGroup.prototype = Object.create(window.GroupEffect.prototype);

@@ -105,13 +105,18 @@
   };
 
   // Alias KeyframeEffect to Animation, to support old constructor (Animation) for a deprecation
-  // period. Should be removed after <Day> <Month> 2015.
+  // period. Should be removed after 23 June 2015.
   //
-  // This in only on window and not on scope because the constructor that was called Player (now
-  // webAnimationsNext.Animation) is already on the scope.
+  // This is only on window and not on scope, because the constructor that was called
+  // webAnimationsNext.Player - now called webAnimationsNext.Animation - is already on the scope.
   //
-  // FIXME: Make this scope.Animation.
+  // FIXME: Add this to scope & expose the other scope.Animation (nee scope.Player). I.e. both this
+  // function and the constructor in web-animations-next-animation should be scope.Animation and
+  // window.Animation until 23 June 2015.
   window.Animation = function() {
+    if (shared.isDeprecated('window.Animation', '2015-03-23', 'Use window.KeyframeEffect instead.')) {
+      return;
+    }
     window.KeyframeEffect.apply(this, arguments);
   };
   window.Animation.prototype = Object.create(window.KeyframeEffect.prototype);
