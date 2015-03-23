@@ -1,7 +1,7 @@
 suite('effect-callback', function() {
   setup(function() {
-    document.timeline._players = [];
-    webAnimations1.timeline._players = [];
+    document.timeline._animations = [];
+    webAnimations1.timeline._animations = [];
   });
 
   test('animations starting in the future are not in effect', function() {
