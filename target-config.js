@@ -79,28 +79,28 @@
       'src/group-constructors.js'];
 
   var webAnimations1Test = [
-      'test/js/animation-node.js',
+      'test/js/animation-finish-event.js',
+      'test/js/animation.js',
       'test/js/apply-preserving-inline-style.js',
       'test/js/box-handler.js',
       'test/js/color-handler.js',
       'test/js/dimension-handler.js',
+      'test/js/effect-node.js',
       'test/js/effect.js',
       'test/js/interpolation.js',
       'test/js/matrix-interpolation.js',
       'test/js/number-handler.js',
-      'test/js/player.js',
-      'test/js/player-finish-event.js',
       'test/js/property-interpolation.js',
       'test/js/tick.js',
       'test/js/timing.js',
       'test/js/transform-handler.js'];
 
   var webAnimationsNextTest = webAnimations1Test.concat(
-      'test/js/animation-constructor.js',
       'test/js/effect-callback.js',
+      'test/js/group-animation-finish-event.js',
+      'test/js/group-animation.js',
       'test/js/group-constructors.js',
-      'test/js/group-player.js',
-      'test/js/group-player-finish-event.js',
+      'test/js/keyframe-effect-constructor.js',
       'test/js/timeline.js');
 
   // This object specifies the source and test files for different Web Animation build targets.

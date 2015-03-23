@@ -1,22 +1,22 @@
-suite('player-finish-event', function() {
+suite('animation-finish-event', function() {
   setup(function() {
     this.element = document.createElement('div');
     document.documentElement.appendChild(this.element);
-    this.player = this.element.animate([], 1000);
+    this.animation = this.element.animate([], 1000);
   });
   teardown(function() {
     if (this.element.parent)
       this.element.removeChild(this.target);
   });
 
-  test('fire when player completes', function(done) {
+  test('fire when animation completes', function(done) {
     var ready = false;
     var fired = false;
-    var player = this.player;
-    player.onfinish = function(event) {
+    var animation = this.animation;
+    animation.onfinish = function(event) {
       assert(ready, 'must not be called synchronously');
-      assert.equal(this, player);
-      assert.equal(event.target, player);
+      assert.equal(this, animation);
+      assert.equal(event.target, animation);
       assert.equal(event.currentTime, 1000);
       assert.equal(event.timelineTime, 1100);
       if (fired)
@@ -30,27 +30,27 @@ suite('player-finish-event', function() {
     ready = true;
   });
 
-  test('fire when reversed player completes', function(done) {
-    this.player.onfinish = function(event) {
+  test('fire when reversed animation completes', function(done) {
+    this.animation.onfinish = function(event) {
       assert.equal(event.currentTime, 0);
       assert.equal(event.timelineTime, 1001);
       done();
     };
     tick(0);
     tick(500);
-    this.player.reverse();
+    this.animation.reverse();
     tick(501);
     tick(1001);
   });
 
-  test('fire after player is cancelled', function(done) {
-    this.player.onfinish = function(event) {
+  test('fire after animation is cancelled', function(done) {
+    this.animation.onfinish = function(event) {
       assert.equal(event.currentTime, 0);
       assert.equal(event.timelineTime, 1, 'event must be fired on next sample');
       done();
     };
     tick(0);
-    this.player.cancel();
+    this.animation.cancel();
     tick(1);
   });
 
@@ -63,17 +63,17 @@ suite('player-finish-event', function() {
       };
     }
     var toRemove = createHandler(0);
-    this.player.addEventListener('finish', createHandler(1));
-    this.player.addEventListener('finish', createHandler(2));
-    this.player.addEventListener('finish', toRemove);
-    this.player.addEventListener('finish', createHandler(3));
-    this.player.removeEventListener('finish', toRemove);
-    this.player.onfinish = function() {
+    this.animation.addEventListener('finish', createHandler(1));
+    this.animation.addEventListener('finish', createHandler(2));
+    this.animation.addEventListener('finish', toRemove);
+    this.animation.addEventListener('finish', createHandler(3));
+    this.animation.removeEventListener('finish', toRemove);
+    this.animation.onfinish = function() {
       assert.equal(count, 3);
       done();
     };
     tick(0);
-    this.player.cancel();
+    this.animation.cancel();
     tick(1000);
   });
 });
