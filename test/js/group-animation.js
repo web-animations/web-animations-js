@@ -43,15 +43,15 @@ suite('group-animation', function() {
           ]);
     };
 
-    var seqEmpty_effect = sequenceEmpty();
+    var emptySeq = sequenceEmpty();
 
     var seqSimple_target = document.createElement('div');
     this.elements.push(seqSimple_target);
-    var seqSimple_effect = sequenceWithContent(seqSimple_target);
+    var seqSimple = sequenceWithContent(seqSimple_target);
 
     var seqWithSeq_target = document.createElement('div');
     this.elements.push(seqWithSeq_target);
-    var seqWithSeq_effect = new SequenceEffect(
+    var seqWithSeq = new SequenceEffect(
         [
          marginEffect(seqWithSeq_target),
          colorEffect(seqWithSeq_target),
@@ -60,24 +60,24 @@ suite('group-animation', function() {
 
     var seqWithGroup_target = document.createElement('div');
     this.elements.push(seqWithGroup_target);
-    var seqWithGroup_effect = new SequenceEffect(
+    var seqWithGroup = new SequenceEffect(
         [
          marginEffect(seqWithGroup_target),
          colorEffect(seqWithGroup_target),
          groupWithContent(seqWithGroup_target)
         ]);
 
-    var seqWithEmptyGroup_effect = new SequenceEffect([groupEmpty()]);
-    var seqWithEmptySeq_effect = new SequenceEffect([sequenceEmpty()]);
+    var seqWithEmptyGroup = new SequenceEffect([groupEmpty()]);
+    var seqWithEmptySeq = new SequenceEffect([sequenceEmpty()]);
 
-    var groupEmpty_effect = groupEmpty();
+    var emptyGroup = groupEmpty();
 
     var groupSimple_target = document.createElement('div');
-    var groupSimple_effect = groupWithContent(groupSimple_target);
+    var groupSimple = groupWithContent(groupSimple_target);
 
     var groupWithSeq_target = document.createElement('div');
     this.elements.push(groupWithSeq_target);
-    var groupWithSeq_effect = new GroupEffect(
+    var groutWithSeq = new GroupEffect(
         [
          marginEffect(groupWithSeq_target),
          colorEffect(groupWithSeq_target),
@@ -86,29 +86,29 @@ suite('group-animation', function() {
 
     var groupWithGroup_target = document.createElement('div');
     this.elements.push(groupWithGroup_target);
-    var groupWithGroup_effect = new GroupEffect(
+    var groupWithGroup = new GroupEffect(
         [
          marginEffect(groupWithGroup_target),
          colorEffect(groupWithGroup_target),
          groupWithContent(groupWithGroup_target)
         ]);
 
-    var groupWithEmptyGroup_effect = new GroupEffect([groupEmpty()]);
-    var groupWithEmptySeq_effect = new GroupEffect([sequenceEmpty()]);
+    var groupWithEmptyGroup = new GroupEffect([groupEmpty()]);
+    var groupWithEmptySeq = new GroupEffect([sequenceEmpty()]);
 
-    this.seqEmpty_effect = seqEmpty_effect;
-    this.seqSimple_effect = seqSimple_effect;
-    this.seqWithSeq_effect = seqWithSeq_effect;
-    this.seqWithGroup_effect = seqWithGroup_effect;
-    this.seqWithEmptyGroup_effect = seqWithEmptyGroup_effect;
-    this.seqWithEmptySeq_effect = seqWithEmptySeq_effect;
+    this.emptySeq = emptySeq;
+    this.seqSimple = seqSimple;
+    this.seqWithSeq = seqWithSeq;
+    this.seqWithGroup = seqWithGroup;
+    this.seqWithEmptyGroup = seqWithEmptyGroup;
+    this.seqWithEmptySeq = seqWithEmptySeq;
 
-    this.groupEmpty_effect = groupEmpty_effect;
-    this.groupSimple_effect = groupSimple_effect;
-    this.groupWithSeq_effect = groupWithSeq_effect;
-    this.groupWithGroup_effect = groupWithGroup_effect;
-    this.groupWithEmptyGroup_effect = groupWithEmptyGroup_effect;
-    this.groupWithEmptySeq_effect = groupWithEmptySeq_effect;
+    this.emptyGroup = emptyGroup;
+    this.groupSimple = groupSimple;
+    this.groutWithSeq = groutWithSeq;
+    this.groupWithGroup = groupWithGroup;
+    this.groupWithEmptyGroup = groupWithEmptyGroup;
+    this.groupWithEmptySeq = groupWithEmptySeq;
 
     this.staticEffect = function(target, value, duration) {
       var keyframeEffect = new KeyframeEffect(target, [{marginLeft: value}, {marginLeft: value}], duration);
@@ -485,22 +485,21 @@ suite('group-animation', function() {
     // assert.equal(getComputedStyle(this.target).marginLeft, '0px');
   });
 
-  // FIXME: This test can be removed when this suite is finished.
-  test('effects are working for basic operations', function() {
+  test('basic animation operations are working', function() {
     var animations = [];
-    animations.push(document.timeline.play(this.seqEmpty_effect));
-    animations.push(document.timeline.play(this.seqSimple_effect));
-    animations.push(document.timeline.play(this.seqWithSeq_effect));
-    animations.push(document.timeline.play(this.seqWithGroup_effect));
-    animations.push(document.timeline.play(this.seqWithEmptyGroup_effect));
-    animations.push(document.timeline.play(this.seqWithEmptySeq_effect));
+    animations.push(document.timeline.play(this.emptySeq));
+    animations.push(document.timeline.play(this.seqSimple));
+    animations.push(document.timeline.play(this.seqWithSeq));
+    animations.push(document.timeline.play(this.seqWithGroup));
+    animations.push(document.timeline.play(this.seqWithEmptyGroup));
+    animations.push(document.timeline.play(this.seqWithEmptySeq));
 
-    animations.push(document.timeline.play(this.groupEmpty_effect));
-    animations.push(document.timeline.play(this.groupSimple_effect));
-    animations.push(document.timeline.play(this.groupWithSeq_effect));
-    animations.push(document.timeline.play(this.groupWithGroup_effect));
-    animations.push(document.timeline.play(this.groupWithEmptyGroup_effect));
-    animations.push(document.timeline.play(this.groupWithEmptySeq_effect));
+    animations.push(document.timeline.play(this.emptyGroup));
+    animations.push(document.timeline.play(this.groupSimple));
+    animations.push(document.timeline.play(this.groutWithSeq));
+    animations.push(document.timeline.play(this.groupWithGroup));
+    animations.push(document.timeline.play(this.groupWithEmptyGroup));
+    animations.push(document.timeline.play(this.groupWithEmptySeq));
 
     var length = animations.length;
 
@@ -538,7 +537,7 @@ suite('group-animation', function() {
   });
 
   test('pausing works as expected with an empty SequenceEffect', function() {
-    var animation = document.timeline.play(this.seqEmpty_effect);
+    var animation = document.timeline.play(this.emptySeq);
     tick(0);
     assert.equal(animation.startTime, 0);
     assert.equal(animation.currentTime, 0);
@@ -549,8 +548,8 @@ suite('group-animation', function() {
   });
 
   test('pausing works as expected with a simple SequenceEffect', function() {
-    var animation = document.timeline.play(this.seqSimple_effect);
-    var target = this.seqSimple_effect.children[0].target;
+    var animation = document.timeline.play(this.seqSimple);
+    var target = this.seqSimple.children[0].target;
     tick(0);
     checkTimes(animation, [0, 0], [[0, 0], [500, -500]], 't = 0');
 
@@ -583,8 +582,8 @@ suite('group-animation', function() {
   });
 
   test('pausing before tick works as expected with a simple SequenceEffect', function() {
-    var animation = document.timeline.play(this.seqSimple_effect);
-    var target = this.seqSimple_effect.children[0].target;
+    var animation = document.timeline.play(this.seqSimple);
+    var target = this.seqSimple.children[0].target;
     checkTimes(animation, [null, 0], [[null, 0], [null, -500]], 't = 0');
 
     animation.pause();
@@ -601,7 +600,7 @@ suite('group-animation', function() {
   });
 
   test('pausing and seeking before tick works as expected with a simple SequenceEffect', function() {
-    var animation = document.timeline.play(this.seqSimple_effect);
+    var animation = document.timeline.play(this.seqSimple);
     animation.pause();
 
     animation.currentTime = 0;
@@ -619,7 +618,7 @@ suite('group-animation', function() {
   });
 
   test('pausing works as expected with an SequenceEffect inside an SequenceEffect', function() {
-    var animation = document.timeline.play(this.seqWithSeq_effect);
+    var animation = document.timeline.play(this.seqWithSeq);
     tick(0);
     checkTimes(
         animation,
@@ -774,7 +773,7 @@ suite('group-animation', function() {
   });
 
   test('pausing works as expected with a GroupEffect inside an SequenceEffect', function() {
-    var animation = document.timeline.play(this.seqWithGroup_effect);
+    var animation = document.timeline.play(this.seqWithGroup);
     tick(0);
     checkTimes(
         animation,
@@ -921,7 +920,7 @@ suite('group-animation', function() {
   });
 
   test('pausing works as expected with an empty SequenceEffect inside an SequenceEffect', function() {
-    var animation = document.timeline.play(this.seqWithEmptySeq_effect);
+    var animation = document.timeline.play(this.seqWithEmptySeq);
     tick(0);
     checkTimes(
         animation,
@@ -936,7 +935,7 @@ suite('group-animation', function() {
   });
 
   test('pausing works as expected with an empty GroupEffect inside an SequenceEffect', function() {
-    var animation = document.timeline.play(this.seqWithEmptyGroup_effect);
+    var animation = document.timeline.play(this.seqWithEmptyGroup);
     tick(0);
     checkTimes(
         animation,
