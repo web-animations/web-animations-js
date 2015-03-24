@@ -342,8 +342,8 @@ suite('animation', function() {
     document.body.removeChild(target);
   });
   test('KeyframeEffect that hasn\'t been played has playState \'idle\'', function() {
-    var source = new webAnimations1KeyframeEffect(document.body, [], 1000);
-    var a = new webAnimations1Animation(source);
+    var effect = new webAnimations1KeyframeEffect(document.body, [], 1000);
+    var a = new webAnimations1Animation(effect);
     assert.equal(a.playState, 'idle');
   });
   test('playState works for a simple effect', function() {
