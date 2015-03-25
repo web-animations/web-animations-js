@@ -52,9 +52,9 @@
       // then it should go out of effect when it reaches the start of its
       // active interval (currentTime == 0).
       if (this.playbackRate < 0 && this.currentTime === 0) {
-        this._inEffect = this._source._update(-1);
+        this._inEffect = this._effect._update(-1);
       } else {
-        this._inEffect = this._source._update(this.currentTime);
+        this._inEffect = this._effect._update(this.currentTime);
       }
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;

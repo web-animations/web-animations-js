@@ -63,7 +63,7 @@
       if (animation.playState == 'pending')
         return;
 
-      if (!animation.source)
+      if (!animation.effect)
         return;
 
       if (tf == null) {
@@ -77,7 +77,7 @@
       // backwards-filling case, and null otherwise.
       if (tf == 0 && animation.playbackRate < 0) {
         if (!timing) {
-          timing = shared.normalizeTimingInput(animation.source.timing);
+          timing = shared.normalizeTimingInput(animation.effect.timing);
         }
         tf = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), -1, timing);
         if (isNaN(tf) || tf == null) {
