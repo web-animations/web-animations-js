@@ -59,7 +59,7 @@
   };
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.webAnimations1Animation = scope.KeyframeEffect;
+    testing.webAnimations1KeyframeEffect = scope.KeyframeEffect;
   }
 
 })(webAnimationsShared, webAnimations1, webAnimationsTesting);

@@ -248,12 +248,12 @@ suite('matrix interpolation', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
 
-    var player = target.animate(
+    var animation = target.animate(
         [{transform: 'translate(100px)'},
          {transform: 'rotate(45deg)'}],
         2000);
-    player.currentTime = 500;
-    player.pause();
+    animation.currentTime = 500;
+    animation.pause();
 
     var styleTransform = getComputedStyle(target).transform || getComputedStyle(target).webkitTransform;
     var elements = styleTransform.slice(

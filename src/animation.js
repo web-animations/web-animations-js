@@ -196,7 +196,7 @@
   };
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.Player = scope.Animation;
+    testing.webAnimations1Animation = scope.Animation;
   }
 
 })(webAnimations1, webAnimationsTesting);
