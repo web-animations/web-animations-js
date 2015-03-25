@@ -84,7 +84,7 @@
           animation._forEachChild(function(child) {
             child.currentTime = -1;
           });
-          animation._removeAnimations();
+          animation._removeChildren();
           return;
         }
       }

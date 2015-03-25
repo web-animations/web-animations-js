@@ -247,10 +247,10 @@ suite('animation', function() {
         tick(11);
         assert.equal(a.currentTime, 10);
 
-        p.playbackRate = 2;
-        assert.equal(p.playbackRate, 2);
-        assert.equal(p.currentTime, 10);
-        assert.equal(p.startTime, null);
+        a.playbackRate = 2;
+        assert.equal(a.playbackRate, 2);
+        assert.equal(a.currentTime, 10);
+        assert.equal(a.startTime, null);
         tick(12);
         assert.equal(a.currentTime, 10);
         assert.equal(a.startTime, 7);
@@ -278,41 +278,41 @@ suite('animation', function() {
         assert.equal(a.startTime, 53);
       }
   );
-  test('setting playbackRate puts player back into effect if it is not finished', function() {
+  test('setting playbackRate puts animation back into effect if it is not finished', function() {
     tick(0);
-    var p = document.body.animate([], 1000);
-    assert.equal(p.playbackRate, 1);
+    var a = document.body.animate([], 1000);
+    assert.equal(a.playbackRate, 1);
     tick(1);
     tick(1002);
-    assert.equal(p.currentTime, 1000);
+    assert.equal(a.currentTime, 1000);
 
-    p.playbackRate = -1;
-    assert.equal(p.playbackRate, -1);
-    assert.equal(p.currentTime, 1000);
+    a.playbackRate = -1;
+    assert.equal(a.playbackRate, -1);
+    assert.equal(a.currentTime, 1000);
     tick(1003);
-    assert.equal(p.currentTime, 1000);
+    assert.equal(a.currentTime, 1000);
     tick(1503);
-    assert.equal(p.currentTime, 500);
+    assert.equal(a.currentTime, 500);
   });
-  test('setting playbackRate does not put player back into effect if it is finished', function() {
+  test('setting playbackRate does not put animation back into effect if it is finished', function() {
     tick(0);
-    var p = document.body.animate([], 1000);
-    assert.equal(p.playbackRate, 1);
+    var a = document.body.animate([], 1000);
+    assert.equal(a.playbackRate, 1);
     tick(1);
     tick(1002);
-    assert.equal(p.currentTime, 1000);
-    assert.equal(p.startTime, 1);
+    assert.equal(a.currentTime, 1000);
+    assert.equal(a.startTime, 1);
 
-    p.playbackRate = 0.5;
-    assert.equal(p.playbackRate, 0.5);
-    assert.equal(p.currentTime, 1000);
-    assert.equal(p.startTime, null);
+    a.playbackRate = 0.5;
+    assert.equal(a.playbackRate, 0.5);
+    assert.equal(a.currentTime, 1000);
+    assert.equal(a.startTime, null);
     tick(1003);
-    assert.equal(p.currentTime, 1000);
-    assert.equal(p.startTime, -997);
+    assert.equal(a.currentTime, 1000);
+    assert.equal(a.startTime, -997);
     tick(1503);
-    assert.equal(p.currentTime, 1000);
-    assert.equal(p.startTime, -997);
+    assert.equal(a.currentTime, 1000);
+    assert.equal(a.startTime, -997);
   });
   test('finishing works as expected', function() {
     tick(1000);
