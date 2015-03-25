@@ -1,6 +1,6 @@
 suite('player', function() {
   setup(function() {
-    webAnimations1.timeline._players = [];
+    webAnimations1.timeline._animations = [];
   });
   test('zero duration animation works', function() {
     tick(90);
@@ -271,10 +271,10 @@ suite('player', function() {
     player.cancel();
     // getComputedStyle forces a tick.
     assert.equal(getComputedStyle(target).marginLeft, '0px');
-    assert.deepEqual(webAnimations1.timeline._players, []);
+    assert.deepEqual(webAnimations1.timeline._animations, []);
     tick(120);
     assert.equal(getComputedStyle(target).marginLeft, '0px');
-    assert.deepEqual(webAnimations1.timeline._players, []);
+    assert.deepEqual(webAnimations1.timeline._animations, []);
     document.documentElement.removeChild(target);
   });
   test('startTime is set on first tick if timeline hasn\'t started', function() {
@@ -288,27 +288,27 @@ suite('player', function() {
     tick(90);
     var nofill = document.body.animate([], 100);
     var fill = document.body.animate([], {duration: 100, fill: 'forwards'});
-    assert.deepEqual(webAnimations1.timeline._players, [nofill._player || nofill, fill._player || fill]);
+    assert.deepEqual(webAnimations1.timeline._animations, [nofill._animation || nofill, fill._animation || fill]);
     tick(100);
-    assert.deepEqual(webAnimations1.timeline._players, [nofill._player || nofill, fill._player || fill]);
+    assert.deepEqual(webAnimations1.timeline._animations, [nofill._animation || nofill, fill._animation || fill]);
     tick(400);
-    assert.deepEqual(webAnimations1.timeline._players, [fill._player || fill]);
+    assert.deepEqual(webAnimations1.timeline._animations, [fill._animation || fill]);
   });
   test('discarded players get re-added on modification', function() {
     tick(90);
     var player = document.body.animate([], 100);
     tick(100);
     tick(400);
-    assert.deepEqual(webAnimations1.timeline._players, []);
+    assert.deepEqual(webAnimations1.timeline._animations, []);
     player.currentTime = 0;
-    assert.deepEqual(webAnimations1.timeline._players, [player._player || player]);
+    assert.deepEqual(webAnimations1.timeline._animations, [player._animation || player]);
   });
   test('players in the before phase are not discarded', function() {
     tick(100);
     var player = document.body.animate([], 100);
     player.currentTime = -50;
     tick(110);
-    assert.deepEqual(webAnimations1.timeline._players, [player._player || player]);
+    assert.deepEqual(webAnimations1.timeline._animations, [player._animation || player]);
   });
   test('players that go out of effect should not clear the effect of players that are in effect', function() {
     var target = document.createElement('div');

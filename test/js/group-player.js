@@ -1,7 +1,7 @@
 suite('group-player', function() {
   setup(function() {
-    document.timeline._players = [];
-    webAnimations1.timeline._players = [];
+    document.timeline._animations = [];
+    webAnimations1.timeline._animations = [];
     this.elements = [];
 
     var animationMargin = function(target) {
@@ -169,14 +169,14 @@ suite('group-player', function() {
   function _checkTimes(player, timingList, index, trace) {
     assert.isDefined(player, trace + ' exists');
     if (timingList.length == 0) {
-      assert.equal(player._childPlayers.length, index, trace + ' no remaining players');
+      assert.equal(player._childAnimations.length, index, trace + ' no remaining players');
       return;
     }
     if (timingList[0] === null || typeof timingList[0] == 'number') {
       assert.equal(player.startTime, timingList[0], trace + ' startTime');
       assert.equal(player.currentTime, timingList[1], trace + ' currentTime');
     } else {
-      _checkTimes(player._childPlayers[index], timingList[0], 0, trace + ' ' + index);
+      _checkTimes(player._childAnimations[index], timingList[0], 0, trace + ' ' + index);
       _checkTimes(player, timingList.slice(1), index + 1, trace);
     }
   }
@@ -394,8 +394,8 @@ suite('group-player', function() {
     ]);
     var p = document.timeline.play(group);
     p.playbackRate = 2;
-    assert.equal(p._player.playbackRate, 2, 'Updates the playbackRate of the inner player');
-    p._childPlayers.forEach(function(childPlayer) {
+    assert.equal(p._animation.playbackRate, 2, 'Updates the playbackRate of the inner player');
+    p._childAnimations.forEach(function(childPlayer) {
       assert.equal(childPlayer.playbackRate, 2, 'It also updates the child players');
     });
   });
@@ -958,32 +958,32 @@ suite('group-player', function() {
     assert.equal(p.playState, 'pending');
     tick(1);
     assert.equal(p.playState, 'running');
-    assert.equal(p._childPlayers[0]._player.playState, 'running');
-    assert.equal(p._childPlayers[1]._player.playState, 'running');
+    assert.equal(p._childAnimations[0]._animation.playState, 'running');
+    assert.equal(p._childAnimations[1]._animation.playState, 'running');
     tick(101);
     assert.equal(p.playState, 'running');
-    assert.equal(p._childPlayers[0]._player.playState, 'finished');
-    assert.equal(p._childPlayers[1]._player.playState, 'running');
+    assert.equal(p._childAnimations[0]._animation.playState, 'finished');
+    assert.equal(p._childAnimations[1]._animation.playState, 'running');
     p.pause();
     assert.equal(p.playState, 'pending');
-    assert.equal(p._childPlayers[0]._player.playState, 'paused');
-    assert.equal(p._childPlayers[1]._player.playState, 'pending');
+    assert.equal(p._childAnimations[0]._animation.playState, 'paused');
+    assert.equal(p._childAnimations[1]._animation.playState, 'pending');
     tick(102);
     assert.equal(p.playState, 'paused');
-    assert.equal(p._childPlayers[0]._player.playState, 'paused');
-    assert.equal(p._childPlayers[1]._player.playState, 'paused');
+    assert.equal(p._childAnimations[0]._animation.playState, 'paused');
+    assert.equal(p._childAnimations[1]._animation.playState, 'paused');
     p.play();
     assert.equal(p.playState, 'pending');
-    assert.equal(p._childPlayers[0]._player.playState, 'pending');
-    assert.equal(p._childPlayers[1]._player.playState, 'pending');
+    assert.equal(p._childAnimations[0]._animation.playState, 'pending');
+    assert.equal(p._childAnimations[1]._animation.playState, 'pending');
     tick(103);
     assert.equal(p.playState, 'running');
-    assert.equal(p._childPlayers[0]._player.playState, 'finished');
-    assert.equal(p._childPlayers[1]._player.playState, 'running');
+    assert.equal(p._childAnimations[0]._animation.playState, 'finished');
+    assert.equal(p._childAnimations[1]._animation.playState, 'running');
     tick(204);
     assert.equal(p.playState, 'finished');
-    assert.equal(p._childPlayers[0]._player.playState, 'finished');
-    assert.equal(p._childPlayers[1]._player.playState, 'finished');
+    assert.equal(p._childAnimations[0]._animation.playState, 'finished');
+    assert.equal(p._childAnimations[1]._animation.playState, 'finished');
   });
 
   test('pausing then seeking out of range then seeking into range works', function() {
@@ -994,12 +994,12 @@ suite('group-player', function() {
 
     player.pause();
     player.currentTime = 3000;
-    assert.equal(player._childPlayers.length, 0);
+    assert.equal(player._childAnimations.length, 0);
     tick(100);
     player.currentTime = 1000;
-    assert.equal(player._childPlayers.length, 1);
-    assert.equal(player._childPlayers[0]._player.playState, 'paused');
-    assert.equal(player._childPlayers[0]._player.currentTime, 1000);
+    assert.equal(player._childAnimations.length, 1);
+    assert.equal(player._childAnimations[0]._animation.playState, 'paused');
+    assert.equal(player._childAnimations[0]._animation.currentTime, 1000);
 
   });
 
@@ -1014,14 +1014,14 @@ suite('group-player', function() {
     player.reverse();
     tick(105);
     player.currentTime = 3000;
-    assert.equal(player._childPlayers.length, 0);
+    assert.equal(player._childAnimations.length, 0);
     tick(110);
     player.currentTime = 1000;
     assert.equal(player.playbackRate, -1);
-    assert.equal(player._childPlayers.length, 1);
-    assert.equal(player._childPlayers[0]._player.playState, 'running');
-    assert.equal(player._childPlayers[0]._player.currentTime, 1000);
-    assert.equal(player._childPlayers[0]._player.playbackRate, -1);
+    assert.equal(player._childAnimations.length, 1);
+    assert.equal(player._childAnimations[0]._animation.playState, 'running');
+    assert.equal(player._childAnimations[0]._animation.currentTime, 1000);
+    assert.equal(player._childAnimations[0]._animation.playbackRate, -1);
 
   });
 

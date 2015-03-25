@@ -18,15 +18,15 @@
       'src/scope.js'];
 
   var webAnimations1Src = [
-      'src/animation-node.js',
+      'src/effect-node.js',
       'src/effect.js',
       'src/property-interpolation.js',
-      'src/animation.js',
+      'src/keyframe-effect.js',
       'src/apply-preserving-inline-style.js',
       'src/element-animatable.js',
       'src/interpolation.js',
       'src/matrix-interpolation.js',
-      'src/player.js',
+      'src/animation.js',
       'src/tick.js',
       'src/matrix-decomposition.js',
       'src/handler-utils.js',
@@ -44,14 +44,14 @@
   ];
 
   var liteWebAnimations1Src = [
-      'src/animation-node.js',
+      'src/effect-node.js',
       'src/effect.js',
       'src/property-interpolation.js',
-      'src/animation.js',
+      'src/keyframe-effect.js',
       'src/apply.js',
       'src/element-animatable.js',
       'src/interpolation.js',
-      'src/player.js',
+      'src/animation.js',
       'src/tick.js',
       'src/handler-utils.js',
       'src/shadow-handler.js',
@@ -73,8 +73,8 @@
 
   var webAnimationsNextSrc = [
       'src/timeline.js',
-      'src/web-animations-next-player.js',
-      'src/animation-constructor.js',
+      'src/web-animations-next-animation.js',
+      'src/keyframe-effect-constructor.js',
       'src/effect-callback.js',
       'src/group-constructors.js'];
 
