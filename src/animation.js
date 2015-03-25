@@ -48,8 +48,9 @@
 
   scope.Animation.prototype = {
     _ensureAlive: function() {
-      // If a player is playing backwards and is not fill backwards/both then it should go out of
-      // effect when it reaches the start of its active interval (currentTime == 0).
+      // If an animation is playing backwards and is not fill backwards/both
+      // then it should go out of effect when it reaches the start of its
+      // active interval (currentTime == 0).
       if (this.playbackRate < 0 && this.currentTime === 0) {
         this._inEffect = this._source._update(-1);
       } else {
