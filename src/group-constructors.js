@@ -87,18 +87,14 @@
   // support old constructors (Animation*) for a deprecation period. Should be removed after 23 June
   // 2015.
   window.AnimationSequence = function() {
-    if (shared.isDeprecated('window.AnimationSequence', '2015-03-23', 'Use window.SequenceEffect instead.')) {
-      return;
-    }
+    shared.deprecated('window.AnimationSequence', '2015-03-23', 'Use window.SequenceEffect instead.');
     window.SequenceEffect.apply(this, arguments);
   };
   window.AnimationSequence.prototype = Object.create(window.SequenceEffect.prototype);
   window.AnimationSequence.prototype.constructor = window.AnimationSequence;
 
   window.AnimationGroup = function() {
-    if (shared.isDeprecated('window.AnimationGroup', '2015-03-23', 'Use window.GroupEffect instead.')) {
-      return;
-    }
+    shared.deprecated('window.AnimationGroup', '2015-03-23', 'Use window.GroupEffect instead.');
     window.GroupEffect.apply(this, arguments);
   };
   window.AnimationGroup.prototype = Object.create(window.GroupEffect.prototype);

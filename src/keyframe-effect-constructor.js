@@ -114,9 +114,7 @@
   // function and the constructor in web-animations-next-animation should be scope.Animation and
   // window.Animation until 23 June 2015.
   window.Animation = function() {
-    if (shared.isDeprecated('window.Animation', '2015-03-23', 'Use window.KeyframeEffect instead.')) {
-      return;
-    }
+    shared.deprecated('window.Animation', '2015-03-23', 'Use window.KeyframeEffect instead.');
     window.KeyframeEffect.apply(this, arguments);
   };
   window.Animation.prototype = Object.create(window.KeyframeEffect.prototype);
