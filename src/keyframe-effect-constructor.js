@@ -19,10 +19,6 @@
     this._frames = shared.normalizeKeyframes(effectInput);
   }
 
-  KeyframeList.prototype = {
-    getFrames: function() { return this._frames; }
-  };
-
   // FIXME: This constructor is also used for custom effects. This won't be the case once custom
   // effects are change to callbacks.
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
@@ -45,6 +41,12 @@
     this._keyframes = effectInput;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
+  };
+
+  scope.KeyframeEffect.prototype = {
+    getFrames: function() {
+      return this._normalizedKeyframes._frames;
+    }
   };
 
   var originalElementAnimate = Element.prototype.animate;
