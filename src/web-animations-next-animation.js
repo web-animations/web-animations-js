@@ -145,6 +145,10 @@
     get finished() {
       return this._animation.finished;
     },
+    get source() {
+      shared.deprecated('Animation.source', '2015-03-23', 'Use Animation.effect instead.');
+      return this.effect;
+    },
     play: function() {
       this._animation.play();
       this._register();
