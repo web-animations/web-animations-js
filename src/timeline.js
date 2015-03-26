@@ -28,6 +28,10 @@
       this._discardAnimations();
       return this._animations.slice();
     },
+    getAnimationPlayers: function() {
+      shared.deprecated('AnimationTimeline.getAnimationPlayers', '2015-03-23', 'Use AnimationTimeline.getAnimations instead.');
+      return this.getAnimations();
+    },
     _discardAnimations: function() {
       this._animations = this._animations.filter(function(animation) {
         return animation.playState != 'finished' && animation.playState != 'idle';

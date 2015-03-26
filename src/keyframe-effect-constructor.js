@@ -103,6 +103,10 @@
       return animation.effect !== null && animation.effect.target == this;
     }.bind(this));
   };
+  window.Element.prototype.getAnimationPlayers = function() {
+    shared.deprecated('Element.getAnimationPlayers', '2015-03-23', 'Use Element.getAnimations instead.');
+    return this.getAnimations();
+  };
 
   // Alias KeyframeEffect to Animation, to support old constructor (Animation) for a deprecation
   // period. Should be removed after 23 June 2015.
