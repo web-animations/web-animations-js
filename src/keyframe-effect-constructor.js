@@ -50,6 +50,10 @@
       if (typeof this._normalizedKeyframes == 'function')
         return this._normalizedKeyframes;
       return this._normalizedKeyframes._frames;
+    },
+    get effect() {
+      shared.deprecated('KeyframeEffect.effect', '2015-03-23', 'Use KeyframeEffect.getFrames() instead.');
+      return this._normalizedKeyframes;
     }
   };
 
