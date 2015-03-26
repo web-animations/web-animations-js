@@ -45,6 +45,10 @@
 
   scope.KeyframeEffect.prototype = {
     getFrames: function() {
+      // FIXME: Once custom effects are switched over to callbacks we can
+      // always return this._normalizedKeyframes._frames here.
+      if (typeof this._normalizedKeyframes == 'function')
+        return this._normalizedKeyframes;
       return this._normalizedKeyframes._frames;
     }
   };
