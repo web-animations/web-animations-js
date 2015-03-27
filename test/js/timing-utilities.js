@@ -1,4 +1,4 @@
-suite('effect-node', function() {
+suite('timing-utilities', function() {
   test('normalize timing input', function() {
     assert.equal(normalizeTimingInput(1).duration, 1);
     assert.equal(normalizeTimingInput(1).easing(0.2), 0.2);
@@ -90,25 +90,25 @@ suite('effect-node', function() {
     assert.closeTo(calculateTransformedTime(4, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 160, 0.0001);
     assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 360, 0.0001);
   });
-  test('Effect Node', function() {
+  test('EffectTime', function() {
     var timing = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});
     var timing2 = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'ease', direction: 'alternate', delay: 100, fill: 'forwards'});
-    var node = webAnimations1.EffectNode(timing);
-    var node2 = webAnimations1.EffectNode(timing2);
-    assert.equal(node(0), null);
-    assert.equal(node(100), 0.5);
-    assert.closeTo(node2(100), 0.8, 0.005);
-    assert.equal(node(600), 1);
-    assert.closeTo(node2(600), 1, 0.005);
-    assert.equal(node(700), 0.9);
-    assert.closeTo(node2(700), 0.99, 0.005);
-    assert.equal(node(1600), 0);
-    assert.closeTo(node2(1600), 0, 0.005);
-    assert.equal(node(4000), 0.4);
-    assert.closeTo(node2(4000), 0.68, 0.005);
-    assert.equal(node(4100), 0.5);
-    assert.closeTo(node2(4100), 0.8, 0.005);
-    assert.equal(node(6000), 0.5);
-    assert.closeTo(node2(6000), 0.8, 0.005);
+    var effectTF = effectTime(timing);
+    var effectTF2 = effectTime(timing2);
+    assert.equal(effectTF(0), null);
+    assert.equal(effectTF(100), 0.5);
+    assert.closeTo(effectTF2(100), 0.8, 0.005);
+    assert.equal(effectTF(600), 1);
+    assert.closeTo(effectTF2(600), 1, 0.005);
+    assert.equal(effectTF(700), 0.9);
+    assert.closeTo(effectTF2(700), 0.99, 0.005);
+    assert.equal(effectTF(1600), 0);
+    assert.closeTo(effectTF2(1600), 0, 0.005);
+    assert.equal(effectTF(4000), 0.4);
+    assert.closeTo(effectTF2(4000), 0.68, 0.005);
+    assert.equal(effectTF(4100), 0.5);
+    assert.closeTo(effectTF2(4100), 0.8, 0.005);
+    assert.equal(effectTF(6000), 0.5);
+    assert.closeTo(effectTF2(6000), 0.8, 0.005);
   });
 });
