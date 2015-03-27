@@ -14,8 +14,22 @@
 
 (function(shared, scope, testing) {
 
+  function EffectTime(timing) {
+    var timeFraction = 0;
+    var activeDuration = shared.calculateActiveDuration(timing);
+    var effectTime = function(localTime) {
+      return shared.calculateTimeFraction(activeDuration, localTime, timing);
+    };
+    effectTime._totalDuration = timing.delay + activeDuration + timing.endDelay;
+    effectTime._isCurrent = function(localTime) {
+      var phase = shared.calculatePhase(activeDuration, localTime, timing);
+      return phase === PhaseActive || phase === PhaseBefore;
+    };
+    return effectTime;
+  }
+
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
-    var effectNode = scope.EffectNode(shared.normalizeTimingInput(timingInput));
+    var effectTime = EffectTime(shared.normalizeTimingInput(timingInput));
     var keyframes = scope.convertEffectInput(effectInput);
     var timeFraction;
     var keyframeEffect = function() {
@@ -24,7 +38,7 @@
     };
     // Returns whether the keyframeEffect is in effect or not after the timing update.
     keyframeEffect._update = function(localTime) {
-      timeFraction = effectNode(localTime);
+      timeFraction = effectTime(localTime);
       return timeFraction !== null;
     };
     keyframeEffect._clear = function() {
@@ -33,8 +47,8 @@
     keyframeEffect._hasSameTarget = function(otherTarget) {
       return target === otherTarget;
     };
-    keyframeEffect._isCurrent = effectNode._isCurrent;
-    keyframeEffect._totalDuration = effectNode._totalDuration;
+    keyframeEffect._isCurrent = effectTime._isCurrent;
+    keyframeEffect._totalDuration = effectTime._totalDuration;
     return keyframeEffect;
   };
 
@@ -60,6 +74,7 @@
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.webAnimations1KeyframeEffect = scope.KeyframeEffect;
+    testing.effectTime = EffectTime;
   }
 
 })(webAnimationsShared, webAnimations1, webAnimationsTesting);
