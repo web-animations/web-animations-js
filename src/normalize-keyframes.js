@@ -167,12 +167,12 @@
 
   function normalizeKeyframes(effectInput) {
     if (!Array.isArray(effectInput) && effectInput !== null)
-      throw new TypeError('Keyframe effect must be null or an array of keyframes');
+      throw new TypeError('Keyframes must be null or an array of keyframes');
 
     if (effectInput == null)
       return [];
 
-    var keyframeEffect = effectInput.map(function(originalKeyframe) {
+    var keyframes = effectInput.map(function(originalKeyframe) {
       var keyframe = {};
       for (var member in originalKeyframe) {
         var memberValue = originalKeyframe[member];
@@ -205,8 +205,8 @@
     var everyFrameHasOffset = true;
     var looselySortedByOffset = true;
     var previousOffset = -Infinity;
-    for (var i = 0; i < keyframeEffect.length; i++) {
-      var offset = keyframeEffect[i].offset;
+    for (var i = 0; i < keyframes.length; i++) {
+      var offset = keyframes[i].offset;
       if (offset != null) {
         if (offset < previousOffset) {
           throw {
@@ -221,24 +221,24 @@
       }
     }
 
-    keyframeEffect = keyframeEffect.filter(function(keyframe) {
+    keyframes = keyframes.filter(function(keyframe) {
       return keyframe.offset >= 0 && keyframe.offset <= 1;
     });
 
     function spaceKeyframes() {
-      var length = keyframeEffect.length;
-      if (keyframeEffect[length - 1].offset == null)
-        keyframeEffect[length - 1].offset = 1;
-      if (length > 1 && keyframeEffect[0].offset == null)
-        keyframeEffect[0].offset = 0;
+      var length = keyframes.length;
+      if (keyframes[length - 1].offset == null)
+        keyframes[length - 1].offset = 1;
+      if (length > 1 && keyframes[0].offset == null)
+        keyframes[0].offset = 0;
 
       var previousIndex = 0;
-      var previousOffset = keyframeEffect[0].offset;
+      var previousOffset = keyframes[0].offset;
       for (var i = 1; i < length; i++) {
-        var offset = keyframeEffect[i].offset;
+        var offset = keyframes[i].offset;
         if (offset != null) {
           for (var j = 1; j < i - previousIndex; j++)
-            keyframeEffect[previousIndex + j].offset = previousOffset + (offset - previousOffset) * j / (i - previousIndex);
+            keyframes[previousIndex + j].offset = previousOffset + (offset - previousOffset) * j / (i - previousIndex);
           previousIndex = i;
           previousOffset = offset;
         }
@@ -247,7 +247,7 @@
     if (!everyFrameHasOffset)
       spaceKeyframes();
 
-    return keyframeEffect;
+    return keyframes;
   }
 
   shared.normalizeKeyframes = normalizeKeyframes;
