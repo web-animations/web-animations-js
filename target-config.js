@@ -85,7 +85,7 @@
       'test/js/dimension-handler.js',
       'test/js/effect.js',
       'test/js/interpolation.js',
-      'test/js/keyframe-interpolations.js',
+      'test/js/keyframes.js',
       'test/js/matrix-interpolation.js',
       'test/js/number-handler.js',
       'test/js/property-interpolation.js',
