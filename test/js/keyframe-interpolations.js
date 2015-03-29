@@ -4,7 +4,7 @@ function leftAsNumber(target) {
   return Number(left.substring(0, left.length - 2));
 }
 
-suite('effect', function() {
+suite('keyframes', function() {
   // Test normalize.
   test('Normalize keyframes with all offsets specified but not sorted by offset. Some offsets are out of [0, 1] range.', function() {
     var normalizedKeyframes;
@@ -430,7 +430,7 @@ suite('effect', function() {
   });
 });
 
-suite('effect-convertEffectInput', function() {
+suite('keyframe-interpolations - convertEffectInput', function() {
   setup(function() {
     this.target = document.createElement('div');
     this.target.style.position = 'absolute';
@@ -442,57 +442,57 @@ suite('effect-convertEffectInput', function() {
   });
 
   test('Convert effect input for a simple keyframe list with one property.', function() {
-    var effectInputFunction;
+    var keyframeInterpolations;
     assert.doesNotThrow(function() {
-      effectInputFunction = webAnimations1.convertEffectInput([
+      keyframeInterpolations = webAnimations1.convertEffectInput([
         {left: '0px'},
         {left: '200px', offset: 0.3},
         {left: '100px'}
       ]);
     });
 
-    effectInputFunction(this.target, 0);
+    keyframeInterpolations(this.target, 0);
     assert.closeTo(leftAsNumber(this.target), 0, 0.001);
-    effectInputFunction(this.target, 0.075);
+    keyframeInterpolations(this.target, 0.075);
     assert.closeTo(leftAsNumber(this.target), 50, 0.001);
-    effectInputFunction(this.target, 0.15);
+    keyframeInterpolations(this.target, 0.15);
     assert.closeTo(leftAsNumber(this.target), 100, 0.001);
-    effectInputFunction(this.target, 0.65);
+    keyframeInterpolations(this.target, 0.65);
     assert.closeTo(leftAsNumber(this.target), 150, 0.001);
-    effectInputFunction(this.target, 1);
+    keyframeInterpolations(this.target, 1);
     assert.closeTo(leftAsNumber(this.target), 100, 0.001);
-    effectInputFunction(this.target, 2);
+    keyframeInterpolations(this.target, 2);
     assert.closeTo(leftAsNumber(this.target), -42.856, 0.01);
   });
 
   test('Convert effect input where one property is animated and the property has two keyframes at offset 1.', function() {
-    var effectInputFunction;
+    var keyframeInterpolations;
     assert.doesNotThrow(function() {
-      effectInputFunction = webAnimations1.convertEffectInput([
+      keyframeInterpolations = webAnimations1.convertEffectInput([
         {left: '0px', offset: 0},
         {left: '20px', offset: 1},
         {left: '30px'}
       ]);
     });
-    effectInputFunction(this.target, 1);
+    keyframeInterpolations(this.target, 1);
     assert.equal(getComputedStyle(this.target).left, '30px');
-    effectInputFunction(this.target, 2);
+    keyframeInterpolations(this.target, 2);
     assert.equal(getComputedStyle(this.target).left, '30px');
   });
 
   test('Convert effect input and apply result at fraction null.', function() {
-    var effectInputFunction;
+    var keyframeInterpolations;
     var underlying = getComputedStyle(this.target).left;
     assert.doesNotThrow(function() {
-      effectInputFunction = webAnimations1.convertEffectInput([
+      keyframeInterpolations = webAnimations1.convertEffectInput([
         {left: '0px'},
         {left: '100px'}
       ]);
     });
 
-    effectInputFunction(this.target, 1);
+    keyframeInterpolations(this.target, 1);
     assert.equal(getComputedStyle(this.target).left, '100px');
-    effectInputFunction(this.target, null);
+    keyframeInterpolations(this.target, null);
     assert.equal(getComputedStyle(this.target).left, underlying);
   });
 });
