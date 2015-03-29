@@ -15,8 +15,8 @@
 (function(shared, scope, testing) {
 
   scope.convertEffectInput = function(effectInput) {
-    var keyframeEffect = shared.normalizeKeyframes(effectInput);
-    var propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframeEffect);
+    var keyframes = shared.normalizeKeyframes(effectInput);
+    var propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframes);
     var interpolations = makeInterpolations(propertySpecificKeyframeGroups);
     return function(target, fraction) {
       if (fraction != null) {
@@ -39,16 +39,16 @@
   };
 
 
-  function makePropertySpecificKeyframeGroups(keyframeEffect) {
+  function makePropertySpecificKeyframeGroups(keyframes) {
     var propertySpecificKeyframeGroups = {};
 
-    for (var i = 0; i < keyframeEffect.length; i++) {
-      for (var member in keyframeEffect[i]) {
+    for (var i = 0; i < keyframes.length; i++) {
+      for (var member in keyframes[i]) {
         if (member != 'offset' && member != 'easing' && member != 'composite') {
           var propertySpecificKeyframe = {
-            offset: keyframeEffect[i].offset,
-            easing: keyframeEffect[i].easing,
-            value: keyframeEffect[i][member]
+            offset: keyframes[i].offset,
+            easing: keyframes[i].easing,
+            value: keyframes[i][member]
           };
           propertySpecificKeyframeGroups[member] = propertySpecificKeyframeGroups[member] || [];
           propertySpecificKeyframeGroups[member].push(propertySpecificKeyframe);
