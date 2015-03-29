@@ -18,7 +18,7 @@
       'src/scope.js'];
 
   var webAnimations1Src = [
-      'src/effect.js',
+      'src/keyframe-interpolations.js',
       'src/property-interpolation.js',
       'src/keyframe-effect.js',
       'src/apply-preserving-inline-style.js',
@@ -43,7 +43,7 @@
   ];
 
   var liteWebAnimations1Src = [
-      'src/effect.js',
+      'src/keyframe-interpolations.js',
       'src/property-interpolation.js',
       'src/keyframe-effect.js',
       'src/apply.js',
@@ -85,6 +85,7 @@
       'test/js/dimension-handler.js',
       'test/js/effect.js',
       'test/js/interpolation.js',
+      'test/js/keyframe-interpolations.js',
       'test/js/matrix-interpolation.js',
       'test/js/number-handler.js',
       'test/js/property-interpolation.js',
