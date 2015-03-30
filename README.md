@@ -52,8 +52,8 @@ generation of animations and fine-grained control of animation playback. See
 Native Fallback
 ---------------
 
-When the polyfill runs on a browser that implements Element.animate and
-AnimationPlayer Playback Control it will detect and use the underlying native
+When the polyfill runs on a browser that implements `Element.animate` and
+`AnimationPlayer` Playback Control it will detect and use the underlying native
 features.
 
 Different Build Targets
