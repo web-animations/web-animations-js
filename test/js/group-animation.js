@@ -647,13 +647,13 @@ suite('group-animation', function() {
     );
   });
 
-  test('Setting the playbackRate on group animations updates child timing. ' +
+  test('Setting the playbackRate on sequence animations updates child timing. ' +
       'Any children who are not finished go into effect.', function() {
-        var group = new SequenceEffect([
+        var sequence = new SequenceEffect([
           new KeyframeEffect(null, [], 1000),
           new KeyframeEffect(null, [], 1000),
         ]);
-        var a = document.timeline.play(group);
+        var a = document.timeline.play(sequence);
         tick(0);
 
         a.playbackRate = 2;
@@ -755,6 +755,94 @@ suite('group-animation', function() {
         assert.equal(a.startTime, 3104);
         assert.equal(a._childAnimations[0].startTime, 3104);
         assert.equal(a._childAnimations[1].startTime, 4104);
+      }
+  );
+
+  test('Reversing a sequence animation updates child timing correctly', function() {
+        var sequence = new SequenceEffect([
+          new KeyframeEffect(null, [], 1000),
+          new KeyframeEffect(null, [], 1000),
+        ]);
+        var a = document.timeline.play(sequence);
+        tick(0);
+
+        a.playbackRate = 2;
+        assert.equal(a._animation.playbackRate, 2, 'Updates the playbackRate of the inner animation');
+        a._childAnimations.forEach(function(childAnimation) {
+          assert.equal(childAnimation.playbackRate, 2, 'It also updates the child animations');
+        });
+        tick(1);
+        tick(1101);
+        assert.equal(a.currentTime, 2000);
+        assert.equal(a._childAnimations[0].currentTime, 1000);
+        assert.equal(a._childAnimations[1].currentTime, 1000);
+        assert.equal(a.startTime, 1);
+        assert.equal(a._childAnimations[0].startTime, 1);
+        assert.equal(a._childAnimations[1].startTime, 501);
+
+        a.reverse();
+        assert.equal(a._animation.playbackRate, -2, 'Updates the playbackRate of the inner animation');
+        a._childAnimations.forEach(function(childAnimation) {
+          assert.equal(childAnimation.playbackRate, -2, 'It also updates the child animations');
+        });
+        assert.equal(a.currentTime, 2000);
+        assert.equal(a._childAnimations[0].currentTime, 2000);
+        assert.equal(a._childAnimations[1].currentTime, 1000);
+        assert.equal(a.startTime, null);
+        assert.equal(a._childAnimations[0].startTime, null);
+        assert.equal(a._childAnimations[1].startTime, null);
+
+        tick(1102);
+        assert.equal(a.currentTime, 2000);
+        assert.equal(a._childAnimations[0].currentTime, 2000);
+        assert.equal(a._childAnimations[1].currentTime, 1000);
+        assert.equal(a.startTime, 2102);
+        assert.equal(a._childAnimations[0].startTime, 2102);
+        assert.equal(a._childAnimations[1].startTime, 1602);
+
+        tick(1602);
+        assert.equal(a.currentTime, 1000);
+        assert.equal(a._childAnimations[0].currentTime, 1000);
+        assert.equal(a._childAnimations[1].currentTime, 0);
+        assert.equal(a.startTime, 2102);
+        assert.equal(a._childAnimations[0].startTime, 2102);
+        assert.equal(a._childAnimations[1].startTime, 1602);
+
+        tick(3103);
+        assert.equal(a.currentTime, 0);
+        assert.equal(a._childAnimations[0].currentTime, 0);
+        assert.equal(a._childAnimations[1].currentTime, 0);
+        assert.equal(a.startTime, 2102);
+        assert.equal(a._childAnimations[0].startTime, 2102);
+        assert.equal(a._childAnimations[1].startTime, 1602);
+
+        a.reverse();
+        assert.equal(a._animation.playbackRate, 2, 'Updates the playbackRate of the inner animation');
+        a._childAnimations.forEach(function(childAnimation) {
+          assert.equal(childAnimation.playbackRate, 2, 'It also updates the child animations');
+        });
+        assert.equal(a.currentTime, 0);
+        assert.equal(a._childAnimations[0].currentTime, 0);
+        assert.equal(a._childAnimations[1].currentTime, -1000);
+        assert.equal(a.startTime, null);
+        assert.equal(a._childAnimations[0].startTime, null);
+        assert.equal(a._childAnimations[1].startTime, null);
+
+        tick(3104);
+        assert.equal(a.currentTime, 0);
+        assert.equal(a._childAnimations[0].currentTime, 0);
+        assert.equal(a._childAnimations[1].currentTime, -1000);
+        assert.equal(a.startTime, 3104);
+        assert.equal(a._childAnimations[0].startTime, 3104);
+        assert.equal(a._childAnimations[1].startTime, 3604);
+
+        tick(3604);
+        assert.equal(a.currentTime, 1000);
+        assert.equal(a._childAnimations[0].currentTime, 1000);
+        assert.equal(a._childAnimations[1].currentTime, 0);
+        assert.equal(a.startTime, 3104);
+        assert.equal(a._childAnimations[0].startTime, 3104);
+        assert.equal(a._childAnimations[1].startTime, 3604);
       }
   );
 
