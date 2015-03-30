@@ -136,10 +136,92 @@ suite('group-animation', function() {
     ]);
 
     this.target = document.createElement('div');
+    this.target1 = document.createElement('div');
+    this.target2 = document.createElement('div');
+    this.target3 = document.createElement('div');
     this.elements.push(this.target);
+    this.elements.push(this.target1);
+    this.elements.push(this.target2);
+    this.elements.push(this.target3);
 
     for (var i = 0; i < this.elements.length; i++)
       document.documentElement.appendChild(this.elements[i]);
+
+    // Playback rate test helpers.
+    var target1 = this.target1;
+    var target2 = this.target2;
+    var target3 = this.target3;
+    target1.style.transform = 'translate(500px)';
+    target2.style.transform = 'translate(500px)';
+    target3.style.transform = 'translate(500px)';
+    var underlyingPosition = 'matrix(1, 0, 0, 1, 500, 0)';
+    var startPosition = 'matrix(1, 0, 0, 1, 0, 0)';
+    var endPosition = 'matrix(1, 0, 0, 1, 300, 0)';
+    this.prChildDuration = 100;
+    this.sequenceForPR = function(parentFill, childFill) {
+      return new SequenceEffect([
+        new KeyframeEffect(
+            target1,
+            [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+            {duration: this.prChildDuration, fill: childFill}),
+        new KeyframeEffect(
+            target2,
+            [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+            {duration: this.prChildDuration, fill: childFill}),
+        new KeyframeEffect(
+            target3,
+            [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+            {duration: this.prChildDuration, fill: childFill})
+      ],
+      {fill: parentFill});
+    };
+    this.isUnderlyingPosition = function() {
+      assert.equal(getComputedStyle(target1).transform, startPosition);
+      assert.equal(getComputedStyle(target2).transform, underlyingPosition);
+      assert.equal(getComputedStyle(target3).transform, underlyingPosition);
+    };
+    this.isFillingForwards = function() {
+      assert.equal(getComputedStyle(target1).transform, endPosition);
+      assert.equal(getComputedStyle(target2).transform, endPosition);
+    };
+    this.isNotFillingForwards = function() {
+      assert.equal(getComputedStyle(target1).transform, underlyingPosition);
+      assert.equal(getComputedStyle(target2).transform, underlyingPosition);
+    };
+    this.isFillingBackwardsDuring = function() {
+      assert.equal(getComputedStyle(target2).transform, startPosition);
+      assert.equal(getComputedStyle(target3).transform, startPosition);
+    };
+    this.isNotFillingBackwardsDuring = function() {
+      assert.equal(getComputedStyle(target2).transform, underlyingPosition);
+      assert.equal(getComputedStyle(target3).transform, underlyingPosition);
+    };
+    this.isFillingBackwards = function() {
+      assert.equal(getComputedStyle(target1).transform, startPosition);
+      assert.equal(getComputedStyle(target2).transform, startPosition);
+      assert.equal(getComputedStyle(target3).transform, startPosition);
+    };
+    this.isNotFillingBackwards = function() {
+      assert.equal(getComputedStyle(target1).transform, underlyingPosition);
+      assert.equal(getComputedStyle(target2).transform, underlyingPosition);
+      assert.equal(getComputedStyle(target3).transform, underlyingPosition);
+    };
+    this.checkFills = function(parentFillMode, childFillMode, startFill, normalFill, reverseFill, endFill, reverse) {
+      var animation = document.timeline.play(this.sequenceForPR(parentFillMode, childFillMode));
+      tick(0);
+      startFill();
+      tick(2 * this.prChildDuration);
+      normalFill();
+      tick(this.prChildDuration * 2.5);
+      reverse ? animation.reverse() : animation.playbackRate *= -1;
+      tick(3.5 * this.prChildDuration);
+      tick(5 * this.prChildDuration);
+      reverseFill();
+      tick(6);
+      tick(7.5 * this.prChildDuration);
+      endFill();
+      animation.cancel();
+    };
   });
 
   teardown(function() {
@@ -387,17 +469,380 @@ suite('group-animation', function() {
       this.target.parent.removeChild(target);
   });
 
-  test('setting the playbackRate on group animations', function() {
-    var group = new GroupEffect([
-      new KeyframeEffect(null, [], 1234),
-      new KeyframeEffect(null, [], 1234),
+  test('Fill modes work for sequence fill both with children none after setting playbackRate from positive to negative.', function() {
+    this.checkFills(
+        'both',
+        'none',
+        this.isUnderlyingPosition,
+        this.isNotFillingForwards,
+        this.isNotFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        false
+    );
+  });
+  test('Fill modes work for sequence fill both with children both after setting playbackRate from positive to negative.', function() {
+    this.checkFills(
+        'both',
+        'both',
+        this.isFillingBackwards,
+        this.isFillingForwards,
+        this.isFillingBackwardsDuring,
+        this.isFillingBackwards,
+        false
+    );
+  });
+  test('Fill modes work for sequence fill both with children backwards after setting playbackRate from positive to negative.', function() {
+    this.checkFills(
+        'both',
+        'backwards',
+        this.isFillingBackwards,
+        this.isNotFillingForwards,
+        this.isFillingBackwardsDuring,
+        this.isFillingBackwards,
+        false
+    );
+  });
+  test('Fill modes work for sequence fill both with children forwards after setting playbackRate from positive to negative.', function() {
+    this.checkFills(
+        'both',
+        'forwards',
+        this.isUnderlyingPosition,
+        this.isFillingForwards,
+        this.isNotFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        false
+    );
+  });
+  test('Fill modes work for sequence fill none with children fill none after setting playbackRate from positive to negative.', function() {
+    this.checkFills(
+        'none',
+        'none',
+        this.isUnderlyingPosition,
+        this.isNotFillingForwards,
+        this.isNotFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        false
+    );
+  });
+  test('Fill modes work for sequence fill none with children fill both after setting playbackRate from positive to negative.', function() {
+    this.checkFills(
+        'none',
+        'both',
+        this.isFillingBackwards,
+        this.isFillingForwards,
+        this.isFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        false
+    );
+  });
+  test('Fill modes work for sequence fill none with children fill backwards after setting playbackRate from positive to negative.', function() {
+    this.checkFills(
+        'none',
+        'backwards',
+        this.isFillingBackwards,
+        this.isNotFillingForwards,
+        this.isFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        false
+    );
+  });
+  test('Fill modes work for sequence fill none with children fill forwards after setting playbackRate from positive to negative.', function() {
+    this.checkFills(
+        'none',
+        'forwards',
+        this.isUnderlyingPosition,
+        this.isFillingForwards,
+        this.isNotFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        false
+    );
+  });
+
+  test('Fill modes work for sequence fill both with children none after reverse.', function() {
+    this.checkFills(
+        'both',
+        'none',
+        this.isUnderlyingPosition,
+        this.isNotFillingForwards,
+        this.isNotFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        true
+    );
+  });
+  test('Fill modes work for sequence fill both with children both after reverse.', function() {
+    this.checkFills(
+        'both',
+        'both',
+        this.isFillingBackwards,
+        this.isFillingForwards,
+        this.isFillingBackwardsDuring,
+        this.isFillingBackwards,
+        true
+    );
+  });
+  test('Fill modes work for sequence fill both with children backwards after reverse.', function() {
+    this.checkFills(
+        'both',
+        'backwards',
+        this.isFillingBackwards,
+        this.isNotFillingForwards,
+        this.isFillingBackwardsDuring,
+        this.isFillingBackwards,
+        true
+    );
+  });
+  test('Fill modes work for sequence fill both with children forwards after reverse.', function() {
+    this.checkFills(
+        'both',
+        'forwards',
+        this.isUnderlyingPosition,
+        this.isFillingForwards,
+        this.isNotFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        true
+    );
+  });
+  test('Fill modes work for sequence fill none with children fill none after reverse.', function() {
+    this.checkFills(
+        'none',
+        'none',
+        this.isUnderlyingPosition,
+        this.isNotFillingForwards,
+        this.isNotFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        true
+    );
+  });
+  test('Fill modes work for sequence fill none with children fill both after reverse.', function() {
+    this.checkFills(
+        'none',
+        'both',
+        this.isFillingBackwards,
+        this.isFillingForwards,
+        this.isFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        true
+    );
+  });
+  test('Fill modes work for sequence fill none with children fill backwards after reverse.', function() {
+    this.checkFills(
+        'none',
+        'backwards',
+        this.isFillingBackwards,
+        this.isNotFillingForwards,
+        this.isFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        true
+    );
+  });
+  test('Fill modes work for sequence fill none with children fill forwards after reverse.', function() {
+    this.checkFills(
+        'none',
+        'forwards',
+        this.isUnderlyingPosition,
+        this.isFillingForwards,
+        this.isNotFillingBackwardsDuring,
+        this.isNotFillingBackwards,
+        true
+    );
+  });
+
+  test('Setting the playbackRate on sequence animations updates child timing. ' +
+      'Any children who are not finished go into effect.', function() {
+        var sequence = new SequenceEffect([
+          new KeyframeEffect(null, [], 1000),
+          new KeyframeEffect(null, [], 1000),
+        ]);
+        var a = document.timeline.play(sequence);
+        tick(0);
+
+        a.playbackRate = 2;
+        assert.equal(a._animation.playbackRate, 2, 'Updates the playbackRate of the inner animation');
+        a._childAnimations.forEach(function(childAnimation) {
+          assert.equal(childAnimation.playbackRate, 2, 'It also updates the child animations');
+        });
+        assert.equal(a.currentTime, 0);
+        assert.equal(a._childAnimations[0].currentTime, 0);
+        assert.equal(a._childAnimations[1].currentTime, -1000);
+        assert.equal(a.startTime, null);
+        assert.equal(a._childAnimations[0].startTime, null);
+        assert.equal(a._childAnimations[1].startTime, null);
+
+        tick(1);
+        assert.equal(a.currentTime, 0);
+        assert.equal(a._childAnimations[0].currentTime, 0);
+        assert.equal(a._childAnimations[1].currentTime, -1000);
+        assert.equal(a.startTime, 1);
+        assert.equal(a._childAnimations[0].startTime, 1);
+        assert.equal(a._childAnimations[1].startTime, 501);
+
+        tick(601);
+        assert.equal(a.currentTime, 1200);
+        assert.equal(a._childAnimations[0].currentTime, 1000);
+        assert.equal(a._childAnimations[1].currentTime, 200);
+        assert.equal(a.startTime, 1);
+        assert.equal(a._childAnimations[0].startTime, 1);
+        assert.equal(a._childAnimations[1].startTime, 501);
+
+        tick(1101);
+        assert.equal(a.currentTime, 2000);
+        assert.equal(a._childAnimations[0].currentTime, 1000);
+        assert.equal(a._childAnimations[1].currentTime, 1000);
+        assert.equal(a.startTime, 1);
+        assert.equal(a._childAnimations[0].startTime, 1);
+        assert.equal(a._childAnimations[1].startTime, 501);
+
+        a.playbackRate = -1;
+        assert.equal(a._animation.playbackRate, -1, 'Updates the playbackRate of the inner animation');
+        a._childAnimations.forEach(function(childAnimation) {
+          assert.equal(childAnimation.playbackRate, -1, 'It also updates the child animations');
+        });
+        assert.equal(a.currentTime, 2000);
+        assert.equal(a._childAnimations[0].currentTime, 2000);
+        assert.equal(a._childAnimations[1].currentTime, 1000);
+        assert.equal(a.startTime, null);
+        assert.equal(a._childAnimations[0].startTime, null);
+        assert.equal(a._childAnimations[1].startTime, null);
+
+        tick(1102);
+        assert.equal(a.currentTime, 2000);
+        assert.equal(a._childAnimations[0].currentTime, 2000);
+        assert.equal(a._childAnimations[1].currentTime, 1000);
+        assert.equal(a.startTime, 3102);
+        assert.equal(a._childAnimations[0].startTime, 3102);
+        assert.equal(a._childAnimations[1].startTime, 2102);
+
+        tick(1602);
+        assert.equal(a.currentTime, 1500);
+        assert.equal(a._childAnimations[0].currentTime, 1500);
+        assert.equal(a._childAnimations[1].currentTime, 500);
+        assert.equal(a.startTime, 3102);
+        assert.equal(a._childAnimations[0].startTime, 3102);
+        assert.equal(a._childAnimations[1].startTime, 2102);
+
+        tick(3103);
+        assert.equal(a.currentTime, 0);
+        assert.equal(a._childAnimations[0].currentTime, 0);
+        assert.equal(a._childAnimations[1].currentTime, 0);
+        assert.equal(a.startTime, 3102);
+        assert.equal(a._childAnimations[0].startTime, 3102);
+        assert.equal(a._childAnimations[1].startTime, 2102);
+
+        a.playbackRate = 1;
+        assert.equal(a._animation.playbackRate, 1, 'Updates the playbackRate of the inner animation');
+        a._childAnimations.forEach(function(childAnimation) {
+          assert.equal(childAnimation.playbackRate, 1, 'It also updates the child animations');
+        });
+        assert.equal(a.currentTime, 0);
+        assert.equal(a._childAnimations[0].currentTime, 0);
+        assert.equal(a._childAnimations[1].currentTime, -1000);
+        assert.equal(a.startTime, null);
+        assert.equal(a._childAnimations[0].startTime, null);
+        assert.equal(a._childAnimations[1].startTime, null);
+
+        tick(3104);
+        assert.equal(a.currentTime, 0);
+        assert.equal(a._childAnimations[0].currentTime, 0);
+        assert.equal(a._childAnimations[1].currentTime, -1000);
+        assert.equal(a.startTime, 3104);
+        assert.equal(a._childAnimations[0].startTime, 3104);
+        assert.equal(a._childAnimations[1].startTime, 4104);
+
+        tick(3604);
+        assert.equal(a.currentTime, 500);
+        assert.equal(a._childAnimations[0].currentTime, 500);
+        assert.equal(a._childAnimations[1].currentTime, -500);
+        assert.equal(a.startTime, 3104);
+        assert.equal(a._childAnimations[0].startTime, 3104);
+        assert.equal(a._childAnimations[1].startTime, 4104);
+      }
+  );
+
+  test('Reversing a sequence animation updates child timing correctly', function() {
+    var sequence = new SequenceEffect([
+      new KeyframeEffect(null, [], 1000),
+      new KeyframeEffect(null, [], 1000),
     ]);
-    var a = document.timeline.play(group);
+    var a = document.timeline.play(sequence);
+    tick(0);
+
     a.playbackRate = 2;
     assert.equal(a._animation.playbackRate, 2, 'Updates the playbackRate of the inner animation');
     a._childAnimations.forEach(function(childAnimation) {
       assert.equal(childAnimation.playbackRate, 2, 'It also updates the child animations');
     });
+    tick(1);
+    tick(1101);
+    assert.equal(a.currentTime, 2000);
+    assert.equal(a._childAnimations[0].currentTime, 1000);
+    assert.equal(a._childAnimations[1].currentTime, 1000);
+    assert.equal(a.startTime, 1);
+    assert.equal(a._childAnimations[0].startTime, 1);
+    assert.equal(a._childAnimations[1].startTime, 501);
+
+    a.reverse();
+    assert.equal(a._animation.playbackRate, -2, 'Updates the playbackRate of the inner animation');
+    a._childAnimations.forEach(function(childAnimation) {
+      assert.equal(childAnimation.playbackRate, -2, 'It also updates the child animations');
+    });
+    assert.equal(a.currentTime, 2000);
+    assert.equal(a._childAnimations[0].currentTime, 2000);
+    assert.equal(a._childAnimations[1].currentTime, 1000);
+    assert.equal(a.startTime, null);
+    assert.equal(a._childAnimations[0].startTime, null);
+    assert.equal(a._childAnimations[1].startTime, null);
+
+    tick(1102);
+    assert.equal(a.currentTime, 2000);
+    assert.equal(a._childAnimations[0].currentTime, 2000);
+    assert.equal(a._childAnimations[1].currentTime, 1000);
+    assert.equal(a.startTime, 2102);
+    assert.equal(a._childAnimations[0].startTime, 2102);
+    assert.equal(a._childAnimations[1].startTime, 1602);
+
+    tick(1602);
+    assert.equal(a.currentTime, 1000);
+    assert.equal(a._childAnimations[0].currentTime, 1000);
+    assert.equal(a._childAnimations[1].currentTime, 0);
+    assert.equal(a.startTime, 2102);
+    assert.equal(a._childAnimations[0].startTime, 2102);
+    assert.equal(a._childAnimations[1].startTime, 1602);
+
+    tick(3103);
+    assert.equal(a.currentTime, 0);
+    assert.equal(a._childAnimations[0].currentTime, 0);
+    assert.equal(a._childAnimations[1].currentTime, 0);
+    assert.equal(a.startTime, 2102);
+    assert.equal(a._childAnimations[0].startTime, 2102);
+    assert.equal(a._childAnimations[1].startTime, 1602);
+
+    a.reverse();
+    assert.equal(a._animation.playbackRate, 2, 'Updates the playbackRate of the inner animation');
+    a._childAnimations.forEach(function(childAnimation) {
+      assert.equal(childAnimation.playbackRate, 2, 'It also updates the child animations');
+    });
+    assert.equal(a.currentTime, 0);
+    assert.equal(a._childAnimations[0].currentTime, 0);
+    assert.equal(a._childAnimations[1].currentTime, -1000);
+    assert.equal(a.startTime, null);
+    assert.equal(a._childAnimations[0].startTime, null);
+    assert.equal(a._childAnimations[1].startTime, null);
+
+    tick(3104);
+    assert.equal(a.currentTime, 0);
+    assert.equal(a._childAnimations[0].currentTime, 0);
+    assert.equal(a._childAnimations[1].currentTime, -1000);
+    assert.equal(a.startTime, 3104);
+    assert.equal(a._childAnimations[0].startTime, 3104);
+    assert.equal(a._childAnimations[1].startTime, 3604);
+
+    tick(3604);
+    assert.equal(a.currentTime, 1000);
+    assert.equal(a._childAnimations[0].currentTime, 1000);
+    assert.equal(a._childAnimations[1].currentTime, 0);
+    assert.equal(a.startTime, 3104);
+    assert.equal(a._childAnimations[0].startTime, 3104);
+    assert.equal(a._childAnimations[1].startTime, 3604);
   });
 
   test('delays on groups work correctly', function() {

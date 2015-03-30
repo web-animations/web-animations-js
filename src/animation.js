@@ -48,7 +48,14 @@
 
   scope.Animation.prototype = {
     _ensureAlive: function() {
-      this._inEffect = this._effect._update(this.currentTime);
+      // If an animation is playing backwards and is not fill backwards/both
+      // then it should go out of effect when it reaches the start of its
+      // active interval (currentTime == 0).
+      if (this.playbackRate < 0 && this.currentTime === 0) {
+        this._inEffect = this._effect._update(-1);
+      } else {
+        this._inEffect = this._effect._update(this.currentTime);
+      }
       if (!this._inTimeline && (this._inEffect || !this._finishedFlag)) {
         this._inTimeline = true;
         scope.timeline._animations.push(this);
@@ -98,8 +105,15 @@
       return this._playbackRate;
     },
     set playbackRate(value) {
+      if (value == this._playbackRate) {
+        return;
+      }
       var oldCurrentTime = this.currentTime;
       this._playbackRate = value;
+      this._startTime = null;
+      if (this.playState != 'paused' && this.playState != 'idle') {
+        this.play();
+      }
       if (oldCurrentTime != null) {
         this.currentTime = oldCurrentTime;
       }
@@ -153,8 +167,7 @@
       this._startTime = null;
     },
     reverse: function() {
-      this._playbackRate *= -1;
-      this._startTime = null;
+      this.playbackRate *= -1;
       this.play();
     },
     addEventListener: function(type, handler) {
