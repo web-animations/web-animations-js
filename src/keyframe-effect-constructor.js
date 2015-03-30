@@ -19,10 +19,6 @@
     this._frames = shared.normalizeKeyframes(effectInput);
   }
 
-  KeyframeList.prototype = {
-    getFrames: function() { return this._frames; }
-  };
-
   // FIXME: This constructor is also used for custom effects. This won't be the case once custom
   // effects are change to callbacks.
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
@@ -45,6 +41,20 @@
     this._keyframes = effectInput;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
+  };
+
+  scope.KeyframeEffect.prototype = {
+    getFrames: function() {
+      // FIXME: Once custom effects are switched over to callbacks we can
+      // always return this._normalizedKeyframes._frames here.
+      if (typeof this._normalizedKeyframes == 'function')
+        return this._normalizedKeyframes;
+      return this._normalizedKeyframes._frames;
+    },
+    get effect() {
+      shared.deprecated('KeyframeEffect.effect', '2015-03-23', 'Use KeyframeEffect.getFrames() instead.');
+      return this._normalizedKeyframes;
+    }
   };
 
   var originalElementAnimate = Element.prototype.animate;
@@ -102,6 +112,10 @@
     return document.timeline.getAnimations().filter(function(animation) {
       return animation.effect !== null && animation.effect.target == this;
     }.bind(this));
+  };
+  window.Element.prototype.getAnimationPlayers = function() {
+    shared.deprecated('Element.getAnimationPlayers', '2015-03-23', 'Use Element.getAnimations instead.');
+    return this.getAnimations();
   };
 
   // Alias KeyframeEffect to Animation, to support old constructor (Animation) for a deprecation
