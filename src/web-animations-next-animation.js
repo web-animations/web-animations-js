@@ -85,18 +85,9 @@
       }.bind(this));
     },
     _arrangeChildren: function(childAnimation, offset) {
-      console.log('parent start time:', this.startTime,
-        'child start time:', childAnimation.startTime,
-        'child current time:', childAnimation.currentTime,
-        'offset:', offset);
       if (this.startTime === null) {
-        console.log('this.currentTime - offset / this.playbackRate:', this.currentTime - offset / this.playbackRate);
         childAnimation.currentTime = this.currentTime - offset / this.playbackRate;
         childAnimation._startTime = null;
-        console.log('parent start time:', this.startTime,
-        'child start time:', childAnimation.startTime,
-        'child current time:', childAnimation.currentTime,
-        'offset:', offset);
       } else if (childAnimation.startTime !== this.startTime + offset / this.playbackRate) {
         childAnimation.startTime = this.startTime + offset / this.playbackRate;
       }
@@ -126,7 +117,6 @@
       return this._animation.currentTime;
     },
     set currentTime(v) {
-      console.log('set current time: ', v);
       this._animation.currentTime = isFinite(v) ? v : Math.sign(v) * Number.MAX_VALUE;
       this._register();
       this._forEachChild(function(child, offset) {

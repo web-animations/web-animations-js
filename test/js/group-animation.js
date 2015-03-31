@@ -139,6 +139,9 @@ suite('group-animation', function() {
     this.target1 = document.createElement('div');
     this.target2 = document.createElement('div');
     this.target3 = document.createElement('div');
+    this.target1.id = 'target1';
+    this.target2.id = 'target2';
+    this.target3.id = 'target3';
     this.elements.push(this.target);
     this.elements.push(this.target1);
     this.elements.push(this.target2);
@@ -154,9 +157,14 @@ suite('group-animation', function() {
     target1.style.transform = 'translate(500px)';
     target2.style.transform = 'translate(500px)';
     target3.style.transform = 'translate(500px)';
-    var underlyingPosition = 'matrix(1, 0, 0, 1, 500, 0)';
-    var startPosition = 'matrix(1, 0, 0, 1, 0, 0)';
-    var endPosition = 'matrix(1, 0, 0, 1, 300, 0)';
+    this.underlyingPosition = 'matrix(1, 0, 0, 1, 500, 0)';
+    this.startPosition = 'matrix(1, 0, 0, 1, 0, 0)';
+    this.midPosition = 'matrix(1, 0, 0, 1, 150, 0)';
+    this.endPosition = 'matrix(1, 0, 0, 1, 300, 0)';
+    var underlyingPosition = this.underlyingPosition;
+    var startPosition = this.startPosition;
+    var midPosition = this.midPosition;
+    var endPosition = this.endPosition;
     this.prChildDuration = 100;
     this.sequenceForPR = function(parentFill, childFill) {
       return new SequenceEffect([
@@ -221,6 +229,59 @@ suite('group-animation', function() {
       tick(7.5 * this.prChildDuration);
       endFill();
       animation.cancel();
+    };
+
+    // Infinite iteration child test helpers.
+    this.checkPositions = function(target1Pos, target2Pos) {
+      assert.equal(getComputedStyle(target1).transform, target1Pos, 'target 1 style');
+      assert.equal(getComputedStyle(target2).transform, target2Pos, 'target 2 style');
+    };
+    var checkPositions = this.checkPositions;
+    var infiniteChildDuration = 100;
+    this.makeInfiniteChildSeq = function(parentFill, childFill, infiniteChild) {
+      var timingOpts = {
+        first: {duration: infiniteChildDuration, fill: childFill},
+        last: {duration: infiniteChildDuration, fill: childFill}};
+      timingOpts[infiniteChild].iterations = Infinity;
+      return new SequenceEffect([
+        new KeyframeEffect(
+            target1,
+            [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+            timingOpts.first),
+        new KeyframeEffect(
+            target2,
+            [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+            timingOpts.last)
+      ],
+      {fill: parentFill});
+    };
+    this.checkInfiniteSeqChildBehavior = function(effect, firstStartPos, secondStartPos, firstMidPos, secondMidPos) {
+      var animation = document.timeline.play(effect);
+      tick(0);
+      checkPositions(firstStartPos, secondStartPos);
+      tick(infiniteChildDuration * 3.5);
+      checkPositions(firstMidPos, secondMidPos);
+      animation.cancel();
+    };
+    this.makeInfiniteChildGroup = function(parentFill, childFill) {
+      return new GroupEffect([
+        new KeyframeEffect(
+            target1,
+            [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+            {duration: infiniteChildDuration, fill: childFill, iterations: Infinity}),
+        new KeyframeEffect(
+            target2,
+            [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+            {duration: infiniteChildDuration, fill: childFill})
+      ],
+      {fill: parentFill});
+    };
+    this.checkInfiniteGroupChildBehavior = function(effect, firstMidPos, secondMidPos) {
+      this.checkInfiniteSeqChildBehavior(effect,
+          startPosition,
+          startPosition,
+          firstMidPos,
+          secondMidPos);
     };
   });
 
@@ -645,6 +706,66 @@ suite('group-animation', function() {
         this.isNotFillingBackwards,
         true
     );
+  });
+
+  test('Sequences work when the first child has infinite iterations. Sequence has fill both, children fill backwards.', function() {
+    var seqBothBackwardsFirst = this.makeInfiniteChildSeq('both', 'backwards', 'first');
+    this.checkInfiniteSeqChildBehavior(seqBothBackwardsFirst,
+        this.startPosition,
+        this.startPosition,
+        this.midPosition,
+        this.startPosition);
+  });
+  test('Sequences work when the first child has infinite iterations. Sequence has fill both, children fill forwards.', function() {
+    var seqBothForwardsFirst = this.makeInfiniteChildSeq('both', 'forwards', 'first');
+    this.checkInfiniteSeqChildBehavior(seqBothForwardsFirst,
+        this.startPosition,
+        this.underlyingPosition,
+        this.midPosition,
+        this.underlyingPosition);
+  });
+  test('Sequences work when the last child has infinite iterations. Sequence has fill both, children fill none.', function() {
+    var seqBothNoneLast = this.makeInfiniteChildSeq('both', 'none', 'last');
+    this.checkInfiniteSeqChildBehavior(seqBothNoneLast,
+        this.startPosition,
+        this.underlyingPosition,
+        this.underlyingPosition,
+        this.midPosition);
+  });
+  test('Sequences work when the last child has infinite iterations. Sequence has fill both, children fill both.', function() {
+    var seqBothBothLast = this.makeInfiniteChildSeq('both', 'both', 'last');
+    this.checkInfiniteSeqChildBehavior(seqBothBothLast,
+        this.startPosition,
+        this.startPosition,
+        this.endPosition,
+        this.midPosition);
+  });
+  test('Sequences work when the first child has infinite iterations. Sequence has fill none, children fill both.', function() {
+    var seqNoneBothFirst = this.makeInfiniteChildSeq('none', 'both', 'first');
+    this.checkInfiniteSeqChildBehavior(seqNoneBothFirst,
+        this.startPosition,
+        this.startPosition,
+        this.midPosition,
+        this.startPosition);
+  });
+
+  test('Groups work when one child has infinite iterations. Group has fill both, children fill none', function() {
+    var groupBothNoneFirst = this.makeInfiniteChildGroup('both', 'none');
+    this.checkInfiniteGroupChildBehavior(groupBothNoneFirst,
+        this.midPosition,
+        this.underlyingPosition);
+  });
+  test('Groups work when one child has infinite iterations. Group has fill both, children fill both', function() {
+    var groupBothBothFirst = this.makeInfiniteChildGroup('both', 'both');
+    this.checkInfiniteGroupChildBehavior(groupBothBothFirst,
+        this.midPosition,
+        this.endPosition);
+  });
+  test('Groups work when one child has infinite iterations. Group has fill none, children fill both', function() {
+    var groupNoneBothFirst = this.makeInfiniteChildGroup('none', 'both');
+    this.checkInfiniteGroupChildBehavior(groupNoneBothFirst,
+        this.midPosition,
+        this.endPosition);
   });
 
   test('Setting the playbackRate on sequence animations updates child timing. ' +
