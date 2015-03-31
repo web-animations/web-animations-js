@@ -90,11 +90,11 @@ interpolation/decomposition.
 |KeyframeEffect constructor   | 🚫             | ✔                  | ✔                       |
 |Simple GroupEffects & SequenceEffects           | 🚫             | ✔                  | ✔                       |
 |Custom Effects          | 🚫             | ✔                  | ✔                       |
-|Timing input (easings, duration, fillMode, etc.) for groups/sequences</div>| 🚫 | 🚫\* | 🚫         |
+|Timing input (easings, duration, fillMode, etc.) for groups</div>| 🚫 | 🚫\* | 🚫         |
 |Additive animation      | 🚫             | 🚫\*                | 🚫                       |
 |Motion path             | 🚫\*           | 🚫\*                | 🚫                       |
 |Modifiable keyframe effect timing| 🚫          | 🚫\*                | 🚫\*                     |
-|Modifiable group/sequence timing | 🚫             | 🚫\*                | 🚫\*                     |
+|Modifiable group timing | 🚫             | 🚫\*                | 🚫\*                     |
 |Usable inline style\*\* | ✔             | ✔                  | 🚫                       |
 
 \* support is planned for these features.
