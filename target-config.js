@@ -18,7 +18,6 @@
       'src/scope.js'];
 
   var webAnimations1Src = [
-      'src/effect-node.js',
       'src/effect.js',
       'src/property-interpolation.js',
       'src/keyframe-effect.js',
@@ -44,7 +43,6 @@
   ];
 
   var liteWebAnimations1Src = [
-      'src/effect-node.js',
       'src/effect.js',
       'src/property-interpolation.js',
       'src/keyframe-effect.js',
@@ -85,13 +83,13 @@
       'test/js/box-handler.js',
       'test/js/color-handler.js',
       'test/js/dimension-handler.js',
-      'test/js/effect-node.js',
       'test/js/effect.js',
       'test/js/interpolation.js',
       'test/js/matrix-interpolation.js',
       'test/js/number-handler.js',
       'test/js/property-interpolation.js',
       'test/js/tick.js',
+      'test/js/timing-utilities.js',
       'test/js/timing.js',
       'test/js/transform-handler.js'];
 
