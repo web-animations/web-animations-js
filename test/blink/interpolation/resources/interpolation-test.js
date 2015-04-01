@@ -220,7 +220,7 @@
           var i = 0;
           while (i < params.prefixedProperty.length && !value) {
             property = params.prefixedProperty[i++];
-            value = getComputedStyle(target).getPropertyValue(property)
+            value = getComputedStyle(target).getPropertyValue(property);
           }
         }
         if (!value) {
