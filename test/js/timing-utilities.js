@@ -16,14 +16,20 @@ suite('timing-utilities', function() {
     }
     assert.closeTo(f(0.1844), 0.2601, 0.01);
     assert.closeTo(g(0.1844), 0.2601, 0.01);
+    assert.equal(f(0), 0);
+    assert.equal(f(1), 1);
+    assert.equal(g(0), 0);
+    assert.equal(g(1), 1);
 
     f = toTimingFunction('cubic-bezier(0, 1, 1, 0)');
     assert.closeTo(f(0.104), 0.392, 0.01);
 
     function isLinear(f) {
+      assert.equal(f(0), 0);
       assert.equal(f(0.1), 0.1);
       assert.equal(f(0.4), 0.4);
       assert.equal(f(0.9), 0.9);
+      assert.equal(f(1), 1);
     }
 
     f = toTimingFunction('cubic-bezier(0, 1, -1, 1)');
