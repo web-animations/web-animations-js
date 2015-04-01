@@ -427,7 +427,7 @@ suite('group-animation', function() {
 
   test('redundant effect node wrapping', function() {
     tick(100);
-    var keyframeEffect = new SequenceEffect([
+    var sequenceEffect = new SequenceEffect([
       this.staticEffect(this.target, '0px', 1),
       new GroupEffect([
         new SequenceEffect([
@@ -436,7 +436,7 @@ suite('group-animation', function() {
         ]),
       ]),
     ]);
-    var animation = document.timeline.play(keyframeEffect);
+    var animation = document.timeline.play(sequenceEffect);
     assert.equal(getComputedStyle(this.target).marginLeft, '0px');
     checkTimes(animation, [100, 0], [
       [100, 0, 0, 0], [[ // 0
@@ -649,11 +649,11 @@ suite('group-animation', function() {
 
   test('Setting the playbackRate on sequence animations updates child timing. ' +
       'Any children who are not finished go into effect.', function() {
-        var sequence = new SequenceEffect([
+        var sequenceEffect = new SequenceEffect([
           new KeyframeEffect(null, [], 1000),
           new KeyframeEffect(null, [], 1000),
         ]);
-        var a = document.timeline.play(sequence);
+        var a = document.timeline.play(sequenceEffect);
         tick(0);
 
         a.playbackRate = 2;
@@ -759,11 +759,11 @@ suite('group-animation', function() {
   );
 
   test('Reversing a sequence animation updates child timing correctly', function() {
-    var sequence = new SequenceEffect([
+    var sequenceEffect = new SequenceEffect([
       new KeyframeEffect(null, [], 1000),
       new KeyframeEffect(null, [], 1000),
     ]);
-    var a = document.timeline.play(sequence);
+    var a = document.timeline.play(sequenceEffect);
     tick(0);
 
     a.playbackRate = 2;
@@ -851,7 +851,7 @@ suite('group-animation', function() {
     // 0
     //   33
     //   2
-    var keyframeEffect = new GroupEffect([
+    var groupEffect = new GroupEffect([
       new GroupEffect([
         this.staticEffect(this.target, '4px', {duration: 3, delay: 1}),
         this.staticEffect(this.target, '1px', {duration: 1, delay: 0}),
@@ -862,7 +862,7 @@ suite('group-animation', function() {
         this.staticEffect(this.target, '2px', {duration: 1, delay: -2}),
       ]),
     ]);
-    var animation = document.timeline.play(keyframeEffect);
+    var animation = document.timeline.play(groupEffect);
     tick(100);
     checkTimes(animation, [100, 0], [
       [
@@ -893,7 +893,7 @@ suite('group-animation', function() {
     // 0
     //   33
     //   2
-    var keyframeEffect = new SequenceEffect([
+    var sequenceEffect = new SequenceEffect([
       new SequenceEffect([
         this.staticEffect(this.target, '1px', {duration: 2, endDelay: 2}),
         this.staticEffect(this.target, '4px', {duration: 1, endDelay: 1}),
@@ -904,7 +904,7 @@ suite('group-animation', function() {
         this.staticEffect(this.target, '2px', {duration: 1, endDelay: 2}),
       ]),
     ]);
-    var animation = document.timeline.play(keyframeEffect);
+    var animation = document.timeline.play(sequenceEffect);
     tick(100);
     checkTimes(animation, [100, 0], [
       [
@@ -1397,8 +1397,8 @@ suite('group-animation', function() {
   test('playState works for groups', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
-    var keyframeEffect = new SequenceEffect([new KeyframeEffect(target, [], 100), new KeyframeEffect(target, [], 100)]);
-    var a = document.timeline.play(keyframeEffect);
+    var sequenceEffect = new SequenceEffect([new KeyframeEffect(target, [], 100), new KeyframeEffect(target, [], 100)]);
+    var a = document.timeline.play(sequenceEffect);
     assert.equal(a.playState, 'pending');
     tick(1);
     assert.equal(a.playState, 'running');
@@ -1433,8 +1433,8 @@ suite('group-animation', function() {
   test('pausing then seeking out of range then seeking into range works', function() {
     var target = document.createElement('div');
     var keyframeEffect = new KeyframeEffect(target, [], {duration: 2000, fill: 'both'});
-    var group = new GroupEffect([keyframeEffect], {fill: 'none'});
-    var animation = document.timeline.play(group);
+    var groupEffect = new GroupEffect([keyframeEffect], {fill: 'none'});
+    var animation = document.timeline.play(groupEffect);
 
     animation.pause();
     animation.currentTime = 3000;
@@ -1450,8 +1450,8 @@ suite('group-animation', function() {
   test('reversing then seeking out of range then seeking into range works', function() {
     var target = document.createElement('div');
     var keyframeEffect = new KeyframeEffect(target, [], {duration: 2000, fill: 'both'});
-    var group = new GroupEffect([keyframeEffect], {fill: 'none'});
-    var animation = document.timeline.play(group);
+    var groupEffect = new GroupEffect([keyframeEffect], {fill: 'none'});
+    var animation = document.timeline.play(groupEffect);
 
     animation.currentTime = 1000;
     tick(100);
@@ -1474,8 +1474,8 @@ suite('group-animation', function() {
         this.target,
         [{marginLeft: '0px'}, {marginLeft: '100px'}],
         {duration: 500, fill: 'none'});
-    var group = new GroupEffect([keyframeEffect], {fill: 'none'});
-    var animation = document.timeline.play(group);
+    var groupEffect = new GroupEffect([keyframeEffect], {fill: 'none'});
+    var animation = document.timeline.play(groupEffect);
 
     tick(0);
     assert.equal(getComputedStyle(this.target).marginLeft, '0px');
