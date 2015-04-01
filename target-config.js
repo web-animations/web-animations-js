@@ -83,7 +83,6 @@
       'test/js/box-handler.js',
       'test/js/color-handler.js',
       'test/js/dimension-handler.js',
-      'test/js/effect.js',
       'test/js/interpolation.js',
       'test/js/keyframes.js',
       'test/js/matrix-interpolation.js',
