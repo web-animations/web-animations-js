@@ -1,3 +1,15 @@
+### 2.0.0 - *April 5 2015*
+
+  * Improve behavior of group Animation playback rate.
+  * Rename Animation to KeyframeEffect.
+  * Rename AnimationSequence to SequenceEffect.
+  * Rename AnimationGroup to GroupEffect.
+  * Rename AnimationPlayer to Animation.
+  * Remove KeyframeEffect.effect and add KeyframeEffect.getFrames.
+  * Rename Animation.source to Animation.effect.
+  * Rename Timeline.getAnimationPlayers to Timeline.getAnimations.
+  * Rename Element.getAnimationPlayers to Element.getAnimations.
+
 ### 1.0.7 - *March 10 2015*
 
   * Improve performance of constructing groups and sequences.
