@@ -16,30 +16,30 @@
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
 
   var sequenceNumber = 0;
-  scope.bindPlayerForCustomEffect = function(player) {
-    var target = player.source.target;
-    var effect = player.source.effect;
-    var timing = player.source.timing;
-    var last = undefined;
+  scope.bindAnimationForCustomEffect = function(animation) {
+    var target = animation.effect.target;
+    var effectFunction = animation.effect._normalizedKeyframes;
+    var timing = animation.effect.timing;
+    var last = null;
     timing = shared.normalizeTimingInput(timing);
     var callback = function() {
-      var t = callback._player ? callback._player.currentTime : null;
+      var t = callback._animation ? callback._animation.currentTime : null;
       if (t !== null) {
         t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
         if (isNaN(t))
           t = null;
       }
-      // FIXME: There are actually more conditions under which the effect
+      // FIXME: There are actually more conditions under which the effectFunction
       // should be called.
       if (t !== last)
-        effect(t, target, player.source);
+        effectFunction(t, target, animation.effect);
       last = t;
     };
 
-    callback._player = player;
+    callback._animation = animation;
     callback._registered = false;
     callback._sequenceNumber = sequenceNumber++;
-    player._callback = callback;
+    animation._callback = callback;
     register(callback);
   };
 
@@ -64,7 +64,7 @@
     });
     updating = updating.filter(function(callback) {
       callback();
-      var playState = callback._player ? callback._player.playState : 'idle';
+      var playState = callback._animation ? callback._animation.playState : 'idle';
       if (playState != 'running' && playState != 'pending')
         callback._registered = false;
       return callback._registered;
@@ -79,7 +79,7 @@
     }
   }
 
-  scope.Player.prototype._register = function() {
+  scope.Animation.prototype._register = function() {
     if (this._callback)
       register(this._callback);
   };

@@ -4,7 +4,7 @@ function leftAsNumber(target) {
   return Number(left.substring(0, left.length - 2));
 }
 
-suite('effect', function() {
+suite('keyframes', function() {
   // Test normalize.
   test('Normalize keyframes with all offsets specified but not sorted by offset. Some offsets are out of [0, 1] range.', function() {
     var normalizedKeyframes;
@@ -230,7 +230,7 @@ suite('effect', function() {
   });
 
   // Test makePropertySpecificKeyframeGroups.
-  test('Make property specific keyframe groups for a simple effect with one property.', function() {
+  test('Make property specific keyframe groups for a simple keyframe list with one property.', function() {
     var groups;
     assert.doesNotThrow(function() {
       groups = makePropertySpecificKeyframeGroups(normalizeKeyframes([
@@ -249,7 +249,7 @@ suite('effect', function() {
     assert.equal(groups.left[2].value, '0px');
   });
 
-  test('Make property specific keyframe groups for an effect with three properties.', function() {
+  test('Make property specific keyframe groups for an keyframe list with three properties.', function() {
     var groups;
     assert.doesNotThrow(function() {
       groups = makePropertySpecificKeyframeGroups(normalizeKeyframes([
@@ -370,14 +370,14 @@ suite('effect', function() {
     document.body.appendChild(target1);
     document.body.appendChild(target2);
 
-    var player1 = target1.animate(
+    var animation1 = target1.animate(
         [
           {left: '0px'},
           {left: '50px', offset: 0.25},
           {left: '0px'}
         ],
         {duration: 4000, fill: 'forwards'});
-    var player2 = target2.animate(
+    var animation2 = target2.animate(
         [
           {left: '0px', easing: 'ease-in'},
           {left: '50px', offset: 0.25},
@@ -407,7 +407,7 @@ suite('effect', function() {
   });
 
   // Test makeInterpolations.
-  test('Make interpolations for a simple effect with one property.', function() {
+  test('Make interpolations for a simple keyframe list with one property.', function() {
     var interpolations;
     assert.doesNotThrow(function() {
       interpolations = makeInterpolations(makePropertySpecificKeyframeGroups(normalizeKeyframes([
@@ -430,7 +430,7 @@ suite('effect', function() {
   });
 });
 
-suite('effect-convertEffectInput', function() {
+suite('keyframe-interpolations - convertEffectInput', function() {
   setup(function() {
     this.target = document.createElement('div');
     this.target.style.position = 'absolute';
@@ -441,58 +441,58 @@ suite('effect-convertEffectInput', function() {
       this.target.removeChild(this.target);
   });
 
-  test('Convert effect input for a simple effect with one property.', function() {
-    var effectFunction;
+  test('Convert effect input for a simple keyframe list with one property.', function() {
+    var keyframeInterpolations;
     assert.doesNotThrow(function() {
-      effectFunction = webAnimations1.convertEffectInput([
+      keyframeInterpolations = webAnimations1.convertEffectInput([
         {left: '0px'},
         {left: '200px', offset: 0.3},
         {left: '100px'}
       ]);
     });
 
-    effectFunction(this.target, 0);
+    keyframeInterpolations(this.target, 0);
     assert.closeTo(leftAsNumber(this.target), 0, 0.001);
-    effectFunction(this.target, 0.075);
+    keyframeInterpolations(this.target, 0.075);
     assert.closeTo(leftAsNumber(this.target), 50, 0.001);
-    effectFunction(this.target, 0.15);
+    keyframeInterpolations(this.target, 0.15);
     assert.closeTo(leftAsNumber(this.target), 100, 0.001);
-    effectFunction(this.target, 0.65);
+    keyframeInterpolations(this.target, 0.65);
     assert.closeTo(leftAsNumber(this.target), 150, 0.001);
-    effectFunction(this.target, 1);
+    keyframeInterpolations(this.target, 1);
     assert.closeTo(leftAsNumber(this.target), 100, 0.001);
-    effectFunction(this.target, 2);
+    keyframeInterpolations(this.target, 2);
     assert.closeTo(leftAsNumber(this.target), -42.856, 0.01);
   });
 
   test('Convert effect input where one property is animated and the property has two keyframes at offset 1.', function() {
-    var effectFunction;
+    var keyframeInterpolations;
     assert.doesNotThrow(function() {
-      effectFunction = webAnimations1.convertEffectInput([
+      keyframeInterpolations = webAnimations1.convertEffectInput([
         {left: '0px', offset: 0},
         {left: '20px', offset: 1},
         {left: '30px'}
       ]);
     });
-    effectFunction(this.target, 1);
+    keyframeInterpolations(this.target, 1);
     assert.equal(getComputedStyle(this.target).left, '30px');
-    effectFunction(this.target, 2);
+    keyframeInterpolations(this.target, 2);
     assert.equal(getComputedStyle(this.target).left, '30px');
   });
 
-  test('Convert effect input and apply effect at fraction null.', function() {
-    var effectFunction;
+  test('Convert effect input and apply result at fraction null.', function() {
+    var keyframeInterpolations;
     var underlying = getComputedStyle(this.target).left;
     assert.doesNotThrow(function() {
-      effectFunction = webAnimations1.convertEffectInput([
+      keyframeInterpolations = webAnimations1.convertEffectInput([
         {left: '0px'},
         {left: '100px'}
       ]);
     });
 
-    effectFunction(this.target, 1);
+    keyframeInterpolations(this.target, 1);
     assert.equal(getComputedStyle(this.target).left, '100px');
-    effectFunction(this.target, null);
+    keyframeInterpolations(this.target, null);
     assert.equal(getComputedStyle(this.target).left, underlying);
   });
 });

@@ -35,7 +35,7 @@ effect.
     <div class="pulse" style="width:150px;">Hello world!</div>
     <script>
         var elem = document.querySelector('.pulse');
-        var player = elem.animate([
+        var animation = elem.animate([
             {opacity: 0.5, transform: "scale(0.5)"},
             {opacity: 1.0, transform: "scale(1)"}
         ], {
@@ -52,8 +52,8 @@ generation of animations and fine-grained control of animation playback. See
 Native Fallback
 ---------------
 
-When the polyfill runs on a browser that implements Element.animate and
-AnimationPlayer Playback Control it will detect and use the underlying native
+When the polyfill runs on a browser that implements `Element.animate` and
+`Animation` Playback Control it will detect and use the underlying native
 features.
 
 Different Build Targets
@@ -82,18 +82,18 @@ interpolation/decomposition.
 |------------------------|:--------------:|:-------------------:|:------------------------:|
 |Size (gzipped)          | 12.5kb         | 14kb                | 10.5kb                   |
 |Element.animate         | ✔             | ✔                  | ✔                       |
-|Timing input (easings, duration, fillMode, etc.) for animations| ✔ | ✔ | ✔             | 
+|Timing input (easings, duration, fillMode, etc.) for animation effects| ✔ | ✔ | ✔             | 
 |Playback control        | ✔             | ✔                  | ✔                       |
 |Support for animating lengths, transforms and opacity| ✔ | ✔ | ✔                       |
-|Support for Animating other CSS properties| ✔ | ✔            | 🚫                       |
+|Support for animating other CSS properties| ✔ | ✔            | 🚫                       |
 |Matrix fallback for transform animations | ✔ | ✔             | 🚫                       |
-|Animation constructor   | 🚫             | ✔                  | ✔                       |
-|Simple Groups           | 🚫             | ✔                  | ✔                       |
+|KeyframeEffect constructor   | 🚫             | ✔                  | ✔                       |
+|Simple GroupEffects & SequenceEffects           | 🚫             | ✔                  | ✔                       |
 |Custom Effects          | 🚫             | ✔                  | ✔                       |
 |Timing input (easings, duration, fillMode, etc.) for groups</div>| 🚫 | 🚫\* | 🚫         |
 |Additive animation      | 🚫             | 🚫\*                | 🚫                       |
 |Motion path             | 🚫\*           | 🚫\*                | 🚫                       |
-|Modifiable animation timing| 🚫          | 🚫\*                | 🚫\*                     |
+|Modifiable keyframe effect timing| 🚫          | 🚫\*                | 🚫\*                     |
 |Modifiable group timing | 🚫             | 🚫\*                | 🚫\*                     |
 |Usable inline style\*\* | ✔             | ✔                  | 🚫                       |
 
@@ -124,11 +124,11 @@ The polyfill will automatically detect the correctly prefixed name to use when
 writing animated properties back to the platform. Where possible, the polyfill
 will only accept unprefixed versions of experimental features. For example:
 
-    var animation = new Animation(elem, {"transform": "translate(100px, 100px)"}, 2000);
+    var effect = new KeyframeEffect(elem, {"transform": "translate(100px, 100px)"}, 2000);
 
 will work in all browsers that implement a conforming version of transform, but
 
-    var animation = new Animation(elem, {"-webkit-transform": "translate(100px, 100px)"}, 2000);
+    var effect = new KeyframeEffect(elem, {"-webkit-transform": "translate(100px, 100px)"}, 2000);
 
 will not work anywhere.
 
@@ -150,7 +150,7 @@ Breaking changes
 ----------------
 
 When we make a potentially breaking change to the polyfill's API
-surface (like a rename) where possible we will continue supporting the
+surface (like a rename) we will, where possible, continue supporting the
 old version, deprecated, for three months, and ensure that there are
 console warnings to indicate that a change is pending. After three
 months, the old version of the API surface (e.g. the old version of a

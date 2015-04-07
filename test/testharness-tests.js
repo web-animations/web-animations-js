@@ -9,11 +9,11 @@ var testHarnessTests = [
   'blink/out-of-order-keyframes.html',
   'blink/same-offset-keyframes.html',
   'blink/eased-keyframes.html',
-  'blink/get-animation-players.html',
+  'blink/get-animations.html',
 ];
 
 var testHarnessFailures = [
-  'blink/get-css-players.html',
+  'blink/get-css-animations.html',
 ];
 
 var interpolationTests = [

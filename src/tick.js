@@ -44,26 +44,26 @@
     applyPendingEffects();
   }
 
-  function comparePlayers(leftPlayer, rightPlayer) {
-    return leftPlayer._sequenceNumber - rightPlayer._sequenceNumber;
+  function compareAnimations(leftAnimation, rightAnimation) {
+    return leftAnimation._sequenceNumber - rightAnimation._sequenceNumber;
   }
 
   function InternalTimeline() {
-    this._players = [];
+    this._animations = [];
     // Android 4.3 browser has window.performance, but not window.performance.now
     this.currentTime = window.performance && performance.now ? performance.now() : 0;
   };
 
   InternalTimeline.prototype = {
-    _play: function(source) {
-      source._timing = shared.normalizeTimingInput(source.timing);
-      var player = new scope.Player(source);
-      player._idle = false;
-      player._timeline = this;
-      this._players.push(player);
+    _play: function(effect) {
+      effect._timing = shared.normalizeTimingInput(effect.timing);
+      var animation = new scope.Animation(effect);
+      animation._idle = false;
+      animation._timeline = this;
+      this._animations.push(animation);
       scope.restart();
       scope.invalidateEffects();
-      return player;
+      return animation;
     }
   };
 
@@ -105,32 +105,32 @@
     hasRestartedThisFrame = false;
     var timeline = scope.timeline;
     timeline.currentTime = t;
-    timeline._players.sort(comparePlayers);
+    timeline._animations.sort(compareAnimations);
     ticking = false;
-    var updatingPlayers = timeline._players;
-    timeline._players = [];
+    var updatingAnimations = timeline._animations;
+    timeline._animations = [];
 
     var newPendingClears = [];
     var newPendingEffects = [];
-    updatingPlayers = updatingPlayers.filter(function(player) {
-      player._inTimeline = player._tick(t);
+    updatingAnimations = updatingAnimations.filter(function(animation) {
+      animation._inTimeline = animation._tick(t);
 
-      if (!player._inEffect)
-        newPendingClears.push(player._source);
+      if (!animation._inEffect)
+        newPendingClears.push(animation._effect);
       else
-        newPendingEffects.push(player._source);
+        newPendingEffects.push(animation._effect);
 
-      if (!player.finished && !player.paused && !player._idle)
+      if (!animation.finished && !animation.paused && !animation._idle)
         ticking = true;
 
-      return player._inTimeline;
+      return animation._inTimeline;
     });
 
     // FIXME: Should remove dupliactes from pendingEffects.
     pendingEffects.push.apply(pendingEffects, newPendingClears);
     pendingEffects.push.apply(pendingEffects, newPendingEffects);
 
-    timeline._players.push.apply(timeline._players, updatingPlayers);
+    timeline._animations.push.apply(timeline._animations, updatingAnimations);
     needsRetick = false;
 
     if (ticking)

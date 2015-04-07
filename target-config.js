@@ -18,15 +18,14 @@
       'src/scope.js'];
 
   var webAnimations1Src = [
-      'src/animation-node.js',
-      'src/effect.js',
+      'src/keyframe-interpolations.js',
       'src/property-interpolation.js',
-      'src/animation.js',
+      'src/keyframe-effect.js',
       'src/apply-preserving-inline-style.js',
       'src/element-animatable.js',
       'src/interpolation.js',
       'src/matrix-interpolation.js',
-      'src/player.js',
+      'src/animation.js',
       'src/tick.js',
       'src/matrix-decomposition.js',
       'src/handler-utils.js',
@@ -44,14 +43,13 @@
   ];
 
   var liteWebAnimations1Src = [
-      'src/animation-node.js',
-      'src/effect.js',
+      'src/keyframe-interpolations.js',
       'src/property-interpolation.js',
-      'src/animation.js',
+      'src/keyframe-effect.js',
       'src/apply.js',
       'src/element-animatable.js',
       'src/interpolation.js',
-      'src/player.js',
+      'src/animation.js',
       'src/tick.js',
       'src/handler-utils.js',
       'src/shadow-handler.js',
@@ -73,34 +71,34 @@
 
   var webAnimationsNextSrc = [
       'src/timeline.js',
-      'src/web-animations-next-player.js',
-      'src/animation-constructor.js',
+      'src/web-animations-next-animation.js',
+      'src/keyframe-effect-constructor.js',
       'src/effect-callback.js',
       'src/group-constructors.js'];
 
   var webAnimations1Test = [
-      'test/js/animation-node.js',
+      'test/js/animation-finish-event.js',
+      'test/js/animation.js',
       'test/js/apply-preserving-inline-style.js',
       'test/js/box-handler.js',
       'test/js/color-handler.js',
       'test/js/dimension-handler.js',
-      'test/js/effect.js',
       'test/js/interpolation.js',
+      'test/js/keyframes.js',
       'test/js/matrix-interpolation.js',
       'test/js/number-handler.js',
-      'test/js/player.js',
-      'test/js/player-finish-event.js',
       'test/js/property-interpolation.js',
       'test/js/tick.js',
+      'test/js/timing-utilities.js',
       'test/js/timing.js',
       'test/js/transform-handler.js'];
 
   var webAnimationsNextTest = webAnimations1Test.concat(
-      'test/js/animation-constructor.js',
       'test/js/effect-callback.js',
+      'test/js/group-animation-finish-event.js',
+      'test/js/group-animation.js',
       'test/js/group-constructors.js',
-      'test/js/group-player.js',
-      'test/js/group-player-finish-event.js',
+      'test/js/keyframe-effect-constructor.js',
       'test/js/timeline.js');
 
   // This object specifies the source and test files for different Web Animation build targets.
