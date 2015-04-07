@@ -708,6 +708,26 @@ suite('group-animation', function() {
     );
   });
 
+  test('Sequences child timing is correct work when a child has infinite iterations.', function() {
+    var seqBothBothFirst = this.makeInfiniteChildSeq('both', 'both', 'first');
+    var animation = document.timeline.play(seqBothBothFirst);
+    tick(0);
+    assert.equal(animation.currentTime, 0);
+    assert.equal(animation.startTime, 0);
+    assert.equal(animation._childAnimations[0].currentTime, 0);
+    assert.equal(animation._childAnimations[0].startTime, 0);
+    assert.equal(animation._childAnimations[1].currentTime, -Number.MAX_VALUE);
+    assert.equal(animation._childAnimations[1].startTime, Number.MAX_VALUE);
+
+    tick(500);
+    assert.equal(animation.currentTime, 500);
+    assert.equal(animation.startTime, 0);
+    assert.equal(animation._childAnimations[0].currentTime, 500);
+    assert.equal(animation._childAnimations[0].startTime, 0);
+    assert.equal(animation._childAnimations[1].currentTime, -Number.MAX_VALUE);
+    assert.equal(animation._childAnimations[1].startTime, Number.MAX_VALUE);
+  });
+
   test('Sequences work when the first child has infinite iterations. Sequence has fill both, children fill backwards.', function() {
     var seqBothBackwardsFirst = this.makeInfiniteChildSeq('both', 'backwards', 'first');
     this.checkInfiniteSeqChildBehavior(seqBothBackwardsFirst,
