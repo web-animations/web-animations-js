@@ -46,28 +46,32 @@
   };
 
   window.SequenceEffect.prototype = Object.create(constructor.prototype);
-  Object.defineProperty(window.SequenceEffect.prototype, 'activeDuration',
-    {
-      get: function() {
-        var total = 0;
-        this.children.forEach(function(child) {
-          total += groupChildDuration(child);
-        });
-        return Math.max(total, 0);
-      }
-    });
+  Object.defineProperty(
+      window.SequenceEffect.prototype,
+      'activeDuration',
+      {
+        get: function() {
+          var total = 0;
+          this.children.forEach(function(child) {
+            total += groupChildDuration(child);
+          });
+          return Math.max(total, 0);
+        }
+      });
 
   window.GroupEffect.prototype = Object.create(constructor.prototype);
-  Object.defineProperty(window.GroupEffect.prototype, 'activeDuration',
-    {
-      get: function() {
-        var max = 0;
-        this.children.forEach(function(child) {
-          max = Math.max(max, groupChildDuration(child));
-        });
-        return max;
-      }
-    });
+  Object.defineProperty(
+      window.GroupEffect.prototype,
+      'activeDuration',
+      {
+        get: function() {
+          var max = 0;
+          this.children.forEach(function(child) {
+            max = Math.max(max, groupChildDuration(child));
+          });
+          return max;
+        }
+      });
 
   scope.newUnderlyingAnimationForGroup = function(group) {
     var underlyingAnimation;
