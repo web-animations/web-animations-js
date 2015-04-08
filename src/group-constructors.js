@@ -38,10 +38,10 @@
 
   constructor.prototype = {
     get firstChild() {
-      return this.children[0];
+      return this.children.length ? this.children[0] : null;
     },
     get lastChild() {
-      return this.children[this.children.length - 1];
+      return this.children.length ? this.children[this.children.length - 1] : null;
     }
   };
 
