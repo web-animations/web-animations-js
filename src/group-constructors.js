@@ -19,7 +19,12 @@
   }
 
   function constructor(children, timingInput) {
+    if (this._parent === undefined)
+      this._parent = null;
     this.children = children || [];
+    for (c in this.children) {
+      this.children[c]._parent = this;
+    }
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
     this.timing = shared.makeTiming(timingInput, true);
