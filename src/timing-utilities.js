@@ -66,6 +66,9 @@
       return linear;
     }
     return function(x) {
+      if (x == 0 || x == 1) {
+        return x;
+      }
       var start = 0, end = 1;
       while (1) {
         var mid = (start + end) / 2;
