@@ -117,7 +117,7 @@
       return this._animation.currentTime;
     },
     set currentTime(v) {
-      this._animation.currentTime = v;
+      this._animation.currentTime = isFinite(v) ? v : Math.sign(v) * Number.MAX_VALUE;
       this._register();
       this._forEachChild(function(child, offset) {
         child.currentTime = v - offset;
@@ -127,7 +127,7 @@
       return this._animation.startTime;
     },
     set startTime(v) {
-      this._animation.startTime = v;
+      this._animation.startTime = isFinite(v) ? v : Math.sign(v) * Number.MAX_VALUE;
       this._register();
       this._forEachChild(function(child, offset) {
         child.startTime = v + offset;
