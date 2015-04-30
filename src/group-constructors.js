@@ -25,6 +25,23 @@
     for (c in this.children) {
       this.children[c]._parent = this;
     }
+    this._isAncestor = function(effect) {
+      var a = this._parent;
+      while (a !== null) {
+        if (a == effect)
+          return true;
+        a = a._parent;
+      }
+      return false;
+    };
+    this.append = function(effect)  {
+      this.children.push(effect);
+      effect._parent = this;
+      if(this.animation) {
+        console.log('rebuild');
+        this.animation._rebuildUnderlyingAnimation();
+      }
+    };
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
     this.timing = shared.makeTiming(timingInput, true);
