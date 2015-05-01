@@ -32,7 +32,7 @@
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
       if (this._animation) {
-        this._animation.cancel();
+        this.cancel();
         this._animation = null;
       }
 
