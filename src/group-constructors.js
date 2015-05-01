@@ -34,11 +34,21 @@
       }
       return false;
     };
-    this.append = function(effect)  {
-      this.children.push(effect);
-      effect._parent = this;
+    this.append = function()  {
+      for (var i in arguments) {
+        this.children.push(arguments[i]);
+        arguments[i]._parent = this;
+      }
       if(this.animation) {
-        console.log('rebuild');
+        this.animation._rebuildUnderlyingAnimation();
+      }
+    };
+    this.prepend = function()  {
+      for (var i in arguments) {
+        this.children.unshift(arguments[i]);
+        arguments[i]._parent = this;
+      }
+      if(this.animation) {
         this.animation._rebuildUnderlyingAnimation();
       }
     };
