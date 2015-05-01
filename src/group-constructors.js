@@ -34,23 +34,27 @@
       }
       return false;
     };
-    this.append = function()  {
-      for (var i in arguments) {
-        this.children.push(arguments[i]);
-        arguments[i]._parent = this;
+    this._putChild = function(args, isAppend) {
+      for (var i in args) {
+        if (this._isAncestor(args[i])) {
+          throw {
+            type: DOMException.HIERARCHY_REQUEST_ERR,
+            name: 'HierarchyRequestError',
+            message: 'Cannot append an ancestor'
+          };
+        }
+        isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
+        args[i]._parent = this;
       }
-      if(this.animation) {
+      if (this.animation) {
         this.animation._rebuildUnderlyingAnimation();
       }
     };
+    this.append = function()  {
+      this._putChild(arguments, true);
+    };
     this.prepend = function()  {
-      for (var i in arguments) {
-        this.children.unshift(arguments[i]);
-        arguments[i]._parent = this;
-      }
-      if(this.animation) {
-        this.animation._rebuildUnderlyingAnimation();
-      }
+      this._putChild(arguments, false);
     };
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
