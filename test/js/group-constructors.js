@@ -112,5 +112,14 @@ suite('group-constructors', function() {
       ex = e;
     }
     assert.equal(ex.name, 'HierarchyRequestError', 'Appending an ancestor throws a HierarchyRequestError');
+
+    var groupParent = new GroupEffect([]);
+    ex = undefined;
+    try {
+      groupParent.prepend(groupParent);
+    } catch (e) {
+      ex = e;
+    }
+    assert.equal(ex.name, 'HierarchyRequestError', 'Prepending an self throws a HierarchyRequestError');
   });
 });

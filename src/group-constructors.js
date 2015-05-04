@@ -27,6 +27,8 @@
     }
     this._isAncestor = function(effect) {
       var a = this._parent;
+      if (effect == this)
+        return true;
       while (a !== null) {
         if (a == effect)
           return true;
@@ -35,7 +37,7 @@
       return false;
     };
     this._putChild = function(args, isAppend) {
-      var message = isAppend ? 'Cannot append an ancestor' : 'Cannot prepend an ancestor';
+      var message = isAppend ? 'Cannot append an ancestor or self' : 'Cannot prepend an ancestor or self';
       for (var i in args) {
         if (this._isAncestor(args[i])) {
           throw {
