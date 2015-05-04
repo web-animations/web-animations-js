@@ -44,6 +44,7 @@
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
       }
+
       // FIXME: move existing currentTime/startTime/playState to new animation
     },
     _updateChildren: function() {
