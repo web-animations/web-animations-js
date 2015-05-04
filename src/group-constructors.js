@@ -35,12 +35,13 @@
       return false;
     };
     this._putChild = function(args, isAppend) {
+      var message = isAppend ? 'Cannot append an ancestor' : 'Cannot prepend an ancestor';
       for (var i in args) {
         if (this._isAncestor(args[i])) {
           throw {
             type: DOMException.HIERARCHY_REQUEST_ERR,
             name: 'HierarchyRequestError',
-            message: 'Cannot append an ancestor'
+            message: message
           };
         }
         isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
