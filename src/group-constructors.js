@@ -23,8 +23,9 @@
     this._timing = shared.normalizeTimingInput(timingInput, true);
     this.timing = shared.makeTiming(timingInput, true);
 
-    if (this._timing.duration === 'auto')
+    if (this._timing.duration === 'auto') {
       this._timing.duration = this.activeDuration;
+    }
   }
 
   window.SequenceEffect = function() {
@@ -35,25 +36,42 @@
     constructor.apply(this, arguments);
   };
 
-  window.SequenceEffect.prototype = {
-    get activeDuration() {
-      var total = 0;
-      this.children.forEach(function(child) {
-        total += groupChildDuration(child);
-      });
-      return Math.max(total, 0);
+  constructor.prototype = {
+    get firstChild() {
+      return this.children.length ? this.children[0] : null;
+    },
+    get lastChild() {
+      return this.children.length ? this.children[this.children.length - 1] : null;
     }
   };
 
-  window.GroupEffect.prototype = {
-    get activeDuration() {
-      var max = 0;
-      this.children.forEach(function(child) {
-        max = Math.max(max, groupChildDuration(child));
+  window.SequenceEffect.prototype = Object.create(constructor.prototype);
+  Object.defineProperty(
+      window.SequenceEffect.prototype,
+      'activeDuration',
+      {
+        get: function() {
+          var total = 0;
+          this.children.forEach(function(child) {
+            total += groupChildDuration(child);
+          });
+          return Math.max(total, 0);
+        }
       });
-      return max;
-    }
-  };
+
+  window.GroupEffect.prototype = Object.create(constructor.prototype);
+  Object.defineProperty(
+      window.GroupEffect.prototype,
+      'activeDuration',
+      {
+        get: function() {
+          var max = 0;
+          this.children.forEach(function(child) {
+            max = Math.max(max, groupChildDuration(child));
+          });
+          return max;
+        }
+      });
 
   scope.newUnderlyingAnimationForGroup = function(group) {
     var underlyingAnimation;
