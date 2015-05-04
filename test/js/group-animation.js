@@ -1626,4 +1626,83 @@ suite('group-animation', function() {
     assert.equal(getComputedStyle(this.target).marginLeft, '0px');
     tick(502);
   });
+
+  test('prepend and append work both before and after playing', function() {
+    var sequence = new SequenceEffect([
+      new KeyframeEffect(
+          this.target1,
+          [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+          {duration: 100, fill: 'both'}),
+      new KeyframeEffect(
+          this.target2,
+          [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+          {duration: 100, fill: 'both'}),
+      new KeyframeEffect(
+          this.target3,
+          [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
+          {duration: 100, fill: 'both'})
+    ]);
+    var colorChange1 = new KeyframeEffect(
+        this.target1,
+        [
+          {backgroundColor: 'orange'},
+          {backgroundColor: 'green'}
+        ],
+        {duration: 300, fill: 'both'});
+    var colorChange3 = new KeyframeEffect(
+        this.target3,
+        [
+          {backgroundColor: 'orange'},
+          {backgroundColor: 'green'}
+        ],
+        {duration: 300, fill: 'both'});
+
+    var group = new GroupEffect([]);
+    group.append(sequence, colorChange3);
+
+    var animation = document.timeline.play(group);
+    tick(0);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=0, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=0, targe2 transform');
+    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=0, target3 transform');
+    assert.equal(getComputedStyle(this.target1).backgroundColor, 'rgba(0, 0, 0, 0)', 't=0, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target3).backgroundColor, 'rgb(255, 165, 0)', 't=0, target3 backgroundColor');
+
+    tick(10);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 30, 0)', 't=10, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=10, targe2 transform');
+    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=10, target3 transform');
+    assert.equal(getComputedStyle(this.target1).backgroundColor, 'rgba(0, 0, 0, 0)', 't=10, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target3).backgroundColor, 'rgb(247, 164, 0)', 't=10, target3 backgroundColor');
+
+    tick(49);
+    sequence.prepend(colorChange1);
+    tick(50);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=50, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=50, targe2 transform');
+    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=50, target3 transform');
+    assert.equal(getComputedStyle(this.target1).backgroundColor, 'rgb(213, 159, 0)', 't=50, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target3).backgroundColor, 'rgb(213, 159, 0)', 't=50, target3 backgroundColor');
+
+    tick(301);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=301, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=301, target2 transform');
+    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=301, target3 transform');
+    assert.equal(getComputedStyle(this.target1).backgroundColor, 'rgb(0, 128, 0)', 't=301, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target3).backgroundColor, 'rgb(0, 128, 0)', 't=301, target3 backgroundColor');
+
+    tick(351);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=351, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=351, target2 transform');
+    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=351, target3 transform');
+    assert.equal(getComputedStyle(this.target1).backgroundColor, 'rgb(0, 128, 0)', 't=351, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target3).backgroundColor, 'rgb(0, 128, 0)', 't=351, target3 backgroundColor');
+
+    tick(601);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=601, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=601, target2 transform');
+    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=601, target3 transform');
+    assert.equal(getComputedStyle(this.target1).backgroundColor, 'rgb(0, 128, 0)', 't=601, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target3).backgroundColor, 'rgb(0, 128, 0)', 't=601, target3 backgroundColor');
+  });
 });

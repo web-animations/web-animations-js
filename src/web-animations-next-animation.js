@@ -32,7 +32,7 @@
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
       if (this._animation) {
-        this.cancel();
+        this._animation.cancel();
         this._animation = null;
       }
 
@@ -44,7 +44,6 @@
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
       }
-
       // FIXME: move existing currentTime/startTime/playState to new animation
     },
     _updateChildren: function() {

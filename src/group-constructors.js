@@ -47,8 +47,14 @@
         isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
         args[i]._parent = this;
       }
+      if (this.timing.duration === 'auto') {
+        this._timing.duration = this.activeDuration;
+      }
       if (this.animation) {
-        this.animation._rebuildUnderlyingAnimation();
+        var oldCurrentTime = this.animation._animation.currentTime;
+        this.animation.cancel();
+        this.animation.play();
+        this.animation.currentTime = oldCurrentTime;
       }
     };
     this.append = function()  {
