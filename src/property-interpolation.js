@@ -92,7 +92,7 @@
   function propertyInterpolation(property, left, right) {
     if (left == 'initial' || right == 'initial') {
       var ucProperty = property.replace(/-(.)/g, function(_, c) {
-          return c.toUpperCase();
+        return c.toUpperCase();
       });
       if (left == 'initial')
         left = initialValues[ucProperty];
