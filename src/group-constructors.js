@@ -19,24 +19,39 @@
   }
 
   function constructor(children, timingInput) {
-    if (this._parent === undefined)
-      this._parent = null;
+    this._parent = null;
     this.children = children || [];
     for (c in this.children) {
       this.children[c]._parent = this;
     }
-    this._isAncestor = function(effect) {
-      var a = this._parent;
-      if (effect == this)
-        return true;
+    this._timingInput = shared.cloneTimingInput(timingInput);
+    this._timing = shared.normalizeTimingInput(timingInput, true);
+    this.timing = shared.makeTiming(timingInput, true);
+
+    if (this._timing.duration === 'auto') {
+      this._timing.duration = this.activeDuration;
+    }
+  }
+
+  window.SequenceEffect = function() {
+    constructor.apply(this, arguments);
+  };
+
+  window.GroupEffect = function() {
+    constructor.apply(this, arguments);
+  };
+
+  constructor.prototype = {
+    _isAncestor: function(effect) {
+      var a = this;
       while (a !== null) {
         if (a == effect)
           return true;
         a = a._parent;
       }
       return false;
-    };
-    this._putChild = function(args, isAppend) {
+    },
+    _putChild: function(args, isAppend) {
       var message = isAppend ? 'Cannot append an ancestor or self' : 'Cannot prepend an ancestor or self';
       for (var i in args) {
         if (this._isAncestor(args[i])) {
@@ -58,31 +73,13 @@
         this.animation.play();
         this.animation.currentTime = oldCurrentTime;
       }
-    };
-    this.append = function()  {
+    },
+    append: function()  {
       this._putChild(arguments, true);
-    };
-    this.prepend = function()  {
+    },
+    prepend: function()  {
       this._putChild(arguments, false);
-    };
-    this._timingInput = shared.cloneTimingInput(timingInput);
-    this._timing = shared.normalizeTimingInput(timingInput, true);
-    this.timing = shared.makeTiming(timingInput, true);
-
-    if (this._timing.duration === 'auto') {
-      this._timing.duration = this.activeDuration;
-    }
-  }
-
-  window.SequenceEffect = function() {
-    constructor.apply(this, arguments);
-  };
-
-  window.GroupEffect = function() {
-    constructor.apply(this, arguments);
-  };
-
-  constructor.prototype = {
+    },
     get firstChild() {
       return this.children.length ? this.children[0] : null;
     },
