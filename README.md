@@ -159,3 +159,8 @@ can't avoid it by not updating*.
 
 We also announce anything that isn't a bug fix on
 [web-animations-changes@googlegroups.com](https://groups.google.com/forum/#!forum/web-animations-changes).
+
+CDN Availability
+----------------
+
+The latest `web-animations.min.js` is available at [jsDelivr CDN](http://www.jsdelivr.com/#!web-animations)
