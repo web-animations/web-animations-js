@@ -105,7 +105,22 @@
   function updatePendingGroups() {
     var updated = false;
     while (pendingGroups.length) {
-      pendingGroups.shift()._updateChildren();
+      var group = pendingGroups.shift();
+      if (group._needsRebuild) {
+        group._needsRebuild = false;
+        var oldCurrentTime = group.currentTime;
+        var oldPlaybackRate = group.playbackRate;
+        var oldPlayState = group.playState;
+        group.cancel();
+        group.effect.animation = null;
+        group = document.timeline.play(group.effect);
+        group.currentTime = oldCurrentTime;
+        group.playbackRate = oldPlaybackRate;
+        if (oldPlayState == 'paused') {
+          group.pause();
+        }
+      }
+      group._updateChildren();
       updated = true;
     }
     return updated;

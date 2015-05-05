@@ -64,14 +64,31 @@
         isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
         args[i]._parent = this;
       }
-      if (this.timing.duration === 'auto') {
-        this._timing.duration = this.activeDuration;
+      var node = this;
+      while (node) {
+        if (node.timing.duration === 'auto') {
+          node._timing.duration = node.activeDuration;
+        }
+        node = node._parent;
       }
       if (this.animation) {
-        var oldCurrentTime = this.animation._animation.currentTime;
-        this.animation.cancel();
-        this.animation.play();
-        this.animation.currentTime = oldCurrentTime;
+        var oldPlayState = this.animation.playState;
+        if (oldPlayState == 'pending') {
+          this.animation._needsRebuild = true;
+          scope.awaitStartTime(this.animation);
+        } else {
+          var oldCurrentTime = this.animation.currentTime;
+          var oldPlaybackRate = this.animation.playbackRate;
+          var effect = this.animation.effect;
+          this.animation.cancel();
+          this.animation = null;
+          document.timeline.play(effect);
+          this.animation.currentTime = oldCurrentTime;
+          this.animation.playbackRate = oldPlaybackRate;
+        }
+        if (oldPlayState == 'paused') {
+          this.animation.pause();
+        }
       }
     },
     append: function()  {
