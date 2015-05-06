@@ -63,8 +63,6 @@
         return;
       for (var i = 0; i < this.effect.children.length; i++) {
         this.effect.children[i].animation = animation;
-      }
-      for (var i = 0; i < this._childAnimations.length; i++) {
         this._childAnimations[i]._setExternalAnimation(animation);
       }
     },
