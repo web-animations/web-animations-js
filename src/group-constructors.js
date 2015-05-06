@@ -21,8 +21,8 @@
   function constructor(children, timingInput) {
     this._parent = null;
     this.children = children || [];
-    for (c in this.children) {
-      this.children[c]._parent = this;
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i]._parent = this;
     }
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
@@ -53,7 +53,7 @@
     },
     _putChild: function(args, isAppend) {
       var message = isAppend ? 'Cannot append an ancestor or self' : 'Cannot prepend an ancestor or self';
-      for (var i in args) {
+      for (var i = 0; i < args.length; i++) {
         if (this._isAncestor(args[i])) {
           throw {
             type: DOMException.HIERARCHY_REQUEST_ERR,
