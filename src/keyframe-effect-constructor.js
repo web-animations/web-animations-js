@@ -64,12 +64,19 @@
 
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
   scope.newUnderlyingAnimationForKeyframeEffect = function(keyframeEffect) {
-    var target = keyframeEffect.target || nullTarget;
-    var keyframes = keyframeEffect._keyframes;
-    if (typeof keyframes == 'function') {
-      keyframes = [];
+    if (keyframeEffect) {
+      var target = keyframeEffect.target || nullTarget;
+      var keyframes = keyframeEffect._keyframes;
+      if (typeof keyframes == 'function') {
+        keyframes = [];
+      }
+      var timing = keyframeEffect._timingInput;
+    } else {
+      var target = nullTarget;
+      var keyframes = [];
+      var timing = 0;
     }
-    return originalElementAnimate.apply(target, [keyframes, keyframeEffect._timingInput]);
+    return originalElementAnimate.apply(target, [keyframes, timing]);
   };
 
   scope.bindAnimationForKeyframeEffect = function(animation) {

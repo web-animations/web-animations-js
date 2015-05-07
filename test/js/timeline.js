@@ -8,6 +8,10 @@ suite('timeline-tests', function() {
     assert.equal(document.timeline.getAnimations().length, 0);
   });
 
+  test('timeline.play with null argument', function() {
+    assert.notEqual(document.timeline.play(), null);
+  });
+
   test('getAnimations', function() {
     tick(90);
     assert.equal(document.timeline.getAnimations().length, 0);
