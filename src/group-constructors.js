@@ -61,6 +61,8 @@
             message: message
           };
         }
+      }
+      for (var i = 0; i < args.length; i++) {
         isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
         args[i]._parent = this;
       }
