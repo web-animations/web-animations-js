@@ -1627,7 +1627,147 @@ suite('group-animation', function() {
     tick(502);
   });
 
-  test('prepend and append work both before and after playing', function() {
+  test('group append works after playing', function() {
+    var opacity1 = new KeyframeEffect(
+        this.target1,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 300, fill: 'both'});
+    var opacity2 = new KeyframeEffect(
+        this.target2,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 300, fill: 'both'});
+
+    var group = new GroupEffect([]);
+    group.prepend(opacity2);
+
+    document.timeline.play(group);
+    tick(0);
+    assert.equal(getComputedStyle(this.target1).opacity, '1', 't=0, target1 opacity');
+    assert.equal(getComputedStyle(this.target2).opacity, '1', 't=0, target2 opacity');
+
+    tick(10);
+    assert.equal(getComputedStyle(this.target1).opacity, '1', 't=10, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.967, 0.001, 't=10, target2 opacity');
+
+    tick(49);
+    group.append(opacity1);
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.837, 0.001, 't=50, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.837, 0.001, 't=50, target2 opacity');
+
+    tick(301);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=301, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0, 0.001, 't=301, target2 opacity');
+
+    tick(351);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=351, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0, 0.001, 't=351, target2 opacity');
+  });
+
+  test('group prepend works after pause', function() {
+    var opacity1 = new KeyframeEffect(
+        this.target1,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 300, fill: 'both'});
+    var opacity2 = new KeyframeEffect(
+        this.target2,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 300, fill: 'both'});
+
+    var group = new GroupEffect([]);
+    group.append(opacity2);
+
+    var animation = document.timeline.play(group);
+    tick(0);
+    assert.equal(getComputedStyle(this.target1).opacity, '1', 't=0, target1 opacity');
+    assert.equal(getComputedStyle(this.target2).opacity, '1', 't=0, target2 opacity');
+
+    tick(50);
+    assert.equal(getComputedStyle(this.target1).opacity, '1', 't=50, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=50, target2 opacity');
+
+    animation.pause();
+    group.prepend(opacity1);
+    animation.play();
+    tick(150);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.833, 0.001, 't=150, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=150, target2 opacity');
+
+    tick(350);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.167, 0.001, 't=350, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.167, 0.001, 't=350, target2 opacity');
+  });
+
+  test('group append reparents', function() {
+    var opacity1 = new KeyframeEffect(
+        this.target1,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100, fill: 'both'});
+    var opacity2 = new KeyframeEffect(
+      this.target2,
+      [
+        {opacity: 1},
+        {opacity: 0}
+      ],
+      {duration: 100, fill: 'both'});
+    var opacity3 = new KeyframeEffect(
+      this.target3,
+      [
+        {opacity: 1},
+        {opacity: 0}
+      ],
+      {duration: 100, fill: 'both'});
+
+    var group1 = new GroupEffect([opacity1, opacity2]);
+    var group2 = new GroupEffect([opacity3]);
+
+    var animation1 = document.timeline.play(group1);
+    var animation2 = document.timeline.play(group2);
+    tick(0);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=0, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 1, 0.001, 't=0, target2 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 1, 0.001, 't=0, target3 opacity');
+
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.5, 0.001, 't=50, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.5, 0.001, 't=50, target2 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0.5, 0.001, 't=50, target3 opacity');
+
+    animation1.reverse();
+    tick(60);
+    tick(70);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.6, 0.001, 't=70, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.6, 0.001, 't=70, target2 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0.3, 0.001, 't=70, target3 opacity');
+
+    // If opacity2 had not been properly reparented then animation2 would continue to update
+    // target2's opacity.
+    group2.append(opacity2);
+    animation2.cancel();
+    tick(80);
+    tick(90);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.7, 0.001, 't=90, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 1, 0.001, 't=90, target2 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 1, 0.001, 't=90, target3 opacity');
+
+  });
+
+  test('sequence prepend works after playing', function() {
     var sequence = new SequenceEffect([
       new KeyframeEffect(
           this.target1,
@@ -1637,10 +1777,6 @@ suite('group-animation', function() {
           this.target2,
           [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
           {duration: 100, fill: 'both'}),
-      new KeyframeEffect(
-          this.target3,
-          [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
-          {duration: 100, fill: 'both'})
     ]);
     var opacity1 = new KeyframeEffect(
         this.target1,
@@ -1656,73 +1792,36 @@ suite('group-animation', function() {
           {opacity: 0}
         ],
         {duration: 300, fill: 'both'});
-    var opacity3 = new KeyframeEffect(
-        this.target3,
-        [
-          {opacity: 1},
-          {opacity: 0}
-        ],
-        {duration: 300, fill: 'both'});
 
     var group = new GroupEffect([]);
-    group.append(sequence, opacity3);
+    group.append(sequence, opacity2);
 
-    document.timeline.play(group);
+    var animation = document.timeline.play(group);
     tick(0);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=0, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=0, targe2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=0, target3 transform');
     assert.equal(getComputedStyle(this.target1).opacity, '1', 't=0, target1 opacity');
-    assert.equal(getComputedStyle(this.target3).opacity, '1', 't=0, target3 opacity');
+    assert.equal(getComputedStyle(this.target2).opacity, '1', 't=0, target2 opacity');
 
     tick(10);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 30, 0)', 't=10, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=10, targe2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=10, target3 transform');
     assert.equal(getComputedStyle(this.target1).opacity, '1', 't=10, target1 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0.967, 0.001, 't=10, target3 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.967, 0.001, 't=10, target2 opacity');
 
     tick(49);
     sequence.prepend(opacity1);
     tick(50);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=50, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=50, targe2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=50, target3 transform');
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.837, 0.001, 't=50, target1 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0.837, 0.001, 't=50, target3 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.837, 0.001, 't=50, target2 opacity');
 
-    tick(301);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=301, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=301, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=301, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=301, target1 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0, 0.001, 't=301, target3 opacity');
-
-    tick(351);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=351, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=351, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=351, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=351, target1 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0, 0.001, 't=351, target3 opacity');
-
-    group.animation.pause();
-    group.prepend(opacity2);
-    group.animation.play();
-    tick(361);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=361, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=361, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=361, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=361, target1 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0, 0.001, 't=361, target2 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0, 0.001, 't=361, target3 opacity');
-
-    tick(661);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=601, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=601, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=601, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=601, target1 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0, 0.001, 't=361, target2 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0, 0.001, 't=601, target3 opacity');
+    tick(451);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=451, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=451, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=451, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0, 0.001, 't=451, target2 opacity');
   });
 
   test('append works with playback rate', function() {
@@ -1735,10 +1834,6 @@ suite('group-animation', function() {
           this.target2,
           [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
           {duration: 100, fill: 'both'}),
-      new KeyframeEffect(
-          this.target3,
-          [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
-          {duration: 100, fill: 'both'})
     ]);
     var opacity1 = new KeyframeEffect(
         this.target1,
@@ -1746,48 +1841,42 @@ suite('group-animation', function() {
           {opacity: 1},
           {opacity: 0}
         ],
-        {duration: 300, fill: 'none'});
+        {duration: 200, fill: 'none'});
 
     var group = new GroupEffect([]);
     group.append(sequence);
 
-    document.timeline.play(group);
+    var animation = document.timeline.play(group);
     tick(0);
+    tick(100);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=100, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=100, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=100, target1 opacity');
+
+    animation.playbackRate = 0.5;
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=100, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=100, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=100, target1 opacity');
+
     tick(200);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=200, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=200, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 opacity');
 
-    group.animation.playbackRate = 0.5;
+    sequence.append(opacity1);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=200, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=200, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 opacity');
 
     tick(300);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=300, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=300, target1 backgroundColor');
-
-    sequence.append(opacity1);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=300, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=300, target1 backgroundColor');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=300, target1 opacity');
 
     tick(400);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=400, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=400, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=400, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=400, target1 backgroundColor');
-
-    tick(500);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=500, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=500, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=500, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.833, 0.001, 't=500, target1 backgroundColor');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.75, 0.001, 't=400, target1 opacity');
   });
 
   test('prepend works with reverse', function() {
@@ -1800,10 +1889,6 @@ suite('group-animation', function() {
           this.target2,
           [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
           {duration: 100, fill: 'both'}),
-      new KeyframeEffect(
-          this.target3,
-          [{transform: 'translate(0,0)'}, {transform: 'translate(300px)'}],
-          {duration: 100, fill: 'both'})
     ]);
     var opacity1 = new KeyframeEffect(
         this.target1,
@@ -1816,42 +1901,31 @@ suite('group-animation', function() {
     var group = new GroupEffect([]);
     group.append(sequence);
 
-    document.timeline.play(group);
+    var animation = document.timeline.play(group);
     tick(0);
+    tick(200);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 opacity');
+
+    animation.reverse();
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 opacity');
+
     tick(300);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=300, target1 backgroundColor');
-
-    group.animation.reverse();
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=300, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=300, target1 backgroundColor');
-
-    tick(400);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=400, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=400, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=400, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=400, target1 backgroundColor');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=300, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=300, target1 opacity');
 
     sequence.prepend(opacity1);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=400, target1 transform');
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=300, target1 transform');
+    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=300, target2 transform');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=300, target1 opacity');
+
+    tick(400);
+    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=400, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=400, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=400, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=400, target1 backgroundColor');
-
-    tick(500);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=500, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=500, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=500, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0, 0.001, 't=500, target1 backgroundColor');
-
-    tick(600);
-    assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=600, target1 transform');
-    assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=600, target2 transform');
-    assert.equal(getComputedStyle(this.target3).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=600, target3 transform');
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=600, target1 backgroundColor');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=400, target1 opacity');
   });
 });

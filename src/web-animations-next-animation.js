@@ -19,6 +19,7 @@
       // FIXME: detach existing animation.
       effect.animation = this;
     }
+    this._sequenceNumber = shared.sequenceNumber++;
     this._isGroup = false;
     this._animation = null;
     this._childAnimations = [];
@@ -31,8 +32,16 @@
   // TODO: add an effect getter/setter
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
-      if (this._animation) {
+      var oldPlayState;
+      var oldCurrentTime;
+      var oldPlaybackRate;
+      var hasUnderlying = this._animation ? true : false;
+      if (hasUnderlying) {
+        oldPlayState = this.playState;
+        oldCurrentTime = this.currentTime;
+        oldPlaybackRate = this.playbackRate;
         this._animation.cancel();
+        this._animation._wrapper = this._animation;
         this._animation = null;
       }
 
@@ -44,8 +53,15 @@
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
       }
-
-      // FIXME: move existing currentTime/startTime/playState to new animation
+      if (hasUnderlying) {
+        this.currentTime = oldCurrentTime;
+        if (oldPlaybackRate != 1) {
+          this.playbackRate = oldPlaybackRate;
+        }
+        if (oldPlayState == 'paused') {
+          this.pause();
+        }
+      }
     },
     _updateChildren: function() {
       if (!this.effect || this.playState == 'idle')
@@ -70,6 +86,7 @@
       if (!this.effect || !this._isGroup)
         return;
       var offset = this.effect._timing.delay;
+      this._removeChildren();
       this.effect.children.forEach(function(child) {
         var childAnimation = window.document.timeline.play(child);
         this._childAnimations.push(childAnimation);

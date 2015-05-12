@@ -51,6 +51,23 @@
       }
       return false;
     },
+    _rebuild: function() {
+      var node = this;
+      while (node) {
+        if (node.timing.duration === 'auto') {
+          node._timing.duration = node.activeDuration;
+        }
+        node = node._parent;
+      }
+      if (this.animation) {
+        if (this.animation.playState == 'pending') {
+          this.animation._needsRebuild = true;
+          scope.awaitStartTime(this.animation);
+        } else {
+          this.animation._rebuildUnderlyingAnimation();
+        }
+      }
+    },
     _putChild: function(args, isAppend) {
       var message = isAppend ? 'Cannot append an ancestor or self' : 'Cannot prepend an ancestor or self';
       for (var i = 0; i < args.length; i++) {
@@ -64,34 +81,13 @@
       }
       for (var i = 0; i < args.length; i++) {
         isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
+        if (args[i]._parent) {
+          args[i]._parent.children.splice(args[i]._parent.children.indexOf(args[i]), 1);
+          args[i]._parent._rebuild();
+        }
         args[i]._parent = this;
       }
-      var node = this;
-      while (node) {
-        if (node.timing.duration === 'auto') {
-          node._timing.duration = node.activeDuration;
-        }
-        node = node._parent;
-      }
-      if (this.animation) {
-        var oldPlayState = this.animation.playState;
-        if (oldPlayState == 'pending') {
-          this.animation._needsRebuild = true;
-          scope.awaitStartTime(this.animation);
-        } else {
-          var oldCurrentTime = this.animation.currentTime;
-          var oldPlaybackRate = this.animation.playbackRate;
-          var effect = this.animation.effect;
-          this.animation.cancel();
-          this.animation = null;
-          document.timeline.play(effect);
-          this.animation.currentTime = oldCurrentTime;
-          this.animation.playbackRate = oldPlaybackRate;
-        }
-        if (oldPlayState == 'paused') {
-          this.animation.pause();
-        }
-      }
+      this._rebuild();
     },
     append: function()  {
       this._putChild(arguments, true);

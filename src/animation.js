@@ -12,9 +12,9 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
-  var sequenceNumber = 0;
+  shared.sequenceNumber = 0;
 
   var AnimationEvent = function(target, currentTime, timelineTime) {
     this.target = target;
@@ -31,7 +31,7 @@
   };
 
   scope.Animation = function(effect) {
-    this._sequenceNumber = sequenceNumber++;
+    this._sequenceNumber = shared.sequenceNumber++;
     this._currentTime = 0;
     this._startTime = null;
     this.paused = false;
@@ -212,4 +212,4 @@
     testing.webAnimations1Animation = scope.Animation;
   }
 
-})(webAnimations1, webAnimationsTesting);
+})(webAnimationsShared, webAnimations1, webAnimationsTesting);
