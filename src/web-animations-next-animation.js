@@ -33,12 +33,12 @@
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
       var oldPlayState;
-      var oldCurrentTime;
+      var oldStartTime;
       var oldPlaybackRate;
       var hasUnderlying = this._animation ? true : false;
       if (hasUnderlying) {
         oldPlayState = this.playState;
-        oldCurrentTime = this.currentTime;
+        oldStartTime = this.startTime;
         oldPlaybackRate = this.playbackRate;
         this._animation.cancel();
         this._animation._wrapper = this._animation;
@@ -54,10 +54,10 @@
         scope.bindAnimationForGroup(this);
       }
       if (hasUnderlying) {
-        this.currentTime = oldCurrentTime;
         if (oldPlaybackRate != 1) {
           this.playbackRate = oldPlaybackRate;
         }
+        this.startTime = oldStartTime;
         if (oldPlayState == 'paused') {
           this.pause();
         }

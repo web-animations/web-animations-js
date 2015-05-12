@@ -52,6 +52,7 @@
       return false;
     },
     _rebuild: function() {
+      // Re-calculate durations for ancestors with specified duration 'auto'.
       var node = this;
       while (node) {
         if (node.timing.duration === 'auto') {
