@@ -20,6 +20,7 @@
 
   function constructor(children, timingInput) {
     this.children = children || [];
+    this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
     this.timing = shared.makeTiming(timingInput, true);
 
@@ -42,6 +43,16 @@
     },
     get lastChild() {
       return this.children.length ? this.children[this.children.length - 1] : null;
+    },
+    clone: function() {
+      var clonedTiming = shared.cloneTimingInput(this._timingInput);
+      var clonedChildren = [];
+      for (var i = 0; i < this.children.length; i++) {
+        clonedChildren.push(this.children[i].clone());
+      }
+      return (this instanceof GroupEffect) ?
+          new GroupEffect(clonedChildren, clonedTiming) :
+          new SequenceEffect(clonedChildren, clonedTiming);
     }
   };
 

@@ -24,8 +24,7 @@
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
     this.target = target;
 
-    // TODO: Store a clone, not the same instance.
-    this._timingInput = timingInput;
+    this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput);
 
     // TODO: Make modifications to timing update the underlying animation
@@ -54,6 +53,12 @@
     get effect() {
       shared.deprecated('KeyframeEffect.effect', '2015-03-23', 'Use KeyframeEffect.getFrames() instead.');
       return this._normalizedKeyframes;
+    },
+    clone: function() {
+      if (typeof this.getFrames() == 'function') {
+        throw new Error('Cloning custom effects is not supported.');
+      }
+      return new KeyframeEffect(this.target, this._keyframes, shared.cloneTimingInput(this._timingInput));
     }
   };
 
