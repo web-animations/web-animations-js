@@ -21,6 +21,7 @@
     }
     this._sequenceNumber = shared.sequenceNumber++;
     this._holdTime = 0;
+    this._paused = false;
     this._isGroup = false;
     this._animation = null;
     this._childAnimations = [];
@@ -33,18 +34,18 @@
   // TODO: add an effect getter/setter
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
-      var oldPlayState;
-      var oldHoldTime;
+      var oldPlaybackRate;
+      var oldPaused;
       var oldStartTime;
       var oldCurrentTime;
-      var oldPlaybackRate;
+      var oldHoldTime;
       var hasUnderlying = this._animation ? true : false;
       if (hasUnderlying) {
-        oldPlayState = this.playState;
-        oldHoldTime = this._holdTime;
+        oldPlaybackRate = this.playbackRate;
+        oldPaused = this._paused;
         oldStartTime = this.startTime;
         oldCurrentTime = this.currentTime;
-        oldPlaybackRate = this.playbackRate;
+        oldHoldTime = this._holdTime;
         this._animation.cancel();
         this._animation._wrapper = this._animation;
         this._animation = null;
@@ -62,9 +63,7 @@
         if (oldPlaybackRate != 1) {
           this.playbackRate = oldPlaybackRate;
         }
-        // FIXME: THIS WON'T BE TRUE IF WE HAVEN'T TICKED SINCE PAUSE.
-        if (oldPlayState == 'paused') {
-          console.log('PAUSE');
+        if (oldPaused) {
           this.pause();
         }
         if (oldStartTime !== null) {
@@ -107,7 +106,7 @@
         var childAnimation = window.document.timeline.play(child);
         this._childAnimations.push(childAnimation);
         childAnimation.playbackRate = this.playbackRate;
-        if (this.paused)
+        if (this._paused)
           childAnimation.pause();
         child.animation = this.effect.animation;
 
@@ -124,9 +123,6 @@
       } else if (childAnimation.startTime !== this.startTime + offset / this.playbackRate) {
         childAnimation.startTime = this.startTime + offset / this.playbackRate;
       }
-    },
-    get paused() {
-      return this._animation.paused;
     },
     get playState() {
       return this._animation.playState;
@@ -193,6 +189,7 @@
       return this.effect;
     },
     play: function() {
+      this._paused = false;
       this._animation.play();
       this._register();
       scope.awaitStartTime(this);
@@ -211,6 +208,7 @@
       this._forEachChild(function(child) {
         child.pause();
       });
+      this._paused = true;
     },
     finish: function() {
       this._animation.finish();
