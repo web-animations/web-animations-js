@@ -1771,19 +1771,19 @@ suite('group-animation', function() {
         ],
         {duration: 100, fill: 'both'});
     var opacity2 = new KeyframeEffect(
-      this.target2,
-      [
-        {opacity: 1},
-        {opacity: 0}
-      ],
-      {duration: 100, fill: 'both'});
+        this.target2,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100, fill: 'both'});
     var opacity3 = new KeyframeEffect(
-      this.target3,
-      [
-        {opacity: 1},
-        {opacity: 0}
-      ],
-      {duration: 100, fill: 'both'});
+        this.target3,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100, fill: 'both'});
 
     var group1 = new GroupEffect([opacity1, opacity2]);
     var group2 = new GroupEffect([opacity3]);
