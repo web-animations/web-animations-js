@@ -67,13 +67,10 @@
           this.pause();
         }
         if (oldStartTime !== null) {
-          console.log('SET START TIME', oldStartTime);
           this.startTime = oldStartTime;
         } else if (oldCurrentTime !== null) {
-          console.log('SET OLD CURRENT TIME', oldCurrentTime);
           this.currentTime = oldCurrentTime;
         } else if (oldHoldTime !== null) {
-          console.log('SET LAST RESOLVED CURRENT TIME', oldHoldTime);
           this.currentTime = oldHoldTime;
         }
       }
@@ -157,10 +154,8 @@
     },
     set startTime(v) {
       this._animation.startTime = isFinite(v) ? v : Math.sign(v) * Number.MAX_VALUE;
-      console.log('set start time:', isFinite(v) ? v : Math.sign(v) * Number.MAX_VALUE);
       this._register();
       this._forEachChild(function(child, offset) {
-        console.log('set child start time:', v + offset);
         child.startTime = v + offset;
       });
     },
@@ -176,7 +171,7 @@
       if (this.playState != 'paused' && this.playState != 'idle') {
         this.play();
       }
-      // FIXME: This is probably wrong. Should set holdTime and set currentTime on next tick.
+      // FIXME: This is should set holdTime and set currentTime on next tick.
       if (oldCurrentTime !== null) {
         this.currentTime = oldCurrentTime;
       }
