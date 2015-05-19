@@ -61,12 +61,7 @@
         node = node._parent;
       }
       if (this.animation) {
-        if (this.animation.playState == 'pending') {
-          this.animation._needsRebuild = true;
-          scope.awaitStartTime(this.animation);
-        } else {
-          this.animation._rebuildUnderlyingAnimation();
-        }
+        this.animation._rebuildUnderlyingAnimation();
       }
     },
     _putChild: function(args, isAppend) {

@@ -20,6 +20,7 @@
       effect.animation = this;
     }
     this._sequenceNumber = shared.sequenceNumber++;
+    this._holdTime = 0;
     this._isGroup = false;
     this._animation = null;
     this._childAnimations = [];
@@ -33,12 +34,16 @@
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
       var oldPlayState;
+      var oldHoldTime;
       var oldStartTime;
+      var oldCurrentTime;
       var oldPlaybackRate;
       var hasUnderlying = this._animation ? true : false;
       if (hasUnderlying) {
         oldPlayState = this.playState;
+        oldHoldTime = this._holdTime;
         oldStartTime = this.startTime;
+        oldCurrentTime = this.currentTime;
         oldPlaybackRate = this.playbackRate;
         this._animation.cancel();
         this._animation._wrapper = this._animation;
@@ -57,9 +62,20 @@
         if (oldPlaybackRate != 1) {
           this.playbackRate = oldPlaybackRate;
         }
-        this.startTime = oldStartTime;
+        // FIXME: THIS WON'T BE TRUE IF WE HAVEN'T TICKED SINCE PAUSE.
         if (oldPlayState == 'paused') {
+          console.log('PAUSE');
           this.pause();
+        }
+        if (oldStartTime !== null) {
+          console.log('SET START TIME', oldStartTime);
+          this.startTime = oldStartTime;
+        } else if (oldCurrentTime !== null) {
+          console.log('SET OLD CURRENT TIME', oldCurrentTime);
+          this.currentTime = oldCurrentTime;
+        } else if (oldHoldTime !== null) {
+          console.log('SET LAST RESOLVED CURRENT TIME', oldHoldTime);
+          this.currentTime = oldHoldTime;
         }
       }
     },
@@ -145,8 +161,10 @@
     },
     set startTime(v) {
       this._animation.startTime = isFinite(v) ? v : Math.sign(v) * Number.MAX_VALUE;
+      console.log('set start time:', isFinite(v) ? v : Math.sign(v) * Number.MAX_VALUE);
       this._register();
       this._forEachChild(function(child, offset) {
+        console.log('set child start time:', v + offset);
         child.startTime = v + offset;
       });
     },
@@ -162,6 +180,7 @@
       if (this.playState != 'paused' && this.playState != 'idle') {
         this.play();
       }
+      // FIXME: This is probably wrong. Should set holdTime and set currentTime on next tick.
       if (oldCurrentTime !== null) {
         this.currentTime = oldCurrentTime;
       }
@@ -184,6 +203,9 @@
       });
     },
     pause: function() {
+      if (this.currentTime) {
+        this._holdTime = this.currentTime;
+      }
       this._animation.pause();
       this._register();
       this._forEachChild(function(child) {

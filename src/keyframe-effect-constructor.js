@@ -106,10 +106,6 @@
     var updated = false;
     while (pendingGroups.length) {
       var group = pendingGroups.shift();
-      if (group._needsRebuild) {
-        group._needsRebuild = false;
-        group._rebuildUnderlyingAnimation()
-      }
       group._updateChildren();
       updated = true;
     }
