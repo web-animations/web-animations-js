@@ -58,7 +58,10 @@
       if (typeof this.getFrames() == 'function') {
         throw new Error('Cloning custom effects is not supported.');
       }
-      return new KeyframeEffect(this.target, this._keyframes, shared.cloneTimingInput(this._timingInput));
+      var clone = new KeyframeEffect(this.target, [], shared.cloneTimingInput(this._timingInput));
+      clone._normalizedKeyframes = this._normalizedKeyframes;
+      clone._keyframes = this._keyframes;
+      return clone;
     }
   };
 

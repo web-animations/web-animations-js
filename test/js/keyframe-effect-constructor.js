@@ -58,6 +58,7 @@ suite('keyframe-effect-constructor', function() {
 
     assert.equal(keyframeEffect1.target, keyframeEffect2.target);
     assert.equal(keyframeEffect1._keyframes, keyframeEffect2._keyframes);
+    assert.equal(keyframeEffect1.getFrames(), keyframeEffect2.getFrames());
     assert.notEqual(keyframeEffect1._timingInput, keyframeEffect2._timingInput);
     assert.equal(Object.getOwnPropertyNames(keyframeEffect1._timingInput).length, 2);
     assert.equal(Object.getOwnPropertyNames(keyframeEffect2._timingInput).length, 2);
