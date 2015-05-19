@@ -1665,7 +1665,7 @@ suite('group-animation', function() {
     assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0, 0.001, 't=301, target2 opacity');
   });
 
-  test('group prepend works after pause', function() {
+  test('group pause, prepend, play works', function() {
     var opacity1 = new KeyframeEffect(
         this.target1,
         [
@@ -1689,20 +1689,77 @@ suite('group-animation', function() {
     assert.equal(getComputedStyle(this.target1).opacity, '1', 't=0, target1 opacity');
     assert.equal(getComputedStyle(this.target2).opacity, '1', 't=0, target2 opacity');
 
+    tick(150);
+    assert.equal(getComputedStyle(this.target1).opacity, '1', 't=50, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.5, 0.001, 't=150, target2 opacity');
+
+    animation.pause();
+    assert.equal(animation.playState, 'pending');
+    group.prepend(opacity1);
+    animation.play();
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.5, 0.001, 't=150, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.5, 0.001, 't=150, target2 opacity');
+
+    tick(200);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.333, 0.001, 't=200, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.333, 0.001, 't=200, target2 opacity');
+  });
+
+  test('group pause then prepend works', function() {
+    var opacity1 = new KeyframeEffect(
+        this.target1,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 300, fill: 'both'});
+    var opacity2 = new KeyframeEffect(
+        this.target2,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 300, fill: 'both'});
+    var opacity3 = new KeyframeEffect(
+        this.target3,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 300, fill: 'both'});
+
+    var group = new GroupEffect([]);
+    group.append(opacity2);
+
+    var animation = document.timeline.play(group);
+    tick(0);
+    assert.equal(getComputedStyle(this.target1).opacity, '1', 't=0, target1 opacity');
+    assert.equal(getComputedStyle(this.target2).opacity, '1', 't=0, target2 opacity');
+
     tick(50);
     assert.equal(getComputedStyle(this.target1).opacity, '1', 't=50, target1 opacity');
     assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=50, target2 opacity');
 
     animation.pause();
+    assert.equal(animation.playState, 'pending');
     group.prepend(opacity1);
-    animation.play();
-    tick(150);
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.833, 0.001, 't=150, target1 opacity');
     assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=150, target2 opacity');
 
     tick(350);
-    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.167, 0.001, 't=350, target1 opacity');
-    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.167, 0.001, 't=350, target2 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.833, 0.001, 't=350, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=350, target2 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 1, 0.001, 't=350, target3 opacity');
+
+    group.append(opacity3);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.833, 0.001, 't=351, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=351, target2 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0.833, 0.001, 't=351, target3 opacity');
+
+    tick(400);
+    assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.833, 0.001, 't=400, target1 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=400, target2 opacity');
+    assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0.833, 0.001, 't=400, target3 opacity');
   });
 
   test('group append reparents', function() {
