@@ -39,8 +39,8 @@
       var oldStartTime;
       var oldCurrentTime;
       var oldHoldTime;
-      var hasUnderlying = this._animation ? true : false;
-      if (hasUnderlying) {
+      var hadUnderlying = this._animation ? true : false;
+      if (hadUnderlying) {
         oldPlaybackRate = this.playbackRate;
         oldPaused = this._paused;
         oldStartTime = this.startTime;
@@ -59,7 +59,7 @@
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
       }
-      if (hasUnderlying) {
+      if (hadUnderlying) {
         if (oldPlaybackRate != 1) {
           this.playbackRate = oldPlaybackRate;
         }
