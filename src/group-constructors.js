@@ -21,9 +21,7 @@
   function constructor(children, timingInput) {
     this._parent = null;
     this.children = children || [];
-    for (var i = 0; i < this.children.length; i++) {
-      this.children[i]._parent = this;
-    }
+    this._reparent(this.children);
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
     this.timing = shared.makeTiming(timingInput, true);
@@ -64,6 +62,21 @@
         this._animation._rebuildUnderlyingAnimation();
       }
     },
+    _reparent: function(newChildren) {
+      var oldParents = [];
+      for (var i = 0; i < newChildren.length; i++) {
+        if (newChildren[i]._parent) {
+          newChildren[i]._parent.children.splice(newChildren[i]._parent.children.indexOf(newChildren[i]), 1);
+          if (oldParents.indexOf(newChildren[i]._parent) == -1) {
+            oldParents.push(newChildren[i]._parent);
+          }
+        }
+        newChildren[i]._parent = this;
+      }
+      for (i = 0; i < oldParents.length; i++) {
+        oldParents[i]._rebuild();
+      }
+    },
     _putChild: function(args, isAppend) {
       var message = isAppend ? 'Cannot append an ancestor or self' : 'Cannot prepend an ancestor or self';
       for (var i = 0; i < args.length; i++) {
@@ -78,17 +91,8 @@
       var oldParents = [];
       for (var i = 0; i < args.length; i++) {
         isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
-        if (args[i]._parent) {
-          args[i]._parent.children.splice(args[i]._parent.children.indexOf(args[i]), 1);
-          if (oldParents.indexOf(args[i]._parent) == -1) {
-            oldParents.push(args[i]._parent);
-          }
-        }
-        args[i]._parent = this;
       }
-      for (i = 0; i < oldParents.length; i++) {
-        oldParents[i]._rebuild();
-      }
+      this._reparent(args);
       this._rebuild();
     },
     append: function()  {
