@@ -158,7 +158,7 @@
         return;
       }
       if (tf == null) {
-        animation._removeChildren();
+        animation._removeChildAnimations();
         return;
       }
 
@@ -175,7 +175,7 @@
           animation._forEachChild(function(child) {
             child.currentTime = -1;
           });
-          animation._removeChildren();
+          animation._removeChildAnimations();
           return;
         }
       }
@@ -189,7 +189,7 @@
     animation._animation._wrapper = animation;
     animation._isGroup = true;
     scope.awaitStartTime(animation);
-    animation._constructChildren();
+    animation._constructChildAnimations();
     animation._setExternalAnimation(animation);
   };
 

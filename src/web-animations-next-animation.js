@@ -92,11 +92,11 @@
         this._childAnimations[i]._setExternalAnimation(animation);
       }
     },
-    _constructChildren: function() {
+    _constructChildAnimations: function() {
       if (!this.effect || !this._isGroup)
         return;
       var offset = this.effect._timing.delay;
-      this._removeChildren();
+      this._removeChildAnimations();
       this.effect.children.forEach(function(child) {
         var childAnimation = window.document.timeline.play(child);
         this._childAnimations.push(childAnimation);
@@ -211,7 +211,7 @@
     cancel: function() {
       this._animation.cancel();
       this._register();
-      this._removeChildren();
+      this._removeChildAnimations();
     },
     reverse: function() {
       var oldCurrentTime = this.currentTime;
@@ -237,14 +237,14 @@
     removeEventListener: function(type, handler) {
       this._animation.removeEventListener(type, (handler && handler._wrapper) || handler);
     },
-    _removeChildren: function() {
+    _removeChildAnimations: function() {
       while (this._childAnimations.length)
         this._childAnimations.pop().cancel();
     },
     _forEachChild: function(f) {
       var offset = 0;
       if (this.effect.children && this._childAnimations.length < this.effect.children.length)
-        this._constructChildren();
+        this._constructChildAnimations();
       this._childAnimations.forEach(function(child) {
         f.call(this, child, offset);
         if (this.effect instanceof window.SequenceEffect)
@@ -258,7 +258,7 @@
       if (t !== null)
         t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
       if (t == null || isNaN(t))
-        this._removeChildren();
+        this._removeChildAnimations();
     },
   };
 
