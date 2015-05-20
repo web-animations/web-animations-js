@@ -9,15 +9,15 @@ suite('group-constructors', function() {
     ]);
   }
 
-  test('animation getter for children in groups works as expected', function() {
+  test('associated animations for children in groups are correct', function() {
     var anim = document.timeline.play(simpleGroupEffect());
     tick(0);
-    assert.equal(anim.effect.animation, anim);
-    assert.equal(anim._childAnimations[0].effect.animation, anim);
-    assert.equal(anim._childAnimations[1].effect.animation, anim);
+    assert.equal(anim.effect._animation, anim);
+    assert.equal(anim._childAnimations[0].effect._animation, anim);
+    assert.equal(anim._childAnimations[1].effect._animation, anim);
     tick(2100);
-    assert.equal(anim._childAnimations[1]._childAnimations[0].effect.animation, anim);
-    assert.equal(anim._childAnimations[1]._childAnimations[1].effect.animation, anim);
+    assert.equal(anim._childAnimations[1]._childAnimations[0].effect._animation, anim);
+    assert.equal(anim._childAnimations[1]._childAnimations[1].effect._animation, anim);
   });
 
   test('firstChild and lastChild getters work', function() {

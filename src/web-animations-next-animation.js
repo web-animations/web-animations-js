@@ -17,7 +17,7 @@
     this.effect = effect;
     if (effect) {
       // FIXME: detach existing animation.
-      effect.animation = this;
+      effect._animation = this;
     }
     this._sequenceNumber = shared.sequenceNumber++;
     this._holdTime = 0;
@@ -90,7 +90,7 @@
       if (!this.effect || !this._isGroup)
         return;
       for (var i = 0; i < this.effect.children.length; i++) {
-        this.effect.children[i].animation = animation;
+        this.effect.children[i]._animation = animation;
         this._childAnimations[i]._setExternalAnimation(animation);
       }
     },
@@ -105,7 +105,7 @@
         childAnimation.playbackRate = this.playbackRate;
         if (this._paused)
           childAnimation.pause();
-        child.animation = this.effect.animation;
+        child._animation = this.effect._animation;
 
         this._arrangeChildren(childAnimation, offset);
 

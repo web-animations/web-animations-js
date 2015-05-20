@@ -60,8 +60,8 @@
         }
         node = node._parent;
       }
-      if (this.animation) {
-        this.animation._rebuildUnderlyingAnimation();
+      if (this._animation) {
+        this._animation._rebuildUnderlyingAnimation();
       }
     },
     _putChild: function(args, isAppend) {
