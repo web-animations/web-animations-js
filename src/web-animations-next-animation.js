@@ -45,7 +45,7 @@
         oldStartTime = this.startTime;
         oldCurrentTime = this.currentTime;
         this._animation.cancel();
-        this._animation._wrapper = this._animation;
+        this._animation._wrapper = null;
         this._animation = null;
       }
 

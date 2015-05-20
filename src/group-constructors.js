@@ -148,12 +148,15 @@
     var timing = null;
     var ticker = function(tf) {
       var animation = underlyingAnimation._wrapper;
-      if (animation.playState == 'pending')
+      if (!animation) {
         return;
-
-      if (!animation.effect)
+      }
+      if (animation.playState == 'pending') {
         return;
-
+      }
+      if (!animation.effect) {
+        return;
+      }
       if (tf == null) {
         animation._removeChildren();
         return;
