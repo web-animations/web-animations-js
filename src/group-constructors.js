@@ -75,13 +75,19 @@
           };
         }
       }
+      var oldParents = [];
       for (var i = 0; i < args.length; i++) {
         isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
         if (args[i]._parent) {
           args[i]._parent.children.splice(args[i]._parent.children.indexOf(args[i]), 1);
-          args[i]._parent._rebuild();
+          if (oldParents.indexOf(args[i]._parent) == -1) {
+            oldParents.push(args[i]._parent);
+          }
         }
         args[i]._parent = this;
+      }
+      for (i = 0; i < oldParents.length; i++) {
+        oldParents[i]._rebuild();
       }
       this._rebuild();
     },
