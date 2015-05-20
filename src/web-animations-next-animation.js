@@ -38,14 +38,12 @@
       var oldPaused;
       var oldStartTime;
       var oldCurrentTime;
-      var oldHoldTime;
       var hadUnderlying = this._animation ? true : false;
       if (hadUnderlying) {
         oldPlaybackRate = this.playbackRate;
         oldPaused = this._paused;
         oldStartTime = this.startTime;
         oldCurrentTime = this.currentTime;
-        oldHoldTime = this._holdTime;
         this._animation.cancel();
         this._animation._wrapper = this._animation;
         this._animation = null;
@@ -70,8 +68,8 @@
           this.startTime = oldStartTime;
         } else if (oldCurrentTime !== null) {
           this.currentTime = oldCurrentTime;
-        } else if (oldHoldTime !== null) {
-          this.currentTime = oldHoldTime;
+        } else if (this._holdTime !== null) {
+          this.currentTime = this._holdTime;
         }
       }
     },
