@@ -61,15 +61,15 @@
         if (oldPlaybackRate != 1) {
           this.playbackRate = oldPlaybackRate;
         }
-        if (oldPaused) {
-          this.pause();
-        }
         if (oldStartTime !== null) {
           this.startTime = oldStartTime;
         } else if (oldCurrentTime !== null) {
           this.currentTime = oldCurrentTime;
         } else if (this._holdTime !== null) {
           this.currentTime = this._holdTime;
+        }
+        if (oldPaused) {
+          this.pause();
         }
       }
     },
