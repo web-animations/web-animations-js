@@ -142,7 +142,7 @@
       else
         newPendingEffects.push(animation._effect);
 
-      if (!animation.finished && !animation._paused && !animation._idle)
+      if (!animation._isFinished && !animation._paused && !animation._idle)
         ticking = true;
 
       return animation._inTimeline;
@@ -154,7 +154,6 @@
 
     timeline._animations.push.apply(timeline._animations, updatingAnimations);
     needsRetick = false;
-
     if (ticking)
       requestAnimationFrame(function() {});
   };

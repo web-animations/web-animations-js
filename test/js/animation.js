@@ -100,7 +100,7 @@ suite('animation', function() {
     var a = document.body.animate([], 1000);
     tick(100);
     tick(1200);
-    assert.equal(a.finished, true);
+    assert.equal(a.playState, 'finished');
     assert.equal(a.startTime, 100);
     assert.equal(a.currentTime, 1000);
     tick(1500);
@@ -118,7 +118,7 @@ suite('animation', function() {
     var a = document.body.animate([], 1000);
     tick(100);
     tick(1200);
-    assert.equal(a.finished, true);
+    assert.equal(a.playState, 'finished');
     assert.equal(a.startTime, 100);
     assert.equal(a.currentTime, 1000);
     tick(1500);
@@ -170,14 +170,14 @@ suite('animation', function() {
     tick(2600);
     assert.equal(a.currentTime, 2000);
     assert.equal(a.startTime, 500);
-    assert.equal(a.finished, true);
+    assert.equal(a.playState, 'finished');
     assert.equal(a.playbackRate, 1);
     setTicking(true);
     a.play();
     tick(2700);
     assert.equal(a.startTime, 2700);
     assert.equal(a.currentTime, 0);
-    assert.equal(a.finished, false);
+    assert.notEqual(a.playState, 'finished');
     assert.equal(a.playbackRate, 1);
   });
   test('play after limit works as expected (reversed)', function() {
@@ -190,14 +190,14 @@ suite('animation', function() {
     tick(900);
     assert.equal(a.startTime, 801);
     assert.equal(a.currentTime, 0);
-    assert.equal(a.finished, true);
+    assert.equal(a.playState, 'finished');
     assert.equal(a.playbackRate, -1);
     setTicking(true);
     a.play();
     tick(1000);
     assert.equal(a.startTime, 4000);
     assert.equal(a.currentTime, 3000);
-    assert.equal(a.finished, false);
+    assert.notEqual(a.playState, 'finished');
     assert.equal(a.playbackRate, -1);
   });
   test('seeking works as expected', function() {

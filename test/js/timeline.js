@@ -22,7 +22,7 @@ suite('timeline-tests', function() {
     var animation2 = document.body.animate([], {duration: 1000});
     assert.equal(document.timeline.getAnimations().length, 2);
     tick(800);
-    assert.equal(animation.finished, true);
+    assert.equal(animation.playState, 'finished');
     assert.equal(document.timeline.getAnimations().length, 1);
     tick(2000);
     assert.equal(document.timeline.getAnimations().length, 0);
