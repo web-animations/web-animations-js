@@ -40,4 +40,42 @@ suite('group-constructors', function() {
     assert.equal(emptyGroupParent.firstChild, null, 'first child of an empty GroupEffect');
     assert.equal(emptyGroupParent.lastChild, null, 'last child of an empty GroupEffect');
   });
+
+  test('Cloning a SequenceEffect works', function() {
+    var target1 = document.createElement('div');
+    document.body.appendChild(target1);
+
+    var keyframeEffect1 = new KeyframeEffect(target1, [{opacity: 1}, {opacity: 0}], {duration: 100, fill: 'none'});
+    var keyframeEffect2 = keyframeEffect1.clone();
+    var sequenceEffect1 = new SequenceEffect([keyframeEffect1, keyframeEffect2]);
+    var sequenceEffect2 = sequenceEffect1.clone();
+    var sequenceEffectParent = new SequenceEffect([sequenceEffect1, sequenceEffect2]);
+
+    assert.equal(sequenceEffectParent.activeDuration, 400);
+
+    var animation = document.timeline.play(sequenceEffectParent);
+    tick(0);
+    tick(25);
+    assert.equal(getComputedStyle(target1).opacity, 0.75);
+    tick(75);
+    assert.equal(getComputedStyle(target1).opacity, 0.25);
+
+    tick(125);
+    assert.equal(getComputedStyle(target1).opacity, 0.75);
+    tick(175);
+    assert.equal(getComputedStyle(target1).opacity, 0.25);
+
+    tick(225);
+    assert.equal(getComputedStyle(target1).opacity, 0.75);
+    tick(275);
+    assert.equal(getComputedStyle(target1).opacity, 0.25);
+
+    tick(325);
+    assert.equal(getComputedStyle(target1).opacity, 0.75);
+    tick(375);
+    assert.equal(getComputedStyle(target1).opacity, 0.25);
+    tick(400);
+    assert.equal(getComputedStyle(target1).opacity, 1);
+    animation.cancel();
+  });
 });
