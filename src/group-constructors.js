@@ -19,7 +19,11 @@
   }
 
   function constructor(children, timingInput) {
+    this._parent = null;
     this.children = children || [];
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i]._parent = this;
+    }
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
     this.timing = shared.makeTiming(timingInput, true);
@@ -38,6 +42,61 @@
   };
 
   constructor.prototype = {
+    _isAncestor: function(effect) {
+      var a = this;
+      while (a !== null) {
+        if (a == effect)
+          return true;
+        a = a._parent;
+      }
+      return false;
+    },
+    _rebuild: function() {
+      // Re-calculate durations for ancestors with specified duration 'auto'.
+      var node = this;
+      while (node) {
+        if (node.timing.duration === 'auto') {
+          node._timing.duration = node.activeDuration;
+        }
+        node = node._parent;
+      }
+      if (this._animation) {
+        this._animation._rebuildUnderlyingAnimation();
+      }
+    },
+    _putChild: function(args, isAppend) {
+      var message = isAppend ? 'Cannot append an ancestor or self' : 'Cannot prepend an ancestor or self';
+      for (var i = 0; i < args.length; i++) {
+        if (this._isAncestor(args[i])) {
+          throw {
+            type: DOMException.HIERARCHY_REQUEST_ERR,
+            name: 'HierarchyRequestError',
+            message: message
+          };
+        }
+      }
+      var oldParents = [];
+      for (var i = 0; i < args.length; i++) {
+        isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
+        if (args[i]._parent) {
+          args[i]._parent.children.splice(args[i]._parent.children.indexOf(args[i]), 1);
+          if (oldParents.indexOf(args[i]._parent) == -1) {
+            oldParents.push(args[i]._parent);
+          }
+        }
+        args[i]._parent = this;
+      }
+      for (i = 0; i < oldParents.length; i++) {
+        oldParents[i]._rebuild();
+      }
+      this._rebuild();
+    },
+    append: function()  {
+      this._putChild(arguments, true);
+    },
+    prepend: function()  {
+      this._putChild(arguments, false);
+    },
     get firstChild() {
       return this.children.length ? this.children[0] : null;
     },
@@ -89,14 +148,17 @@
     var timing = null;
     var ticker = function(tf) {
       var animation = underlyingAnimation._wrapper;
-      if (animation.playState == 'pending')
+      if (!animation) {
         return;
-
-      if (!animation.effect)
+      }
+      if (animation.playState == 'pending') {
         return;
-
+      }
+      if (!animation.effect) {
+        return;
+      }
       if (tf == null) {
-        animation._removeChildren();
+        animation._removeChildAnimations();
         return;
       }
 
@@ -113,7 +175,7 @@
           animation._forEachChild(function(child) {
             child.currentTime = -1;
           });
-          animation._removeChildren();
+          animation._removeChildAnimations();
           return;
         }
       }
@@ -127,7 +189,7 @@
     animation._animation._wrapper = animation;
     animation._isGroup = true;
     scope.awaitStartTime(animation);
-    animation._constructChildren();
+    animation._constructChildAnimations();
     animation._setExternalAnimation(animation);
   };
 

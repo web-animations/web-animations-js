@@ -12,9 +12,9 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
-  var sequenceNumber = 0;
+  shared.sequenceNumber = 0;
 
   var AnimationEvent = function(target, currentTime, timelineTime) {
     this.target = target;
@@ -31,10 +31,10 @@
   };
 
   scope.Animation = function(effect) {
-    this._sequenceNumber = sequenceNumber++;
+    this._sequenceNumber = shared.sequenceNumber++;
     this._currentTime = 0;
     this._startTime = null;
-    this.paused = false;
+    this._paused = false;
     this._playbackRate = 1;
     this._inTimeline = true;
     this._finishedFlag = false;
@@ -79,7 +79,7 @@
       if (isNaN(newTime))
         return;
       scope.restart();
-      if (!this.paused && this._startTime != null) {
+      if (!this._paused && this._startTime != null) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
       this._currentTimePending = false;
@@ -95,7 +95,7 @@
       newTime = +newTime;
       if (isNaN(newTime))
         return;
-      if (this.paused || this._idle)
+      if (this._paused || this._idle)
         return;
       this._startTime = newTime;
       this._tickCurrentTime((this._timeline.currentTime - this._startTime) * this.playbackRate);
@@ -126,16 +126,16 @@
     get playState() {
       if (this._idle)
         return 'idle';
-      if ((this._startTime == null && !this.paused && this.playbackRate != 0) || this._currentTimePending)
+      if ((this._startTime == null && !this._paused && this.playbackRate != 0) || this._currentTimePending)
         return 'pending';
-      if (this.paused)
+      if (this._paused)
         return 'paused';
       if (this.finished)
         return 'finished';
       return 'running';
     },
     play: function() {
-      this.paused = false;
+      this._paused = false;
       if (this.finished || this._idle) {
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
         this._startTime = null;
@@ -147,11 +147,11 @@
       this._ensureAlive();
     },
     pause: function() {
-      if (!this.finished && !this.paused && !this._idle) {
+      if (!this.finished && !this._paused && !this._idle) {
         this._currentTimePending = true;
       }
       this._startTime = null;
-      this.paused = true;
+      this._paused = true;
     },
     finish: function() {
       if (this._idle)
@@ -195,7 +195,7 @@
       this._finishedFlag = finished;
     },
     _tick: function(timelineTime) {
-      if (!this._idle && !this.paused) {
+      if (!this._idle && !this._paused) {
         if (this._startTime == null)
           this.startTime = timelineTime - this._currentTime / this.playbackRate;
         else if (!this.finished)
@@ -212,4 +212,4 @@
     testing.webAnimations1Animation = scope.Animation;
   }
 
-})(webAnimations1, webAnimationsTesting);
+})(webAnimationsShared, webAnimations1, webAnimationsTesting);

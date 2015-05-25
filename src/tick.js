@@ -120,7 +120,7 @@
       else
         newPendingEffects.push(animation._effect);
 
-      if (!animation.finished && !animation.paused && !animation._idle)
+      if (!animation.finished && !animation._paused && !animation._idle)
         ticking = true;
 
       return animation._inTimeline;

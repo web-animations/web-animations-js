@@ -17,8 +17,11 @@
     this.effect = effect;
     if (effect) {
       // FIXME: detach existing animation.
-      effect.animation = this;
+      effect._animation = this;
     }
+    this._sequenceNumber = shared.sequenceNumber++;
+    this._holdTime = 0;
+    this._paused = false;
     this._isGroup = false;
     this._animation = null;
     this._childAnimations = [];
@@ -31,8 +34,18 @@
   // TODO: add an effect getter/setter
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
-      if (this._animation) {
+      var oldPlaybackRate;
+      var oldPaused;
+      var oldStartTime;
+      var oldCurrentTime;
+      var hadUnderlying = this._animation ? true : false;
+      if (hadUnderlying) {
+        oldPlaybackRate = this.playbackRate;
+        oldPaused = this._paused;
+        oldStartTime = this.startTime;
+        oldCurrentTime = this.currentTime;
         this._animation.cancel();
+        this._animation._wrapper = null;
         this._animation = null;
       }
 
@@ -44,8 +57,21 @@
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
       }
-
-      // FIXME: move existing currentTime/startTime/playState to new animation
+      if (hadUnderlying) {
+        if (oldPlaybackRate != 1) {
+          this.playbackRate = oldPlaybackRate;
+        }
+        if (oldStartTime !== null) {
+          this.startTime = oldStartTime;
+        } else if (oldCurrentTime !== null) {
+          this.currentTime = oldCurrentTime;
+        } else if (this._holdTime !== null) {
+          this.currentTime = this._holdTime;
+        }
+        if (oldPaused) {
+          this.pause();
+        }
+      }
     },
     _updateChildren: function() {
       if (!this.effect || this.playState == 'idle')
@@ -62,21 +88,22 @@
       if (!this.effect || !this._isGroup)
         return;
       for (var i = 0; i < this.effect.children.length; i++) {
-        this.effect.children[i].animation = animation;
+        this.effect.children[i]._animation = animation;
         this._childAnimations[i]._setExternalAnimation(animation);
       }
     },
-    _constructChildren: function() {
+    _constructChildAnimations: function() {
       if (!this.effect || !this._isGroup)
         return;
       var offset = this.effect._timing.delay;
+      this._removeChildAnimations();
       this.effect.children.forEach(function(child) {
         var childAnimation = window.document.timeline.play(child);
         this._childAnimations.push(childAnimation);
         childAnimation.playbackRate = this.playbackRate;
-        if (this.paused)
+        if (this._paused)
           childAnimation.pause();
-        child.animation = this.effect.animation;
+        child._animation = this.effect._animation;
 
         this._arrangeChildren(childAnimation, offset);
 
@@ -91,9 +118,6 @@
       } else if (childAnimation.startTime !== this.startTime + offset / this.playbackRate) {
         childAnimation.startTime = this.startTime + offset / this.playbackRate;
       }
-    },
-    get paused() {
-      return this._animation.paused;
     },
     get playState() {
       return this._animation.playState;
@@ -145,6 +169,7 @@
       if (this.playState != 'paused' && this.playState != 'idle') {
         this.play();
       }
+      // FIXME: This is should set holdTime and set currentTime on next tick.
       if (oldCurrentTime !== null) {
         this.currentTime = oldCurrentTime;
       }
@@ -157,6 +182,7 @@
       return this.effect;
     },
     play: function() {
+      this._paused = false;
       this._animation.play();
       this._register();
       scope.awaitStartTime(this);
@@ -167,11 +193,15 @@
       });
     },
     pause: function() {
+      if (this.currentTime) {
+        this._holdTime = this.currentTime;
+      }
       this._animation.pause();
       this._register();
       this._forEachChild(function(child) {
         child.pause();
       });
+      this._paused = true;
     },
     finish: function() {
       this._animation.finish();
@@ -181,7 +211,7 @@
     cancel: function() {
       this._animation.cancel();
       this._register();
-      this._removeChildren();
+      this._removeChildAnimations();
     },
     reverse: function() {
       var oldCurrentTime = this.currentTime;
@@ -207,14 +237,14 @@
     removeEventListener: function(type, handler) {
       this._animation.removeEventListener(type, (handler && handler._wrapper) || handler);
     },
-    _removeChildren: function() {
+    _removeChildAnimations: function() {
       while (this._childAnimations.length)
         this._childAnimations.pop().cancel();
     },
     _forEachChild: function(f) {
       var offset = 0;
       if (this.effect.children && this._childAnimations.length < this.effect.children.length)
-        this._constructChildren();
+        this._constructChildAnimations();
       this._childAnimations.forEach(function(child) {
         f.call(this, child, offset);
         if (this.effect instanceof window.SequenceEffect)
@@ -228,7 +258,7 @@
       if (t !== null)
         t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
       if (t == null || isNaN(t))
-        this._removeChildren();
+        this._removeChildAnimations();
     },
   };
 

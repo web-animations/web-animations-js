@@ -9,15 +9,15 @@ suite('group-constructors', function() {
     ]);
   }
 
-  test('animation getter for children in groups works as expected', function() {
+  test('associated animations for children in groups are correct', function() {
     var anim = document.timeline.play(simpleGroupEffect());
     tick(0);
-    assert.equal(anim.effect.animation, anim);
-    assert.equal(anim._childAnimations[0].effect.animation, anim);
-    assert.equal(anim._childAnimations[1].effect.animation, anim);
+    assert.equal(anim.effect._animation, anim);
+    assert.equal(anim._childAnimations[0].effect._animation, anim);
+    assert.equal(anim._childAnimations[1].effect._animation, anim);
     tick(2100);
-    assert.equal(anim._childAnimations[1]._childAnimations[0].effect.animation, anim);
-    assert.equal(anim._childAnimations[1]._childAnimations[1].effect.animation, anim);
+    assert.equal(anim._childAnimations[1]._childAnimations[0].effect._animation, anim);
+    assert.equal(anim._childAnimations[1]._childAnimations[1].effect._animation, anim);
   });
 
   test('firstChild and lastChild getters work', function() {
@@ -77,5 +77,49 @@ suite('group-constructors', function() {
     tick(400);
     assert.equal(getComputedStyle(target1).opacity, 1);
     animation.cancel();
+  });
+
+  test('append and prepend work', function() {
+    var child1 = new KeyframeEffect(null, [], 100);
+    var child2 = new GroupEffect([]);
+
+    var seqParentAp = new SequenceEffect([child1]);
+    seqParentAp.append(child2);
+    assert.equal(seqParentAp.firstChild, child1, 'first child of a SequenceEffect after appending 1 child');
+    assert.equal(seqParentAp.lastChild, child2, 'last child of a SequenceEffect after appending 1 child');
+
+    var emptyGroupParentAp = new GroupEffect([]);
+    emptyGroupParentAp.append(child2, child1);
+    assert.equal(emptyGroupParentAp.firstChild, child2, 'first child of a GroupEffect after appending 2 children');
+    assert.equal(emptyGroupParentAp.lastChild, child1, 'last child of a GroupEffect after appending 2 children');
+
+    var groupParentPre = new GroupEffect([child1]);
+    groupParentPre.prepend(child2);
+    assert.equal(groupParentPre.firstChild, child2, 'first child of a GroupEffect after prepending 1 child');
+    assert.equal(groupParentPre.lastChild, child1, 'last child of a GroupEffect after prepending 1 child');
+
+    var emptySeqParentPre = new SequenceEffect([]);
+    emptySeqParentPre.prepend(child2, child1);
+    assert.equal(emptySeqParentPre.firstChild, child1, 'first child of a SequenceEffect after prepending 2 children');
+    assert.equal(emptySeqParentPre.lastChild, child2, 'last child of a SequenceEffect after prepending 2 children');
+
+    var group = new GroupEffect([child1, child2]);
+    var seqParent = new SequenceEffect([group]);
+    var ex;
+    try {
+      group.append(seqParent);
+    } catch (e) {
+      ex = e;
+    }
+    assert.equal(ex.name, 'HierarchyRequestError', 'Appending an ancestor throws a HierarchyRequestError');
+
+    var groupParent = new GroupEffect([]);
+    ex = undefined;
+    try {
+      groupParent.prepend(groupParent);
+    } catch (e) {
+      ex = e;
+    }
+    assert.equal(ex.name, 'HierarchyRequestError', 'Prepending an self throws a HierarchyRequestError');
   });
 });

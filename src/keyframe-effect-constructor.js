@@ -105,7 +105,8 @@
   function updatePendingGroups() {
     var updated = false;
     while (pendingGroups.length) {
-      pendingGroups.shift()._updateChildren();
+      var group = pendingGroups.shift();
+      group._updateChildren();
       updated = true;
     }
     return updated;

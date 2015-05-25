@@ -224,10 +224,10 @@ suite('animation', function() {
     a.pause();
     assert.equal(a.currentTime, null);
     assert.equal(a.startTime, null);
-    assert.equal(a.paused, true);
+    assert.equal(a._paused, true);
     a.currentTime = 500;
     assert.equal(a.startTime, null);
-    assert.equal(a.paused, true);
+    assert.equal(a._paused, true);
   });
   test('setting start time while paused is ignored', function() {
     tick(900);
