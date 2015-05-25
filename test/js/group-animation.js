@@ -1978,4 +1978,26 @@ suite('group-animation', function() {
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=400, target2 transform');
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=400, target1 opacity');
   });
+
+  test('group constructor reparents', function() {
+    var child1 = new KeyframeEffect(null, []);
+    var child2 = new KeyframeEffect(null, []);
+    var child3 = new KeyframeEffect(null, []);
+
+    var group1 = new GroupEffect([child1, child2]);
+    var animation1 = document.timeline.play(group1);
+    assert.equal(group1.children.length, 2);
+    assert.equal(animation1._childAnimations.length, 2);
+
+    var group2 = new GroupEffect([child3, child1]);
+    assert.equal(group1.children.length, 1);
+    assert.equal(animation1._childAnimations.length, 1);
+    assert.equal(group2.children.length, 2);
+
+    var animation2 = document.timeline.play(group2);
+    assert.equal(group1.children.length, 1);
+    assert.equal(animation1._childAnimations.length, 1);
+    assert.equal(group2.children.length, 2);
+    assert.equal(animation2._childAnimations.length, 2);
+  });
 });
