@@ -14,6 +14,38 @@
 
 (function(shared, scope, testing) {
 
+  var disassociate = function(effect) {
+    effect._animation = undefined;
+    if (effect instanceof window.SequenceEffect || effect instanceof window.GroupEffect) {
+      for (var i = 0; i < effect.children.length; i++) {
+        disassociate(effect.children[i]);
+      }
+    }
+  };
+
+  scope.removeMulti = function(effects) {
+    var oldParents = [];
+    for (var i = 0; i < effects.length; i++) {
+      var effect = effects[i];
+      if (effect._parent) {
+        if (oldParents.indexOf(effect._parent) == -1) {
+          oldParents.push(effect._parent);
+        }
+        effect._parent.children.splice(effect._parent.children.indexOf(effect), 1);
+        effect._parent = null;
+        disassociate(effect);
+      } else if (effect._animation && (effect._animation.effect == effect)) {
+        effect._animation.cancel();
+        effect._animation.effect = undefined;
+        effect._animation._effect = undefined;
+        disassociate(effect);
+      }
+    }
+    for (i = 0; i < oldParents.length; i++) {
+      oldParents[i]._rebuild();
+    }
+  };
+
   // FIXME: Make this shareable and rename to SharedKeyframeList.
   function KeyframeList(effectInput) {
     this._frames = shared.normalizeKeyframes(effectInput);
@@ -62,6 +94,9 @@
       clone._normalizedKeyframes = this._normalizedKeyframes;
       clone._keyframes = this._keyframes;
       return clone;
+    },
+    remove: function() {
+      scope.removeMulti([this]);
     }
   };
 
