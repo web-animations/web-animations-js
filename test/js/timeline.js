@@ -37,4 +37,17 @@ suite('timeline-tests', function() {
     animation.cancel();
     assert.equal(document.timeline.getAnimations().length, 0);
   });
+
+  test('playing a finished animation puts it back in the timeline', function() {
+    tick(0);
+    assert.equal(document.timeline.getAnimations().length, 0);
+    var animation = document.body.animate([], {duration: 500, iterations: 1});
+    tick(1);
+    tick(300);
+    assert.equal(document.timeline.getAnimations().length, 1);
+    tick(700);
+    assert.equal(document.timeline.getAnimations().length, 0);
+    animation.play();
+    assert.equal(document.timeline.getAnimations().length, 1);
+  });
 });

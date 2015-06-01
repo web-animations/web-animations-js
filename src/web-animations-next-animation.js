@@ -184,6 +184,9 @@
     play: function() {
       this._paused = false;
       this._animation.play();
+      if (document.timeline._animations.indexOf(this) == -1) {
+        document.timeline._animations.push(this);
+      }
       this._register();
       scope.awaitStartTime(this);
       this._forEachChild(function(child) {
