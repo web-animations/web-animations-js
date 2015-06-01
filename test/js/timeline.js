@@ -43,7 +43,7 @@ suite('timeline-tests', function() {
     assert.equal(document.timeline.getAnimations().length, 0);
     var animation = document.body.animate([], {duration: 500, iterations: 1});
     tick(1);
-    tick(300)
+    tick(300);
     assert.equal(document.timeline.getAnimations().length, 1);
     tick(700);
     assert.equal(document.timeline.getAnimations().length, 0);
