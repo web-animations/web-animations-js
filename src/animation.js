@@ -161,10 +161,20 @@
       this._currentTimePending = false;
     },
     cancel: function() {
+      if (!this._inEffect)
+        return;
       this._inEffect = false;
       this._idle = true;
       this.currentTime = 0;
       this._startTime = null;
+      this._effect._update(null);
+      // effects are invalid after cancellation as the animation state
+      // needs to un-apply.
+      scope.invalidateEffects();
+      // in the absence of effect revalidation via getComputedStyle, we
+      // need a single tick to remove the effect of the cancelled
+      // animation.
+      scope.restart();
     },
     reverse: function() {
       this.playbackRate *= -1;

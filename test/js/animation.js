@@ -343,6 +343,16 @@ suite('animation', function() {
     assert.deepEqual(webAnimations1.timeline._animations, []);
     document.documentElement.removeChild(target);
   });
+  test('cancelling a newly created animation clears all effects', function() {
+    tick(0);
+    var target = document.createElement('div');
+    document.documentElement.appendChild(target);
+    var animation = target.animate([{marginLeft: '50px'}, {marginLeft: '50px'}], 1000);
+    assert.equal(getComputedStyle(target).marginLeft, '50px');
+    animation.cancel();
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
+    document.documentElement.removeChild(target);
+  });
   test('startTime is set on first tick if timeline hasn\'t started', function() {
     webAnimations1.timeline.currentTime = undefined;
     var a = document.body.animate([], 1000);
