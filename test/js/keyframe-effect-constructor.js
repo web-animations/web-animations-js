@@ -3,6 +3,7 @@ suite('keyframe-effect-constructor', function() {
     document.timeline.getAnimations().forEach(function(animation) {
       animation.cancel();
     });
+    tick(100000);
   });
 
   test('Playing a KeyframeEffect makes an Animation', function() {
