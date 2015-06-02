@@ -225,7 +225,7 @@ suite('group-animation', function() {
       tick(3.5 * this.prChildDuration);
       tick(5 * this.prChildDuration);
       reverseFill();
-      tick(6);
+      tick(6 * this.prChildDuration);
       tick(7.5 * this.prChildDuration);
       endFill();
       animation.cancel();
