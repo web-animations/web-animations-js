@@ -37,11 +37,14 @@
   function processRafCallbacks(t) {
     var processing = rafCallbacks;
     rafCallbacks = [];
+    if (t < timeline.currentTime)
+      t = timeline.currentTime;
     tick(t);
     processing.forEach(function(entry) { entry[1](t); });
     if (needsRetick)
       tick(t);
     applyPendingEffects();
+    _now = undefined;
   }
 
   function compareAnimations(leftAnimation, rightAnimation) {
@@ -67,6 +70,18 @@
     }
   };
 
+  var _now = undefined;
+
+  if (WEB_ANIMATIONS_TESTING) {
+    var now = function() { return timeline.currentTime; };
+  } else {
+    var now = function() {
+      if (_now == undefined)
+        _now = performance.now();
+      return _now;
+    };
+  }
+
   var ticking = false;
   var hasRestartedThisFrame = false;
 
@@ -90,12 +105,19 @@
     pendingEffects.length = 0;
   }
 
+  var t60hz = 1000 / 60;
+
   var originalGetComputedStyle = window.getComputedStyle;
   Object.defineProperty(window, 'getComputedStyle', {
     configurable: true,
     enumerable: true,
     value: function() {
-      if (needsRetick) tick(timeline.currentTime);
+      if (needsRetick) {
+        var time = now();
+        if (time - timeline.currentTime > 0)
+          timeline.currentTime += t60hz * (Math.floor((time - timeline.currentTime) / t60hz) + 1);
+        tick(timeline.currentTime);
+      }
       applyPendingEffects();
       return originalGetComputedStyle.apply(this, arguments);
     },
@@ -138,7 +160,7 @@
   };
 
   if (WEB_ANIMATIONS_TESTING) {
-    testing.tick = processRafCallbacks;
+    testing.tick = function(t) { timeline.currentTime = t; processRafCallbacks(t); };
     testing.isTicking = function() { return ticking; };
     testing.setTicking = function(newVal) { ticking = newVal; };
   }
