@@ -179,7 +179,7 @@
       }
     };
 
-    underlyingAnimation = scope.timeline.play(new scope.KeyframeEffect(null, ticker, group._timing));
+    underlyingAnimation = scope.timeline._play(new scope.KeyframeEffect(null, ticker, group._timing));
     return underlyingAnimation;
   };
 

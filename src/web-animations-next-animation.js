@@ -98,7 +98,7 @@
       var offset = this.effect._timing.delay;
       this._removeChildAnimations();
       this.effect.children.forEach(function(child) {
-        var childAnimation = window.document.timeline.play(child);
+        var childAnimation = window.document.timeline._play(child);
         this._childAnimations.push(childAnimation);
         childAnimation.playbackRate = this.playbackRate;
         if (this._paused)

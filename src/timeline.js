@@ -37,7 +37,7 @@
         return animation.playState != 'finished' && animation.playState != 'idle';
       });
     },
-    play: function(effect) {
+    _play: function(effect) {
       var animation = new scope.Animation(effect);
       this._animations.push(animation);
       scope.restartWebAnimationsNextTick();
@@ -49,6 +49,11 @@
       animation._animation.play();
       return animation;
     },
+    play: function(effect) {
+      if (effect)
+        effect.remove();
+      return this._play(effect);
+    }
   };
 
   var ticking = false;

@@ -38,6 +38,9 @@
         effect._animation.cancel();
         effect._animation.effect = undefined;
         effect._animation._effect = undefined;
+        effect._animation._animation = null;
+        // FIXME: Do we need this?
+        effect._animation._callback = null;
         disassociate(effect);
       }
     }
@@ -102,7 +105,7 @@
 
   var originalElementAnimate = Element.prototype.animate;
   Element.prototype.animate = function(effectInput, timing) {
-    return scope.timeline.play(new scope.KeyframeEffect(this, effectInput, timing));
+    return scope.timeline._play(new scope.KeyframeEffect(this, effectInput, timing));
   };
 
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
