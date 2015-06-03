@@ -35,11 +35,10 @@
         effect._parent = null;
         disassociate(effect);
       } else if (effect._animation && (effect._animation.effect == effect)) {
+        // FIXME: If we call play on the gutted animation after this, we get uncaught TypeErrors.
         effect._animation.cancel();
         effect._animation.effect = undefined;
-        effect._animation._effect = undefined;
         effect._animation._animation = null;
-        // FIXME: Do we need this?
         effect._animation._callback = null;
         disassociate(effect);
       }

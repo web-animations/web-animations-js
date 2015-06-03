@@ -50,8 +50,9 @@
       return animation;
     },
     play: function(effect) {
-      if (effect)
+      if (effect) {
         effect.remove();
+      }
       return this._play(effect);
     }
   };
