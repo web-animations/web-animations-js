@@ -131,20 +131,20 @@ suite('group-constructors', function() {
     var effect1 = new KeyframeEffect(
         target1,
         [
-        {opacity: 0},
-        {opacity: 1}
+          {opacity: 0},
+          {opacity: 1}
         ],
         {duration: 8, fill: 'both'});
     var effect2 = new KeyframeEffect(
         target2,
         [
-        {opacity: 0},
-        {opacity: 1}
+          {opacity: 0},
+          {opacity: 1}
         ],
         {duration: 8, fill: 'both'});
     var group = new GroupEffect([effect1, effect2]);
     var groupAnimation = document.timeline.play(group);
-    tick(0)
+    tick(0);
     assert.equal(getComputedStyle(target1).opacity, 0);
     assert.equal(getComputedStyle(target2).opacity, 0);
     var animation = document.timeline.play(effect1);
@@ -176,15 +176,15 @@ suite('group-constructors', function() {
     var effect1 = new KeyframeEffect(
         target1,
         [
-        {opacity: 0},
-        {opacity: 1}
+          {opacity: 0},
+          {opacity: 1}
         ],
         {duration: 2, fill: 'both'});
     var effect2 = new KeyframeEffect(
         target2,
         [
-        {opacity: 0},
-        {opacity: 1}
+          {opacity: 0},
+          {opacity: 1}
         ],
         {duration: 2, fill: 'both'});
     var sequence = new SequenceEffect([effect1, effect2]);
@@ -217,8 +217,8 @@ suite('group-constructors', function() {
     var effect1 = new KeyframeEffect(
         target1,
         [
-        {opacity: 0},
-        {opacity: 1}
+          {opacity: 0},
+          {opacity: 1}
         ],
         {duration: 2, fill: 'both'});
     var sequence = new SequenceEffect([effect1]);
@@ -245,8 +245,8 @@ suite('group-constructors', function() {
     var effect1 = new KeyframeEffect(
         target1,
         [
-        {opacity: 0},
-        {opacity: 1}
+          {opacity: 0},
+          {opacity: 1}
         ],
         {duration: 2, fill: 'both'});
     var sequence = new SequenceEffect([effect1]);
@@ -282,8 +282,8 @@ suite('group-constructors', function() {
     var effect1 = new KeyframeEffect(
         target1,
         [
-        {opacity: 0},
-        {opacity: 1}
+          {opacity: 0},
+          {opacity: 1}
         ],
         {duration: 2, fill: 'both'});
     var group = new GroupEffect([effect1]);

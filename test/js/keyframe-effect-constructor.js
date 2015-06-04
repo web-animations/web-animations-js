@@ -154,8 +154,8 @@ suite('keyframe-effect-constructor', function() {
     var effect = new KeyframeEffect(
         target,
         [
-        {opacity: 0},
-        {opacity: 1}
+          {opacity: 0},
+          {opacity: 1}
         ],
         10);
     var animation = document.timeline.play(effect);
