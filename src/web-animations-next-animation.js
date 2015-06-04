@@ -13,6 +13,8 @@
 // limitations under the License.
 
 (function(shared, scope, testing) {
+  scope.animationsWithPromises = [];
+
   scope.Animation = function(effect) {
     this.effect = effect;
     if (effect) {
@@ -170,6 +172,8 @@
       return this._animation ? this._animation.playState : 'idle';
     },
     _resetFinishedPromise: function() {
+      if (scope.animationsWithPromises.indexOf(this) == -1)
+        scope.animationsWithPromises.push(this);
       this._finishedPromise = new Promise(
           function(resolve, reject) {
             this._finishedPromiseState = 'pending';
@@ -195,6 +199,9 @@
       return this._finishedPromise;
     },
     _resetReadyPromise: function() {
+      if (scope.animationsWithPromises.indexOf(this) == -1) {
+        scope.animationsWithPromises.push(this);
+      }
       this._readyPromise = new Promise(
           function(resolve, reject) {
             this._readyPromiseState = 'pending';

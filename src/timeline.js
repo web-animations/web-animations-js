@@ -38,9 +38,10 @@
       return this.getAnimations();
     },
     _updateAnimationsPromises: function() {
-      for (var i = 0; i < this._animations.length; i++) {
-        this._animations[i]._updatePromises();
-      }
+      scope.animationsWithPromises = scope.animationsWithPromises.filter(function(animation) {
+        animation._updatePromises();
+        return (animation._finishedPromiseState == 'pending' || animation._readyPromiseState == 'pending');
+      });
     },
     _discardAnimations: function() {
       this._updateAnimationsPromises();
