@@ -123,6 +123,53 @@ suite('group-constructors', function() {
     assert.equal(ex.name, 'HierarchyRequestError', 'Prepending an self throws a HierarchyRequestError');
   });
 
+  test('Playing a child reparents it.', function() {
+    var target1 = document.createElement('div');
+    var target2 = document.createElement('div');
+    document.body.appendChild(target1);
+    document.body.appendChild(target2);
+    var effect1 = new KeyframeEffect(
+        target1,
+        [
+        {opacity: 0},
+        {opacity: 1}
+        ],
+        {duration: 8, fill: 'both'});
+    var effect2 = new KeyframeEffect(
+        target2,
+        [
+        {opacity: 0},
+        {opacity: 1}
+        ],
+        {duration: 8, fill: 'both'});
+    var group = new GroupEffect([effect1, effect2]);
+    var groupAnimation = document.timeline.play(group);
+    tick(0)
+    assert.equal(getComputedStyle(target1).opacity, 0);
+    assert.equal(getComputedStyle(target2).opacity, 0);
+    var animation = document.timeline.play(effect1);
+    assert.equal(group.children.length, 1);
+    assert.equal(group._animation, groupAnimation);
+    assert.equal(effect1._animation, animation);
+    assert.equal(effect2._animation, groupAnimation);
+    assert.equal(groupAnimation.effect, group);
+    assert.equal(animation.effect, effect1);
+    tick(1);
+    assert.equal(getComputedStyle(target1).opacity, 0);
+    assert.equal(getComputedStyle(target2).opacity, 0.125);
+    tick(2);
+    assert.equal(getComputedStyle(target1).opacity, 0.125);
+    assert.equal(getComputedStyle(target2).opacity, 0.25);
+    groupAnimation.cancel();
+    tick(3);
+    assert.equal(getComputedStyle(target1).opacity, 0.25);
+    assert.equal(getComputedStyle(target2).opacity, 1);
+    animation.cancel();
+    tick(4);
+    assert.equal(getComputedStyle(target1).opacity, 1);
+    assert.equal(getComputedStyle(target2).opacity, 1);
+  });
+
   test('Remove KeyframeEffect from SequenceEffect parent', function() {
     var target1 = document.createElement('div');
     var target2 = document.createElement('div');
@@ -259,5 +306,28 @@ suite('group-constructors', function() {
     assert.equal(getComputedStyle(target2).opacity, 1);
     animation.cancel();
     tick(4);
+  });
+
+  test('Calling remove on reparented effect removes it from directly associated animation', function() {
+    var target1 = document.createElement('div');
+    document.body.appendChild(target1);
+    var effect1 = new KeyframeEffect(
+        target1,
+        [
+        {opacity: 0},
+        {opacity: 1}
+        ],
+        {duration: 2, fill: 'both'});
+    var group = new GroupEffect([effect1]);
+    var animation = document.timeline.play(effect1);
+    tick(0);
+    assert.equal(getComputedStyle(target1).opacity, 0);
+    effect1.remove();
+    tick(1);
+    assert.equal(getComputedStyle(target1).opacity, 1);
+    assert.equal(effect1._animation, undefined);
+    assert.notEqual(animation.effect, effect1);
+    animation.cancel();
+    tick(2);
   });
 });
