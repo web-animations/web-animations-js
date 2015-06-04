@@ -39,7 +39,6 @@
         effect._animation.effect = new KeyframeEffect(null, []);
         if (effect._animation._callback) {
           effect._animation._callback._animation = null;
-          effect._animation._callback = null;
         }
         effect._animation._rebuildUnderlyingAnimation();
         disassociate(effect);
