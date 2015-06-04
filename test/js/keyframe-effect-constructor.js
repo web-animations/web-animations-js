@@ -129,7 +129,7 @@ suite('keyframe-effect-constructor', function() {
   test('Remove custom effect from directly associated animation', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
-    var custom = new KeyframeEffect(null, function(x) {target.style.opacity = x;}, 10000);
+    var custom = new KeyframeEffect(null, function(x) {target.style.opacity = x;}, 10);
     var animation = document.timeline.play(custom);
     tick(0);
     assert.equal(getComputedStyle(target).opacity, 0);
@@ -141,10 +141,36 @@ suite('keyframe-effect-constructor', function() {
     assert.notEqual(animation.effect, custom);
     animation.play();
     tick(2);
-    tick(3);
     assert.equal(getComputedStyle(target).opacity, 1);
     assert.equal(custom._animation, undefined);
     animation.cancel();
-    tick(4);
+    tick(3);
+  });
+
+  test('Remove KeyframeEffect from directly associated animation', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+        {opacity: 0},
+        {opacity: 1}
+        ],
+        10);
+    var animation = document.timeline.play(effect);
+    tick(0);
+    assert.equal(getComputedStyle(target).opacity, 0);
+    assert.equal(animation.effect, effect);
+    effect.remove();
+    tick(1);
+    assert.equal(getComputedStyle(target).opacity, 1);
+    assert.equal(effect._animation, undefined);
+    assert.notEqual(animation.effect, effect);
+    animation.play();
+    tick(2);
+    assert.equal(getComputedStyle(target).opacity, 1);
+    assert.equal(effect._animation, undefined);
+    animation.cancel();
+    tick(3);
   });
 });
