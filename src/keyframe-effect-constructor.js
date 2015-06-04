@@ -36,6 +36,8 @@
         disassociate(effect);
       } else if (effect._animation && (effect._animation.effect == effect)) {
         effect._animation.cancel();
+        // TODO: Make animations work with null effects. Then we can change this to
+        // effect._animation.effect = null.
         effect._animation.effect = new KeyframeEffect(null, []);
         if (effect._animation._callback) {
           effect._animation._callback._animation = null;
