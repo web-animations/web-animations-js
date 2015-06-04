@@ -35,11 +35,14 @@
         effect._parent = null;
         disassociate(effect);
       } else if (effect._animation && (effect._animation.effect == effect)) {
-        // FIXME: If we call play on the gutted animation after this, we get uncaught TypeErrors.
         effect._animation.cancel();
-        effect._animation.effect = undefined;
+        effect._animation.effect = new KeyframeEffect(null, []);
         effect._animation._animation = null;
-        effect._animation._callback = null;
+        if (effect._animation._callback) {
+          effect._animation._callback._animation = null;
+          effect._animation._callback = null;
+        }
+        effect._animation._rebuildUnderlyingAnimation();
         disassociate(effect);
       }
     }
