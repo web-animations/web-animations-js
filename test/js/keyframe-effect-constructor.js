@@ -133,6 +133,7 @@ suite('keyframe-effect-constructor', function() {
     var animation = document.timeline.play(custom);
     tick(0);
     assert.equal(getComputedStyle(target).opacity, 0);
+    assert.equal(custom._animation, animation);
     assert.equal(animation.effect, custom);
     custom.remove();
     tick(1);
@@ -160,6 +161,7 @@ suite('keyframe-effect-constructor', function() {
     var animation = document.timeline.play(effect);
     tick(0);
     assert.equal(getComputedStyle(target).opacity, 0);
+    assert.equal(effect._animation, animation);
     assert.equal(animation.effect, effect);
     effect.remove();
     tick(1);
