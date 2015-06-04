@@ -63,18 +63,9 @@
       }
     },
     _reparent: function(newChildren) {
-      var oldParents = [];
+      scope.removeMulti(newChildren);
       for (var i = 0; i < newChildren.length; i++) {
-        if (newChildren[i]._parent) {
-          newChildren[i]._parent.children.splice(newChildren[i]._parent.children.indexOf(newChildren[i]), 1);
-          if (oldParents.indexOf(newChildren[i]._parent) == -1) {
-            oldParents.push(newChildren[i]._parent);
-          }
-        }
         newChildren[i]._parent = this;
-      }
-      for (i = 0; i < oldParents.length; i++) {
-        oldParents[i]._rebuild();
       }
     },
     _putChild: function(args, isAppend) {
@@ -116,6 +107,9 @@
       return (this instanceof GroupEffect) ?
           new GroupEffect(clonedChildren, clonedTiming) :
           new SequenceEffect(clonedChildren, clonedTiming);
+    },
+    remove: function() {
+      scope.removeMulti([this]);
     }
   };
 
@@ -185,7 +179,7 @@
       }
     };
 
-    underlyingAnimation = scope.timeline.play(new scope.KeyframeEffect(null, ticker, group._timing));
+    underlyingAnimation = scope.timeline._play(new scope.KeyframeEffect(null, ticker, group._timing));
     return underlyingAnimation;
   };
 
