@@ -149,10 +149,8 @@ suite('group-constructors', function() {
     assert.equal(getComputedStyle(target2).opacity, 0);
     var animation = document.timeline.play(effect1);
     assert.equal(group.children.length, 1);
-    assert.equal(group._animation, groupAnimation);
     assert.equal(effect1._animation, animation);
     assert.equal(effect2._animation, groupAnimation);
-    assert.equal(groupAnimation.effect, group);
     assert.equal(animation.effect, effect1);
     tick(1);
     assert.equal(getComputedStyle(target1).opacity, 0);
@@ -194,17 +192,15 @@ suite('group-constructors', function() {
     tick(0);
     assert.equal(getComputedStyle(target1).opacity, 0);
     assert.equal(getComputedStyle(target2).opacity, 0);
-    assert.equal(sequence._animation, animation);
-    assert.equal(animation.effect, sequence);
     effect1.remove();
     tick(1);
     assert.equal(getComputedStyle(target1).opacity, 1);
     assert.equal(getComputedStyle(target2).opacity, 0.5);
-    assert.equal(sequence._animation, animation);
-    assert.equal(animation.effect, sequence);
     assert.equal(sequence.children.length, 1);
+    assert.equal(sequence._animation, animation);
     assert.equal(effect1._animation, undefined);
     assert.equal(effect2._animation, animation);
+    assert.equal(animation.effect, sequence);
     animation.cancel();
     tick(2);
     animation.play();
@@ -217,9 +213,7 @@ suite('group-constructors', function() {
 
   test('Remove SequenceEffect from directly associated animation', function() {
     var target1 = document.createElement('div');
-    var target2 = document.createElement('div');
     document.body.appendChild(target1);
-    document.body.appendChild(target2);
     var effect1 = new KeyframeEffect(
         target1,
         [
@@ -227,42 +221,27 @@ suite('group-constructors', function() {
         {opacity: 1}
         ],
         {duration: 2, fill: 'both'});
-    var effect2 = new KeyframeEffect(
-        target2,
-        [
-        {opacity: 0},
-        {opacity: 1}
-        ],
-        {duration: 2, fill: 'both'});
-    var sequence = new SequenceEffect([effect1, effect2]);
+    var sequence = new SequenceEffect([effect1]);
     var animation = document.timeline.play(sequence);
     tick(0);
     assert.equal(getComputedStyle(target1).opacity, 0);
-    assert.equal(getComputedStyle(target2).opacity, 0);
-    assert.equal(sequence._animation, animation);
-    assert.equal(animation.effect, sequence);
     sequence.remove();
     tick(1);
     assert.equal(getComputedStyle(target1).opacity, 1);
-    assert.equal(getComputedStyle(target2).opacity, 1);
-    assert.equal(sequence.children.length, 2);
+    assert.equal(sequence.children.length, 1);
     assert.equal(sequence._animation, undefined);
     assert.equal(effect1._animation, undefined);
-    assert.equal(effect2._animation, undefined);
     assert.notEqual(animation.effect, sequence);
     animation.play();
     tick(2);
     assert.equal(getComputedStyle(target1).opacity, 1);
-    assert.equal(getComputedStyle(target2).opacity, 1);
     animation.cancel();
     tick(3);
   });
 
   test('Remove SequenceEffect from GroupEffect parent', function() {
     var target1 = document.createElement('div');
-    var target2 = document.createElement('div');
     document.body.appendChild(target1);
-    document.body.appendChild(target2);
     var effect1 = new KeyframeEffect(
         target1,
         [
@@ -270,19 +249,11 @@ suite('group-constructors', function() {
         {opacity: 1}
         ],
         {duration: 2, fill: 'both'});
-    var effect2 = new KeyframeEffect(
-        target2,
-        [
-        {opacity: 0},
-        {opacity: 1}
-        ],
-        {duration: 2, fill: 'both'});
-    var sequence = new SequenceEffect([effect1, effect2]);
+    var sequence = new SequenceEffect([effect1]);
     var group = new GroupEffect([sequence]);
     var animation = document.timeline.play(group);
     tick(0);
     assert.equal(getComputedStyle(target1).opacity, 0);
-    assert.equal(getComputedStyle(target2).opacity, 0);
     assert.equal(group.children.length, 1);
     assert.equal(group._animation, animation);
     assert.equal(sequence._animation, animation);
@@ -290,20 +261,17 @@ suite('group-constructors', function() {
     sequence.remove();
     tick(1);
     assert.equal(getComputedStyle(target1).opacity, 1);
-    assert.equal(getComputedStyle(target2).opacity, 1);
-    assert.equal(sequence.children.length, 2);
+    assert.equal(sequence.children.length, 1);
     assert.equal(group.children.length, 0);
     assert.equal(group._animation, animation);
     assert.equal(sequence._animation, undefined);
     assert.equal(effect1._animation, undefined);
-    assert.equal(effect2._animation, undefined);
     assert.equal(animation.effect, group);
     animation.cancel();
     tick(2);
     animation.play();
     tick(3);
     assert.equal(getComputedStyle(target1).opacity, 1);
-    assert.equal(getComputedStyle(target2).opacity, 1);
     animation.cancel();
     tick(4);
   });
