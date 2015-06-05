@@ -300,9 +300,6 @@ suite('group-animation', function() {
     return new SequenceEffect([new KeyframeEffect(document.body, [], 2000), new KeyframeEffect(document.body, [], 1000), new KeyframeEffect(document.body, [], 3000)]);
   }
 
-  // FIXME: Remove _startOffset.
-  // animationState is [startTime, currentTime, _startOffset?, offset?]
-  // innerAnimationStates is a nested array tree of animationStates e.g. [[0, 0], [[1, -1], [2, -2]]]
   function checkTimes(animation, animationState, innerAnimationStates, description) {
     description = description ? (description + ' ') : '';
     _checkTimes(animation, animationState, 0, description + 'top animation');
@@ -453,7 +450,6 @@ suite('group-animation', function() {
     checkTimes(animation, [-1, 1], [[-1, 1, 0], [[-1, 1, 0], [[1, -1, 0], [1, -1, 0]]], [-1, 1, 0]]);
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '1px');
     animation.currentTime = 2;
-    // TODO: When we seek we don't limit. Is this OK?
     checkTimes(animation, [-2, 2], [[-2, 2, 0], [[-2, 2, 0], [[0, 0, 0], [0, 0, 0]]], [-2, 2, 0]]);
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '2px');
     animation.currentTime = 3;
@@ -514,14 +510,14 @@ suite('group-animation', function() {
     tick(102);
     assert.equal(getComputedStyle(this.target).marginLeft, '2px');
     assert.equal(document.timeline.currentTime, 102);
-    checkTimes(animation, [100, 2], [ // FIXME: Implement limiting on group animations
+    checkTimes(animation, [100, 2], [ 
       [100, 1, 0, 0], [[ // 0
         [101, 1, 0, 1], // 1
         [102, 0, 1, 2]]] // 2
     ], 't = 102');
     tick(103);
     assert.equal(getComputedStyle(this.target).marginLeft, '0px');
-    checkTimes(animation, [100, 3], [ // FIXME: Implement limiting on group animations
+    checkTimes(animation, [100, 3], [ 
       [100, 1, 0, 0], [[ // 0
         [101, 1, 0, 1], // 1
         [102, 1, 1, 2]]] // 2
@@ -1065,10 +1061,6 @@ suite('group-animation', function() {
     tick(103);
     assert.equal(getComputedStyle(this.target).marginLeft, '3px');
     tick(104);
-    // FIXME: Group child animation limiting bounds should match the parent animation's limiting bounds.
-    // assert.equal(getComputedStyle(this.target).marginLeft, '4px');
-    // tick(105);
-    // assert.equal(getComputedStyle(this.target).marginLeft, '0px');
   });
 
   test('basic animation operations are working', function() {
@@ -1198,7 +1190,6 @@ suite('group-animation', function() {
     animation.currentTime = 500;
     checkTimes(animation, [null, 500], [[null, 500], [null, 0]], 't = 10');
 
-    // FIXME: Expectation should be [null, 1000], [[null, 500], [null, 500]].
     animation.currentTime = 1000;
     checkTimes(animation, [null, 1000], [[null, 1000], [null, 500]], 't = 10');
   });
