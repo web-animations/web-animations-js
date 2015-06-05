@@ -16,7 +16,6 @@
   scope.Animation = function(effect) {
     this.effect = effect;
     if (effect) {
-      // FIXME: detach existing animation.
       effect._animation = this;
     }
     this._sequenceNumber = shared.sequenceNumber++;
@@ -31,7 +30,6 @@
     this._animation.cancel();
   };
 
-  // TODO: add an effect getter/setter
   scope.Animation.prototype = {
     _rebuildUnderlyingAnimation: function() {
       var oldPlaybackRate;
@@ -169,7 +167,6 @@
       if (this.playState != 'paused' && this.playState != 'idle') {
         this.play();
       }
-      // FIXME: This is should set holdTime and set currentTime on next tick.
       if (oldCurrentTime !== null) {
         this.currentTime = oldCurrentTime;
       }
@@ -209,7 +206,6 @@
     finish: function() {
       this._animation.finish();
       this._register();
-      // TODO: child animations??
     },
     cancel: function() {
       this._animation.cancel();

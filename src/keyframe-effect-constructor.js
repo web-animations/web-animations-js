@@ -36,8 +36,6 @@
         disassociate(effect);
       } else if (effect._animation && (effect._animation.effect == effect)) {
         effect._animation.cancel();
-        // TODO: Make animations work with null effects. Then we can change this to
-        // effect._animation.effect = null.
         effect._animation.effect = new KeyframeEffect(null, []);
         if (effect._animation._callback) {
           effect._animation._callback._animation = null;
@@ -51,25 +49,17 @@
     }
   };
 
-  // FIXME: Make this shareable and rename to SharedKeyframeList.
   function KeyframeList(effectInput) {
     this._frames = shared.normalizeKeyframes(effectInput);
   }
 
-  // FIXME: This constructor is also used for custom effects. This won't be the case once custom
-  // effects are change to callbacks.
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
     this.target = target;
 
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput);
 
-    // TODO: Make modifications to timing update the underlying animation
     this.timing = shared.makeTiming(timingInput);
-    // TODO: Make this a live object - will need to separate normalization of keyframes into a
-    // shared module.
-    // FIXME: This is a bit weird. Custom effects will soon be implemented as
-    // callbacks, and effectInput will no longer be allowed to be a function.
     if (typeof effectInput == 'function')
       this._normalizedKeyframes = effectInput;
     else
@@ -81,8 +71,6 @@
 
   scope.KeyframeEffect.prototype = {
     getFrames: function() {
-      // FIXME: Once custom effects are switched over to callbacks we can
-      // always return this._normalizedKeyframes._frames here.
       if (typeof this._normalizedKeyframes == 'function')
         return this._normalizedKeyframes;
       return this._normalizedKeyframes._frames;
