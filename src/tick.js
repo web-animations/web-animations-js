@@ -154,6 +154,7 @@
 
     timeline._animations.push.apply(timeline._animations, updatingAnimations);
     needsRetick = false;
+
     if (ticking)
       requestAnimationFrame(function() {});
   };

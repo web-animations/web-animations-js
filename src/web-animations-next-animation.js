@@ -31,25 +31,18 @@
     this._rebuildUnderlyingAnimation();
     // Animations are constructed in the idle state.
     this._animation.cancel();
-    this.name = 'OUTER';
+    this._updatePromises();
   };
 
   scope.Animation.prototype = {
     _updatePromises: function() {
       var oldPlayState = this._oldPlayState;
       var newPlayState = this.playState;
-      // if (this._readyPromise || this._finishedPromise)
-      //   console.log(this._sequenceNumber, oldPlayState, newPlayState, this._updatePromises.caller);
       if (this._readyPromise && newPlayState !== oldPlayState) {
-        // console.log('UPDATE READY', oldPlayState, newPlayState, this._updatePromises.caller);
         if (newPlayState == 'idle') {
-          // If the animation play state changes from not-idle to idle before
-          // the current ready promise resolves, reject the current ready
-          // promise.
           if (this._readyPromiseState == 'pending') {
             this._rejectReadyPromise();
           }
-          // Make the current ready promise a new, resolved promise.
           this._resetReadyPromise();
           this._resolveReadyPromise();
         } else if (oldPlayState == 'pending') {
@@ -59,15 +52,10 @@
         }
       }
       if (this._finishedPromise && newPlayState !== oldPlayState) {
-        // console.log('UPDATE FINISHED', oldPlayState, newPlayState, this._updatePromises.caller);
         if (newPlayState == 'idle') {
-          // If the animation play state changes from not-idle to idle before
-          // the current finished promise resolves, reject the current
-          // finished promise.
           if (this._finishedPromiseState == 'pending') {
             this._rejectFinishedPromise();
           }
-          // Make the current finished promise a new, pending promise.
           this._resetFinishedPromise();
         } else if (newPlayState == 'finished') {
           this._resolveFinishedPromise();
@@ -167,8 +155,6 @@
       }
     },
     get playState() {
-      // Can change back to `return this._animation.playState` if we decide
-      // not to check promises in rebildUnderlyingAnimation.
       return this._animation ? this._animation.playState : 'idle';
     },
     _resetFinishedPromise: function() {
@@ -190,6 +176,10 @@
           }.bind(this));
     },
     get finished() {
+      if (!window.Promise) {
+        console.warn('Animation Promises require JavaScript Promise constructor');
+        return;
+      }
       if (!this._finishedPromise) {
         this._resetFinishedPromise();
         if (this.playState == 'finished') {
@@ -211,11 +201,17 @@
             };
             this._rejectReadyPromise = function() {
               this._readyPromiseState = 'rejected';
+              // FIXME: If reject is not specified via `then`, this rethrows. I don't know if that
+              // is what we want.
               reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
             };
           }.bind(this));
     },
     get ready() {
+      if (!window.Promise) {
+        console.warn('Animation Promises require JavaScript Promise constructor');
+        return;
+      }
       if (!this._readyPromise) {
         this._resetReadyPromise();
         if (this.playState !== 'pending') {
@@ -380,4 +376,8 @@
         this._removeChildAnimations();
     },
   };
+
+  if (WEB_ANIMATIONS_TESTING) {
+    testing.webAnimationsNextAnimation = scope.Animation;
+  }
 })(webAnimationsShared, webAnimationsNext, webAnimationsTesting);

@@ -44,7 +44,6 @@
     this._inEffect = this._effect._update(0);
     this._idle = true;
     this._currentTimePending = false;
-    this.name = 'INNER';
   };
 
   scope.Animation.prototype = {
@@ -222,4 +221,5 @@
   if (WEB_ANIMATIONS_TESTING) {
     testing.webAnimations1Animation = scope.Animation;
   }
+
 })(webAnimationsShared, webAnimations1, webAnimationsTesting);
