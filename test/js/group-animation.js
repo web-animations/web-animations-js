@@ -510,14 +510,14 @@ suite('group-animation', function() {
     tick(102);
     assert.equal(getComputedStyle(this.target).marginLeft, '2px');
     assert.equal(document.timeline.currentTime, 102);
-    checkTimes(animation, [100, 2], [ 
+    checkTimes(animation, [100, 2], [
       [100, 1, 0, 0], [[ // 0
         [101, 1, 0, 1], // 1
         [102, 0, 1, 2]]] // 2
     ], 't = 102');
     tick(103);
     assert.equal(getComputedStyle(this.target).marginLeft, '0px');
-    checkTimes(animation, [100, 3], [ 
+    checkTimes(animation, [100, 3], [
       [100, 1, 0, 0], [[ // 0
         [101, 1, 0, 1], // 1
         [102, 1, 1, 2]]] // 2
