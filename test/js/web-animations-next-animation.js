@@ -19,6 +19,7 @@ suite('web-animations-next-animation-tests', function() {
     assert.equal(animation._readyPromiseState, 'resolved');
     assert.equal(animation._finishedPromiseState, 'resolved');
     animation.cancel();
+    tick(12);
   });
 
   test('New animation has pending ready promise after playing', function() {
@@ -31,6 +32,7 @@ suite('web-animations-next-animation-tests', function() {
     assert.equal(animation._finishedPromiseState, 'pending');
     animation.finish();
     animation.cancel();
+    tick(1);
   });
 
   test('Playing animation has resolved ready promise after first tick', function() {
@@ -44,6 +46,7 @@ suite('web-animations-next-animation-tests', function() {
     assert.equal(animation._finishedPromiseState, 'pending');
     animation.finish();
     animation.cancel();
+    tick(2);
   });
 
   test('Finishing an animation resolves the finished and ready promises', function() {
@@ -56,5 +59,6 @@ suite('web-animations-next-animation-tests', function() {
     assert.equal(animation._readyPromiseState, 'resolved');
     assert.equal(animation._finishedPromiseState, 'resolved');
     animation.cancel();
+    tick(1);
   });
 });

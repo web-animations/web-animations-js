@@ -169,8 +169,8 @@
             };
             this._rejectFinishedPromise = function() {
               this._finishedPromiseState = 'rejected';
-              // FIXME: If reject is not specified via `then`, this rethrows. I don't know if that
-              // is what we want.
+              // FIXME: If reject is not specified via `then`, this throws the error inside the
+              // promise and the promise doesn't catch it. I don't think that is what we want.
               reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
             };
           }.bind(this));
@@ -201,8 +201,8 @@
             };
             this._rejectReadyPromise = function() {
               this._readyPromiseState = 'rejected';
-              // FIXME: If reject is not specified via `then`, this rethrows. I don't know if that
-              // is what we want.
+              // FIXME: If reject is not specified via `then`, this throws the error inside the
+              // promise and the promise doesn't catch it. I don't think that is what we want.
               reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
             };
           }.bind(this));
