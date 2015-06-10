@@ -40,9 +40,7 @@
       var newPlayState = this.playState;
       if (this._readyPromise && newPlayState !== oldPlayState) {
         if (newPlayState == 'idle') {
-          if (this._readyPromiseState == 'pending') {
-            this._rejectReadyPromise();
-          }
+          this._rejectReadyPromise();
           this._resetReadyPromise();
           this._resolveReadyPromise();
         } else if (oldPlayState == 'pending') {
@@ -53,9 +51,7 @@
       }
       if (this._finishedPromise && newPlayState !== oldPlayState) {
         if (newPlayState == 'idle') {
-          if (this._finishedPromiseState == 'pending') {
-            this._rejectFinishedPromise();
-          }
+          this._rejectFinishedPromise();
           this._resetFinishedPromise();
         } else if (newPlayState == 'finished') {
           this._resolveFinishedPromise();
@@ -63,9 +59,7 @@
           this._resetFinishedPromise();
         }
       }
-      if (this._oldPlayState !== this.playState) {
-        this._oldPlayState = this.playState;
-      }
+      this._oldPlayState = this.playState;
     },
     _rebuildUnderlyingAnimation: function() {
       this._updatePromises();
@@ -158,8 +152,9 @@
       return this._animation ? this._animation.playState : 'idle';
     },
     _resetFinishedPromise: function() {
-      if (scope.animationsWithPromises.indexOf(this) == -1)
+      if (scope.animationsWithPromises.indexOf(this) == -1) {
         scope.animationsWithPromises.push(this);
+      }
       this._finishedPromise = new Promise(
           function(resolve, reject) {
             this._finishedPromiseState = 'pending';

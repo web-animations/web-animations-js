@@ -61,4 +61,20 @@ suite('web-animations-next-animation-tests', function() {
     animation.cancel();
     tick(1);
   });
+
+  test('Playing a finished animation resets promises', function() {
+    tick(0);
+    var effect = new KeyframeEffect(null, [], 10);
+    var animation = document.timeline.play(effect);
+    animation.ready;
+    animation.finished;
+    animation.finish();
+    assert.equal(animation._readyPromiseState, 'resolved');
+    assert.equal(animation._finishedPromiseState, 'resolved');
+    animation.play();
+    assert.equal(animation._readyPromiseState, 'pending');
+    assert.equal(animation._finishedPromiseState, 'pending');
+    animation.cancel();
+    tick(1);
+  });
 });
