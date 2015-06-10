@@ -164,8 +164,6 @@
             };
             this._rejectFinishedPromise = function() {
               this._finishedPromiseState = 'rejected';
-              // FIXME: If reject is not specified via `then`, this throws the error inside the
-              // promise and the promise doesn't catch it. I don't think that is what we want.
               reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
             };
           }.bind(this));
@@ -173,7 +171,7 @@
     get finished() {
       if (!window.Promise) {
         console.warn('Animation Promises require JavaScript Promise constructor');
-        return;
+        return null;
       }
       if (!this._finishedPromise) {
         this._resetFinishedPromise();
@@ -196,8 +194,6 @@
             };
             this._rejectReadyPromise = function() {
               this._readyPromiseState = 'rejected';
-              // FIXME: If reject is not specified via `then`, this throws the error inside the
-              // promise and the promise doesn't catch it. I don't think that is what we want.
               reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
             };
           }.bind(this));
@@ -205,7 +201,7 @@
     get ready() {
       if (!window.Promise) {
         console.warn('Animation Promises require JavaScript Promise constructor');
-        return;
+        return null;
       }
       if (!this._readyPromise) {
         this._resetReadyPromise();
