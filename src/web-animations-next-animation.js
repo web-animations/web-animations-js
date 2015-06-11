@@ -41,22 +41,21 @@
       if (this._readyPromise && newPlayState !== oldPlayState) {
         if (newPlayState == 'idle') {
           this._rejectReadyPromise();
-          this._resetReadyPromise();
-          this._resolveReadyPromise();
+          this._readyPromise = undefined;
         } else if (oldPlayState == 'pending') {
           this._resolveReadyPromise();
         } else if (newPlayState == 'pending') {
-          this._resetReadyPromise();
+          this._readyPromise = undefined;
         }
       }
       if (this._finishedPromise && newPlayState !== oldPlayState) {
         if (newPlayState == 'idle') {
           this._rejectFinishedPromise();
-          this._resetFinishedPromise();
+          this._finishedPromise = undefined;
         } else if (newPlayState == 'finished') {
           this._resolveFinishedPromise();
         } else if (oldPlayState == 'finished') {
-          this._resetFinishedPromise();
+          this._finishedPromise = undefined;
         }
       }
       this._oldPlayState = this.playState;
@@ -157,13 +156,10 @@
       }
       this._finishedPromise = new Promise(
           function(resolve, reject) {
-            this._finishedPromiseState = 'pending';
             this._resolveFinishedPromise = function() {
-              this._finishedPromiseState = 'resolved';
               resolve(this);
             };
             this._rejectFinishedPromise = function() {
-              this._finishedPromiseState = 'rejected';
               reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
             };
           }.bind(this));
@@ -187,13 +183,10 @@
       }
       this._readyPromise = new Promise(
           function(resolve, reject) {
-            this._readyPromiseState = 'pending';
             this._resolveReadyPromise = function() {
-              this._readyPromiseState = 'resolved';
               resolve(this);
             };
             this._rejectReadyPromise = function() {
-              this._readyPromiseState = 'rejected';
               reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
             };
           }.bind(this));

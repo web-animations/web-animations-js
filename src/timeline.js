@@ -40,7 +40,7 @@
     _updateAnimationsPromises: function() {
       scope.animationsWithPromises = scope.animationsWithPromises.filter(function(animation) {
         animation._updatePromises();
-        return (animation._finishedPromiseState == 'pending' || animation._readyPromiseState == 'pending');
+        return (animation._readyPromise || animation._finishedPromise);
       });
     },
     _discardAnimations: function() {
