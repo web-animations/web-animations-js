@@ -1,9 +1,10 @@
+'use strict';
 suite('animation-promises-tests', function() {
   test('Newly constructed animation has a resolved ready promise', function(done) {
-    readyResolved = false;
-    readyRejected = false;
-    finishedResolved = false;
-    finishedRejected = false;
+    var readyResolved = false;
+    var readyRejected = false;
+    var finishedResolved = false;
+    var finishedRejected = false;
     function onReadyResolution() { readyResolved = true; }
     function onReadyRejection() { readyRejected = true; }
     function onFinishedResolution() { finishedResolved = true; }
@@ -57,10 +58,10 @@ suite('animation-promises-tests', function() {
   });
 
   test('New animation has pending promises after playing', function(done) {
-    readyResolved = false;
-    readyRejected = false;
-    finishedResolved = false;
-    finishedRejected = false;
+    var readyResolved = false;
+    var readyRejected = false;
+    var finishedResolved = false;
+    var finishedRejected = false;
     function onReadyResolution() { readyResolved = true; }
     function onReadyRejection() { readyRejected = true; }
     function onFinishedResolution() { finishedResolved = true; }
@@ -92,10 +93,10 @@ suite('animation-promises-tests', function() {
   });
 
   test('First tick after play resolves ready promise', function(done) {
-    readyResolved = false;
-    readyRejected = false;
-    finishedResolved = false;
-    finishedRejected = false;
+    var readyResolved = false;
+    var readyRejected = false;
+    var finishedResolved = false;
+    var finishedRejected = false;
     function onReadyResolution() { readyResolved = true; }
     function onReadyRejection() { readyRejected = true; }
     function onFinishedResolution() { finishedResolved = true; }
@@ -128,10 +129,10 @@ suite('animation-promises-tests', function() {
   });
 
   test('Finished animation has resolved finished promise', function(done) {
-    readyResolved = false;
-    readyRejected = false;
-    finishedResolved = false;
-    finishedRejected = false;
+    var readyResolved = false;
+    var readyRejected = false;
+    var finishedResolved = false;
+    var finishedRejected = false;
     function onReadyResolution() { readyResolved = true; }
     function onReadyRejection() { readyRejected = true; }
     function onFinishedResolution() { finishedResolved = true; }
@@ -162,10 +163,10 @@ suite('animation-promises-tests', function() {
   });
 
   test('Animation.cancel rejects ready and pending promises and resolves new ready promise', function(done) {
-    readyResolved = false;
-    readyRejected = false;
-    finishedResolved = false;
-    finishedRejected = false;
+    var readyResolved = false;
+    var readyRejected = false;
+    var finishedResolved = false;
+    var finishedRejected = false;
     function onReadyResolution() { readyResolved = true; }
     function onReadyRejection() { readyRejected = true; }
     function onFinishedResolution() { finishedResolved = true; }
@@ -216,10 +217,10 @@ suite('animation-promises-tests', function() {
   });
 
   test('Animation.finish resolves the finished and ready promises', function(done) {
-    readyResolved = false;
-    readyRejected = false;
-    finishedResolved = false;
-    finishedRejected = false;
+    var readyResolved = false;
+    var readyRejected = false;
+    var finishedResolved = false;
+    var finishedRejected = false;
     function onReadyResolution() { readyResolved = true; }
     function onReadyRejection() { readyRejected = true; }
     function onFinishedResolution() { finishedResolved = true; }
@@ -251,10 +252,10 @@ suite('animation-promises-tests', function() {
   });
 
   test('Playing a finished animation resets promises', function(done) {
-    readyResolved = false;
-    readyRejected = false;
-    finishedResolved = false;
-    finishedRejected = false;
+    var readyResolved = false;
+    var readyRejected = false;
+    var finishedResolved = false;
+    var finishedRejected = false;
     function onReadyResolution() { readyResolved = true; }
     function onReadyRejection() { readyRejected = true; }
     function onFinishedResolution() { finishedResolved = true; }
