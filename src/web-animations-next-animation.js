@@ -59,6 +59,7 @@
         }
       }
       this._oldPlayState = this.playState;
+      return (this._readyPromise || this._finishedPromise);
     },
     _rebuildUnderlyingAnimation: function() {
       this._updatePromises();
@@ -150,46 +151,29 @@
     get playState() {
       return this._animation ? this._animation.playState : 'idle';
     },
-    _resetFinishedPromise: function() {
-      if (scope.animationsWithPromises.indexOf(this) == -1) {
-        scope.animationsWithPromises.push(this);
-      }
-      this._finishedPromise = new Promise(
-          function(resolve, reject) {
-            this._resolveFinishedPromise = function() {
-              resolve(this);
-            };
-            this._rejectFinishedPromise = function() {
-              reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
-            };
-          }.bind(this));
-    },
     get finished() {
       if (!window.Promise) {
         console.warn('Animation Promises require JavaScript Promise constructor');
         return null;
       }
       if (!this._finishedPromise) {
-        this._resetFinishedPromise();
+        if (scope.animationsWithPromises.indexOf(this) == -1) {
+          scope.animationsWithPromises.push(this);
+        }
+        this._finishedPromise = new Promise(
+            function(resolve, reject) {
+              this._resolveFinishedPromise = function() {
+                resolve(this);
+              };
+              this._rejectFinishedPromise = function() {
+                reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
+              };
+            }.bind(this));
         if (this.playState == 'finished') {
           this._resolveFinishedPromise();
         }
       }
       return this._finishedPromise;
-    },
-    _resetReadyPromise: function() {
-      if (scope.animationsWithPromises.indexOf(this) == -1) {
-        scope.animationsWithPromises.push(this);
-      }
-      this._readyPromise = new Promise(
-          function(resolve, reject) {
-            this._resolveReadyPromise = function() {
-              resolve(this);
-            };
-            this._rejectReadyPromise = function() {
-              reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
-            };
-          }.bind(this));
     },
     get ready() {
       if (!window.Promise) {
@@ -197,7 +181,18 @@
         return null;
       }
       if (!this._readyPromise) {
-        this._resetReadyPromise();
+        if (scope.animationsWithPromises.indexOf(this) == -1) {
+          scope.animationsWithPromises.push(this);
+        }
+        this._readyPromise = new Promise(
+            function(resolve, reject) {
+              this._resolveReadyPromise = function() {
+                resolve(this);
+              };
+              this._rejectReadyPromise = function() {
+                reject({type: DOMException.ABORT_ERR, name: 'AbortError'});
+              };
+            }.bind(this));
         if (this.playState !== 'pending') {
           this._resolveReadyPromise();
         }
