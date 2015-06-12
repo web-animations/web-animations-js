@@ -99,7 +99,8 @@
       'test/js/group-animation.js',
       'test/js/group-constructors.js',
       'test/js/keyframe-effect-constructor.js',
-      'test/js/timeline.js');
+      'test/js/timeline.js',
+      'test/js/web-animations-next-animation.js');
 
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {

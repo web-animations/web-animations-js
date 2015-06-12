@@ -188,7 +188,7 @@ module.exports = function(grunt) {
     var done = this.async();
     var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config.js'), {});
     var config = targetConfig[this.target];
-    karmaConfig.files = ['test/runner.js'].concat(config.src, config.test);
+    karmaConfig.files = ['test/karma-setup.js'].concat(config.src, config.test);
     var karmaServer = require('karma').server;
     karmaServer.start(karmaConfig, function(exitCode) {
       done(exitCode === 0);
@@ -199,7 +199,7 @@ module.exports = function(grunt) {
     var done = this.async();
     var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config-ci.js'), {});
     var config = targetConfig[this.target];
-    karmaConfig.files = ['test/runner.js'].concat(config.src, config.test);
+    karmaConfig.files = ['test/karma-setup.js'].concat(config.src, config.test);
     karmaConfig.sauceLabs.testName = 'web-animation-next ' + this.target + ' Unit tests';
     var karmaServer = require('karma').server;
     karmaServer.start(karmaConfig, function(exitCode) {
