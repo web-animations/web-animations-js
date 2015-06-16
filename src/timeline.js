@@ -14,6 +14,14 @@
 
 
 (function(shared, scope, testing) {
+  var originalRequestAnimationFrame = window.requestAnimationFrame;
+  window.requestAnimationFrame = function(f) {
+    return originalRequestAnimationFrame(function(x) {
+      window.document.timeline._updateAnimationsPromises();
+      f(x);
+      window.document.timeline._updateAnimationsPromises();
+    });
+  };
 
   scope.AnimationTimeline = function() {
     this._animations = [];
@@ -21,9 +29,6 @@
   };
 
   scope.AnimationTimeline.prototype = {
-    // FIXME: This needs to return the wrapped animations in Web Animations Next
-    // TODO: Does this need to be sorted?
-    // TODO: Do we need to consider needsRetick?
     getAnimations: function() {
       this._discardAnimations();
       return this._animations.slice();
@@ -32,12 +37,18 @@
       shared.deprecated('AnimationTimeline.getAnimationPlayers', '2015-03-23', 'Use AnimationTimeline.getAnimations instead.');
       return this.getAnimations();
     },
+    _updateAnimationsPromises: function() {
+      scope.animationsWithPromises = scope.animationsWithPromises.filter(function(animation) {
+        return animation._updatePromises();
+      });
+    },
     _discardAnimations: function() {
+      this._updateAnimationsPromises();
       this._animations = this._animations.filter(function(animation) {
         return animation.playState != 'finished' && animation.playState != 'idle';
       });
     },
-    play: function(effect) {
+    _play: function(effect) {
       var animation = new scope.Animation(effect);
       this._animations.push(animation);
       scope.restartWebAnimationsNextTick();
@@ -46,9 +57,17 @@
       // Timeline.play calls new scope.Animation(effect) which (indirectly) calls Timeline.play on
       // effect's children, and Animation.play is also recursive. We only need to call play on each
       // animation in the tree once.
+      animation._updatePromises();
       animation._animation.play();
+      animation._updatePromises();
       return animation;
     },
+    play: function(effect) {
+      if (effect) {
+        effect.remove();
+      }
+      return this._play(effect);
+    }
   };
 
   var ticking = false;

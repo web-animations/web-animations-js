@@ -91,7 +91,7 @@ interpolation/decomposition.
 |Simple GroupEffects & SequenceEffects           | 🚫             | ✔                  | ✔                       |
 |Custom Effects          | 🚫             | ✔                  | ✔                       |
 |Timing input (easings, duration, fillMode, etc.) for groups</div>| 🚫 | 🚫\* | 🚫         |
-|Additive animation      | 🚫             | 🚫\*                | 🚫                       |
+|Additive animation      | 🚫\*           | 🚫\*                | 🚫                       |
 |Motion path             | 🚫\*           | 🚫\*                | 🚫                       |
 |Modifiable keyframe effect timing| 🚫          | 🚫\*                | 🚫\*                     |
 |Modifiable group timing | 🚫             | 🚫\*                | 🚫\*                     |

@@ -14,26 +14,52 @@
 
 (function(shared, scope, testing) {
 
-  // FIXME: Make this shareable and rename to SharedKeyframeList.
+  var disassociate = function(effect) {
+    effect._animation = undefined;
+    if (effect instanceof window.SequenceEffect || effect instanceof window.GroupEffect) {
+      for (var i = 0; i < effect.children.length; i++) {
+        disassociate(effect.children[i]);
+      }
+    }
+  };
+
+  scope.removeMulti = function(effects) {
+    var oldParents = [];
+    for (var i = 0; i < effects.length; i++) {
+      var effect = effects[i];
+      if (effect._parent) {
+        if (oldParents.indexOf(effect._parent) == -1) {
+          oldParents.push(effect._parent);
+        }
+        effect._parent.children.splice(effect._parent.children.indexOf(effect), 1);
+        effect._parent = null;
+        disassociate(effect);
+      } else if (effect._animation && (effect._animation.effect == effect)) {
+        effect._animation.cancel();
+        effect._animation.effect = new KeyframeEffect(null, []);
+        if (effect._animation._callback) {
+          effect._animation._callback._animation = null;
+        }
+        effect._animation._rebuildUnderlyingAnimation();
+        disassociate(effect);
+      }
+    }
+    for (i = 0; i < oldParents.length; i++) {
+      oldParents[i]._rebuild();
+    }
+  };
+
   function KeyframeList(effectInput) {
     this._frames = shared.normalizeKeyframes(effectInput);
   }
 
-  // FIXME: This constructor is also used for custom effects. This won't be the case once custom
-  // effects are change to callbacks.
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
     this.target = target;
 
-    // TODO: Store a clone, not the same instance.
-    this._timingInput = timingInput;
+    this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput);
 
-    // TODO: Make modifications to timing update the underlying animation
     this.timing = shared.makeTiming(timingInput);
-    // TODO: Make this a live object - will need to separate normalization of keyframes into a
-    // shared module.
-    // FIXME: This is a bit weird. Custom effects will soon be implemented as
-    // callbacks, and effectInput will no longer be allowed to be a function.
     if (typeof effectInput == 'function')
       this._normalizedKeyframes = effectInput;
     else
@@ -45,8 +71,6 @@
 
   scope.KeyframeEffect.prototype = {
     getFrames: function() {
-      // FIXME: Once custom effects are switched over to callbacks we can
-      // always return this._normalizedKeyframes._frames here.
       if (typeof this._normalizedKeyframes == 'function')
         return this._normalizedKeyframes;
       return this._normalizedKeyframes._frames;
@@ -54,22 +78,41 @@
     get effect() {
       shared.deprecated('KeyframeEffect.effect', '2015-03-23', 'Use KeyframeEffect.getFrames() instead.');
       return this._normalizedKeyframes;
+    },
+    clone: function() {
+      if (typeof this.getFrames() == 'function') {
+        throw new Error('Cloning custom effects is not supported.');
+      }
+      var clone = new KeyframeEffect(this.target, [], shared.cloneTimingInput(this._timingInput));
+      clone._normalizedKeyframes = this._normalizedKeyframes;
+      clone._keyframes = this._keyframes;
+      return clone;
+    },
+    remove: function() {
+      scope.removeMulti([this]);
     }
   };
 
   var originalElementAnimate = Element.prototype.animate;
   Element.prototype.animate = function(effectInput, timing) {
-    return scope.timeline.play(new scope.KeyframeEffect(this, effectInput, timing));
+    return scope.timeline._play(new scope.KeyframeEffect(this, effectInput, timing));
   };
 
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
   scope.newUnderlyingAnimationForKeyframeEffect = function(keyframeEffect) {
-    var target = keyframeEffect.target || nullTarget;
-    var keyframes = keyframeEffect._keyframes;
-    if (typeof keyframes == 'function') {
-      keyframes = [];
+    if (keyframeEffect) {
+      var target = keyframeEffect.target || nullTarget;
+      var keyframes = keyframeEffect._keyframes;
+      if (typeof keyframes == 'function') {
+        keyframes = [];
+      }
+      var timing = keyframeEffect._timingInput;
+    } else {
+      var target = nullTarget;
+      var keyframes = [];
+      var timing = 0;
     }
-    return originalElementAnimate.apply(target, [keyframes, keyframeEffect._timingInput]);
+    return originalElementAnimate.apply(target, [keyframes, timing]);
   };
 
   scope.bindAnimationForKeyframeEffect = function(animation) {
@@ -90,7 +133,8 @@
   function updatePendingGroups() {
     var updated = false;
     while (pendingGroups.length) {
-      pendingGroups.shift()._updateChildren();
+      var group = pendingGroups.shift();
+      group._updateChildren();
       updated = true;
     }
     return updated;
@@ -100,9 +144,11 @@
     configurable: true,
     enumerable: true,
     value: function() {
+      window.document.timeline._updateAnimationsPromises();
       var result = originalGetComputedStyle.apply(this, arguments);
       if (updatePendingGroups())
         result = originalGetComputedStyle.apply(this, arguments);
+      window.document.timeline._updateAnimationsPromises();
       return result;
     },
   });

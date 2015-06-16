@@ -9,7 +9,7 @@ suite('tick-tests', function() {
     assert.equal(webAnimations1.timeline._animations.length, 1);
     assert.equal(isTicking(), true);
     tick(1100);
-    assert.equal(animation.finished, true);
+    assert.equal(animation.playState, 'finished');
     assert.equal(webAnimations1.timeline._animations.length, 1);
     assert.equal(isTicking(), false);
   });

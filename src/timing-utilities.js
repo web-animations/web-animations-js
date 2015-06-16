@@ -17,6 +17,17 @@
   var fills = 'backwards|forwards|both|none'.split('|');
   var directions = 'reverse|alternate|alternate-reverse'.split('|');
 
+  function cloneTimingInput(timingInput) {
+    if (typeof timingInput == 'number') {
+      return timingInput;
+    }
+    var clone = {};
+    for (var m in timingInput) {
+      clone[m] = timingInput[m];
+    }
+    return clone;
+  }
+
   function makeTiming(timingInput, forGroup) {
     var timing = {
       delay: 0,
@@ -66,6 +77,9 @@
       return linear;
     }
     return function(x) {
+      if (x == 0 || x == 1) {
+        return x;
+      }
       var start = 0, end = 1;
       while (1) {
         var mid = (start + end) / 2;
@@ -216,6 +230,7 @@
     return calculateTransformedTime(currentIteration, timing.duration, iterationTime, timing) / timing.duration;
   }
 
+  shared.cloneTimingInput = cloneTimingInput;
   shared.makeTiming = makeTiming;
   shared.normalizeTimingInput = normalizeTimingInput;
   shared.calculateActiveDuration = calculateActiveDuration;

@@ -100,7 +100,7 @@ suite('animation', function() {
     var a = document.body.animate([], 1000);
     tick(100);
     tick(1200);
-    assert.equal(a.finished, true);
+    assert.equal(a.playState, 'finished');
     assert.equal(a.startTime, 100);
     assert.equal(a.currentTime, 1000);
     tick(1500);
@@ -118,7 +118,7 @@ suite('animation', function() {
     var a = document.body.animate([], 1000);
     tick(100);
     tick(1200);
-    assert.equal(a.finished, true);
+    assert.equal(a.playState, 'finished');
     assert.equal(a.startTime, 100);
     assert.equal(a.currentTime, 1000);
     tick(1500);
@@ -170,14 +170,14 @@ suite('animation', function() {
     tick(2600);
     assert.equal(a.currentTime, 2000);
     assert.equal(a.startTime, 500);
-    assert.equal(a.finished, true);
+    assert.equal(a.playState, 'finished');
     assert.equal(a.playbackRate, 1);
     setTicking(true);
     a.play();
     tick(2700);
     assert.equal(a.startTime, 2700);
     assert.equal(a.currentTime, 0);
-    assert.equal(a.finished, false);
+    assert.notEqual(a.playState, 'finished');
     assert.equal(a.playbackRate, 1);
   });
   test('play after limit works as expected (reversed)', function() {
@@ -190,14 +190,14 @@ suite('animation', function() {
     tick(900);
     assert.equal(a.startTime, 801);
     assert.equal(a.currentTime, 0);
-    assert.equal(a.finished, true);
+    assert.equal(a.playState, 'finished');
     assert.equal(a.playbackRate, -1);
     setTicking(true);
     a.play();
     tick(1000);
     assert.equal(a.startTime, 4000);
     assert.equal(a.currentTime, 3000);
-    assert.equal(a.finished, false);
+    assert.notEqual(a.playState, 'finished');
     assert.equal(a.playbackRate, -1);
   });
   test('seeking works as expected', function() {
@@ -224,10 +224,10 @@ suite('animation', function() {
     a.pause();
     assert.equal(a.currentTime, null);
     assert.equal(a.startTime, null);
-    assert.equal(a.paused, true);
+    assert.equal(a._paused, true);
     a.currentTime = 500;
     assert.equal(a.startTime, null);
-    assert.equal(a.paused, true);
+    assert.equal(a._paused, true);
   });
   test('setting start time while paused is ignored', function() {
     tick(900);
@@ -341,6 +341,16 @@ suite('animation', function() {
     tick(120);
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     assert.deepEqual(webAnimations1.timeline._animations, []);
+    document.documentElement.removeChild(target);
+  });
+  test('cancelling a newly created animation clears all effects', function() {
+    tick(0);
+    var target = document.createElement('div');
+    document.documentElement.appendChild(target);
+    var animation = target.animate([{marginLeft: '50px'}, {marginLeft: '50px'}], 1000);
+    assert.equal(getComputedStyle(target).marginLeft, '50px');
+    animation.cancel();
+    assert.equal(getComputedStyle(target).marginLeft, '0px');
     document.documentElement.removeChild(target);
   });
   test('startTime is set on first tick if timeline hasn\'t started', function() {

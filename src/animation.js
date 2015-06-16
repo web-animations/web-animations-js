@@ -12,9 +12,9 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
-  var sequenceNumber = 0;
+  shared.sequenceNumber = 0;
 
   var AnimationEvent = function(target, currentTime, timelineTime) {
     this.target = target;
@@ -31,10 +31,10 @@
   };
 
   scope.Animation = function(effect) {
-    this._sequenceNumber = sequenceNumber++;
+    this._sequenceNumber = shared.sequenceNumber++;
     this._currentTime = 0;
     this._startTime = null;
-    this.paused = false;
+    this._paused = false;
     this._playbackRate = 1;
     this._inTimeline = true;
     this._finishedFlag = false;
@@ -64,7 +64,7 @@
     _tickCurrentTime: function(newTime, ignoreLimit) {
       if (newTime != this._currentTime) {
         this._currentTime = newTime;
-        if (this.finished && !ignoreLimit)
+        if (this._isFinished && !ignoreLimit)
           this._currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
         this._ensureAlive();
       }
@@ -79,7 +79,7 @@
       if (isNaN(newTime))
         return;
       scope.restart();
-      if (!this.paused && this._startTime != null) {
+      if (!this._paused && this._startTime != null) {
         this._startTime = this._timeline.currentTime - newTime / this._playbackRate;
       }
       this._currentTimePending = false;
@@ -95,7 +95,7 @@
       newTime = +newTime;
       if (isNaN(newTime))
         return;
-      if (this.paused || this._idle)
+      if (this._paused || this._idle)
         return;
       this._startTime = newTime;
       this._tickCurrentTime((this._timeline.currentTime - this._startTime) * this.playbackRate);
@@ -118,7 +118,7 @@
         this.currentTime = oldCurrentTime;
       }
     },
-    get finished() {
+    get _isFinished() {
       return !this._idle && (this._playbackRate > 0 && this._currentTime >= this._totalDuration ||
           this._playbackRate < 0 && this._currentTime <= 0);
     },
@@ -126,17 +126,17 @@
     get playState() {
       if (this._idle)
         return 'idle';
-      if ((this._startTime == null && !this.paused && this.playbackRate != 0) || this._currentTimePending)
+      if ((this._startTime == null && !this._paused && this.playbackRate != 0) || this._currentTimePending)
         return 'pending';
-      if (this.paused)
+      if (this._paused)
         return 'paused';
-      if (this.finished)
+      if (this._isFinished)
         return 'finished';
       return 'running';
     },
     play: function() {
-      this.paused = false;
-      if (this.finished || this._idle) {
+      this._paused = false;
+      if (this._isFinished || this._idle) {
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
         this._startTime = null;
         scope.invalidateEffects();
@@ -147,11 +147,11 @@
       this._ensureAlive();
     },
     pause: function() {
-      if (!this.finished && !this.paused && !this._idle) {
+      if (!this._isFinished && !this._paused && !this._idle) {
         this._currentTimePending = true;
       }
       this._startTime = null;
-      this.paused = true;
+      this._paused = true;
     },
     finish: function() {
       if (this._idle)
@@ -161,10 +161,20 @@
       this._currentTimePending = false;
     },
     cancel: function() {
+      if (!this._inEffect)
+        return;
       this._inEffect = false;
       this._idle = true;
       this.currentTime = 0;
       this._startTime = null;
+      this._effect._update(null);
+      // effects are invalid after cancellation as the animation state
+      // needs to un-apply.
+      scope.invalidateEffects();
+      // in the absence of effect revalidation via getComputedStyle, we
+      // need a single tick to remove the effect of the cancelled
+      // animation.
+      scope.restart();
     },
     reverse: function() {
       this.playbackRate *= -1;
@@ -182,7 +192,7 @@
         this._finishHandlers.splice(index, 1);
     },
     _fireEvents: function(baseTime) {
-      var finished = this.finished;
+      var finished = this._isFinished;
       if ((finished || this._idle) && !this._finishedFlag) {
         var event = new AnimationEvent(this, this._currentTime, baseTime);
         var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
@@ -195,10 +205,10 @@
       this._finishedFlag = finished;
     },
     _tick: function(timelineTime) {
-      if (!this._idle && !this.paused) {
+      if (!this._idle && !this._paused) {
         if (this._startTime == null)
           this.startTime = timelineTime - this._currentTime / this.playbackRate;
-        else if (!this.finished)
+        else if (!this._isFinished)
           this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
       }
 
@@ -212,4 +222,4 @@
     testing.webAnimations1Animation = scope.Animation;
   }
 
-})(webAnimations1, webAnimationsTesting);
+})(webAnimationsShared, webAnimations1, webAnimationsTesting);

@@ -1,3 +1,13 @@
+### 2.1.0 - *June 15 2015*
+  * Fix bug affecting GroupEffects with infinite iteration children
+  * Add GroupEffect.firstChild and GroupEffect.lastChild
+  * Add initial values for most CSS properties
+  * Allow `timeline.play()` to be called with no arguments
+  * Add AnimationEffect.clone
+  * Add GroupEffect.append and GroupEffect.prepend
+  * Add AnimationEffect.remove
+  * Add Animation.ready and Animation.finished promises
+
 ### 2.0.0 - *April 5 2015*
 
   * Improve behavior of group Animation playback rate.

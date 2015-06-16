@@ -19,12 +19,16 @@
   }
 
   function constructor(children, timingInput) {
+    this._parent = null;
     this.children = children || [];
+    this._reparent(this.children);
+    this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
     this.timing = shared.makeTiming(timingInput, true);
 
-    if (this._timing.duration === 'auto')
+    if (this._timing.duration === 'auto') {
       this._timing.duration = this.activeDuration;
+    }
   }
 
   window.SequenceEffect = function() {
@@ -35,39 +39,124 @@
     constructor.apply(this, arguments);
   };
 
-  window.SequenceEffect.prototype = {
-    get activeDuration() {
-      var total = 0;
-      this.children.forEach(function(child) {
-        total += groupChildDuration(child);
-      });
-      return Math.max(total, 0);
+  constructor.prototype = {
+    _isAncestor: function(effect) {
+      var a = this;
+      while (a !== null) {
+        if (a == effect)
+          return true;
+        a = a._parent;
+      }
+      return false;
+    },
+    _rebuild: function() {
+      // Re-calculate durations for ancestors with specified duration 'auto'.
+      var node = this;
+      while (node) {
+        if (node.timing.duration === 'auto') {
+          node._timing.duration = node.activeDuration;
+        }
+        node = node._parent;
+      }
+      if (this._animation) {
+        this._animation._rebuildUnderlyingAnimation();
+      }
+    },
+    _reparent: function(newChildren) {
+      scope.removeMulti(newChildren);
+      for (var i = 0; i < newChildren.length; i++) {
+        newChildren[i]._parent = this;
+      }
+    },
+    _putChild: function(args, isAppend) {
+      var message = isAppend ? 'Cannot append an ancestor or self' : 'Cannot prepend an ancestor or self';
+      for (var i = 0; i < args.length; i++) {
+        if (this._isAncestor(args[i])) {
+          throw {
+            type: DOMException.HIERARCHY_REQUEST_ERR,
+            name: 'HierarchyRequestError',
+            message: message
+          };
+        }
+      }
+      var oldParents = [];
+      for (var i = 0; i < args.length; i++) {
+        isAppend ? this.children.push(args[i]) : this.children.unshift(args[i]);
+      }
+      this._reparent(args);
+      this._rebuild();
+    },
+    append: function()  {
+      this._putChild(arguments, true);
+    },
+    prepend: function()  {
+      this._putChild(arguments, false);
+    },
+    get firstChild() {
+      return this.children.length ? this.children[0] : null;
+    },
+    get lastChild() {
+      return this.children.length ? this.children[this.children.length - 1] : null;
+    },
+    clone: function() {
+      var clonedTiming = shared.cloneTimingInput(this._timingInput);
+      var clonedChildren = [];
+      for (var i = 0; i < this.children.length; i++) {
+        clonedChildren.push(this.children[i].clone());
+      }
+      return (this instanceof GroupEffect) ?
+          new GroupEffect(clonedChildren, clonedTiming) :
+          new SequenceEffect(clonedChildren, clonedTiming);
+    },
+    remove: function() {
+      scope.removeMulti([this]);
     }
   };
 
-  window.GroupEffect.prototype = {
-    get activeDuration() {
-      var max = 0;
-      this.children.forEach(function(child) {
-        max = Math.max(max, groupChildDuration(child));
+  window.SequenceEffect.prototype = Object.create(constructor.prototype);
+  Object.defineProperty(
+      window.SequenceEffect.prototype,
+      'activeDuration',
+      {
+        get: function() {
+          var total = 0;
+          this.children.forEach(function(child) {
+            total += groupChildDuration(child);
+          });
+          return Math.max(total, 0);
+        }
       });
-      return max;
-    }
-  };
+
+  window.GroupEffect.prototype = Object.create(constructor.prototype);
+  Object.defineProperty(
+      window.GroupEffect.prototype,
+      'activeDuration',
+      {
+        get: function() {
+          var max = 0;
+          this.children.forEach(function(child) {
+            max = Math.max(max, groupChildDuration(child));
+          });
+          return max;
+        }
+      });
 
   scope.newUnderlyingAnimationForGroup = function(group) {
     var underlyingAnimation;
     var timing = null;
     var ticker = function(tf) {
       var animation = underlyingAnimation._wrapper;
-      if (animation.playState == 'pending')
+      if (!animation) {
         return;
-
-      if (!animation.effect)
+      }
+      if (animation.playState == 'pending') {
         return;
-
+      }
+      if (!animation.effect) {
+        return;
+      }
       if (tf == null) {
-        animation._removeChildren();
+        animation._removeChildAnimations();
         return;
       }
 
@@ -84,13 +173,13 @@
           animation._forEachChild(function(child) {
             child.currentTime = -1;
           });
-          animation._removeChildren();
+          animation._removeChildAnimations();
           return;
         }
       }
     };
 
-    underlyingAnimation = scope.timeline.play(new scope.KeyframeEffect(null, ticker, group._timing));
+    underlyingAnimation = scope.timeline._play(new scope.KeyframeEffect(null, ticker, group._timing));
     return underlyingAnimation;
   };
 
@@ -98,7 +187,7 @@
     animation._animation._wrapper = animation;
     animation._isGroup = true;
     scope.awaitStartTime(animation);
-    animation._constructChildren();
+    animation._constructChildAnimations();
     animation._setExternalAnimation(animation);
   };
 

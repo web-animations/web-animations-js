@@ -1,5 +1,5 @@
 (function(){
-'use strict'
+'use strict';
 
 function createElement() {
   var element = document.createElement('div');

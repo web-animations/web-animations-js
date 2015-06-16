@@ -97,8 +97,6 @@
               v1[0] * v2[1] - v1[1] * v2[0]];
     }
 
-    // TODO: Implement 2D matrix decomposition.
-    // http://dev.w3.org/csswg/css-transforms/#decomposing-a-2d-matrix
     function decomposeMatrix(matrix) {
       var m3d = [
         matrix.slice(0, 4),
@@ -255,10 +253,8 @@
     ];
   }
 
-  // TODO: This can probably be made smaller.
   function convertItemToMatrix(item) {
     switch (item.t) {
-      // TODO: Handle units other than rads and degs.
       case 'rotatex':
         var rads = item.d[0].rad || 0;
         var degs = item.d[0].deg || 0;
@@ -350,7 +346,6 @@
                 0, item.d[1], 0, 0,
                 0, 0, item.d[2], 0,
                 0, 0, 0, 1];
-      // FIXME: Skew behaves differently in Blink, FireFox and here. Need to work out why.
       case 'skew':
         var xDegs = item.d[0].deg || 0;
         var xRads = item.d[0].rad || 0;
@@ -378,7 +373,6 @@
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1];
-      // TODO: Work out what to do with non-px values.
       case 'translate':
         var x = item.d[0].px || 0;
         var y = item.d[1].px || 0;
