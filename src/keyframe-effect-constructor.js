@@ -60,10 +60,6 @@
     this._timing = shared.normalizeTimingInput(timingInput);
 
     this.timing = shared.makeTiming(timingInput);
-    // if (typeof effectInput == 'function')
-    //   this._normalizedKeyframes = effectInput;
-    // else
-    //   this._normalizedKeyframes = new KeyframeList(effectInput);
     this._normalizedKeyframes = new KeyframeList(effectInput);
     this._keyframes = effectInput;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
@@ -72,8 +68,6 @@
 
   scope.KeyframeEffect.prototype = {
     getFrames: function() {
-      // if (typeof this._normalizedKeyframes == 'function')
-      //   return this._normalizedKeyframes;
       return this._normalizedKeyframes._frames;
     },
     get effect() {
@@ -87,9 +81,6 @@
       }
     },
     clone: function() {
-      // if (typeof this.getFrames() == 'function') {
-      //   throw new Error('Cloning custom effects is not supported.');
-      // }
       var clone = new KeyframeEffect(this.target, [], shared.cloneTimingInput(this._timingInput));
       clone._normalizedKeyframes = this._normalizedKeyframes;
       clone._keyframes = this._keyframes;
@@ -110,9 +101,6 @@
     if (keyframeEffect) {
       var target = keyframeEffect.target || nullTarget;
       var keyframes = keyframeEffect._keyframes;
-      // if (typeof keyframes == 'function') {
-      //   keyframes = [];
-      // }
       var timing = keyframeEffect._timingInput;
     } else {
       var target = nullTarget;
@@ -121,12 +109,6 @@
     }
     return originalElementAnimate.apply(target, [keyframes, timing]);
   };
-
-  // scope.bindAnimationForKeyframeEffect = function(animation) {
-  //   if (animation.effect && typeof animation.effect._normalizedKeyframes == 'function') {
-  //     scope.bindAnimationForCustomEffect(animation);
-  //   }
-  // };
 
   var pendingGroups = [];
   scope.awaitStartTime = function(groupAnimation) {

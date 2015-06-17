@@ -18,7 +18,6 @@
   var sequenceNumber = 0;
   scope.bindAnimationForCustomEffect = function(animation) {
     var target = animation.effect.target;
-    // var effectFunction = animation.effect._normalizedKeyframes;
     var effectFunction = animation.effect._onSample;
     var timing = animation.effect.timing;
     var last = null;
@@ -34,7 +33,6 @@
       // should be called.
       if (t !== last)
         effectFunction(t, animation.effect, animation);
-        // effectFunction(t, target, animation.effect);
       last = t;
     };
 
