@@ -80,11 +80,14 @@
 
       if (!this.effect || this.effect instanceof window.KeyframeEffect) {
         this._animation = scope.newUnderlyingAnimationForKeyframeEffect(this.effect);
-        scope.bindAnimationForKeyframeEffect(this);
+        // scope.bindAnimationForKeyframeEffect(this);
       }
       if (this.effect instanceof window.SequenceEffect || this.effect instanceof window.GroupEffect) {
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
+      }
+      if (this.effect && this.effect._onSample) {
+        scope.bindAnimationForCustomEffect(this);
       }
       if (hadUnderlying) {
         if (oldPlaybackRate != 1) {
