@@ -60,7 +60,12 @@
     this._timing = shared.normalizeTimingInput(timingInput);
 
     this.timing = shared.makeTiming(timingInput);
-    this._normalizedKeyframes = new KeyframeList(effectInput);
+    if (typeof effectInput == 'function') {
+      shared.deprecated('Custom KeyframeEffect', '2015-06-22', 'Use KeyframeEffect.onSample instead.');
+      this._normalizedKeyframes = effectInput;
+    } else {
+      this._normalizedKeyframes = new KeyframeList(effectInput);
+    }
     this._keyframes = effectInput;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
@@ -68,6 +73,8 @@
 
   scope.KeyframeEffect.prototype = {
     getFrames: function() {
+      if (typeof this._normalizedKeyframes == 'function')
+        return this._normalizedKeyframes;
       return this._normalizedKeyframes._frames;
     },
     get effect() {
@@ -75,12 +82,18 @@
       return this._normalizedKeyframes;
     },
     set onSample(callback) {
+      if (typeof this.getFrames() == 'function') {
+        throw new Error('Setting onSample on custom effect KeyframeEffect is not supported.');
+      }
       this._onSample = callback;
       if (this._animation) {
         this._animation._rebuildUnderlyingAnimation();
       }
     },
     clone: function() {
+      if (typeof this.getFrames() == 'function') {
+        throw new Error('Cloning custom effects is not supported.');
+      }
       var clone = new KeyframeEffect(this.target, [], shared.cloneTimingInput(this._timingInput));
       clone._normalizedKeyframes = this._normalizedKeyframes;
       clone._keyframes = this._keyframes;
@@ -101,6 +114,9 @@
     if (keyframeEffect) {
       var target = keyframeEffect.target || nullTarget;
       var keyframes = keyframeEffect._keyframes;
+      if (typeof keyframes == 'function') {
+        keyframes = [];
+      }
       var timing = keyframeEffect._timingInput;
     } else {
       var target = nullTarget;
@@ -108,6 +124,13 @@
       var timing = 0;
     }
     return originalElementAnimate.apply(target, [keyframes, timing]);
+  };
+
+  // TODO: Remove this once we remove support for custom KeyframeEffects.
+  scope.bindAnimationForKeyframeEffect = function(animation) {
+    if (animation.effect && typeof animation.effect._normalizedKeyframes == 'function') {
+      scope.bindAnimationForCustomEffect(animation);
+    }
   };
 
   var pendingGroups = [];

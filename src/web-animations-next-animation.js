@@ -80,6 +80,7 @@
 
       if (!this.effect || this.effect instanceof window.KeyframeEffect) {
         this._animation = scope.newUnderlyingAnimationForKeyframeEffect(this.effect);
+        scope.bindAnimationForKeyframeEffect(this);
       }
       if (this.effect instanceof window.SequenceEffect || this.effect instanceof window.GroupEffect) {
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
