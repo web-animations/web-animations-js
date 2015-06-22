@@ -42,7 +42,7 @@ suite('effect-callback', function() {
       animation = document.timeline.play(effect2);
     };
     effect2.onSample = function() {
-        called = true;
+      called = true;
     };
     document.timeline.play(effect);
     tick(1);
