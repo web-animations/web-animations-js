@@ -32,7 +32,7 @@
       // FIXME: There are actually more conditions under which the effectFunction
       // should be called.
       if (t !== last)
-        effectFunction(t, animation.effect, animation);
+        effectFunction(t, animation.effect, animation.effect._animation);
       last = t;
     };
 

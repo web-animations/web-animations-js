@@ -115,9 +115,7 @@ suite('keyframe-effect-constructor', function() {
   });
 
   test('Handle null target for KeyframeEffect', function() {
-    var keyframeEffect = new KeyframeEffect(null, function(tf) {
-      // noop
-    }, 200);
+    var keyframeEffect = new KeyframeEffect(null, [], 200);
 
     var animation = document.timeline.play(keyframeEffect);
     assert.isNotNull(animation);
