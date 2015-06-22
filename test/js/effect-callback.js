@@ -8,7 +8,7 @@ suite('effect-callback', function() {
     var fractions = [];
     tick(100);
     var effect = new KeyframeEffect(null, [], 1000);
-    effect.onSample = function(fraction) {
+    effect.onsample = function(fraction) {
       fractions.push(fraction);
     };
     var animation = document.timeline.play(effect);
@@ -23,7 +23,7 @@ suite('effect-callback', function() {
     var timeFraction;
     tick(0);
     var effect = new KeyframeEffect(null, [], {duration: 0, fill: 'both'});
-    effect.onSample = function(t) {
+    effect.onsample = function(t) {
       timeFraction = t;
     };
     var animation = document.timeline.play(effect);
@@ -38,10 +38,10 @@ suite('effect-callback', function() {
     tick(0);
     var effect = new KeyframeEffect(null, [], 2);
     var effect2 = new KeyframeEffect(null, [], 1);
-    effect.onSample = function() {
+    effect.onsample = function() {
       animation = document.timeline.play(effect2);
     };
-    effect2.onSample = function() {
+    effect2.onsample = function() {
       called = true;
     };
     document.timeline.play(effect);
@@ -53,7 +53,7 @@ suite('effect-callback', function() {
   test('custom effect should be called after cancel', function() {
     var fractions = [];
     var effect = new KeyframeEffect(null, [], 1000);
-    effect.onSample = function(fraction) {
+    effect.onsample = function(fraction) {
       fractions.push(fraction);
     };
     var animation = document.timeline.play(effect);
@@ -68,7 +68,7 @@ suite('effect-callback', function() {
     var callbackEffect;
     var callbackAnim;
     var effect = new KeyframeEffect(document.body, [], 100);
-    effect.onSample = function(t, e, a) {
+    effect.onsample = function(t, e, a) {
       callbackEffect = e;
       callbackAnim = a;
     };

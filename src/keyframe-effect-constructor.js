@@ -61,7 +61,7 @@
 
     this.timing = shared.makeTiming(timingInput);
     if (typeof effectInput == 'function') {
-      shared.deprecated('Custom KeyframeEffect', '2015-06-22', 'Use KeyframeEffect.onSample instead.');
+      shared.deprecated('Custom KeyframeEffect', '2015-06-22', 'Use KeyframeEffect.onsample instead.');
       this._normalizedKeyframes = effectInput;
     } else {
       this._normalizedKeyframes = new KeyframeList(effectInput);
@@ -81,11 +81,11 @@
       shared.deprecated('KeyframeEffect.effect', '2015-03-23', 'Use KeyframeEffect.getFrames() instead.');
       return this._normalizedKeyframes;
     },
-    set onSample(callback) {
+    set onsample(callback) {
       if (typeof this.getFrames() == 'function') {
-        throw new Error('Setting onSample on custom effect KeyframeEffect is not supported.');
+        throw new Error('Setting onsample on custom effect KeyframeEffect is not supported.');
       }
-      this._onSample = callback;
+      this._onsample = callback;
       if (this._animation) {
         this._animation._rebuildUnderlyingAnimation();
       }

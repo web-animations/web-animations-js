@@ -86,7 +86,7 @@
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
       }
-      if (this.effect && this.effect._onSample) {
+      if (this.effect && this.effect._onsample) {
         scope.bindAnimationForCustomEffect(this);
       }
       if (hadUnderlying) {

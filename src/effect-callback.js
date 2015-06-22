@@ -23,7 +23,7 @@
     if (isKeyframeEffect) {
       effectFunction = animation.effect.getFrames();
     } else {
-      effectFunction = animation.effect._onSample;
+      effectFunction = animation.effect._onsample;
     }
     var timing = animation.effect.timing;
     var last = null;

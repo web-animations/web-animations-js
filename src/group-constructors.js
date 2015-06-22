@@ -180,7 +180,7 @@
     };
 
     var underlyingEffect = new KeyframeEffect(null, [], group._timing);
-    underlyingEffect.onSample = ticker;
+    underlyingEffect.onsample = ticker;
     underlyingAnimation = scope.timeline._play(underlyingEffect);
     return underlyingAnimation;
   };
