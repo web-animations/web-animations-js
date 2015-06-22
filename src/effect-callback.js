@@ -18,7 +18,13 @@
   var sequenceNumber = 0;
   scope.bindAnimationForCustomEffect = function(animation) {
     var target = animation.effect.target;
-    var effectFunction = animation.effect._normalizedKeyframes;
+    var effectFunction;
+    var isKeyframeEffect = typeof animation.effect.getFrames() == 'function';
+    if (isKeyframeEffect) {
+      effectFunction = animation.effect.getFrames();
+    } else {
+      effectFunction = animation.effect._onsample;
+    }
     var timing = animation.effect.timing;
     var last = null;
     timing = shared.normalizeTimingInput(timing);
@@ -31,8 +37,13 @@
       }
       // FIXME: There are actually more conditions under which the effectFunction
       // should be called.
-      if (t !== last)
-        effectFunction(t, target, animation.effect);
+      if (t !== last) {
+        if (isKeyframeEffect) {
+          effectFunction(t, target, animation.effect);
+        } else {
+          effectFunction(t, animation.effect, animation.effect._animation);
+        }
+      }
       last = t;
     };
 

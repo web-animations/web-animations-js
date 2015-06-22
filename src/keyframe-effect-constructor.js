@@ -60,10 +60,12 @@
     this._timing = shared.normalizeTimingInput(timingInput);
 
     this.timing = shared.makeTiming(timingInput);
-    if (typeof effectInput == 'function')
+    if (typeof effectInput == 'function') {
+      shared.deprecated('Custom KeyframeEffect', '2015-06-22', 'Use KeyframeEffect.onsample instead.');
       this._normalizedKeyframes = effectInput;
-    else
+    } else {
       this._normalizedKeyframes = new KeyframeList(effectInput);
+    }
     this._keyframes = effectInput;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
@@ -78,6 +80,15 @@
     get effect() {
       shared.deprecated('KeyframeEffect.effect', '2015-03-23', 'Use KeyframeEffect.getFrames() instead.');
       return this._normalizedKeyframes;
+    },
+    set onsample(callback) {
+      if (typeof this.getFrames() == 'function') {
+        throw new Error('Setting onsample on custom effect KeyframeEffect is not supported.');
+      }
+      this._onsample = callback;
+      if (this._animation) {
+        this._animation._rebuildUnderlyingAnimation();
+      }
     },
     clone: function() {
       if (typeof this.getFrames() == 'function') {
@@ -115,6 +126,7 @@
     return originalElementAnimate.apply(target, [keyframes, timing]);
   };
 
+  // TODO: Remove this once we remove support for custom KeyframeEffects.
   scope.bindAnimationForKeyframeEffect = function(animation) {
     if (animation.effect && typeof animation.effect._normalizedKeyframes == 'function') {
       scope.bindAnimationForCustomEffect(animation);
