@@ -262,10 +262,6 @@
       }
       this._updatePromises();
     },
-    get source() {
-      shared.deprecated('Animation.source', '2015-03-23', 'Use Animation.effect instead.');
-      return this.effect;
-    },
     play: function() {
       this._updatePromises();
       this._paused = false;
@@ -362,4 +358,5 @@
   if (WEB_ANIMATIONS_TESTING) {
     testing.webAnimationsNextAnimation = scope.Animation;
   }
+
 })(webAnimationsShared, webAnimationsNext, webAnimationsTesting);
