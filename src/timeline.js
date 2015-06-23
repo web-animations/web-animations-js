@@ -33,10 +33,6 @@
       this._discardAnimations();
       return this._animations.slice();
     },
-    getAnimationPlayers: function() {
-      shared.deprecated('AnimationTimeline.getAnimationPlayers', '2015-03-23', 'Use AnimationTimeline.getAnimations instead.');
-      return this.getAnimations();
-    },
     _updateAnimationsPromises: function() {
       scope.animationsWithPromises = scope.animationsWithPromises.filter(function(animation) {
         return animation._updatePromises();
