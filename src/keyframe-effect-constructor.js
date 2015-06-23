@@ -77,10 +77,6 @@
         return this._normalizedKeyframes;
       return this._normalizedKeyframes._frames;
     },
-    get effect() {
-      shared.deprecated('KeyframeEffect.effect', '2015-03-23', 'Use KeyframeEffect.getFrames() instead.');
-      return this._normalizedKeyframes;
-    },
     set onsample(callback) {
       if (typeof this.getFrames() == 'function') {
         throw new Error('Setting onsample on custom effect KeyframeEffect is not supported.');
