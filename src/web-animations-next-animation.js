@@ -358,4 +358,5 @@
   if (WEB_ANIMATIONS_TESTING) {
     testing.webAnimationsNextAnimation = scope.Animation;
   }
+
 })(webAnimationsShared, webAnimationsNext, webAnimationsTesting);
