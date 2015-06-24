@@ -355,6 +355,8 @@
     },
   };
 
+  window.Animation = scope.Animation;
+
   if (WEB_ANIMATIONS_TESTING) {
     testing.webAnimationsNextAnimation = scope.Animation;
   }
