@@ -28,18 +28,24 @@
     return clone;
   }
 
+  function AnimationEffectTiming(forGroup) {
+    this.delay = 0;
+    this.endDelay = 0;
+    this.fill = 'none';
+    this.iterationStart = 0;
+    this.iterations = 1;
+    this.duration = 0;
+    this.playbackRate = 1;
+    this.direction = 'normal';
+    this.easing = 'linear';
+  }
+
   function makeTiming(timingInput, forGroup) {
-    var timing = {
-      delay: 0,
-      endDelay: 0,
-      fill: forGroup ? 'both' : 'none',
-      iterationStart: 0,
-      iterations: 1,
-      duration: forGroup ? 'auto' : 0,
-      playbackRate: 1,
-      direction: 'normal',
-      easing: 'linear',
-    };
+    var timing = new AnimationEffectTiming;
+    if (forGroup) {
+      timing.fill = 'both';
+      timing.duration = 'auto';
+    }
     if (typeof timingInput == 'number' && !isNaN(timingInput)) {
       timing.duration = timingInput;
     } else if (timingInput !== undefined) {
