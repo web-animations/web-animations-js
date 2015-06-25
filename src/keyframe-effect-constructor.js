@@ -59,7 +59,8 @@
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput);
 
-    this.timing = shared.makeTiming(timingInput);
+    this.timing = shared.makeTiming(timingInput, false, this);
+    this.timing._effect = this;
     if (typeof effectInput == 'function') {
       shared.deprecated('Custom KeyframeEffect', '2015-06-22', 'Use KeyframeEffect.onsample instead.');
       this._normalizedKeyframes = effectInput;
