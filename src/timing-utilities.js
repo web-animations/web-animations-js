@@ -142,6 +142,13 @@
   }
 
   function normalizeTimingInput(timingInput, forGroup) {
+    if (typeof timingInput == 'number') {
+      if (isNaN(timingInput)) {
+        timingInput = { duration: 0 };
+      } else {
+        timingInput = { duration: timingInput };
+      }
+    }
     var timing = makeTiming(timingInput, forGroup);
     timing._easing = toTimingFunction(timing.easing);
     return timing;

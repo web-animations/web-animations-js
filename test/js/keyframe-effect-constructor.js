@@ -173,4 +173,64 @@ suite('keyframe-effect-constructor', function() {
     animation.cancel();
     tick(3);
   });
+
+  test('Setting duration on KeyframeEffect timing with number timing input', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        100);
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001);
+    effect.timing.duration = 200;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.25, 0.001);
+    animation.cancel();
+    tick(100);
+  });
+
+  test('Setting duration on KeyframeEffect timing with NaN timing input', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        NaN);
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 1, 0.001);
+    effect.timing.duration = 100;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001);
+    animation.cancel();
+    tick(100);
+  });
+
+  test('Setting delay on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001);
+    effect.timing.delay = 20;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.3, 0.001);
+    animation.cancel();
+    tick(100);
+  });
 });
