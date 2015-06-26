@@ -233,4 +233,24 @@ suite('keyframe-effect-constructor', function() {
     animation.cancel();
     tick(100);
   });
+
+  test('Setting fill on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(100);
+    assert.equal(Number(getComputedStyle(target).opacity), 1);
+    effect.timing.fill = 'both';
+    assert.equal(Number(getComputedStyle(target).opacity), 0);
+    animation.cancel();
+    tick(101);
+  });
 });
