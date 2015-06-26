@@ -43,7 +43,7 @@
   AnimationEffectTiming.prototype = {
     _renormalize: function() {
       this._effect._timing = shared.normalizeTimingInput(
-        shared.normalizeTimingInput(this._effect._timingInput));
+          shared.normalizeTimingInput(this._effect._timingInput));
     },
     _setMember: function(member, value) {
       this['_' + member] = value;
@@ -107,7 +107,7 @@
     get iterations() {
       return this._iterations;
     }
-  }
+  };
 
   function makeTiming(timingInput, forGroup, effect) {
     var timing = new AnimationEffectTiming;
