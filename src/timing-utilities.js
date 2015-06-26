@@ -35,7 +35,7 @@
     this._iterationStart = 0;
     this._iterations = 1;
     this._duration = 0;
-    this.playbackRate = 1;
+    this._playbackRate = 1;
     this._direction = 'normal';
     this._easing = 'linear';
   }
@@ -50,6 +50,7 @@
       if (this._effect) {
         this._effect._timingInput[member] = value;
         this._renormalize();
+        this._effect.activeDuration = shared.calculateActiveDuration(this._effect._timing);
         if (this._effect._animation) {
           this._effect._animation._rebuildUnderlyingAnimation();
         }
@@ -84,6 +85,9 @@
     },
     get duration() {
       return this._duration;
+    },
+    get playbackRate() {
+      return this._playbackRate;
     },
     set direction(value) {
       this._setMember('direction', value);
@@ -139,7 +143,7 @@
 
   function normalizeTimingInput(timingInput, forGroup) {
     var timing = makeTiming(timingInput, forGroup);
-    timing.easing = toTimingFunction(timing.easing);
+    timing._easing = toTimingFunction(timing.easing);
     return timing;
   }
 
