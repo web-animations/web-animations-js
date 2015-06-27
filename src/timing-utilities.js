@@ -41,15 +41,11 @@
   }
 
   AnimationEffectTiming.prototype = {
-    _renormalize: function() {
-      this._effect._timing = shared.normalizeTimingInput(
-          shared.normalizeTimingInput(this._effect._timingInput));
-    },
     _setMember: function(member, value) {
       this['_' + member] = value;
       if (this._effect) {
         this._effect._timingInput[member] = value;
-        this._renormalize();
+        this._effect._timing = shared.normalizeTimingInput(shared.normalizeTimingInput(this._effect._timingInput));
         this._effect.activeDuration = shared.calculateActiveDuration(this._effect._timing);
         if (this._effect._animation) {
           this._effect._animation._rebuildUnderlyingAnimation();
