@@ -276,7 +276,7 @@ suite('keyframe-effect-constructor', function() {
     var animation = document.timeline.play(effect);
     tick(0);
     tick(50);
-    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001, 't=50 before setting iterationStart');;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001, 't=50 before setting iterationStart');
     effect.timing.iterationStart = 0.25;
     assert.closeTo(Number(getComputedStyle(target).opacity), 0.75, 0.001, 't=50 after setting iterationStart');
   });
@@ -294,7 +294,7 @@ suite('keyframe-effect-constructor', function() {
     var animation = document.timeline.play(effect);
     tick(0);
     tick(25);
-    assert.closeTo(Number(getComputedStyle(target).opacity), 0.25, 0.001, 't=25 before setting duration');;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.25, 0.001, 't=25 before setting duration');
     effect.timing.duration = 50;
     assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001, 't=25 after setting duration');
   });
