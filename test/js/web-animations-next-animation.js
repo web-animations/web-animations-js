@@ -12,7 +12,7 @@ suite('animation-promises-tests', function() {
 
     tick(0);
     var effect = new KeyframeEffect(null, [], 10);
-    var animation = new webAnimationsNextAnimation(effect);
+    var animation = new webAnimationsNextAnimation(effect, document.timeline);
     animation.ready.then(onReadyResolution, onReadyRejection);
     animation.finished.then(onFinishedResolution, onFinishedRejection);
 

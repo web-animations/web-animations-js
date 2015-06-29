@@ -45,7 +45,7 @@
       });
     },
     _play: function(effect) {
-      var animation = new scope.Animation(effect);
+      var animation = new scope.Animation(effect, this);
       this._animations.push(animation);
       scope.restartWebAnimationsNextTick();
       // Use animation._animation.play() here, NOT animation.play().
