@@ -52,61 +52,25 @@
         }
       }
     },
-    set delay(value) {
-      this._setMember('delay', value);
-    },
-    get delay() {
-      return this._delay;
-    },
-    set endDelay(value) {
-      this._setMember('endDelay', value);
-    },
-    get endDelay() {
-      return this._endDelay;
-    },
-    set fill(value) {
-      this._setMember('fill', value);
-    },
-    get fill() {
-      return this._fill;
-    },
-    set iterationStart(value) {
-      this._setMember('iterationStart', value);
-    },
-    get iterationStart() {
-      return this._iterationStart;
-    },
-    set duration(value) {
-      this._setMember('duration', value);
-    },
-    get duration() {
-      return this._duration;
-    },
     get playbackRate() {
       return this._playbackRate;
     },
-    set direction(value) {
-      this._setMember('direction', value);
-    },
-    get direction() {
-      return this._direction;
-    },
-    set easing(value) {
-      this._setMember('easing', value);
-    },
-    get easing() {
-      return this._easing;
-    },
-    set iterations(value) {
-      this._setMember('iterations', value);
-    },
-    get iterations() {
-      return this._iterations;
-    }
   };
 
+  var members = ['delay', 'endDelay', 'fill', 'iterationStart',
+    'duration', 'direction', 'easing', 'iterations'];
+  members.forEach(function(name) {
+    Object.defineProperty(
+        AnimationEffectTiming.prototype,
+        name,
+        {
+          get: function() { return this['_' + name]; },
+          set: function(value) { this._setMember(name, value); }
+        });
+  });
+
   function makeTiming(timingInput, forGroup, effect) {
-    var timing = new AnimationEffectTiming;
+    var timing = new AnimationEffectTiming();
     if (forGroup) {
       timing.fill = 'both';
       timing.duration = 'auto';
