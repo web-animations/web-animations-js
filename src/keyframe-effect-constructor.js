@@ -56,13 +56,7 @@
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
     this.target = target;
 
-    if (typeof timingInput == 'number') {
-      if (isNaN(timingInput)) {
-        timingInput = { duration: 0 };
-      } else {
-        timingInput = { duration: timingInput };
-      }
-    }
+    timingInput = shared.numericTimingToObject(timingInput);
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput);
 

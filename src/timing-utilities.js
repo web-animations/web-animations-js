@@ -137,7 +137,7 @@
     return timing;
   }
 
-  function normalizeTimingInput(timingInput, forGroup) {
+  function numericTimingToObject(timingInput) {
     if (typeof timingInput == 'number') {
       if (isNaN(timingInput)) {
         timingInput = { duration: 0 };
@@ -145,6 +145,11 @@
         timingInput = { duration: timingInput };
       }
     }
+    return timingInput;
+  }
+
+  function normalizeTimingInput(timingInput, forGroup) {
+    timingInput = shared.numericTimingToObject(timingInput);
     var timing = makeTiming(timingInput, forGroup);
     timing._easing = toTimingFunction(timing.easing);
     return timing;
@@ -310,6 +315,7 @@
 
   shared.cloneTimingInput = cloneTimingInput;
   shared.makeTiming = makeTiming;
+  shared.numericTimingToObject = numericTimingToObject;
   shared.normalizeTimingInput = normalizeTimingInput;
   shared.calculateActiveDuration = calculateActiveDuration;
   shared.calculateTimeFraction = calculateTimeFraction;

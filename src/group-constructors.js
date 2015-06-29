@@ -22,13 +22,7 @@
     this._parent = null;
     this.children = children || [];
     this._reparent(this.children);
-    if (typeof timingInput == 'number') {
-      if (isNaN(timingInput)) {
-        timingInput = { duration: 0 };
-      } else {
-        timingInput = { duration: timingInput };
-      }
-    }
+    timingInput = shared.numericTimingToObject(timingInput);
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
     this.timing = shared.makeTiming(timingInput, true, this);
