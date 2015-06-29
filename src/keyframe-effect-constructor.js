@@ -55,6 +55,7 @@
 
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
     this.target = target;
+    this._parent = null;
 
     timingInput = shared.numericTimingToObject(timingInput);
     this._timingInput = shared.cloneTimingInput(timingInput);
@@ -87,6 +88,9 @@
       if (this._animation) {
         this._animation._rebuildUnderlyingAnimation();
       }
+    },
+    get parent() {
+      return this._parent;
     },
     clone: function() {
       if (typeof this.getFrames() == 'function') {
