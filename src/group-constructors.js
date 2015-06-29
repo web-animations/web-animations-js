@@ -22,9 +22,11 @@
     this._parent = null;
     this.children = children || [];
     this._reparent(this.children);
+    timingInput = shared.numericTimingToObject(timingInput);
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
-    this.timing = shared.makeTiming(timingInput, true);
+    this.timing = shared.makeTiming(timingInput, true, this);
+    this.timing._effect = this;
 
     if (this._timing.duration === 'auto') {
       this._timing.duration = this.activeDuration;
