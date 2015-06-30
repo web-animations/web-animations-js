@@ -156,7 +156,6 @@
       }
     },
     get timeline() {
-      console.log(this._timeline);
       return this._timeline;
     },
     get playState() {
