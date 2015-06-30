@@ -155,6 +155,10 @@
         childAnimation.startTime = this.startTime + offset / this.playbackRate;
       }
     },
+    get timeline() {
+      console.log(this._timeline);
+      return this._timeline;
+    },
     get playState() {
       return this._animation ? this._animation.playState : 'idle';
     },

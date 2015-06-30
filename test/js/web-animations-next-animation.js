@@ -57,6 +57,12 @@ suite('animation-promises-tests', function() {
     }, 200);
   });
 
+  test('Animation timeline getter', function() {
+    var effect = new KeyframeEffect(null, [], 10);
+    var animation = new webAnimationsNextAnimation(effect, document.timeline);
+    assert.equal(animation.timeline, document.timeline);
+  });
+
   test('New animation has pending promises after playing', function(done) {
     var readyResolved = false;
     var readyRejected = false;
