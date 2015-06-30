@@ -94,6 +94,9 @@
     prepend: function()  {
       this._putChild(arguments, false);
     },
+    get parent() {
+      return this._parent;
+    },
     get firstChild() {
       return this.children.length ? this.children[0] : null;
     },
