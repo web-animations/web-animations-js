@@ -298,4 +298,150 @@ suite('group-constructors', function() {
     animation.cancel();
     tick(2);
   });
+
+  test('Setting delay on child KeyframeEffect timing', function() {
+    var target1 = document.createElement('div');
+    document.body.appendChild(target1);
+    var target2 = document.createElement('div');
+    document.body.appendChild(target2);
+    var child1 = new KeyframeEffect(
+        target1,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var child2 = new KeyframeEffect(
+        target2,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var sequence = new SequenceEffect([child1, child2]);
+    var animation = document.timeline.play(sequence);
+    tick(0);
+    tick(150);
+    assert.closeTo(Number(getComputedStyle(target2).opacity), 0.5, 0.001, 't=150 before setting delay');
+    child1.timing.delay = 20;
+    assert.closeTo(Number(getComputedStyle(target2).opacity), 0.3, 0.001, 't=150 after setting delay');
+  });
+
+  test('Setting endDelay on child KeyframeEffect timing', function() {
+    var target1 = document.createElement('div');
+    document.body.appendChild(target1);
+    var target2 = document.createElement('div');
+    document.body.appendChild(target2);
+    var child1 = new KeyframeEffect(
+        target1,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var child2 = new KeyframeEffect(
+        target2,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var sequence = new SequenceEffect([child1, child2]);
+    var animation = document.timeline.play(sequence);
+    tick(0);
+    tick(150);
+    assert.closeTo(Number(getComputedStyle(target2).opacity), 0.5, 0.001, 't=150 before setting endDelay');
+    child1.timing.endDelay = 20;
+    assert.closeTo(Number(getComputedStyle(target2).opacity), 0.3, 0.001, 't=150 after setting endDelay');
+  });
+
+  test('Setting duration on child KeyframeEffect timing', function() {
+    var target1 = document.createElement('div');
+    document.body.appendChild(target1);
+    var target2 = document.createElement('div');
+    document.body.appendChild(target2);
+    var child1 = new KeyframeEffect(
+        target1,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100, fill: 'both'});
+    var child2 = new KeyframeEffect(
+        target2,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100, fill: 'both'});
+    var sequence = new SequenceEffect([child1, child2]);
+    var animation = document.timeline.play(sequence);
+    tick(0);
+    tick(125);
+    assert.closeTo(Number(getComputedStyle(target1).opacity), 1, 0.001, 'target1 at t=125 before setting duration');
+    assert.closeTo(Number(getComputedStyle(target2).opacity), 0.25, 0.001, 'target2 at t=125 before setting duration');
+    child1.timing.duration = 50;
+    assert.closeTo(Number(getComputedStyle(target1).opacity), 1, 0.001, 'target1 at t=125 after setting duration');
+    assert.closeTo(Number(getComputedStyle(target2).opacity), 0.75, 0.001, 'target2 at t=125 after setting duration');
+  });
+
+  test('Setting iterations on child KeyframeEffect timing', function() {
+    var target1 = document.createElement('div');
+    document.body.appendChild(target1);
+    var target2 = document.createElement('div');
+    document.body.appendChild(target2);
+    var child1 = new KeyframeEffect(
+        target1,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100, fill: 'both'});
+    var child2 = new KeyframeEffect(
+        target2,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100, fill: 'both'});
+    var sequence = new SequenceEffect([child1, child2]);
+    var animation = document.timeline.play(sequence);
+    tick(0);
+    tick(125);
+    assert.closeTo(Number(getComputedStyle(target1).opacity), 1, 0.001, 'target1 at t=125 before setting iterations');
+    assert.closeTo(Number(getComputedStyle(target2).opacity), 0.25, 0.001, 'target2 at t=125 before setting iterations');
+    child1.timing.iterations = 2;
+    assert.closeTo(Number(getComputedStyle(target1).opacity), 0.25, 0.001, 'target1 at t=125 after setting iterations');
+    assert.closeTo(Number(getComputedStyle(target2).opacity), 0, 0.001, 'target2 at t=125 after setting iterations');
+  });
+
+  test('Setting fill on SequenceEffect timing', function() {
+    var target1 = document.createElement('div');
+    document.body.appendChild(target1);
+    var target2 = document.createElement('div');
+    document.body.appendChild(target2);
+    var child1 = new KeyframeEffect(
+        target1,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100, fill: 'both'});
+    var child2 = new KeyframeEffect(
+        target2,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100, fill: 'both'});
+    var sequence = new SequenceEffect([child1, child2], {fill: 'none'});
+    var animation = document.timeline.play(sequence);
+    tick(0);
+    tick(250);
+    assert.equal(Number(getComputedStyle(target1).opacity), 1, 'target1 at t=250 before setting fill');
+    assert.equal(Number(getComputedStyle(target2).opacity), 1, 'target2 at t=250 before setting fill');
+    sequence.timing.fill = 'both';
+    assert.equal(Number(getComputedStyle(target1).opacity), 0, 'target1 at t=250 after setting fill');
+    assert.equal(Number(getComputedStyle(target2).opacity), 0, 'target2 at t=250 after setting fill');
+  });
 });

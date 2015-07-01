@@ -55,15 +55,20 @@
 
   scope.KeyframeEffect = function(target, effectInput, timingInput) {
     this.target = target;
+    this._parent = null;
 
+    timingInput = shared.numericTimingToObject(timingInput);
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput);
 
-    this.timing = shared.makeTiming(timingInput);
-    if (typeof effectInput == 'function')
+    this.timing = shared.makeTiming(timingInput, false, this);
+    this.timing._effect = this;
+    if (typeof effectInput == 'function') {
+      shared.deprecated('Custom KeyframeEffect', '2015-06-22', 'Use KeyframeEffect.onsample instead.');
       this._normalizedKeyframes = effectInput;
-    else
+    } else {
       this._normalizedKeyframes = new KeyframeList(effectInput);
+    }
     this._keyframes = effectInput;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
     return this;
@@ -75,9 +80,17 @@
         return this._normalizedKeyframes;
       return this._normalizedKeyframes._frames;
     },
-    get effect() {
-      shared.deprecated('KeyframeEffect.effect', '2015-03-23', 'Use KeyframeEffect.getFrames() instead.');
-      return this._normalizedKeyframes;
+    set onsample(callback) {
+      if (typeof this.getFrames() == 'function') {
+        throw new Error('Setting onsample on custom effect KeyframeEffect is not supported.');
+      }
+      this._onsample = callback;
+      if (this._animation) {
+        this._animation._rebuildUnderlyingAnimation();
+      }
+    },
+    get parent() {
+      return this._parent;
     },
     clone: function() {
       if (typeof this.getFrames() == 'function') {
@@ -115,6 +128,7 @@
     return originalElementAnimate.apply(target, [keyframes, timing]);
   };
 
+  // TODO: Remove this once we remove support for custom KeyframeEffects.
   scope.bindAnimationForKeyframeEffect = function(animation) {
     if (animation.effect && typeof animation.effect._normalizedKeyframes == 'function') {
       scope.bindAnimationForCustomEffect(animation);
@@ -159,25 +173,5 @@
       return animation.effect !== null && animation.effect.target == this;
     }.bind(this));
   };
-  window.Element.prototype.getAnimationPlayers = function() {
-    shared.deprecated('Element.getAnimationPlayers', '2015-03-23', 'Use Element.getAnimations instead.');
-    return this.getAnimations();
-  };
-
-  // Alias KeyframeEffect to Animation, to support old constructor (Animation) for a deprecation
-  // period. Should be removed after 23 June 2015.
-  //
-  // This is only on window and not on scope, because the constructor that was called
-  // webAnimationsNext.Player - now called webAnimationsNext.Animation - is already on the scope.
-  //
-  // FIXME: Add this to scope & expose the other scope.Animation (nee scope.Player). I.e. both this
-  // function and the constructor in web-animations-next-animation should be scope.Animation and
-  // window.Animation until 23 June 2015.
-  window.Animation = function() {
-    shared.deprecated('window.Animation', '2015-03-23', 'Use window.KeyframeEffect instead.');
-    window.KeyframeEffect.apply(this, arguments);
-  };
-  window.Animation.prototype = Object.create(window.KeyframeEffect.prototype);
-  window.Animation.prototype.constructor = window.Animation;
 
 }(webAnimationsShared, webAnimationsNext, webAnimationsTesting));

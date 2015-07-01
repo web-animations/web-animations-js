@@ -12,7 +12,7 @@ suite('animation-promises-tests', function() {
 
     tick(0);
     var effect = new KeyframeEffect(null, [], 10);
-    var animation = new webAnimationsNextAnimation(effect);
+    var animation = new webAnimationsNextAnimation(effect, document.timeline);
     animation.ready.then(onReadyResolution, onReadyRejection);
     animation.finished.then(onFinishedResolution, onFinishedRejection);
 
@@ -55,6 +55,12 @@ suite('animation-promises-tests', function() {
         done(assertion);
       }
     }, 200);
+  });
+
+  test('Animation timeline getter', function() {
+    var effect = new KeyframeEffect(null, [], 10);
+    var animation = new webAnimationsNextAnimation(effect, document.timeline);
+    assert.equal(animation.timeline, document.timeline);
   });
 
   test('New animation has pending promises after playing', function(done) {

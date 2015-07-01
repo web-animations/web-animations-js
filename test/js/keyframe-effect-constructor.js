@@ -115,9 +115,7 @@ suite('keyframe-effect-constructor', function() {
   });
 
   test('Handle null target for KeyframeEffect', function() {
-    var keyframeEffect = new KeyframeEffect(null, function(tf) {
-      // noop
-    }, 200);
+    var keyframeEffect = new KeyframeEffect(null, [], 200);
 
     var animation = document.timeline.play(keyframeEffect);
     assert.isNotNull(animation);
@@ -174,5 +172,185 @@ suite('keyframe-effect-constructor', function() {
     assert.equal(effect._animation, undefined);
     animation.cancel();
     tick(3);
+  });
+
+  test('Setting iterations on KeyframeEffect timing before playing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100});
+    effect.timing.iterations = 2;
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(125);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.75, 0.01, 't=125');
+  });
+
+  test('Setting duration on KeyframeEffect timing with number timing input', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        100);
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001, 't=50 before setting duration');
+    effect.timing.duration = 200;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.25, 0.001, 't=50 after setting duration');
+  });
+
+  test('Setting duration on KeyframeEffect timing with NaN timing input', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        NaN);
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 1, 0.001, 't=50 before setting duration');
+    effect.timing.duration = 100;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001, 't=50 after setting duration');
+  });
+
+  test('Setting delay on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001, 't=50 before setting delay');
+    effect.timing.delay = 20;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.3, 0.001, 't=50 after setting delay');
+  });
+
+  test('Setting fill on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100, fill: 'none'});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(100);
+    assert.equal(Number(getComputedStyle(target).opacity), 1, 't=100 before setting fill');
+    effect.timing.fill = 'both';
+    assert.equal(Number(getComputedStyle(target).opacity), 0, 't=100 after setting fill');
+  });
+
+  test('Setting iterationStart on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(50);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001, 't=50 before setting iterationStart');
+    effect.timing.iterationStart = 0.25;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.75, 0.001, 't=50 after setting iterationStart');
+  });
+
+  test('Setting duration on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(25);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.25, 0.001, 't=25 before setting duration');
+    effect.timing.duration = 50;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.5, 0.001, 't=25 after setting duration');
+  });
+
+  test('Setting direction on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100, iterations: 2});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(75);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.75, 0.001, 't=75');
+    effect.timing.direction = 'alternate';
+    tick(125);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.75, 0.001, 't=125');
+  });
+
+  test('Setting easing on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 0},
+          {opacity: 1}
+        ],
+        {duration: 100});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(85);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.85, 0.001, 't=85 before setting easing');
+    effect.timing.easing = 'ease-out';
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.96, 0.01, 't=85 after setting easing');
+  });
+
+  test('Setting iterations on KeyframeEffect timing', function() {
+    var target = document.createElement('div');
+    document.body.appendChild(target);
+    var effect = new KeyframeEffect(
+        target,
+        [
+          {opacity: 1},
+          {opacity: 0}
+        ],
+        {duration: 100});
+    var animation = document.timeline.play(effect);
+    tick(0);
+    tick(125);
+    assert.closeTo(Number(getComputedStyle(target).opacity), 1, 0.001, 't=125 before setting iterations');
+    effect.timing.iterations = 2;
+    assert.closeTo(Number(getComputedStyle(target).opacity), 0.75, 0.01, 't=125 after setting iterations');
   });
 });

@@ -15,11 +15,15 @@
 (function(shared, scope, testing) {
   scope.animationsWithPromises = [];
 
-  scope.Animation = function(effect) {
+  scope.Animation = function(effect, timeline) {
     this.effect = effect;
     if (effect) {
       effect._animation = this;
     }
+    if (!timeline) {
+      throw new Error('Animation with null timeline is not supported');
+    }
+    this._timeline = timeline;
     this._sequenceNumber = shared.sequenceNumber++;
     this._holdTime = 0;
     this._paused = false;
@@ -86,6 +90,9 @@
         this._animation = scope.newUnderlyingAnimationForGroup(this.effect);
         scope.bindAnimationForGroup(this);
       }
+      if (this.effect && this.effect._onsample) {
+        scope.bindAnimationForCustomEffect(this);
+      }
       if (hadUnderlying) {
         if (oldPlaybackRate != 1) {
           this.playbackRate = oldPlaybackRate;
@@ -147,6 +154,9 @@
       } else if (childAnimation.startTime !== this.startTime + offset / this.playbackRate) {
         childAnimation.startTime = this.startTime + offset / this.playbackRate;
       }
+    },
+    get timeline() {
+      return this._timeline;
     },
     get playState() {
       return this._animation ? this._animation.playState : 'idle';
@@ -259,16 +269,12 @@
       }
       this._updatePromises();
     },
-    get source() {
-      shared.deprecated('Animation.source', '2015-03-23', 'Use Animation.effect instead.');
-      return this.effect;
-    },
     play: function() {
       this._updatePromises();
       this._paused = false;
       this._animation.play();
-      if (document.timeline._animations.indexOf(this) == -1) {
-        document.timeline._animations.push(this);
+      if (this._timeline._animations.indexOf(this) == -1) {
+        this._timeline._animations.push(this);
       }
       this._register();
       scope.awaitStartTime(this);
@@ -356,7 +362,10 @@
     },
   };
 
+  window.Animation = scope.Animation;
+
   if (WEB_ANIMATIONS_TESTING) {
     testing.webAnimationsNextAnimation = scope.Animation;
   }
+
 })(webAnimationsShared, webAnimationsNext, webAnimationsTesting);

@@ -22,9 +22,11 @@
     this._parent = null;
     this.children = children || [];
     this._reparent(this.children);
+    timingInput = shared.numericTimingToObject(timingInput);
     this._timingInput = shared.cloneTimingInput(timingInput);
     this._timing = shared.normalizeTimingInput(timingInput, true);
-    this.timing = shared.makeTiming(timingInput, true);
+    this.timing = shared.makeTiming(timingInput, true, this);
+    this.timing._effect = this;
 
     if (this._timing.duration === 'auto') {
       this._timing.duration = this.activeDuration;
@@ -91,6 +93,9 @@
     },
     prepend: function()  {
       this._putChild(arguments, false);
+    },
+    get parent() {
+      return this._parent;
     },
     get firstChild() {
       return this.children.length ? this.children[0] : null;
@@ -179,7 +184,9 @@
       }
     };
 
-    underlyingAnimation = scope.timeline._play(new scope.KeyframeEffect(null, ticker, group._timing));
+    var underlyingEffect = new KeyframeEffect(null, [], group._timing);
+    underlyingEffect.onsample = ticker;
+    underlyingAnimation = scope.timeline._play(underlyingEffect);
     return underlyingAnimation;
   };
 
@@ -192,22 +199,5 @@
   };
 
   scope.groupChildDuration = groupChildDuration;
-
-  // Alias GroupEffect & SequenceEffect to AnimationGroup & AnimationSequence respectively, to
-  // support old constructors (Animation*) for a deprecation period. Should be removed after 23 June
-  // 2015.
-  window.AnimationSequence = function() {
-    shared.deprecated('window.AnimationSequence', '2015-03-23', 'Use window.SequenceEffect instead.');
-    window.SequenceEffect.apply(this, arguments);
-  };
-  window.AnimationSequence.prototype = Object.create(window.SequenceEffect.prototype);
-  window.AnimationSequence.prototype.constructor = window.AnimationSequence;
-
-  window.AnimationGroup = function() {
-    shared.deprecated('window.AnimationGroup', '2015-03-23', 'Use window.GroupEffect instead.');
-    window.GroupEffect.apply(this, arguments);
-  };
-  window.AnimationGroup.prototype = Object.create(window.GroupEffect.prototype);
-  window.AnimationGroup.prototype.constructor = window.AnimationGroup;
 
 })(webAnimationsShared, webAnimationsNext, webAnimationsTesting);
