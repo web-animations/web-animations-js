@@ -4,6 +4,7 @@
   * Make AnimationEffectTiming (returned by AnimationEffect.timing) attributes mutable
   * Expose the Animation constructor
   * Change custom effects from AnimationEffects to onsample functions. Custom effects should now be created by setting the onsample attribute of a KeyframeEffect.
+
     For example, this is deprecated:
 
         var myEffect = new KeyframeEffect(
