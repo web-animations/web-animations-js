@@ -1,3 +1,6 @@
+### 2.1.2 - *July 8 2015*
+  * Fix a bug where onfinish was being called for GroupEffects before they were finished.
+
 ### 2.1.1 - *July 1 2015*
   * Add Animation.timeline getter
   * Add AnimationEffect.parent getter
