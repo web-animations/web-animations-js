@@ -28,13 +28,11 @@
     this._holdTime = 0;
     this._paused = false;
     this._isGroup = false;
-    this._animation = null;
     this._childAnimations = [];
     this._callback = null;
     this._oldPlayState = 'idle';
     this._rebuildUnderlyingAnimation();
     // Animations are constructed in the idle state.
-    this._animation.cancel();
     this._updatePromises();
   };
 
