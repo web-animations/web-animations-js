@@ -77,7 +77,7 @@
   } else {
     var now = function() {
       if (_now == undefined)
-        _now = performance.now();
+        _now = window.performance && performance.now ? performance.now() : Date.now();
       return _now;
     };
   }
