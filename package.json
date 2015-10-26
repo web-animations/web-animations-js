@@ -1,10 +1,22 @@
 {
   "name": "web-animations-js",
-  "private": true,
+  "description": "JavaScript implementation of the Web Animations API",
   "repository": {
     "type": "git",
     "url": "https://github.com/web-animations/web-animations-js.git"
   },
+  "version": "2.1.3",
+  "keywords": [
+    "animations",
+    "polyfill"
+  ],
+  "homepage": "https://github.com/web-animations",
+  "license": "Apache2",
+  "main": "web-animations.min.js",
+  "files": [
+    "*.min.js",
+    "*.min.js.map"
+  ],
   "devDependencies": {
     "mocha": "1.21.4",
     "chai": "^1.9.1",
