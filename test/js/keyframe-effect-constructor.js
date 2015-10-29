@@ -127,7 +127,8 @@ suite('keyframe-effect-constructor', function() {
   test('Remove custom effect from directly associated animation', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
-    var custom = new KeyframeEffect(null, function(x) {target.style.opacity = x;}, 10);
+    var custom = new KeyframeEffect(null, [], 10);
+    custom.onsample = function(x) { target.style.opacity = x; };
     var animation = document.timeline.play(custom);
     tick(0);
     assert.equal(getComputedStyle(target).opacity, 0);
