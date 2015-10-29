@@ -21,7 +21,7 @@ What is the polyfill?
 ---------------------
 
 The polyfill is a JavaScript implementation of the Web Animations API. It is
-supported on modern versions of all major browsers, including-
+supported on modern versions of all major browsers, including:
 
 * Chrome
 * Firefox 27+
