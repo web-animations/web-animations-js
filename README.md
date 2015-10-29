@@ -20,9 +20,14 @@ For more details see the
 What is the polyfill?
 ---------------------
 
-The polyfill is a JavaScript implementation of the Web Animations API. It works
-on modern versions of all major browsers. For more details about browser
-support see <https://www.polymer-project.org/resources/compatibility.html>.
+The polyfill is a JavaScript implementation of the Web Animations API. It is
+supported on modern versions of all major browsers, including-
+
+* Chrome
+* Firefox 27+
+* IE10+ (including Edge)
+* Safari (iOS) 7.1+
+* Safari (Mac) 9+
 
 Getting Started
 ---------------
