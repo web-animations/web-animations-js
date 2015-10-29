@@ -22,10 +22,16 @@
 
         git log `git describe --tags --abbrev=0 web-animations-js/master`..web-animations-next/master --pretty=format:"  * %s"
 
-3.  Commit the `History.md` change, and push to web-animations-js
+3.  Specify the new version inside `package.json` (for NPM), for example:
 
-4.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
-    commit pushed to web-animations-js in step #3. Copy the release notes from `History.md`
+    ```js
+      "version": "3.13.37",
+    ```
+
+4.  Commit both changes, and push to web-animations-js
+
+5.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
+    commit pushed to web-animations-js in step #4. Copy the release notes from `History.md`
     added in step #2.
 
 ## Pushing from web-animations-next to web-animations-js
