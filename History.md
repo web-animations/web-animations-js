@@ -1,3 +1,6 @@
+### 2.1.3 - *December 1 2015*
+  * Use `Date.now()` instead of `performace.now()` for mobile Safari.
+
 ### 2.1.2 - *July 8 2015*
   * Fix a bug where onfinish was being called for GroupEffects before they were finished.
 
