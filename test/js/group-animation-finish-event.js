@@ -51,10 +51,11 @@ suite('group-animation-finish-event', function() {
     tick(1001);
   });
 
-  test('fire after animation is cancelled', function(done) {
+  test('must not fire when animation is cancelled', function(done) {
     this.animation.onfinish = function(event) {
-      assert.equal(event.currentTime, 0);
-      assert.equal(event.timelineTime, 1, 'event must be fired on next sample');
+      assert(false, 'must not get fired');
+    };
+    this.animation.oncancel = function(event) {
       done();
     };
     tick(0);
@@ -81,7 +82,6 @@ suite('group-animation-finish-event', function() {
       done();
     };
     tick(0);
-    this.animation.cancel();
     tick(1000);
   });
 });

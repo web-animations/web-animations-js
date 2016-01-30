@@ -16,15 +16,15 @@
 
   shared.sequenceNumber = 0;
 
-  var AnimationEvent = function(target, currentTime, timelineTime) {
-    this.target = target;
-    this.currentTime = currentTime;
-    this.timelineTime = timelineTime;
+  var AnimationEvent = function(type, animationEventInit) {
+    this.target = animationEventInit.target;
+    this.currentTime = animationEventInit.currentTime;
+    this.timelineTime = animationEventInit.timelineTime;
 
-    this.type = 'finish';
+    this.type = type;
     this.bubbles = false;
     this.cancelable = false;
-    this.currentTarget = target;
+    this.currentTarget = animationEventInit.target;
     this.defaultPrevented = false;
     this.eventPhase = Event.AT_TARGET;
     this.timeStamp = Date.now();
@@ -39,7 +39,8 @@
     this._inTimeline = true;
     this._finishedFlag = false;
     this.onfinish = null;
-    this._finishHandlers = [];
+    this.oncancel = null;
+    this._eventHandlers = {cancel: [], finish: []};
     this._effect = effect;
     this._inEffect = this._effect._update(0);
     this._idle = true;
@@ -168,6 +169,7 @@
       this.currentTime = 0;
       this._startTime = null;
       this._effect._update(null);
+      this._cancelled = true;
       // effects are invalid after cancellation as the animation state
       // needs to un-apply.
       scope.invalidateEffects();
@@ -181,21 +183,26 @@
       this.play();
     },
     addEventListener: function(type, handler) {
-      if (typeof handler == 'function' && type == 'finish')
-        this._finishHandlers.push(handler);
+      if (typeof handler == 'function' && this._eventHandlers[type])
+        this._eventHandlers[type].push(handler);
     },
     removeEventListener: function(type, handler) {
-      if (type != 'finish')
+      if (!this._eventHandlers[type])
         return;
-      var index = this._finishHandlers.indexOf(handler);
+      var index = this._eventHandlers[type].indexOf(handler);
       if (index >= 0)
-        this._finishHandlers.splice(index, 1);
+        this._eventHandlers[type].splice(index, 1);
     },
     _fireEvents: function(baseTime) {
       var finished = this._isFinished;
       if ((finished || this._idle) && !this._finishedFlag) {
-        var event = new AnimationEvent(this, this._currentTime, baseTime);
-        var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
+        var type = this._cancelled ? 'cancel' : 'finish';
+        var event = new AnimationEvent(type, {
+          target: this,
+          currentTime: this._currentTime,
+          timelineTime: baseTime
+        });
+        var handlers = this._eventHandlers[type].concat(this['on' + type] ? [this['on' + type]] : []);
         setTimeout(function() {
           handlers.forEach(function(handler) {
             handler.call(event.target, event);
