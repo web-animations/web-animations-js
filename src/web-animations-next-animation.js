@@ -35,6 +35,7 @@
     this._rebuildUnderlyingAnimation();
     // Animations are constructed in the idle state.
     this._animation.cancel();
+    this._animation._cancelled = false;
     this._updatePromises();
   };
 
@@ -222,6 +223,21 @@
       } else {
         this._animation.onfinish = v;
         this.onfinish = this._animation.onfinish;
+      }
+    },
+    get oncancel() {
+      return this._oncancel;
+    },
+    set oncancel(v) {
+      if (typeof v == 'function') {
+        this._oncancel = v;
+        this._animation.oncancel = (function(e) {
+          e.target = this;
+          v.call(this, e);
+        }).bind(this);
+      } else {
+        this._animation.oncancel = v;
+        this.oncancel = this._animation.oncancel;
       }
     },
     get currentTime() {

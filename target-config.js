@@ -77,6 +77,7 @@
       'src/group-constructors.js'];
 
   var webAnimations1Test = [
+      'test/js/animation-cancel-event.js',
       'test/js/animation-finish-event.js',
       'test/js/animation.js',
       'test/js/apply-preserving-inline-style.js',
@@ -95,6 +96,7 @@
 
   var webAnimationsNextTest = webAnimations1Test.concat(
       'test/js/effect-callback.js',
+      'test/js/group-animation-cancel-event.js',
       'test/js/group-animation-finish-event.js',
       'test/js/group-animation.js',
       'test/js/group-constructors.js',
