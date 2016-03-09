@@ -37,7 +37,7 @@
     this._paused = false;
     this._playbackRate = 1;
     this._inTimeline = true;
-    this._finishedFlag = false;
+    this._finishedFlag = true;
     this.onfinish = null;
     this._finishHandlers = [];
     this._effect = effect;
@@ -139,12 +139,11 @@
       if (this._isFinished || this._idle) {
         this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
         this._startTime = null;
-        scope.invalidateEffects();
       }
       this._finishedFlag = false;
-      scope.restart();
       this._idle = false;
       this._ensureAlive();
+      scope.invalidateEffects();
     },
     pause: function() {
       if (!this._isFinished && !this._paused && !this._idle) {
@@ -159,6 +158,7 @@
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
       this._startTime = this._totalDuration - this.currentTime;
       this._currentTimePending = false;
+      scope.invalidateEffects();
     },
     cancel: function() {
       if (!this._inEffect)
@@ -171,10 +171,6 @@
       // effects are invalid after cancellation as the animation state
       // needs to un-apply.
       scope.invalidateEffects();
-      // in the absence of effect revalidation via getComputedStyle, we
-      // need a single tick to remove the effect of the cancelled
-      // animation.
-      scope.restart();
     },
     reverse: function() {
       this.playbackRate *= -1;
@@ -192,29 +188,39 @@
         this._finishHandlers.splice(index, 1);
     },
     _fireEvents: function(baseTime) {
-      var finished = this._isFinished;
-      if ((finished || this._idle) && !this._finishedFlag) {
-        var event = new AnimationEvent(this, this._currentTime, baseTime);
-        var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
-        setTimeout(function() {
-          handlers.forEach(function(handler) {
-            handler.call(event.target, event);
-          });
-        }, 0);
+      if (this._isFinished || this._idle) {
+        if (!this._finishedFlag) {
+          var event = new AnimationEvent(this, this._currentTime, baseTime);
+          var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
+          setTimeout(function() {
+            handlers.forEach(function(handler) {
+              handler.call(event.target, event);
+            });
+          }, 0);
+          this._finishedFlag = true;
+        }
+      } else {
+        this._finishedFlag = false;
       }
-      this._finishedFlag = finished;
     },
-    _tick: function(timelineTime) {
+    _tick: function(timelineTime, isAnimationFrame) {
       if (!this._idle && !this._paused) {
-        if (this._startTime == null)
-          this.startTime = timelineTime - this._currentTime / this.playbackRate;
-        else if (!this._isFinished)
+        if (this._startTime == null) {
+          if (isAnimationFrame) {
+            this.startTime = timelineTime - this._currentTime / this.playbackRate;
+          }
+        } else if (!this._isFinished) {
           this._tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
+        }
       }
 
-      this._currentTimePending = false;
-      this._fireEvents(timelineTime);
-      return !this._idle && (this._inEffect || !this._finishedFlag);
+      if (isAnimationFrame) {
+        this._currentTimePending = false;
+        this._fireEvents(timelineTime);
+      }
+    },
+    get _needsTick() {
+      return (this.playState in {'pending': 1, 'running': 1}) || !this._finishedFlag;
     },
   };
 
