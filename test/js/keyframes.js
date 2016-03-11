@@ -437,7 +437,7 @@ suite('keyframe-interpolations - convertEffectInput', function() {
     document.documentElement.appendChild(this.target);
   });
   teardown(function() {
-    this.target.remove();
+    this.target.parentNode.removeChild(this.target);
   });
 
   test('Convert effect input for a simple keyframe list with one property.', function() {

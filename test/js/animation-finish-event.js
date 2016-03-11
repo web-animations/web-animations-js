@@ -5,7 +5,7 @@ suite('animation-finish-event', function() {
     this.animation = this.element.animate([], 1000);
   });
   teardown(function() {
-    this.element.remove();
+    this.element.parentNode.removeChild(this.element);
   });
 
   test('fire when animation completes', function(done) {
