@@ -13,8 +13,7 @@ suite('group-animation-finish-event', function() {
     this.animation = document.timeline.play(sequenceEffect, 1000);
   });
   teardown(function() {
-    if (this.element.parent)
-      this.element.removeChild(this.element);
+    this.element.remove();
   });
 
   test('fire when animation completes', function(done) {
