@@ -221,7 +221,7 @@
         }).bind(this);
       } else {
         this._animation.onfinish = v;
-        this.onfinish = this._animation.onfinish;
+        this._onfinish = this._animation.onfinish;
       }
     },
     get currentTime() {
