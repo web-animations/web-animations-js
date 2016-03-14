@@ -43,7 +43,7 @@
   ];
 
   var webAnimations1BonusSrc = [
-      'src/web-animations-bonus-element-animatable.js',
+      'src/web-animations-bonus-cancel-events.js',
   ];
 
   var liteWebAnimations1Src = [
