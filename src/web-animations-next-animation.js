@@ -224,6 +224,21 @@
         this._onfinish = this._animation.onfinish;
       }
     },
+    get oncancel() {
+      return this._oncancel;
+    },
+    set oncancel(v) {
+      if (typeof v == 'function') {
+        this._oncancel = v;
+        this._animation.oncancel = (function(e) {
+          e.target = this;
+          v.call(this, e);
+        }).bind(this);
+      } else {
+        this._animation.oncancel = v;
+        this._oncancel = this._animation.oncancel;
+      }
+    },
     get currentTime() {
       this._updatePromises();
       var currentTime = this._animation.currentTime;
