@@ -75,4 +75,18 @@ suite('animation-finish-event', function() {
     this.animation.cancel();
     tick(1000);
   });
+
+  test('can wipe onfinish handler by setting it to null', function(done) {
+    var finishAnimation = this.element.animate([], 1100);
+    finishAnimation.onfinish = function(event) {
+      done();
+    };
+
+    this.animation.onfinish = function(event) {
+      assert(false, 'onfinish should be wiped');
+    };
+    this.animation.onfinish = null;
+    tick(0);
+    tick(1200);
+  });
 });
