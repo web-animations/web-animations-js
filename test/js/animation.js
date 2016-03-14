@@ -335,7 +335,7 @@ suite('animation', function() {
     tick(110);
     assert.equal(getComputedStyle(target).marginLeft, '50px');
     animation.cancel();
-    // getComputedStyle forces a tick.
+    tick(110);
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     assert.deepEqual(webAnimations1.timeline._animations, []);
     tick(120);

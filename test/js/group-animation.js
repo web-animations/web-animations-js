@@ -442,8 +442,8 @@ suite('group-animation', function() {
   });
 
   test('effects apply in the correct order', function() {
-    tick(0);
     var animation = document.timeline.play(this.complexSource);
+    tick(0);
     animation.currentTime = 0;
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
     animation.currentTime = 1;
@@ -483,7 +483,6 @@ suite('group-animation', function() {
   });
 
   test('redundant effect node wrapping', function() {
-    tick(100);
     var sequenceEffect = new SequenceEffect([
       this.staticEffect(this.target, '0px', 1),
       new GroupEffect([
@@ -494,6 +493,7 @@ suite('group-animation', function() {
       ]),
     ]);
     var animation = document.timeline.play(sequenceEffect);
+    tick(100);
     assert.equal(getComputedStyle(this.target).marginLeft, '0px');
     checkTimes(animation, [100, 0], [
       [100, 0, 0, 0], [[ // 0
@@ -1688,6 +1688,7 @@ suite('group-animation', function() {
     assert.equal(animation.playState, 'pending');
     group.prepend(opacity1);
     animation.play();
+    tick(150);
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.5, 0.001, 't=150, target1 opacity');
     assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.5, 0.001, 't=150, target2 opacity');
 
@@ -1734,6 +1735,7 @@ suite('group-animation', function() {
     animation.pause();
     assert.equal(animation.playState, 'pending');
     group.prepend(opacity1);
+    tick(50);
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.833, 0.001, 't=150, target1 opacity');
     assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=150, target2 opacity');
 
@@ -1742,7 +1744,9 @@ suite('group-animation', function() {
     assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=350, target2 opacity');
     assert.closeTo(Number(getComputedStyle(this.target3).opacity), 1, 0.001, 't=350, target3 opacity');
 
+    // FIXME: this should get a start time, but it does not???
     group.append(opacity3);
+    tick(350);
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 0.833, 0.001, 't=351, target1 opacity');
     assert.closeTo(Number(getComputedStyle(this.target2).opacity), 0.833, 0.001, 't=351, target2 opacity');
     assert.closeTo(Number(getComputedStyle(this.target3).opacity), 0.833, 0.001, 't=351, target3 opacity');
@@ -1895,6 +1899,7 @@ suite('group-animation', function() {
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=100, target1 opacity');
 
     animation.playbackRate = 0.5;
+    tick(100);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=100, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 0, 0)', 't=100, target2 transform');
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=100, target1 opacity');
@@ -1904,7 +1909,9 @@ suite('group-animation', function() {
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=200, target2 transform');
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 opacity');
 
+    // FIXME: This should get a start time.
     sequence.append(opacity1);
+    tick(200);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 150, 0)', 't=200, target2 transform');
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 opacity');
@@ -1950,6 +1957,7 @@ suite('group-animation', function() {
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 opacity');
 
     animation.reverse();
+    tick(200);
     assert.equal(getComputedStyle(this.target1).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target1 transform');
     assert.equal(getComputedStyle(this.target2).transform, 'matrix(1, 0, 0, 1, 300, 0)', 't=200, target2 transform');
     assert.closeTo(Number(getComputedStyle(this.target1).opacity), 1, 0.001, 't=200, target1 opacity');
