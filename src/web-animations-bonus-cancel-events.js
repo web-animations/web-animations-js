@@ -1,4 +1,4 @@
-// Copyright 2014 Google Inc. All rights reserved.
+// Copyright 2016 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,15 +18,12 @@
     return;
   }
 
-  var _now = undefined;
   if (WEB_ANIMATIONS_TESTING) {
     var now = function() { return webAnimations1.timeline.currentTime; };
+  } else if (window.performance && performance.now) {
+    var now = function() { return performance.now(); };
   } else {
-    var now = function() {
-      if (_now == undefined)
-        _now = window.performance && performance.now ? performance.now() : Date.now();
-      return _now;
-    };
+    var now = function() { return Date.now(); };
   }
 
   var AnimationCancelEvent = function(target, currentTime, timelineTime) {
@@ -45,14 +42,14 @@
 
   var originalElementAnimate = window.Element.prototype.animate;
   window.Element.prototype.animate = function(effectInput, timingInput) {
-    var animation = originalElementAnimate.apply(this, [effectInput, timingInput]);
+    var animation = originalElementAnimate.call(this, effectInput, timingInput);
 
     animation._cancelHandlers = [];
     animation.oncancel = null;
 
     var originalCancel = animation.cancel;
     animation.cancel = function() {
-      originalCancel.apply(this);
+      originalCancel.call(this);
       var event = new AnimationCancelEvent(this, null, now());
       var handlers = this._cancelHandlers.concat(this.oncancel ? [this.oncancel] : []);
       setTimeout(function() {
@@ -66,7 +63,8 @@
     animation.addEventListener = function(type, handler) {
       if (typeof handler == 'function' && type == 'cancel')
         this._cancelHandlers.push(handler);
-      originalAddEventListener.apply(this, [type, handler]);
+      else
+        originalAddEventListener.call(this, type, handler);
     };
 
     var originalRemoveEventListener = animation.removeEventListener;
@@ -75,8 +73,9 @@
         var index = this._cancelHandlers.indexOf(handler);
         if (index >= 0)
           this._cancelHandlers.splice(index, 1);
+      } else {
+        originalRemoveEventListener.call(this, type, handler);
       }
-      originalRemoveEventListener.apply(this, [type, handler]);
     };
 
     return animation;
