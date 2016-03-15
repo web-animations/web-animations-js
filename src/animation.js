@@ -165,6 +165,7 @@
         return;
       this._inEffect = false;
       this._idle = true;
+      this._finishedFlag = true;
       this.currentTime = 0;
       this._startTime = null;
       this._effect._update(null);
@@ -188,7 +189,7 @@
         this._finishHandlers.splice(index, 1);
     },
     _fireEvents: function(baseTime) {
-      if (this._isFinished || this._idle) {
+      if (this._isFinished) {
         if (!this._finishedFlag) {
           var event = new AnimationEvent(this, this._currentTime, baseTime);
           var handlers = this._finishHandlers.concat(this.onfinish ? [this.onfinish] : []);
