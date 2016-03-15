@@ -42,17 +42,6 @@ suite('animation-finish-event', function() {
     tick(1001);
   });
 
-  test('fire after animation is cancelled', function(done) {
-    this.animation.onfinish = function(event) {
-      assert.equal(event.currentTime, 0);
-      assert.equal(event.timelineTime, 1, 'event must be fired on next sample');
-      done();
-    };
-    tick(0);
-    this.animation.cancel();
-    tick(1);
-  });
-
   test('multiple event listeners', function(done) {
     var count = 0;
     function createHandler(expectedCount) {
@@ -72,7 +61,7 @@ suite('animation-finish-event', function() {
       done();
     };
     tick(0);
-    this.animation.cancel();
+    this.animation.finish();
     tick(1000);
   });
 
