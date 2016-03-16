@@ -116,34 +116,33 @@ module.exports = function(grunt) {
     WEB_ANIMATIONS_TESTING: false
   };
 
-  function buildWebAnimations1(target) {
+  function build(target) {
     var config = targetConfig[target];
-    return genTarget(target).concat([
-      concat(config.scopeSrc.concat(config.sharedSrc).concat(config.webAnimations1Src), 'inter-raw-' + target + '.js', concatDefines),
-      guard('inter-raw-' + target + '.js', 'inter-' + target + '.js'),
-      concat(config.webAnimations1BonusSrc, 'inter-bonus-' + target + '.js', concatDefines),
-      concatWithMaps(['inter-' + target + '.js', 'inter-bonus-' + target + '.js'], 'inter-all-' + target + '.js'),
-      compress('inter-all-' + target + '.js', target + '.min.js', concatDefines)
-    ]);
-  }
-
-  function buildWebAnimationsNext(target) {
-    var config = targetConfig[target];
-    return genTarget(target).concat([
+    var steps = [
       concat(config.scopeSrc.concat(config.sharedSrc), 'inter-' + target + '-preamble.js', concatDefines),
-      concat(config.webAnimations1Src, 'inter-component-' + target + 'web-animations-1.js', concatDefines),
-      guard('inter-component-' + target + 'web-animations-1.js', 'inter-guarded-' + target + '-web-animations-1.js'),
-      concat(config.webAnimationsNextSrc, 'inter-component-' + target + '.js', concatDefines),
+      concat(config.webAnimations1Src, 'inter-component-' + target + '-web-animations-1.js', concatDefines),
+      guard('inter-component-' + target + '-web-animations-1.js', 'inter-guarded-' + target + '-web-animations-1.js'),
       concat(config.webAnimations1BonusSrc, 'inter-bonus-' + target + '.js', concatDefines),
-      concatWithMaps(['inter-' + target + '-preamble.js', 'inter-guarded-' + target + '-web-animations-1.js', 'inter-bonus-' + target + '.js', 'inter-component-' + target + '.js'],
-          'inter-' + target + '.js'),
+    ];
+    var filenames = [
+      'inter-' + target + '-preamble.js',
+      'inter-guarded-' + target + '-web-animations-1.js',
+      'inter-bonus-' + target + '.js',
+    ];
+    if (config.webAnimationsNextSrc.length > 0) {
+      steps.push(concat(config.webAnimationsNextSrc, 'inter-component-' + target + '.js', concatDefines));
+      filenames.push('inter-component-' + target + '.js');
+    }
+    steps.push(
+      concatWithMaps(filenames, 'inter-' + target + '.js'),
       compress('inter-' + target + '.js', target + '.min.js', concatDefines)
-    ]);
+    );
+    return genTarget(target).concat(steps);
   }
 
-  grunt.registerTask('web-animations', buildWebAnimations1('web-animations'));
-  grunt.registerTask('web-animations-next', buildWebAnimationsNext('web-animations-next'));
-  grunt.registerTask('web-animations-next-lite', buildWebAnimationsNext('web-animations-next-lite'));
+  grunt.registerTask('web-animations', build('web-animations'));
+  grunt.registerTask('web-animations-next', build('web-animations-next'));
+  grunt.registerTask('web-animations-next-lite', build('web-animations-next-lite'));
 
   var testTargets = {'web-animations': {}, 'web-animations-next': {}};
 
