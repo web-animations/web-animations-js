@@ -177,9 +177,22 @@ suite('keyframes', function() {
   });
 
   test('Normalize input that is not an array.', function() {
-    assert.throws(function() {
-      normalizeKeyframes(10);
+    var normalizedKeyframes;
+    assert.doesNotThrow(function() {
+      normalizedKeyframes = normalizeKeyframes({left: '10px'});
     });
+    assert(normalizedKeyframes.length, 1);
+    assert.equal(normalizedKeyframes[0].left, '10px');
+  });
+
+  test('Normalize object-form input.', function() {
+    var normalizedKeyframes;
+    assert.doesNotThrow(function() {
+      normalizedKeyframes = normalizeKeyframes({left: ['10px', '100px']});
+    });
+    assert(normalizedKeyframes.length, 2);
+    assert.equal(normalizedKeyframes[0].left, '10px');
+    assert.equal(normalizedKeyframes[1].left, '100px');
   });
 
   test('Normalize an empty array.', function() {

@@ -44,6 +44,7 @@
 
   var webAnimations1BonusSrc = [
       'src/web-animations-bonus-cancel-events.js',
+      'src/web-animations-bonus-object-form-keyframes.js',
   ];
 
   var liteWebAnimations1Src = [
