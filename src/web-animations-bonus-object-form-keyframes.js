@@ -16,16 +16,26 @@
   // If an animation with the new syntax applies an effect, there's no need
   // to load this part of the polyfill.
   var element = document.documentElement;
-  var player = element.animate({'left': ['10px', '20px']},
+  var animation = element.animate({'opacity': ['1', '0']},
       {duration: 1, fill: 'forwards'});
-  player.finish();
-  if (getComputedStyle(element).getPropertyValue('left') == '20px')
+  animation.finish();
+  var animated = getComputedStyle(element).getPropertyValue('opacity') == '0';
+  animation.cancel();
+  if (animated) {
     return;
+  }
 
   var originalElementAnimate = window.Element.prototype.animate;
   window.Element.prototype.animate = function(effectInput, timingInput) {
-    if (!Array.isArray(effectInput) && effectInput !== null)
+    if (Symbol && Symbol.iterator && Array.prototype.from && effectInput[Symbol.iterator]) {
+      // Handle iterables in most browsers by converting to an array
+      effectInput = Array.from(effectInput);
+    }
+
+    if (!Array.isArray(effectInput) && effectInput !== null) {
       effectInput = shared.convertToArrayForm(effectInput);
+    }
+
     return originalElementAnimate.call(this, effectInput, timingInput);
   };
 })(webAnimationsShared);
