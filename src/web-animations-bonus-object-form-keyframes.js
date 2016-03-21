@@ -28,7 +28,7 @@
   var originalElementAnimate = window.Element.prototype.animate;
   window.Element.prototype.animate = function(effectInput, timingInput) {
     if (Symbol && Symbol.iterator && Array.prototype.from && effectInput[Symbol.iterator]) {
-      // Handle iterables in most browsers by converting to an array
+      // Handle custom iterables in most browsers by converting to an array
       effectInput = Array.from(effectInput);
     }
 
