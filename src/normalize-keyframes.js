@@ -214,7 +214,7 @@
       return [];
     }
 
-    if (Symbol && Symbol.iterator && Array.prototype.from && effectInput[Symbol.iterator]) {
+    if (window.Symbol && Symbol.iterator && Array.prototype.from && effectInput[Symbol.iterator]) {
       // Handle custom iterables in most browsers by converting to an array
       effectInput = Array.from(effectInput);
     }
