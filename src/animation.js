@@ -31,6 +31,10 @@
   };
 
   scope.Animation = function(effect) {
+    this.id = '';
+    if (effect) {
+      this.id = effect._id;
+    }
     this._sequenceNumber = shared.sequenceNumber++;
     this._currentTime = 0;
     this._startTime = null;

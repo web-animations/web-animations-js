@@ -53,7 +53,7 @@
     this._frames = shared.normalizeKeyframes(effectInput);
   }
 
-  scope.KeyframeEffect = function(target, effectInput, timingInput) {
+  scope.KeyframeEffect = function(target, effectInput, timingInput, id) {
     this.target = target;
     this._parent = null;
 
@@ -71,6 +71,7 @@
     }
     this._keyframes = effectInput;
     this.activeDuration = shared.calculateActiveDuration(this._timing);
+    this._id = id;
     return this;
   };
 
@@ -96,7 +97,7 @@
       if (typeof this.getFrames() == 'function') {
         throw new Error('Cloning custom effects is not supported.');
       }
-      var clone = new KeyframeEffect(this.target, [], shared.cloneTimingInput(this._timingInput));
+      var clone = new KeyframeEffect(this.target, [], shared.cloneTimingInput(this._timingInput), this._id);
       clone._normalizedKeyframes = this._normalizedKeyframes;
       clone._keyframes = this._keyframes;
       return clone;
@@ -107,8 +108,12 @@
   };
 
   var originalElementAnimate = Element.prototype.animate;
-  Element.prototype.animate = function(effectInput, timing) {
-    return scope.timeline._play(new scope.KeyframeEffect(this, effectInput, timing));
+  Element.prototype.animate = function(effectInput, options) {
+    var id = '';
+    if (options) {
+      id = options.id;
+    }
+    return scope.timeline._play(new scope.KeyframeEffect(this, effectInput, options, id));
   };
 
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
@@ -119,13 +124,14 @@
       if (typeof keyframes == 'function') {
         keyframes = [];
       }
-      var timing = keyframeEffect._timingInput;
+      var options = keyframeEffect._timingInput;
+      options.id = keyframeEffect._id;
     } else {
       var target = nullTarget;
       var keyframes = [];
-      var timing = 0;
+      var options = 0;
     }
-    return originalElementAnimate.apply(target, [keyframes, timing]);
+    return originalElementAnimate.apply(target, [keyframes, options]);
   };
 
   // TODO: Remove this once we remove support for custom KeyframeEffects.

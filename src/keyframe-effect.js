@@ -28,7 +28,7 @@
     return effectTime;
   }
 
-  scope.KeyframeEffect = function(target, effectInput, timingInput) {
+  scope.KeyframeEffect = function(target, effectInput, timingInput, id) {
     var effectTime = EffectTime(shared.normalizeTimingInput(timingInput));
     var interpolations = scope.convertEffectInput(effectInput);
     var timeFraction;
@@ -49,6 +49,7 @@
     };
     keyframeEffect._isCurrent = effectTime._isCurrent;
     keyframeEffect._totalDuration = effectTime._totalDuration;
+    keyframeEffect._id = id;
     return keyframeEffect;
   };
 
