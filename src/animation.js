@@ -32,7 +32,7 @@
 
   scope.Animation = function(effect) {
     this.id = '';
-    if (effect) {
+    if (effect && effect._id) {
       this.id = effect._id;
     }
     this._sequenceNumber = shared.sequenceNumber++;

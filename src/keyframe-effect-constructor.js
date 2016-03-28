@@ -110,7 +110,7 @@
   var originalElementAnimate = Element.prototype.animate;
   Element.prototype.animate = function(effectInput, options) {
     var id = '';
-    if (options) {
+    if (options && options.id) {
       id = options.id;
     }
     return scope.timeline._play(new scope.KeyframeEffect(this, effectInput, options, id));
