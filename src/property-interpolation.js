@@ -12,9 +12,15 @@
 //   See the License for the specific language governing permissions and
 // limitations under the License.
 
-(function(scope, testing) {
+(function(shared, scope, testing) {
 
   var propertyHandlers = {};
+
+  function toCamelCase(property) {
+    return property.replace(/-(.)/g, function(_, c) {
+      return c.toUpperCase();
+    });
+  }
 
   function addPropertyHandler(parser, merger, property) {
     propertyHandlers[property] = propertyHandlers[property] || [];
@@ -24,13 +30,7 @@
     for (var i = 0; i < properties.length; i++) {
       var property = properties[i];
       WEB_ANIMATIONS_TESTING && console.assert(property.toLowerCase() === property);
-      addPropertyHandler(parser, merger, property);
-      if (/-/.test(property)) {
-        // Add camel cased variant.
-        addPropertyHandler(parser, merger, property.replace(/-(.)/g, function(_, c) {
-          return c.toUpperCase();
-        }));
-      }
+      addPropertyHandler(parser, merger, toCamelCase(property));
     }
   }
   scope.addPropertiesHandler = addPropertiesHandler;
@@ -90,16 +90,17 @@
   };
 
   function propertyInterpolation(property, left, right) {
+    var ucProperty = property;
+    if (/-/.test(property) && !shared.isDeprecated('Hyphenated property names', '2016-03-22', 'Use camelCase instead.', true)) {
+      ucProperty = toCamelCase(property);
+    }
     if (left == 'initial' || right == 'initial') {
-      var ucProperty = property.replace(/-(.)/g, function(_, c) {
-        return c.toUpperCase();
-      });
       if (left == 'initial')
         left = initialValues[ucProperty];
       if (right == 'initial')
         right = initialValues[ucProperty];
     }
-    var handlers = left == right ? [] : propertyHandlers[property];
+    var handlers = left == right ? [] : propertyHandlers[ucProperty];
     for (var i = 0; handlers && i < handlers.length; i++) {
       var parsedLeft = handlers[i][0](left);
       var parsedRight = handlers[i][0](right);
@@ -121,5 +122,5 @@
   }
   scope.propertyInterpolation = propertyInterpolation;
 
-})(webAnimations1, webAnimationsTesting);
+})(webAnimationsShared, webAnimations1, webAnimationsTesting);
 
