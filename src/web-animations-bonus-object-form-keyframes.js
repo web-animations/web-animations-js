@@ -26,7 +26,7 @@
   }
 
   var originalElementAnimate = window.Element.prototype.animate;
-  window.Element.prototype.animate = function(effectInput, timingInput) {
+  window.Element.prototype.animate = function(effectInput, options) {
     if (window.Symbol && Symbol.iterator && Array.prototype.from && effectInput[Symbol.iterator]) {
       // Handle custom iterables in most browsers by converting to an array
       effectInput = Array.from(effectInput);
@@ -36,6 +36,6 @@
       effectInput = shared.convertToArrayForm(effectInput);
     }
 
-    return originalElementAnimate.call(this, effectInput, timingInput);
+    return originalElementAnimate.call(this, effectInput, options);
   };
 })(webAnimationsShared);

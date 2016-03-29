@@ -543,4 +543,11 @@ suite('animation', function() {
     assert.equal(a.startTime, null);
     assert.equal(a.playState, 'pending');
   });
+  test('Animations have optional ID', function() {
+    tick(100);
+    var a = document.body.animate([], { duration: 1000 });
+    assert.equal(a.id, '');
+    a = document.body.animate([], { duration: 1000, id: 'anim-id' });
+    assert.equal(a.id, 'anim-id');
+  });
 });

@@ -18,7 +18,8 @@
     return node._timing.delay + node.activeDuration + node._timing.endDelay;
   }
 
-  function constructor(children, timingInput) {
+  function constructor(children, timingInput, id) {
+    this._id = id;
     this._parent = null;
     this.children = children || [];
     this._reparent(this.children);
@@ -184,7 +185,7 @@
       }
     };
 
-    var underlyingEffect = new KeyframeEffect(null, [], group._timing);
+    var underlyingEffect = new KeyframeEffect(null, [], group._timing, group._id);
     underlyingEffect.onsample = ticker;
     underlyingAnimation = scope.timeline._play(underlyingEffect);
     return underlyingAnimation;

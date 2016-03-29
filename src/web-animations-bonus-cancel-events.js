@@ -41,8 +41,8 @@
   };
 
   var originalElementAnimate = window.Element.prototype.animate;
-  window.Element.prototype.animate = function(effectInput, timingInput) {
-    var animation = originalElementAnimate.call(this, effectInput, timingInput);
+  window.Element.prototype.animate = function(effectInput, options) {
+    var animation = originalElementAnimate.call(this, effectInput, options);
 
     animation._cancelHandlers = [];
     animation.oncancel = null;

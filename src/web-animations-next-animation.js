@@ -16,6 +16,10 @@
   scope.animationsWithPromises = [];
 
   scope.Animation = function(effect, timeline) {
+    this.id = '';
+    if (effect && effect._id) {
+      this.id = effect._id;
+    }
     this.effect = effect;
     if (effect) {
       effect._animation = this;
