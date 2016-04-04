@@ -33,18 +33,17 @@ suite('timing-utilities', function() {
     f = toTimingFunction('cubic-bezier(0, 1, 1, 0)');
     assert.closeTo(f(0.104), 0.392, 0.01);
 
-    function assertIsLinear(easing) {
-      var f = toTimingFunction(easing);
-      for (var i = 0; i <= 1; i += 0.1) {
-        assert.equal(f(i), i, easing + ' is linear');
-      }
+    function assertThrows(easing) {
+      assert.throws(function() {
+        toTimingFunction(easing);
+      }, easing);
     }
 
-    assertIsLinear('cubic-bezier(.25, 0.1, 0.25, 1.)');
-    assertIsLinear('cubic-bezier(0, 1, -1, 1)');
-    assertIsLinear('an elephant');
-    assertIsLinear('cubic-bezier(-1, 1, 1, 1)');
-    assertIsLinear('cubic-bezier(1, 1, 1)');
+    assertThrows('cubic-bezier(.25, 0.1, 0.25, 1.)');
+    assertThrows('cubic-bezier(0, 1, -1, 1)');
+    assertThrows('an elephant');
+    assertThrows('cubic-bezier(-1, 1, 1, 1)');
+    assertThrows('cubic-bezier(1, 1, 1)');
 
     f = toTimingFunction('steps(10, end)');
     assert.equal(f(0), 0);

@@ -217,17 +217,21 @@
     }
     styleForCleaning.animationTimingFunction = '';
     styleForCleaning.animationTimingFunction = easing;
-    easing = styleForCleaning.animationTimingFunction;
+    var validatedEasing = styleForCleaning.animationTimingFunction;
 
-    var cubicData = cubicBezierRe.exec(easing);
+    if (validatedEasing == '') {
+      throw new TypeError(easing + ' is not a valid value for easing');
+    }
+
+    var cubicData = cubicBezierRe.exec(validatedEasing);
     if (cubicData) {
       return cubic.apply(this, cubicData.slice(1).map(Number));
     }
-    var stepData = stepRe.exec(easing);
+    var stepData = stepRe.exec(validatedEasing);
     if (stepData) {
       return step(Number(stepData[1]), {'start': Start, 'middle': Middle, 'end': End}[stepData[2]]);
     }
-    var preset = presets[easing];
+    var preset = presets[validatedEasing];
     if (preset) {
       return preset;
     }
