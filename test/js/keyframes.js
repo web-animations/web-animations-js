@@ -442,10 +442,9 @@ suite('keyframes', function() {
     assert.equal(typeof interpolations[1].interpolation, 'function');
   });
 
-  test('Make interpolations with invalid easing.', function() {
-    var interpolations;
+  test('Make interpolations with invalid easing should throw.', function() {
     assert.throws(function() {
-      interpolations = makeInterpolations(makePropertySpecificKeyframeGroups(normalizeKeyframes([
+      makeInterpolations(makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px', easing: 'pants and ducks'},
         {left: '200px'},
       ])));
