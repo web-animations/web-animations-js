@@ -73,12 +73,13 @@
   function makeInterpolations(propertySpecificKeyframeGroups) {
     var interpolations = [];
     for (var groupName in propertySpecificKeyframeGroups) {
-      var group = propertySpecificKeyframeGroups[groupName];
-      for (var i = 0; i < group.length - 1; i++) {
-        var startTime = group[i].offset;
-        var endTime = group[i + 1].offset;
-        var startValue = group[i].value;
-        var endValue = group[i + 1].value;
+      var keyframes = propertySpecificKeyframeGroups[groupName];
+      for (var i = 0; i < keyframes.length - 1; i++) {
+        var startTime = keyframes[i].offset;
+        var endTime = keyframes[i + 1].offset;
+        var startValue = keyframes[i].value;
+        var endValue = keyframes[i + 1].value;
+        var easing = keyframes[i].easing;
         if (startTime == endTime) {
           if (endTime == 1) {
             startValue = endValue;
@@ -89,7 +90,7 @@
         interpolations.push({
           startTime: startTime,
           endTime: endTime,
-          easing: group[i].easing,
+          easing: shared.toTimingFunction(easing ? easing : 'linear'),
           property: groupName,
           interpolation: scope.propertyInterpolation(groupName, startValue, endValue)
         });
