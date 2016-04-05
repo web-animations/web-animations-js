@@ -2,7 +2,7 @@
 
 1. `git clone git@github.com:web-animations/web-animations-next.git`
 1. Install [node](https://nodejs.org/en/) and make sure `npm` is in your $PATH
-1. Run `npm install` in the respository.
+1. Run `npm install` in the respository to pull in development dependencies.
 1. Run `npm install -g grunt grunt-cli` to get the build tools for the command line.
 1. Run `grunt` to build the polyfill.
 1. Run `grunt test` to run polyfill tests using the build.
