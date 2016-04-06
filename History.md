@@ -3,27 +3,32 @@
 
     For example, this is deprecated:
 
-      element.animate([{'font-size': '0px'}, {'font-size': '10px'}]);
+        element.animate([{'font-size': '0px'}, {'font-size': '10px'}]);
 
     and this should be used instead:
 
-      element.animate([{fontSize: '0px'}, {fontSize: '10px'}]);
+        element.animate([{fontSize: '0px'}, {fontSize: '10px'}]);
 
   * Added arbitrary easing capitalisation.
+
   * Added "id" effect option. (http://w3c.github.io/web-animations/#dom-keyframeanimationoptions-id)
+
   * Added "oncancel" event handler.
+
   * Added value list keyframe syntax.
 
     As as alternative to:
 
-      element.animate([{color: 'red'}, {color: 'green'}, {color: 'blue'}]);
+        element.animate([{color: 'red'}, {color: 'green'}, {color: 'blue'}]);
 
     you can now use:
 
-      element.animate({color: ['red', 'green', 'blue']});
+        element.animate({color: ['red', 'green', 'blue']});
 
   * Fixed easing TypeError in FireFox Nightly when using groups.
+
   * Fixed delayed animation updates on Safari and Firefox
+
   * Fixed infinite recursion when setting onfinish to null.
 
 ### 2.1.4 - *December 1 2015*
