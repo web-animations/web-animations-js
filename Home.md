@@ -44,6 +44,10 @@
     commit pushed to web-animations-js in step #4. Copy the release notes from `History.md`
     added in step #2.
 
+6. Once you've pushed to web-animations-js, run `npm publish` from that checked-out folder
+
+   To do this, you'll need to be a collaborator [on the NPM project](https://www.npmjs.com/package/web-animations-js), or have a collaborator help you.
+
 ## Pushing from web-animations-next to web-animations-js
 
     git fetch web-animations-next
