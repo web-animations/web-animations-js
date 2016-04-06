@@ -16,6 +16,10 @@
   scope.animationsWithPromises = [];
 
   scope.Animation = function(effect, timeline) {
+    this.id = '';
+    if (effect && effect._id) {
+      this.id = effect._id;
+    }
     this.effect = effect;
     if (effect) {
       effect._animation = this;
@@ -210,18 +214,29 @@
       return this._readyPromise;
     },
     get onfinish() {
-      return this._onfinish;
+      return this._animation.onfinish;
     },
     set onfinish(v) {
       if (typeof v == 'function') {
-        this._onfinish = v;
         this._animation.onfinish = (function(e) {
           e.target = this;
           v.call(this, e);
         }).bind(this);
       } else {
         this._animation.onfinish = v;
-        this.onfinish = this._animation.onfinish;
+      }
+    },
+    get oncancel() {
+      return this._animation.oncancel;
+    },
+    set oncancel(v) {
+      if (typeof v == 'function') {
+        this._animation.oncancel = (function(e) {
+          e.target = this;
+          v.call(this, e);
+        }).bind(this);
+      } else {
+        this._animation.oncancel = v;
       }
     },
     get currentTime() {

@@ -1,4 +1,4 @@
-suite('group-animation-finish-event', function() {
+suite('group-animation-cancel-event', function() {
   setup(function() {
     document.timeline.currentTime = undefined;
     this.element = document.createElement('div');
@@ -13,41 +13,53 @@ suite('group-animation-finish-event', function() {
     this.animation = document.timeline.play(sequenceEffect, 1000);
   });
   teardown(function() {
-    this.element.parentNode.removeChild(this.element);
+    if (this.element.parent)
+      this.element.removeChild(this.element);
   });
 
-  test('fire when animation completes', function(done) {
+  test('fire when animation cancelled', function(done) {
     var ready = false;
     var fired = false;
     var animation = this.animation;
-    animation.onfinish = function(event) {
+    animation.oncancel = function(event) {
       assert(ready, 'must not be called synchronously');
       assert.equal(this, animation);
       assert.equal(event.target, animation);
-      assert.equal(event.currentTime, 1000);
-      assert.equal(event.timelineTime, 1100);
+      assert.equal(event.currentTime, null);
+      assert.equal(event.timelineTime, 100);
       if (fired)
         assert(false, 'must not get fired twice');
       fired = true;
       done();
     };
     tick(100);
+    animation.cancel();
     tick(1100);
     tick(2100);
     ready = true;
   });
 
-  test('fire when reversed animation completes', function(done) {
+  test('finish event must not fire when animation cancelled', function(done) {
     this.animation.onfinish = function(event) {
-      assert.equal(event.currentTime, 0);
-      assert.equal(event.timelineTime, 1001);
+      assert(false, 'must not get fired');
+    };
+    this.animation.oncancel = function(event) {
       done();
     };
     tick(0);
-    tick(500);
-    this.animation.reverse();
-    tick(501);
-    tick(1001);
+    this.animation.cancel();
+    tick(1100);
+  });
+
+  test('cancel event must not fire when animation finishes', function(done) {
+    this.animation.onfinish = function(event) {
+      done();
+    };
+    this.animation.oncancel = function(event) {
+      assert(false, 'must not get fired');
+    };
+    tick(0);
+    tick(1100);
   });
 
   test('multiple event listeners', function(done) {
@@ -59,17 +71,17 @@ suite('group-animation-finish-event', function() {
       };
     }
     var toRemove = createHandler(0);
-    this.animation.addEventListener('finish', createHandler(1));
-    this.animation.addEventListener('finish', createHandler(2));
-    this.animation.addEventListener('finish', toRemove);
-    this.animation.addEventListener('finish', createHandler(3));
-    this.animation.removeEventListener('finish', toRemove);
-    this.animation.onfinish = function() {
+    this.animation.addEventListener('cancel', createHandler(1));
+    this.animation.addEventListener('cancel', createHandler(2));
+    this.animation.addEventListener('cancel', toRemove);
+    this.animation.addEventListener('cancel', createHandler(3));
+    this.animation.removeEventListener('cancel', toRemove);
+    this.animation.oncancel = function() {
       assert.equal(count, 3);
       done();
     };
     tick(0);
-    this.animation.finish();
+    this.animation.cancel();
     tick(1000);
   });
 });

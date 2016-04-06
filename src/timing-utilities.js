@@ -151,7 +151,7 @@
   function normalizeTimingInput(timingInput, forGroup) {
     timingInput = shared.numericTimingToObject(timingInput);
     var timing = makeTiming(timingInput, forGroup);
-    timing._easing = toTimingFunction(timing.easing);
+    timing._easingFunction = toTimingFunction(timing.easing);
     return timing;
   }
 
@@ -205,12 +205,20 @@
     'step-end': step(1, End)
   };
 
+  var styleForCleaning = null;
   var numberString = '\\s*(-?\\d+\\.?\\d*|-?\\.\\d+)\\s*';
   var cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
   var stepRe = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
   var linear = function(x) { return x; };
 
   function toTimingFunction(easing) {
+    if (!styleForCleaning) {
+      styleForCleaning = document.createElement('div').style;
+    }
+    styleForCleaning.animationTimingFunction = '';
+    styleForCleaning.animationTimingFunction = easing;
+    easing = styleForCleaning.animationTimingFunction;
+
     var cubicData = cubicBezierRe.exec(easing);
     if (cubicData) {
       return cubic.apply(this, cubicData.slice(1).map(Number));
@@ -296,7 +304,7 @@
     var currentDirectionIsForwards = timing.direction == 'normal' || timing.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
     var directedTime = currentDirectionIsForwards ? iterationTime : iterationDuration - iterationTime;
     var timeFraction = directedTime / iterationDuration;
-    return iterationDuration * timing.easing(timeFraction);
+    return iterationDuration * timing._easingFunction(timeFraction);
   }
 
   function calculateTimeFraction(activeDuration, localTime, timing) {

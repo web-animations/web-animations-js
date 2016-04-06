@@ -1,7 +1,7 @@
 suite('timing-utilities', function() {
   test('normalize timing input', function() {
     assert.equal(normalizeTimingInput(1).duration, 1);
-    assert.equal(normalizeTimingInput(1).easing(0.2), 0.2);
+    assert.equal(normalizeTimingInput(1)._easingFunction(0.2), 0.2);
     assert.equal(normalizeTimingInput(undefined).duration, 0);
   });
   test('calculating active duration', function() {
@@ -9,11 +9,20 @@ suite('timing-utilities', function() {
     assert.equal(calculateActiveDuration({duration: 500, playbackRate: 0.1, iterations: 300}), 1500000);
   });
   test('conversion of timing functions', function() {
-    var f = toTimingFunction('ease');
-    var g = toTimingFunction('cubic-bezier(.25, 0.1, 0.25, 1.)');
-    for (var i = 0; i < 1; i += 0.1) {
-      assert.equal(f(i), g(i));
+    function assertTimingFunctionsEqual(tf1, tf2, message) {
+      for (var i = 0; i <= 1; i += 0.1) {
+        assert.closeTo(tf1(i), tf2(i), 0.01, message);
+      }
     }
+
+    assertTimingFunctionsEqual(
+        toTimingFunction('ease-in-out'),
+        toTimingFunction('eAse\\2d iN-ouT'),
+        'Should accept arbitrary casing and escape chararcters');
+
+    var f = toTimingFunction('ease');
+    var g = toTimingFunction('cubic-bezier(.25, 0.1, 0.25, 1.0)');
+    assertTimingFunctionsEqual(f, g, 'ease should map onto preset cubic-bezier');
     assert.closeTo(f(0.1844), 0.2601, 0.01);
     assert.closeTo(g(0.1844), 0.2601, 0.01);
     assert.equal(f(0), 0);
@@ -24,25 +33,18 @@ suite('timing-utilities', function() {
     f = toTimingFunction('cubic-bezier(0, 1, 1, 0)');
     assert.closeTo(f(0.104), 0.392, 0.01);
 
-    function isLinear(f) {
-      assert.equal(f(0), 0);
-      assert.equal(f(0.1), 0.1);
-      assert.equal(f(0.4), 0.4);
-      assert.equal(f(0.9), 0.9);
-      assert.equal(f(1), 1);
+    function assertIsLinear(easing) {
+      var f = toTimingFunction(easing);
+      for (var i = 0; i <= 1; i += 0.1) {
+        assert.equal(f(i), i, easing + ' is linear');
+      }
     }
 
-    f = toTimingFunction('cubic-bezier(0, 1, -1, 1)');
-    isLinear(f);
-
-    f = toTimingFunction('an elephant');
-    isLinear(f);
-
-    f = toTimingFunction('cubic-bezier(-1, 1, 1, 1)');
-    isLinear(f);
-
-    f = toTimingFunction('cubic-bezier(1, 1, 1)');
-    isLinear(f);
+    assertIsLinear('cubic-bezier(.25, 0.1, 0.25, 1.)');
+    assertIsLinear('cubic-bezier(0, 1, -1, 1)');
+    assertIsLinear('an elephant');
+    assertIsLinear('cubic-bezier(-1, 1, 1, 1)');
+    assertIsLinear('cubic-bezier(1, 1, 1)');
 
     f = toTimingFunction('steps(10, end)');
     assert.equal(f(0), 0);
@@ -88,13 +90,13 @@ suite('timing-utilities', function() {
   });
   test('calculating transformed time', function() {
     // calculateTransformedTime(currentIteration, iterationDuration, iterationTime, timingInput);
-    assert.equal(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x; }, direction: 'normal'}), 200);
-    assert.equal(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x; }, direction: 'reverse'}), 800);
-    assert.closeTo(calculateTransformedTime(4, 1000, 200, {easing: function(x) { return x * x; }, direction: 'reverse'}), 640, 0.0001);
-    assert.closeTo(calculateTransformedTime(4, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate'}), 360, 0.0001);
-    assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate'}), 160, 0.0001);
-    assert.closeTo(calculateTransformedTime(4, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 160, 0.0001);
-    assert.closeTo(calculateTransformedTime(3, 1000, 600, {easing: function(x) { return x * x; }, direction: 'alternate-reverse'}), 360, 0.0001);
+    assert.equal(calculateTransformedTime(4, 1000, 200, {_easingFunction: function(x) { return x; }, direction: 'normal'}), 200);
+    assert.equal(calculateTransformedTime(4, 1000, 200, {_easingFunction: function(x) { return x; }, direction: 'reverse'}), 800);
+    assert.closeTo(calculateTransformedTime(4, 1000, 200, {_easingFunction: function(x) { return x * x; }, direction: 'reverse'}), 640, 0.0001);
+    assert.closeTo(calculateTransformedTime(4, 1000, 600, {_easingFunction: function(x) { return x * x; }, direction: 'alternate'}), 360, 0.0001);
+    assert.closeTo(calculateTransformedTime(3, 1000, 600, {_easingFunction: function(x) { return x * x; }, direction: 'alternate'}), 160, 0.0001);
+    assert.closeTo(calculateTransformedTime(4, 1000, 600, {_easingFunction: function(x) { return x * x; }, direction: 'alternate-reverse'}), 160, 0.0001);
+    assert.closeTo(calculateTransformedTime(3, 1000, 600, {_easingFunction: function(x) { return x * x; }, direction: 'alternate-reverse'}), 360, 0.0001);
   });
   test('EffectTime', function() {
     var timing = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});

@@ -39,10 +39,8 @@
     rafCallbacks = [];
     if (t < timeline.currentTime)
       t = timeline.currentTime;
-    tick(t);
+    tick(t, true);
     processing.forEach(function(entry) { entry[1](t); });
-    if (needsRetick)
-      tick(t);
     applyPendingEffects();
     _now = undefined;
   }
@@ -94,9 +92,9 @@
     return hasRestartedThisFrame;
   };
 
-  var needsRetick = false;
   scope.invalidateEffects = function() {
-    needsRetick = true;
+    tick(scope.timeline.currentTime, false);
+    applyPendingEffects();
   };
 
   var pendingEffects = [];
@@ -107,23 +105,7 @@
 
   var t60hz = 1000 / 60;
 
-  var originalGetComputedStyle = window.getComputedStyle;
-  Object.defineProperty(window, 'getComputedStyle', {
-    configurable: true,
-    enumerable: true,
-    value: function() {
-      if (needsRetick) {
-        var time = now();
-        if (time - timeline.currentTime > 0)
-          timeline.currentTime += t60hz * (Math.floor((time - timeline.currentTime) / t60hz) + 1);
-        tick(timeline.currentTime);
-      }
-      applyPendingEffects();
-      return originalGetComputedStyle.apply(this, arguments);
-    },
-  });
-
-  function tick(t) {
+  function tick(t, isAnimationFrame) {
     hasRestartedThisFrame = false;
     var timeline = scope.timeline;
     timeline.currentTime = t;
@@ -135,17 +117,19 @@
     var newPendingClears = [];
     var newPendingEffects = [];
     updatingAnimations = updatingAnimations.filter(function(animation) {
-      animation._inTimeline = animation._tick(t);
+      animation._tick(t, isAnimationFrame);
 
       if (!animation._inEffect)
         newPendingClears.push(animation._effect);
       else
         newPendingEffects.push(animation._effect);
 
-      if (!animation._isFinished && !animation._paused && !animation._idle)
+      if (animation._needsTick)
         ticking = true;
 
-      return animation._inTimeline;
+      var alive = animation._inEffect || animation._needsTick;
+      animation._inTimeline = alive;
+      return alive;
     });
 
     // FIXME: Should remove dupliactes from pendingEffects.
@@ -153,7 +137,6 @@
     pendingEffects.push.apply(pendingEffects, newPendingEffects);
 
     timeline._animations.push.apply(timeline._animations, updatingAnimations);
-    needsRetick = false;
 
     if (ticking)
       requestAnimationFrame(function() {});

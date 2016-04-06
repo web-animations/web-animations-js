@@ -5,8 +5,7 @@ suite('animation-finish-event', function() {
     this.animation = this.element.animate([], 1000);
   });
   teardown(function() {
-    if (this.element.parent)
-      this.element.removeChild(this.target);
+    this.element.parentNode.removeChild(this.element);
   });
 
   test('fire when animation completes', function(done) {
@@ -43,17 +42,6 @@ suite('animation-finish-event', function() {
     tick(1001);
   });
 
-  test('fire after animation is cancelled', function(done) {
-    this.animation.onfinish = function(event) {
-      assert.equal(event.currentTime, 0);
-      assert.equal(event.timelineTime, 1, 'event must be fired on next sample');
-      done();
-    };
-    tick(0);
-    this.animation.cancel();
-    tick(1);
-  });
-
   test('multiple event listeners', function(done) {
     var count = 0;
     function createHandler(expectedCount) {
@@ -73,7 +61,21 @@ suite('animation-finish-event', function() {
       done();
     };
     tick(0);
-    this.animation.cancel();
+    this.animation.finish();
     tick(1000);
+  });
+
+  test('can wipe onfinish handler by setting it to null', function(done) {
+    var finishAnimation = this.element.animate([], 1100);
+    finishAnimation.onfinish = function(event) {
+      done();
+    };
+
+    this.animation.onfinish = function(event) {
+      assert(false, 'onfinish should be wiped');
+    };
+    this.animation.onfinish = null;
+    tick(0);
+    tick(1200);
   });
 });

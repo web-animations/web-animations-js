@@ -158,7 +158,7 @@ suite('keyframes', function() {
         {left: '0px'}
       ]);
     });
-    assert.equal('' + normalizedKeyframes[0].easing, 'function (x) { return x; }');
+    assert.equal(normalizedKeyframes[0].easing, 'easy-peasy');
   });
 
   test('Normalize keyframes where some properties are given non-string, non-number values.', function() {
@@ -177,9 +177,22 @@ suite('keyframes', function() {
   });
 
   test('Normalize input that is not an array.', function() {
-    assert.throws(function() {
-      normalizeKeyframes(10);
+    var normalizedKeyframes;
+    assert.doesNotThrow(function() {
+      normalizedKeyframes = normalizeKeyframes({left: '10px'});
     });
+    assert(normalizedKeyframes.length, 1);
+    assert.equal(normalizedKeyframes[0].left, '10px');
+  });
+
+  test('Normalize object-form input.', function() {
+    var normalizedKeyframes;
+    assert.doesNotThrow(function() {
+      normalizedKeyframes = normalizeKeyframes({left: ['10px', '100px']});
+    });
+    assert(normalizedKeyframes.length, 2);
+    assert.equal(normalizedKeyframes[0].left, '10px');
+    assert.equal(normalizedKeyframes[1].left, '100px');
   });
 
   test('Normalize an empty array.', function() {
@@ -428,6 +441,18 @@ suite('keyframes', function() {
     assert.equal(interpolations[1].property, 'left');
     assert.equal(typeof interpolations[1].interpolation, 'function');
   });
+
+  test('Make interpolations with invalid easing.', function() {
+    var interpolations;
+    assert.doesNotThrow(function() {
+      interpolations = makeInterpolations(makePropertySpecificKeyframeGroups(normalizeKeyframes([
+        {left: '0px', easing: 'pants and ducks'},
+        {left: '200px'},
+      ])));
+    });
+    assert.equal(interpolations.length, 1);
+    assert.equal(interpolations[0].easing.toString(), 'function (x) { return x; }');
+  });
 });
 
 suite('keyframe-interpolations - convertEffectInput', function() {
@@ -437,8 +462,7 @@ suite('keyframe-interpolations - convertEffectInput', function() {
     document.documentElement.appendChild(this.target);
   });
   teardown(function() {
-    if (this.target.parent)
-      this.target.removeChild(this.target);
+    this.target.parentNode.removeChild(this.target);
   });
 
   test('Convert effect input for a simple keyframe list with one property.', function() {

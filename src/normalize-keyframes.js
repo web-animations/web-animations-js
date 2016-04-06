@@ -165,12 +165,63 @@
     }
   };
 
-  function normalizeKeyframes(effectInput) {
-    if (!Array.isArray(effectInput) && effectInput !== null)
-      throw new TypeError('Keyframes must be null or an array of keyframes');
+  function convertToArrayForm(effectInput) {
+    var normalizedEffectInput = [];
 
-    if (effectInput == null)
+    for (var property in effectInput) {
+      if (property in ['easing', 'offset', 'composite']) {
+        continue;
+      }
+
+      var values = effectInput[property];
+      if (!Array.isArray(values)) {
+        values = [values];
+      }
+
+      var keyframe;
+      var numKeyframes = values.length;
+      for (var i = 0; i < numKeyframes; i++) {
+        keyframe = {};
+
+        if ('offset' in effectInput) {
+          keyframe.offset = effectInput.offset;
+        } else if (numKeyframes == 1) {
+          keyframe.offset = 1.0;
+        } else {
+          keyframe.offset = i / (numKeyframes - 1.0);
+        }
+
+        if ('easing' in effectInput) {
+          keyframe.easing = effectInput.easing;
+        }
+
+        if ('composite' in effectInput) {
+          keyframe.composite = effectInput.composite;
+        }
+
+        keyframe[property] = values[i];
+
+        normalizedEffectInput.push(keyframe);
+      }
+    }
+
+    normalizedEffectInput.sort(function(a, b) { return a.offset - b.offset; });
+    return normalizedEffectInput;
+  };
+
+  function normalizeKeyframes(effectInput) {
+    if (effectInput == null) {
       return [];
+    }
+
+    if (window.Symbol && Symbol.iterator && Array.prototype.from && effectInput[Symbol.iterator]) {
+      // Handle custom iterables in most browsers by converting to an array
+      effectInput = Array.from(effectInput);
+    }
+
+    if (!Array.isArray(effectInput)) {
+      effectInput = convertToArrayForm(effectInput);
+    }
 
     var keyframes = effectInput.map(function(originalKeyframe) {
       var keyframe = {};
@@ -188,8 +239,6 @@
             name: 'NotSupportedError',
             message: 'add compositing is not supported'
           };
-        } else if (member == 'easing') {
-          memberValue = shared.toTimingFunction(memberValue);
         } else {
           memberValue = '' + memberValue;
         }
@@ -197,8 +246,6 @@
       }
       if (keyframe.offset == undefined)
         keyframe.offset = null;
-      if (keyframe.easing == undefined)
-        keyframe.easing = shared.toTimingFunction('linear');
       return keyframe;
     });
 
@@ -250,6 +297,7 @@
     return keyframes;
   }
 
+  shared.convertToArrayForm = convertToArrayForm;
   shared.normalizeKeyframes = normalizeKeyframes;
 
   if (WEB_ANIMATIONS_TESTING) {

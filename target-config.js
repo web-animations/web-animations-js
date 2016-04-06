@@ -42,6 +42,11 @@
       'src/property-names.js',
   ];
 
+  var webAnimations1BonusSrc = [
+      'src/web-animations-bonus-cancel-events.js',
+      'src/web-animations-bonus-object-form-keyframes.js',
+  ];
+
   var liteWebAnimations1Src = [
       'src/keyframe-interpolations.js',
       'src/property-interpolation.js',
@@ -77,6 +82,7 @@
       'src/group-constructors.js'];
 
   var webAnimations1Test = [
+      'test/js/animation-cancel-event.js',
       'test/js/animation-finish-event.js',
       'test/js/animation.js',
       'test/js/apply-preserving-inline-style.js',
@@ -95,6 +101,7 @@
 
   var webAnimationsNextTest = webAnimations1Test.concat(
       'test/js/effect-callback.js',
+      'test/js/group-animation-cancel-event.js',
       'test/js/group-animation-finish-event.js',
       'test/js/group-animation.js',
       'test/js/group-constructors.js',
@@ -108,24 +115,27 @@
       scopeSrc: scopeSrc,
       sharedSrc: sharedSrc,
       webAnimations1Src: webAnimations1Src,
+      webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: [],
-      src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src),
+      src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimations1BonusSrc),
       test: webAnimations1Test,
     },
     'web-animations-next': {
       scopeSrc: scopeSrc,
       sharedSrc: sharedSrc,
       webAnimations1Src: webAnimations1Src,
+      webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: webAnimationsNextSrc,
-      src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimationsNextSrc),
+      src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimations1BonusSrc).concat(webAnimationsNextSrc),
       test: webAnimationsNextTest,
     },
     'web-animations-next-lite': {
       scopeSrc: scopeSrc,
       sharedSrc: sharedSrc,
       webAnimations1Src: liteWebAnimations1Src,
+      webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: webAnimationsNextSrc,
-      src: scopeSrc.concat(sharedSrc).concat(liteWebAnimations1Src).concat(webAnimationsNextSrc),
+      src: scopeSrc.concat(sharedSrc).concat(liteWebAnimations1Src).concat(webAnimations1BonusSrc).concat(webAnimationsNextSrc),
       test: [],
     },
   };

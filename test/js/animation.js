@@ -335,7 +335,7 @@ suite('animation', function() {
     tick(110);
     assert.equal(getComputedStyle(target).marginLeft, '50px');
     animation.cancel();
-    // getComputedStyle forces a tick.
+    tick(110);
     assert.equal(getComputedStyle(target).marginLeft, '0px');
     assert.deepEqual(webAnimations1.timeline._animations, []);
     tick(120);
@@ -542,5 +542,12 @@ suite('animation', function() {
     a.reverse();
     assert.equal(a.startTime, null);
     assert.equal(a.playState, 'pending');
+  });
+  test('Animations have optional ID', function() {
+    tick(100);
+    var a = document.body.animate([], { duration: 1000 });
+    assert.equal(a.id, '');
+    a = document.body.animate([], { duration: 1000, id: 'anim-id' });
+    assert.equal(a.id, 'anim-id');
   });
 });
