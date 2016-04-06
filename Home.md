@@ -48,6 +48,10 @@
 
    To do this, you'll need to be a collaborator [on the NPM project](https://www.npmjs.com/package/web-animations-js), or have a collaborator help you.
 
+7. If there are any breaking changes to the API in this release you must notify web-animations-changes@googlegroups.com.
+
+   Only owners of the group may post to it so you may need to request ownership or ask someone to post it for you.
+
 ## Pushing from web-animations-next to web-animations-js
 
     git fetch web-animations-next
