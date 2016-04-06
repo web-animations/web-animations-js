@@ -1,4 +1,4 @@
-### 2.2.1 - *April 6 2016*
+### 2.2.0 - *April 6 2016*
   * Deprecated the use of hyphens in property names.
 
     For example, this is deprecated:
