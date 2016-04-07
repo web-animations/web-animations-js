@@ -118,4 +118,24 @@ suite('timing-utilities', function() {
     assert.equal(effectTF(6000), 0.5);
     assert.closeTo(effectTF2(6000), 0.8, 0.005);
   });
+  test('TypeErrors', function() {
+    var timing = normalizeTimingInput({
+      iterationStart: 123,
+      iterations: 456,
+      duration: 789,
+      easing: 'ease',
+    });
+
+    assert.throws(function() { timing.iterationStart = -1; });
+    assert.equal(timing.iterationStart, 123);
+
+    assert.throws(function() { timing.iterations = -1; });
+    assert.equal(timing.iterations, 456);
+
+    assert.throws(function() { timing.duration = -1; });
+    assert.equal(timing.duration, 789);
+
+    assert.throws(function() { timing.easing = 'invalid timing function'; });
+    assert.equal(timing.easing, 'ease');
+  });
 });
