@@ -127,12 +127,15 @@ suite('timing-utilities', function() {
     });
 
     assert.throws(function() { timing.iterationStart = -1; });
+    assert.throws(function() { timing.iterationStart = 'ponies'; });
     assert.equal(timing.iterationStart, 123);
 
     assert.throws(function() { timing.iterations = -1; });
+    assert.throws(function() { timing.iterations = 'pidgeons'; });
     assert.equal(timing.iterations, 456);
 
     assert.throws(function() { timing.duration = -1; });
+    assert.throws(function() { timing.duration = 'pawprints'; });
     assert.equal(timing.duration, 789);
 
     assert.throws(function() { timing.easing = 'invalid timing function'; });

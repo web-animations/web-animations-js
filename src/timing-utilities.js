@@ -76,8 +76,8 @@
       return this._fill;
     },
     set iterationStart(value) {
-      if (value < 0) {
-        throw new TypeError('iterationStart must be non-negative, received: ' + timing.iterationStart);
+      if (isNaN(value) || value < 0) {
+        throw new TypeError('iterationStart must be a non-negative number, received: ' + timing.iterationStart);
       }
       this._setMember('iterationStart', value);
     },
