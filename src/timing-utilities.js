@@ -57,7 +57,7 @@
 
   function normalizeTimingInput(timingInput, forGroup) {
     var timing = makeTiming(timingInput, forGroup);
-    timing.easing = toTimingFunction(timing.easing);
+    timing._easingFunction = toTimingFunction(timing.easing);
     return timing;
   }
 
@@ -199,7 +199,7 @@
     var currentDirectionIsForwards = timing.direction == 'normal' || timing.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
     var directedTime = currentDirectionIsForwards ? iterationTime : iterationDuration - iterationTime;
     var timeFraction = directedTime / iterationDuration;
-    return iterationDuration * timing.easing(timeFraction);
+    return iterationDuration * timing._easingFunction(timeFraction);
   }
 
   function calculateTimeFraction(activeDuration, localTime, timing) {
