@@ -1,3 +1,7 @@
+### 2.1.5 - *April 19 2016*
+  * Cherry picked fix for native easing TypeError exception when using groups.
+    https://github.com/web-animations/web-animations-next/pull/423
+
 ### 2.1.4 - *December 1 2015*
   * Use `Date.now()` instead of `performace.now()` for mobile Safari.
 
