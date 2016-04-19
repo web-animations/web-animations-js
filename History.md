@@ -1,3 +1,8 @@
+### 2.0.1 - *April 19 2016*
+
+  * Cherry picked fix for native easing TypeError exception when using groups.
+    https://github.com/web-animations/web-animations-next/pull/423
+
 ### 2.0.0 - *April 5 2015*
 
   * Improve behavior of group Animation playback rate.
