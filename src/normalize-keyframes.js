@@ -188,8 +188,6 @@
             name: 'NotSupportedError',
             message: 'add compositing is not supported'
           };
-        } else if (member == 'easing') {
-          memberValue = shared.toTimingFunction(memberValue);
         } else {
           memberValue = '' + memberValue;
         }
@@ -197,8 +195,6 @@
       }
       if (keyframe.offset == undefined)
         keyframe.offset = null;
-      if (keyframe.easing == undefined)
-        keyframe.easing = shared.toTimingFunction('linear');
       return keyframe;
     });
 
