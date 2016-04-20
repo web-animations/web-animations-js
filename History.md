@@ -1,3 +1,8 @@
+### 1.0.8 - *April 19 2016*
+
+  * Cherry picked fix for native easing TypeError exception when using groups.
+    https://github.com/web-animations/web-animations-next/pull/423
+
 ### 1.0.7 - *March 10 2015*
 
   * Improve performance of constructing groups and sequences.

@@ -158,7 +158,7 @@ suite('effect', function() {
         {left: '0px'}
       ]);
     });
-    assert.equal('' + normalizedKeyframes[0].easing, 'function (x) { return x; }');
+    assert.equal('' + normalizedKeyframes[0].easing, 'easy-peasy');
   });
 
   test('Normalize keyframes where some properties are given non-string, non-number values.', function() {
@@ -427,6 +427,18 @@ suite('effect', function() {
     assert.closeTo(interpolations[1].endTime, 1, 0.001);
     assert.equal(interpolations[1].property, 'left');
     assert.equal(typeof interpolations[1].interpolation, 'function');
+  });
+
+  test('Make interpolations with invalid easing.', function() {
+    var interpolations;
+    assert.doesNotThrow(function() {
+      interpolations = makeInterpolations(makePropertySpecificKeyframeGroups(normalizeKeyframes([
+        {left: '0px', easing: 'pants and ducks'},
+        {left: '200px'},
+      ])));
+    });
+    assert.equal(interpolations.length, 1);
+    assert.equal(interpolations[0].easing.toString(), 'function (x) { return x; }');
   });
 });
 

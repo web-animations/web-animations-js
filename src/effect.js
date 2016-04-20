@@ -79,6 +79,7 @@
         var endTime = group[i + 1].offset;
         var startValue = group[i].value;
         var endValue = group[i + 1].value;
+        var easing = group[i].easing;
         if (startTime == endTime) {
           if (endTime == 1) {
             startValue = endValue;
@@ -89,7 +90,7 @@
         interpolations.push({
           startTime: startTime,
           endTime: endTime,
-          easing: group[i].easing,
+          easing: shared.toTimingFunction(easing ? easing : 'linear'),
           property: groupName,
           interpolation: scope.propertyInterpolation(groupName, startValue, endValue)
         });

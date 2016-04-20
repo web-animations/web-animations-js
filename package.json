@@ -5,6 +5,7 @@
     "type": "git",
     "url": "https://github.com/web-animations/web-animations-js.git"
   },
+  "version": "1.0.8",
   "devDependencies": {
     "mocha": "1.21.4",
     "chai": "^1.9.1",
