@@ -442,16 +442,13 @@ suite('keyframes', function() {
     assert.equal(typeof interpolations[1].interpolation, 'function');
   });
 
-  test('Make interpolations with invalid easing.', function() {
-    var interpolations;
-    assert.doesNotThrow(function() {
-      interpolations = makeInterpolations(makePropertySpecificKeyframeGroups(normalizeKeyframes([
+  test('Make interpolations with invalid easing should throw.', function() {
+    assert.throws(function() {
+      makeInterpolations(makePropertySpecificKeyframeGroups(normalizeKeyframes([
         {left: '0px', easing: 'pants and ducks'},
         {left: '200px'},
       ])));
     });
-    assert.equal(interpolations.length, 1);
-    assert.equal(interpolations[0].easing.toString(), 'function (x) { return x; }');
   });
 });
 
