@@ -23,15 +23,15 @@ suite('timing-utilities', function() {
     var f = toTimingFunction('ease');
     var g = toTimingFunction('cubic-bezier(.25, 0.1, 0.25, 1.0)');
     assertTimingFunctionsEqual(f, g, 'ease should map onto preset cubic-bezier');
-    assert.closeTo(f(0.1844), 0.2601, 0.01);
-    assert.closeTo(g(0.1844), 0.2601, 0.01);
+    assert.closeTo(f(0.1844), 0.2599, 0.001);
+    assert.closeTo(g(0.1844), 0.2599, 0.001);
     assert.equal(f(0), 0);
     assert.equal(f(1), 1);
     assert.equal(g(0), 0);
     assert.equal(g(1), 1);
 
     f = toTimingFunction('cubic-bezier(0, 1, 1, 0)');
-    assert.closeTo(f(0.104), 0.392, 0.01);
+    assert.closeTo(f(0.104), 0.3920, 0.001);
 
     function assertInvalidEasingThrows(easing) {
       assert.throws(function() {
