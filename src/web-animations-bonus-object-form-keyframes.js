@@ -16,11 +16,16 @@
   // If an animation with the new syntax applies an effect, there's no need
   // to load this part of the polyfill.
   var element = document.documentElement;
-  var animation = element.animate({'opacity': ['1', '0']},
-      {duration: 1, fill: 'forwards'});
-  animation.finish();
-  var animated = getComputedStyle(element).getPropertyValue('opacity') == '0';
-  animation.cancel();
+  var animated = true;
+  try {
+    var animation = element.animate({'opacity': ['1', '0']},
+        {duration: 1, fill: 'forwards'});
+    animation.finish();
+    animated = getComputedStyle(element).getPropertyValue('opacity') == '0';
+    animation.cancel();
+  } catch (err) {
+    animated = false;
+  }
   if (animated) {
     return;
   }
