@@ -13,18 +13,37 @@
 // limitations under the License.
 
 (function(shared) {
-  // If an animation with the new syntax applies an effect, there's no need
-  // to load this part of the polyfill.
+  // If the polyfill is being loaded in a context where Element.animate is
+  // supported but object-form syntax is not, then creating an animation
+  // using the new syntax will either have no effect or will throw an exception.
+  // In either case, we want to proceed to load this part of the polyfill.
+  //
+  // The test animation starts from an opacity other than the one the element
+  // already has. The finish opacity is arbitrary. After the test, the element's
+  // opacity will be left how we found it:
+  // - If the animation is not created, the test will leave the element's
+  //   opacity untouched at originalOpacity.
+  // - If the animation is created, it will be cancelled, and leave the
+  //   element's opacity at originalOpacity.
+  // - If the animation is somehow created and runs without being cancelled,
+  //   when it finishes after 1ms, it will cease to have any effect (because
+  //   fill is not specified), and opacity will again be left at originalOpacity.
   var element = document.documentElement;
+  var animation = null;
   var animated = true;
   try {
-    var animation = element.animate({'opacity': ['1', '0']},
-        {duration: 1, fill: 'forwards'});
-    animation.finish();
-    animated = getComputedStyle(element).getPropertyValue('opacity') == '0';
-    animation.cancel();
+    var originalOpacity = getComputedStyle(element).getPropertyValue('opacity');
+    var startOpacity = originalOpacity == '0' ? '1' : '0';
+    var finishOpacity = '1';
+    animation = element.animate({'opacity': [startOpacity, finishOpacity]},
+        {duration: 1});
+    animation.currentTime = 0;
+    animated = getComputedStyle(element).getPropertyValue('opacity') == startOpacity;
   } catch (err) {
     animated = false;
+  } finally {
+    if (animation)
+      animation.cancel();
   }
   if (animated) {
     return;
