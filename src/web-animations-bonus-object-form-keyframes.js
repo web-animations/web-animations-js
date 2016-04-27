@@ -18,9 +18,9 @@
   // using the new syntax will either have no effect or will throw an exception.
   // In either case, we want to proceed to load this part of the polyfill.
   //
-  // The test animation starts from an opacity other than the one the element
-  // already has. The finish opacity is arbitrary. After the test, the element's
-  // opacity will be left how we found it:
+  // The test animation uses an opacity other than the one the element already
+  // has, and doesn't need to change during the animation for the test to work.
+  // After the test, the element's opacity will be left how we found it:
   // - If the animation is not created, the test will leave the element's
   //   opacity untouched at originalOpacity.
   // - If the animation is created, it will be cancelled, and leave the
@@ -30,17 +30,14 @@
   //   fill is not specified), and opacity will again be left at originalOpacity.
   var element = document.documentElement;
   var animation = null;
-  var animated = true;
+  var animated = false;
   try {
     var originalOpacity = getComputedStyle(element).getPropertyValue('opacity');
-    var startOpacity = originalOpacity == '0' ? '1' : '0';
-    var finishOpacity = '1';
-    animation = element.animate({'opacity': [startOpacity, finishOpacity]},
+    var testOpacity = originalOpacity == '0' ? '1' : '0';
+    animation = element.animate({'opacity': [testOpacity, testOpacity]},
         {duration: 1});
     animation.currentTime = 0;
-    animated = getComputedStyle(element).getPropertyValue('opacity') == startOpacity;
-  } catch (err) {
-    animated = false;
+    animated = getComputedStyle(element).getPropertyValue('opacity') == testOpacity;
   } finally {
     if (animation)
       animation.cancel();
