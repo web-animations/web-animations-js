@@ -38,7 +38,7 @@
       "version": "3.13.37",
     ```
 
-4.  Commit both changes, and push to web-animations-js
+4.  Submit both changes to web-animations-next then follow the procedure to push from web-animations-next to web-animations-js.
 
 5.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
     commit pushed to web-animations-js in step #4. Copy the release notes from `History.md`
