@@ -42,6 +42,10 @@
     this._easingFunction = linear;
   }
 
+  function isInvalidTimingDeprecated() {
+    return shared.isDeprecated('Invalid timing inputs', '2016-03-02', 'TypeError exceptions will be thrown instead.', true);
+  }
+
   AnimationEffectTiming.prototype = {
     _setMember: function(member, value) {
       this['_' + member] = value;
@@ -76,7 +80,7 @@
       return this._fill;
     },
     set iterationStart(value) {
-      if (isNaN(value) || value < 0) {
+      if ((isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
         throw new TypeError('iterationStart must be a non-negative number, received: ' + timing.iterationStart);
       }
       this._setMember('iterationStart', value);
@@ -85,7 +89,7 @@
       return this._iterationStart;
     },
     set duration(value) {
-      if (value != 'auto' && (isNaN(value) || value < 0)) {
+      if (value != 'auto' && (isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
         throw new TypeError('duration must be non-negative or auto, received: ' + value);
       }
       this._setMember('duration', value);
@@ -107,7 +111,7 @@
       return this._easing;
     },
     set iterations(value) {
-      if (isNaN(value) || value < 0) {
+      if ((isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
         throw new TypeError('iterations must be non-negative, received: ' + value);
       }
       this._setMember('iterations', value);
@@ -228,7 +232,7 @@
     styleForCleaning.animationTimingFunction = easing;
     var validatedEasing = styleForCleaning.animationTimingFunction;
 
-    if (validatedEasing == '') {
+    if (validatedEasing == '' && isInvalidTimingDeprecated()) {
       throw new TypeError(easing + ' is not a valid value for easing');
     }
 

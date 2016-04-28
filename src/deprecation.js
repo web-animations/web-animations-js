@@ -17,6 +17,10 @@
   var silenced = {};
 
   shared.isDeprecated = function(feature, date, advice, plural) {
+    if (WEB_ANIMATIONS_TESTING) {
+      return true;
+    }
+
     var auxVerb = plural ? 'are' : 'is';
     var today = new Date();
     var expiry = new Date(date);
