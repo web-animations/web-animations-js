@@ -38,6 +38,7 @@
         {duration: 1});
     animation.currentTime = 0;
     animated = getComputedStyle(element).getPropertyValue('opacity') == testOpacity;
+  } catch (error) {
   } finally {
     if (animation)
       animation.cancel();
