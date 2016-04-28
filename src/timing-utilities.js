@@ -80,10 +80,8 @@
       return this._fill;
     },
     set iterationStart(value) {
-      if (isNaN(value) || value < 0) {
-        if (isInvalidTimingDeprecated()) {
-          throw new TypeError('iterationStart must be a non-negative number, received: ' + timing.iterationStart);
-        }
+      if ((isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
+        throw new TypeError('iterationStart must be a non-negative number, received: ' + timing.iterationStart);
       }
       this._setMember('iterationStart', value);
     },
@@ -91,10 +89,8 @@
       return this._iterationStart;
     },
     set duration(value) {
-      if (value != 'auto' && (isNaN(value) || value < 0)) {
-        if (isInvalidTimingDeprecated()) {
-          throw new TypeError('duration must be non-negative or auto, received: ' + value);
-        }
+      if (value != 'auto' && (isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
+        throw new TypeError('duration must be non-negative or auto, received: ' + value);
       }
       this._setMember('duration', value);
     },
@@ -115,10 +111,8 @@
       return this._easing;
     },
     set iterations(value) {
-      if (isNaN(value) || value < 0) {
-        if (isInvalidTimingDeprecated()) {
-          throw new TypeError('iterations must be non-negative, received: ' + value);
-        }
+      if ((isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
+        throw new TypeError('iterations must be non-negative, received: ' + value);
       }
       this._setMember('iterations', value);
     },
