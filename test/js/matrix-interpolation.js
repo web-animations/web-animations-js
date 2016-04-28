@@ -407,42 +407,42 @@ suite('matrix interpolation', function() {
   test('decompose various CSS properties with unsupported units', function() {
     compareInterpolatedTransforms(
         ['rotateX(110grad)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
-        ['rotateX(0deg)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotateX(99deg)', 'rotateX(10deg) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(
         ['rotateY(2turn)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
-        ['rotateY(0rad)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotateY(12.56637rad)', 'rotateY(2rad) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(
         ['rotate(320deg)', 'rotateY(10grad) matrix(1, 0, 0, 1, 0, 0)'],
-        ['rotate(320deg)', 'rotateY(0deg) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotate(320deg)', 'rotateY(9deg) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(
         ['rotateZ(10grad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
-        ['rotateZ(0rad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotateZ(0.157rad)', 'rotateZ(2rad) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(
         ['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 2turn) matrix(1, 0, 0, 1, 0, 0)'],
-        ['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 0deg) matrix(1, 0, 0, 1, 0, 0)'],
+        ['rotate3d(1, 1, 1, 100deg)', 'rotate3d(1, 1, 1, 720deg) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(
         ['skew(30grad)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
-        ['skew(0deg)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
+        ['skew(27deg)', 'skew(10deg) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(
         ['skewx(3grad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
-        ['skewx(0rad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['skewx(0.04712rad)', 'skewx(1rad) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(
         ['skewy(3rad)', 'skewy(1grad) matrix(1, 0, 0, 1, 0, 0)'],
-        ['skewy(3rad)', 'skewy(0rad) matrix(1, 0, 0, 1, 0, 0)'],
+        ['skewy(3rad)', 'skewy(0.0157rad) matrix(1, 0, 0, 1, 0, 0)'],
         0.5);
 
     compareInterpolatedTransforms(

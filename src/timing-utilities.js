@@ -16,6 +16,7 @@
 
   var fills = 'backwards|forwards|both|none'.split('|');
   var directions = 'reverse|alternate|alternate-reverse'.split('|');
+  var linear = function(x) { return x; };
 
   function cloneTimingInput(timingInput) {
     if (typeof timingInput == 'number') {
@@ -38,6 +39,11 @@
     this._playbackRate = 1;
     this._direction = 'normal';
     this._easing = 'linear';
+    this._easingFunction = linear;
+  }
+
+  function isInvalidTimingDeprecated() {
+    return shared.isDeprecated('Invalid timing inputs', '2016-03-02', 'TypeError exceptions will be thrown instead.', true);
   }
 
   AnimationEffectTiming.prototype = {
@@ -45,7 +51,7 @@
       this['_' + member] = value;
       if (this._effect) {
         this._effect._timingInput[member] = value;
-        this._effect._timing = shared.normalizeTimingInput(shared.normalizeTimingInput(this._effect._timingInput));
+        this._effect._timing = shared.normalizeTimingInput(this._effect._timingInput);
         this._effect.activeDuration = shared.calculateActiveDuration(this._effect._timing);
         if (this._effect._animation) {
           this._effect._animation._rebuildUnderlyingAnimation();
@@ -74,12 +80,18 @@
       return this._fill;
     },
     set iterationStart(value) {
+      if ((isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
+        throw new TypeError('iterationStart must be a non-negative number, received: ' + timing.iterationStart);
+      }
       this._setMember('iterationStart', value);
     },
     get iterationStart() {
       return this._iterationStart;
     },
     set duration(value) {
+      if (value != 'auto' && (isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
+        throw new TypeError('duration must be non-negative or auto, received: ' + value);
+      }
       this._setMember('duration', value);
     },
     get duration() {
@@ -92,12 +104,16 @@
       return this._direction;
     },
     set easing(value) {
+      this._easingFunction = toTimingFunction(value);
       this._setMember('easing', value);
     },
     get easing() {
       return this._easing;
     },
     set iterations(value) {
+      if ((isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
+        throw new TypeError('iterations must be non-negative, received: ' + value);
+      }
       this._setMember('iterations', value);
     },
     get iterations() {
@@ -150,9 +166,7 @@
 
   function normalizeTimingInput(timingInput, forGroup) {
     timingInput = shared.numericTimingToObject(timingInput);
-    var timing = makeTiming(timingInput, forGroup);
-    timing._easingFunction = toTimingFunction(timing.easing);
-    return timing;
+    return makeTiming(timingInput, forGroup);
   }
 
   function cubic(a, b, c, d) {
@@ -168,7 +182,7 @@
         var mid = (start + end) / 2;
         function f(a, b, m) { return 3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m};
         var xEst = f(a, c, mid);
-        if (Math.abs(x - xEst) < 0.001) {
+        if (Math.abs(x - xEst) < 0.0001) {
           return f(b, d, mid);
         }
         if (xEst < x) {
@@ -209,7 +223,6 @@
   var numberString = '\\s*(-?\\d+\\.?\\d*|-?\\.\\d+)\\s*';
   var cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
   var stepRe = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
-  var linear = function(x) { return x; };
 
   function toTimingFunction(easing) {
     if (!styleForCleaning) {
@@ -217,17 +230,21 @@
     }
     styleForCleaning.animationTimingFunction = '';
     styleForCleaning.animationTimingFunction = easing;
-    easing = styleForCleaning.animationTimingFunction;
+    var validatedEasing = styleForCleaning.animationTimingFunction;
 
-    var cubicData = cubicBezierRe.exec(easing);
+    if (validatedEasing == '' && isInvalidTimingDeprecated()) {
+      throw new TypeError(easing + ' is not a valid value for easing');
+    }
+
+    var cubicData = cubicBezierRe.exec(validatedEasing);
     if (cubicData) {
       return cubic.apply(this, cubicData.slice(1).map(Number));
     }
-    var stepData = stepRe.exec(easing);
+    var stepData = stepRe.exec(validatedEasing);
     if (stepData) {
       return step(Number(stepData[1]), {'start': Start, 'middle': Middle, 'end': End}[stepData[2]]);
     }
-    var preset = presets[easing];
+    var preset = presets[validatedEasing];
     if (preset) {
       return preset;
     }

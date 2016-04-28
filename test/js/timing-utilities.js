@@ -23,28 +23,27 @@ suite('timing-utilities', function() {
     var f = toTimingFunction('ease');
     var g = toTimingFunction('cubic-bezier(.25, 0.1, 0.25, 1.0)');
     assertTimingFunctionsEqual(f, g, 'ease should map onto preset cubic-bezier');
-    assert.closeTo(f(0.1844), 0.2601, 0.01);
-    assert.closeTo(g(0.1844), 0.2601, 0.01);
+    assert.closeTo(f(0.1844), 0.2599, 0.001);
+    assert.closeTo(g(0.1844), 0.2599, 0.001);
     assert.equal(f(0), 0);
     assert.equal(f(1), 1);
     assert.equal(g(0), 0);
     assert.equal(g(1), 1);
 
     f = toTimingFunction('cubic-bezier(0, 1, 1, 0)');
-    assert.closeTo(f(0.104), 0.392, 0.01);
+    assert.closeTo(f(0.104), 0.3920, 0.001);
 
-    function assertIsLinear(easing) {
-      var f = toTimingFunction(easing);
-      for (var i = 0; i <= 1; i += 0.1) {
-        assert.equal(f(i), i, easing + ' is linear');
-      }
+    function assertInvalidEasingThrows(easing) {
+      assert.throws(function() {
+        toTimingFunction(easing);
+      }, easing);
     }
 
-    assertIsLinear('cubic-bezier(.25, 0.1, 0.25, 1.)');
-    assertIsLinear('cubic-bezier(0, 1, -1, 1)');
-    assertIsLinear('an elephant');
-    assertIsLinear('cubic-bezier(-1, 1, 1, 1)');
-    assertIsLinear('cubic-bezier(1, 1, 1)');
+    assertInvalidEasingThrows('cubic-bezier(.25, 0.1, 0.25, 1.)');
+    assertInvalidEasingThrows('cubic-bezier(0, 1, -1, 1)');
+    assertInvalidEasingThrows('an elephant');
+    assertInvalidEasingThrows('cubic-bezier(-1, 1, 1, 1)');
+    assertInvalidEasingThrows('cubic-bezier(1, 1, 1)');
 
     f = toTimingFunction('steps(10, end)');
     assert.equal(f(0), 0);
@@ -118,5 +117,28 @@ suite('timing-utilities', function() {
     assert.closeTo(effectTF2(4100), 0.8, 0.005);
     assert.equal(effectTF(6000), 0.5);
     assert.closeTo(effectTF2(6000), 0.8, 0.005);
+  });
+  test('TypeErrors', function() {
+    var timing = normalizeTimingInput({
+      iterationStart: 123,
+      iterations: 456,
+      duration: 789,
+      easing: 'ease',
+    });
+
+    assert.throws(function() { timing.iterationStart = -1; });
+    assert.throws(function() { timing.iterationStart = 'ponies'; });
+    assert.equal(timing.iterationStart, 123);
+
+    assert.throws(function() { timing.iterations = -1; });
+    assert.throws(function() { timing.iterations = 'pidgeons'; });
+    assert.equal(timing.iterations, 456);
+
+    assert.throws(function() { timing.duration = -1; });
+    assert.throws(function() { timing.duration = 'pawprints'; });
+    assert.equal(timing.duration, 789);
+
+    assert.throws(function() { timing.easing = 'invalid timing function'; });
+    assert.equal(timing.easing, 'ease');
   });
 });
