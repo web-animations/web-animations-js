@@ -17,9 +17,9 @@
   var originalRequestAnimationFrame = window.requestAnimationFrame;
   window.requestAnimationFrame = function(f) {
     return originalRequestAnimationFrame(function(x) {
-      window.document.timeline._updateAnimationsPromises();
+      scope.timeline._updateAnimationsPromises();
       f(x);
-      window.document.timeline._updateAnimationsPromises();
+      scope.timeline._updateAnimationsPromises();
     });
   };
 
@@ -76,7 +76,7 @@
   };
 
   function webAnimationsNextTick(t) {
-    var timeline = window.document.timeline;
+    var timeline = scope.timeline;
     timeline.currentTime = t;
     timeline._discardAnimations();
     if (timeline._animations.length == 0)
