@@ -97,7 +97,8 @@
       'test/js/tick.js',
       'test/js/timing-utilities.js',
       'test/js/timing.js',
-      'test/js/transform-handler.js'];
+      'test/js/transform-handler.js',
+      'test/js/visibility-handler.js'];
 
   var webAnimationsNextTest = webAnimations1Test.concat(
       'test/js/effect-callback.js',
