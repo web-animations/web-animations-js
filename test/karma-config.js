@@ -4,16 +4,14 @@ module.exports = function(config) {
     plugins: [
       'karma-mocha',
       'karma-chai',
-      'karma-chrome-launcher',
       'karma-firefox-launcher'
     ],
     browsers: ['Firefox'],
     // browsers: ['Safari', 'Chrome', 'ChromeCanary', 'Firefox', 'IE'],
     basePath: '..',
     files: [
-      // Populated in `grunt test` task.
+      // Populated in `grunt test` and `grunt debug` tasks.
     ],
-    singleRun: true,
     port: 9876,
     reporters: ['dots'],
     colors: true,
