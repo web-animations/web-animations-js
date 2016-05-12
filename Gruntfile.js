@@ -182,30 +182,43 @@ module.exports = function(grunt) {
       }
     },
     test: testTargets,
+    debug: testTargets,
     sauce: testTargets,
   });
 
-
-  grunt.task.registerMultiTask('test', 'Run <target> tests under Karma', function() {
-    var done = this.async();
+  function runTests(task, configCallback) {
+    var done = task.async();
     var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config.js'), {});
-    var config = targetConfig[this.target];
+    var config = targetConfig[task.target];
     karmaConfig.files = ['test/karma-setup.js'].concat(config.src, config.test);
+    if (configCallback) {
+      configCallback(karmaConfig);
+    }
     var karmaServer = require('karma').server;
     karmaServer.start(karmaConfig, function(exitCode) {
       done(exitCode === 0);
     });
+  }
+
+  grunt.task.registerMultiTask('test', 'Run <target> tests under Karma', function() {
+    runTests(this, function(karmaConfig) {
+      karmaConfig.singleRun = true;
+    });
+  });
+
+  grunt.task.registerMultiTask('debug', 'Debug <target> tests under Karma', function() {
+    var chalk = require('chalk');
+    console.log(chalk.inverse('>>> Press "DEBUG" in the web page to run tests and Ctrl-C here to finish. <<<'));
+    runTests(this, function(karmaConfig) {
+      karmaConfig.singleRun = false;
+    });
   });
 
   grunt.task.registerMultiTask('sauce', 'Run <target> tests under Karma on Saucelabs', function() {
-    var done = this.async();
-    var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config-ci.js'), {});
-    var config = targetConfig[this.target];
-    karmaConfig.files = ['test/karma-setup.js'].concat(config.src, config.test);
-    karmaConfig.sauceLabs.testName = 'web-animation-next ' + this.target + ' Unit tests';
-    var karmaServer = require('karma').server;
-    karmaServer.start(karmaConfig, function(exitCode) {
-      done(exitCode === 0);
+    var target = this.target;
+    runTests(this, function(karmaConfig) {
+      karmaConfig.singleRun = true;
+      karmaConfig.sauceLabs.testName = 'web-animation-next ' + target + ' Unit tests';
     });
   });
 
