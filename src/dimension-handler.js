@@ -37,9 +37,9 @@
 
     // Validating input is simply applying as many reductions as we can.
     var typeCheck = string.replace(/[-+]?(\d*\.)?\d+/g, 'N')
-                          .replace(new RegExp('N' + taggedUnitRegExp, 'g'), 'D')
-                          .replace(/\s[+-]\s/g, 'O')
-                          .replace(/\s/g, '');
+        .replace(new RegExp('N' + taggedUnitRegExp, 'g'), 'D')
+        .replace(/\s[+-]\s/g, 'O')
+        .replace(/\s/g, '');
     var reductions = [/N\*(D)/g, /(N|D)[*/]N/g, /(N|D)O\1/g, /\((N|D)\)/g];
     var i = 0;
     while (i < reductions.length) {
