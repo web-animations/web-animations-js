@@ -1,6 +1,10 @@
 (function() {
   var karma = window.__karma__;
 
+  function stringify(string) {
+    return '\'' + string.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'') + '\'';
+  }
+
   function checkExpectations(testURL, passes, failures, expectedFailures) {
     expectedFailures = expectedFailures || {};
 
@@ -52,17 +56,17 @@
     if (failedDifferently) {
       message += 'Failed differently:\n';
       for (var name in differentFailures) {
-        message += '  Test: ' + JSON.stringify(name) + '\n';
-        message += '  Expected: ' + JSON.stringify(expectedFailures[name]) + '\n';
-        message += '  Actual:   ' + JSON.stringify(differentFailures[name]) + '\n\n';
+        message += '  Test: ' + stringify(name) + '\n';
+        message += '  Expected: ' + stringify(expectedFailures[name]) + '\n';
+        message += '  Actual:   ' + stringify(differentFailures[name]) + '\n\n';
       }
       message += '\n';
     }
     if (failedUnexpectedly) {
       message += 'Failed unexpectedly:\n';
       for (var name in unexpectedFailures) {
-        message += '  Test: ' + JSON.stringify(name) + '\n';
-        message += '  Failure: ' + JSON.stringify(unexpectedFailures[name]) + '\n\n';
+        message += '  Test: ' + stringify(name) + '\n';
+        message += '  Failure: ' + stringify(unexpectedFailures[name]) + '\n\n';
       }
       message += '\n';
     }
@@ -131,7 +135,7 @@
           karma.result(checkExpectations(testURL, passes, failures, expectedTestharnessFailures[testURL]));
           runRemainingTests();
         });
-      }
+      };
       iframe.src = testURL;
     }
 

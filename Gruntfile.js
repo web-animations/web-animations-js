@@ -204,16 +204,17 @@ module.exports = function(grunt) {
 
     var mochaSuccess = false;
     runKarma(function(karmaConfig) {
+      console.info('Running polyfill tests...');
       configCallback(karmaConfig);
       karmaConfig.plugins.push('karma-mocha', 'karma-chai');
       karmaConfig.frameworks.push('mocha', 'chai');
       karmaConfig.files = ['test/karma-mocha-setup.js'].concat(config.src, config.polyfillTests);
     }).then(function(success) {
-      if (!config.runWebPlatformTests) {
-        done(success);
-        return;
-      }
       mochaSuccess = success;
+      if (!config.runWebPlatformTests) {
+        return success;
+      }
+      console.info('Running web-platform-tests/web-animations tests...');
       return runKarma(function(karmaConfig) {
         configCallback(karmaConfig);
         karmaConfig.client.testList = grunt.file.expand('test/web-platform-tests/web-animations/**/*.html');
