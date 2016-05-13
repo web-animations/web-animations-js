@@ -186,17 +186,45 @@ module.exports = function(grunt) {
     sauce: testTargets,
   });
 
+
+  function runKarma(configCallback) {
+    return new Promise(function(resolve) {
+      var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config.js'), {});
+      configCallback(karmaConfig);
+      var karmaServer = require('karma').server;
+      karmaServer.start(karmaConfig, function(exitCode) {
+        resolve(exitCode == 0);
+      });
+    });
+  }
+
   function runTests(task, configCallback) {
     var done = task.async();
-    var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config.js'), {});
     var config = targetConfig[task.target];
-    karmaConfig.files = ['test/karma-setup.js'].concat(config.src, config.test);
-    if (configCallback) {
+
+    var mochaSuccess = false;
+    runKarma(function(karmaConfig) {
       configCallback(karmaConfig);
-    }
-    var karmaServer = require('karma').server;
-    karmaServer.start(karmaConfig, function(exitCode) {
-      done(exitCode === 0);
+      karmaConfig.plugins.push('karma-mocha', 'karma-chai');
+      karmaConfig.frameworks.push('mocha', 'chai');
+      karmaConfig.files = ['test/karma-mocha-setup.js'].concat(config.src, config.polyfillTests);
+    }).then(function(success) {
+      if (!config.runWebPlatformTests) {
+        done(success);
+        return;
+      }
+      mochaSuccess = success;
+      return runKarma(function(karmaConfig) {
+        configCallback(karmaConfig);
+        karmaConfig.client.testList = grunt.file.expand('test/web-platform-tests/web-animations/**/*.html');
+        karmaConfig.files.push('test/web-platform-tests-expectations.js');
+        karmaConfig.files.push('test/karma-testharness-adapter.js');
+        for (var pattern of ['test/web-platform-tests/web-animations/**', 'test/resources/*', 'src/**', '*.js']) {
+          karmaConfig.files.push({pattern, included: false, served: true});
+        }
+      });
+    }).then(function(testharnessSuccess) {
+      done(mochaSuccess && testharnessSuccess);
     });
   }
 
@@ -218,7 +246,8 @@ module.exports = function(grunt) {
     var target = this.target;
     runTests(this, function(karmaConfig) {
       karmaConfig.singleRun = true;
-      karmaConfig.sauceLabs.testName = 'web-animation-next ' + target + ' Unit tests';
+      karmaConfig.plugins.push('karma-saucelabs-launcher');
+      karmaConfig.sauceLabs = {testName: 'web-animation-next ' + target + ' Unit tests'};
     });
   });
 
