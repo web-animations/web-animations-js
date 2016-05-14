@@ -1,3 +1,4 @@
+// Expectations to be used by karma-testharness-adapter.js.
 module.exports = {
   skip: {
     'test/web-platform-tests/web-animations/animation/constructor.html':
