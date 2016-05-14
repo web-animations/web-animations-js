@@ -1,3 +1,17 @@
+// Copyright 2016 Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+// limitations under the License.
+
 (function() {
   var karma = window.__karma__;
 
@@ -5,7 +19,7 @@
     return '\'' + string.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'') + '\'';
   }
 
-  function checkExpectations(testURL, passes, failures, expectedFailures) {
+  function checkExpectations(testURL, passes, failures, expectedFailures, flakyFailureIndicator) {
     expectedFailures = expectedFailures || {};
 
     var failedDifferently = false;
@@ -23,7 +37,7 @@
     for (var name in failures) {
       var message = failures[name];
       if (name in expectedFailures) {
-        if (expectedFailures[name] !== testharnessFlakyFailure && message != expectedFailures[name]) {
+        if (expectedFailures[name] != flakyFailureIndicator && message != expectedFailures[name]) {
           failedDifferently = true;
           differentFailures[name] = message;
         }
@@ -79,35 +93,56 @@
     };
   }
 
+  function checkConfig(config) {
+    var requiredProperties = {
+      testURLList: '<Array of test URLs>',
+      skip: '<Object maping skipped test URLs with the reason for skipping>',
+      expectedFailures: '<Object mapping test URLs to expected inner test failures>',
+      flakyFailureIndicator: '<String used in expectedFailures to indicate non deterministic failure messages>',
+    };
+    var errorMessage = '';
+    if (!config) {
+      errorMessage = 'Missing testharnessTests config options on Karma\'s config.client.\n';
+    } else {
+      for (var property in requiredProperties) {
+        if (!(property in config)) {
+          errorMessage += 'Missing property ' + property + '\n';
+        }
+      }
+    }
+    if (errorMessage) {
+      karma.error('testharnessTests config options must be defined in Karma\'s config.client with the following properties:\n' +
+          Object.keys(requiredProperties).map(function(property) {
+            return '  ' + property + ': ' + requiredProperties[property] + '\n';
+          }).join('') +
+          '\n' +
+          errorMessage);
+      return false;
+    }
+    return true;
+  }
+
   karma.start = function() {
-    var testURLs = karma.config.testList;
-    if (!testURLs) {
-      karma.error('testList not set on karma config.client');
-      return;
-    }
-    if (typeof window.skippedTestharnessTests == 'undefined') {
-      karma.error('skippedTestharnessTests data not set on window.');
-      return;
-    }
-    if (typeof window.expectedTestharnessFailures == 'undefined') {
-      karma.error('expectedTestharnessFailures data not set on window.');
+    // Karma's config.client object appears as karma.config here.
+    var config = karma.config.testharnessTests;
+    if (!checkConfig(config)) {
       return;
     }
 
-    karma.info({total: testURLs.length});
+    karma.info({total: config.testURLList.length});
 
     var iframe = document.createElement('iframe');
     document.body.appendChild(iframe);
 
     function runRemainingTests() {
-      if (testURLs.length == 0) {
+      if (config.testURLList.length == 0) {
         karma.complete();
         return;
       }
 
-      var testURL = testURLs.shift();
-      if (testURL in skippedTestharnessTests) {
-        console.log('Skipping: ' + testURL + ' because: ' + skippedTestharnessTests[testURL]);
+      var testURL = config.testURLList.shift();
+      if (testURL in config.skip) {
+        console.log('Skipping: ' + testURL + ' because: ' + config.skip[testURL]);
         karma.result({
           suite: [testURL],
           description: '',
@@ -132,7 +167,7 @@
             }
           });
 
-          karma.result(checkExpectations(testURL, passes, failures, expectedTestharnessFailures[testURL]));
+          karma.result(checkExpectations(testURL, passes, failures, config.expectedFailures[testURL], config.flakyFailureIndicator));
           runRemainingTests();
         });
       };

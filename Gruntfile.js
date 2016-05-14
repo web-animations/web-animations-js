@@ -202,30 +202,44 @@ module.exports = function(grunt) {
     var done = task.async();
     var config = targetConfig[task.target];
 
-    var mochaSuccess = false;
-    runKarma(function(karmaConfig) {
+    var polyfillTestsPassed = false;
+    var webPlatformTestsPassed = false;
+
+    function runPolyfillTests() {
       console.info('Running polyfill tests...');
-      configCallback(karmaConfig);
-      karmaConfig.plugins.push('karma-mocha', 'karma-chai');
-      karmaConfig.frameworks.push('mocha', 'chai');
-      karmaConfig.files = ['test/karma-mocha-setup.js'].concat(config.src, config.polyfillTests);
-    }).then(function(success) {
-      mochaSuccess = success;
+      return runKarma(function(karmaConfig) {
+        configCallback(karmaConfig);
+        karmaConfig.plugins.push('karma-mocha', 'karma-chai');
+        karmaConfig.frameworks.push('mocha', 'chai');
+        karmaConfig.files = ['test/karma-mocha-setup.js'].concat(config.src, config.polyfillTests);
+      }).then(function(success) {
+        polyfillTestsPassed = success;
+      });
+    }
+    function runWebPlatformTests() {
       if (!config.runWebPlatformTests) {
-        return success;
+        webPlatformTestsPassed = true;
+        return Promise.resolve();
       }
       console.info('Running web-platform-tests/web-animations tests...');
       return runKarma(function(karmaConfig) {
         configCallback(karmaConfig);
-        karmaConfig.client.testList = grunt.file.expand('test/web-platform-tests/web-animations/**/*.html');
-        karmaConfig.files.push('test/web-platform-tests-expectations.js');
+        karmaConfig.client.testharnessTests = require('./test/web-platform-tests-expectations.js');
+        karmaConfig.client.testharnessTests.testURLList = grunt.file.expand('test/web-platform-tests/web-animations/**/*.html');
         karmaConfig.files.push('test/karma-testharness-adapter.js');
         for (var pattern of ['test/web-platform-tests/web-animations/**', 'test/resources/*', 'src/**', '*.js']) {
           karmaConfig.files.push({pattern, included: false, served: true});
         }
+      }).then(function(success) {
+        webPlatformTestsPassed = success;
       });
-    }).then(function(testharnessSuccess) {
-      done(mochaSuccess && testharnessSuccess);
+    }
+
+    runPolyfillTests().then(runWebPlatformTests).then(function() {
+      done(polyfillTestsPassed && webPlatformTestsPassed);
+    }).catch(function(error) {
+      console.error(error);
+      done(false);
     });
   }
 
