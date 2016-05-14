@@ -428,12 +428,6 @@ module.exports = {
     },
 
     'test/web-platform-tests/web-animations/animation/finish.html': {
-      'Test resetting of computed style':
-          'assert_equals: The computed style should be reset when finish() is called expected 10 but got 0',
-
-      'Test finish() resolves finished promise synchronously':
-          'assert_true: Animation.finished should be resolved soon after Animation.finish() expected true got false',
-
       'Test exceptions when finishing non-running animation':
           'assert_throws: function "function () {\n"use strict";\n\n    animation.finish();\n  }" did not throw',
 
@@ -472,11 +466,11 @@ module.exports = {
       'Test finished promise changes for animation duration changes':
           'assert_equals: currentTime should be unchanged when duration shortened expected 50000 but got 25000',
 
-      'Test synchronous finished promise resolved even if finished state is changed soon':
-          'assert_true: Animation.finished should be resolved even if the finished state is changed soon expected true got false',
+      'Test finished promise is not resolved when the animation falls out finished state immediately':
+          'assert_unreached: Animation.finished should not be resolved Reached unreachable code',
 
-      'Test synchronous finished promise resolved even if asynchronous finished promise happens just before synchronous promise':
-          'assert_true: Animation.finished should be resolved soon after finish() is called even if there are other asynchronous promises just before it expected true got false',
+      'Test finished promise is not resolved once the animation falls out finished state even though the current finished promise is generated soon after animation state became finished':
+          'assert_unreached: Animation.finished should not be resolved Reached unreachable code',
     },
 
     'test/web-platform-tests/web-animations/animation/oncancel.html': {
@@ -485,12 +479,6 @@ module.exports = {
     },
 
     'test/web-platform-tests/web-animations/animation/onfinish.html': {
-      'onfinish event is fired when the currentTime < 0 and the playbackRate < 0':
-          'FLAKY_TEST_RESULT',
-
-      'onfinish event is fired when the currentTime > 0 and the playbackRate > 0':
-          'FLAKY_TEST_RESULT',
-
       'onfinish event is fired when animation.finish() is called':
           'FLAKY_TEST_RESULT',
     },
