@@ -152,7 +152,9 @@
         return;
       }
 
-      window.initTestHarness = function(innerWindow) {
+      // This expects testharnessreport.js in the iframe to look for this function on the
+      // parent window and call it once testharness.js has loaded.
+      window.onTestharnessLoaded = function(innerWindow) {
         innerWindow.add_completion_callback(function(results) {
           var failures = {};
           var passes = {};
