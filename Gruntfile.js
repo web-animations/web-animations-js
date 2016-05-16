@@ -227,7 +227,14 @@ module.exports = function(grunt) {
         karmaConfig.client.testharnessTests = require('./test/web-platform-tests-expectations.js');
         karmaConfig.client.testharnessTests.testURLList = grunt.file.expand('test/web-platform-tests/web-animations/**/*.html');
         karmaConfig.files.push('test/karma-testharness-adapter.js');
-        for (var pattern of ['test/web-platform-tests/web-animations/**', 'test/resources/*', 'src/**', '*.js']) {
+        var servedFiles = [
+          'test/web-platform-tests/resources/**',
+          'test/web-platform-tests/web-animations/**',
+          'test/resources/*',
+          'src/**',
+          '*.js',
+        ];
+        for (var pattern of servedFiles) {
           karmaConfig.files.push({pattern, included: false, served: true});
         }
       }).then(function(success) {
