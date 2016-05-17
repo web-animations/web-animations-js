@@ -81,7 +81,7 @@
       'src/effect-callback.js',
       'src/group-constructors.js'];
 
-  var webAnimations1Test = [
+  var webAnimations1PolyfillTests = [
       'test/js/animation-cancel-event.js',
       'test/js/animation-finish-event.js',
       'test/js/animation.js',
@@ -100,7 +100,7 @@
       'test/js/transform-handler.js',
       'test/js/visibility-handler.js'];
 
-  var webAnimationsNextTest = webAnimations1Test.concat(
+  var webAnimationsNextPolyfillTests = webAnimations1PolyfillTests.concat(
       'test/js/effect-callback.js',
       'test/js/group-animation-cancel-event.js',
       'test/js/group-animation-finish-event.js',
@@ -119,7 +119,8 @@
       webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: [],
       src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimations1BonusSrc),
-      test: webAnimations1Test,
+      polyfillTests: webAnimations1PolyfillTests,
+      runWebPlatformTests: false,
     },
     'web-animations-next': {
       scopeSrc: scopeSrc,
@@ -128,7 +129,8 @@
       webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: webAnimationsNextSrc,
       src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimations1BonusSrc).concat(webAnimationsNextSrc),
-      test: webAnimationsNextTest,
+      polyfillTests: webAnimationsNextPolyfillTests,
+      runWebPlatformTests: true,
     },
     'web-animations-next-lite': {
       scopeSrc: scopeSrc,
@@ -137,7 +139,8 @@
       webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: webAnimationsNextSrc,
       src: scopeSrc.concat(sharedSrc).concat(liteWebAnimations1Src).concat(webAnimations1BonusSrc).concat(webAnimationsNextSrc),
-      test: [],
+      polyfillTests: [],
+      runWebPlatformTests: false,
     },
   };
 

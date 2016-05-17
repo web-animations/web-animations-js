@@ -1,12 +1,12 @@
 ## Developer setup instructions
 
 1. `git clone git@github.com:web-animations/web-animations-next.git`
-1. `git submodule update --init --recursive`
+1. `git submodule update --init --recursive` (Necessary for running tests.)
 1. Install [node](https://nodejs.org/en/) and make sure `npm` is in your $PATH
 1. Run `npm install` in the respository to pull in development dependencies.
 1. Run `npm install -g grunt grunt-cli` to get the build tools for the command line.
 1. Run `grunt` to build the polyfill.
-1. Run `grunt test` to run polyfill tests using the build.
+1. Run `grunt test` to run polyfill and web-platform-tests tests.
 
 
 ## Design notes
@@ -66,3 +66,23 @@
     git rm .gitignore
     git commit -m 'Add build artifacts from '`cat .git/refs/remotes/web-animations-next/master`
     git push web-animations-js HEAD:refs/heads/master
+
+## Testing architecture
+
+This is an overview of what happens when `grunt test` is run.
+
+1. Polyfill tests written in mocha and chai are run.
+    1. grunt creates a karma config with mocha and chai adapters.
+    1. grunt adds the test/js files as includes to the karma config.
+    1. grunt starts the karma server with the config and waits for the result.
+    1. The mocha adaptor runs the included tests and reports the results to karma.
+    1. karma outputs results to the console and returns the final pass/fail result to grunt.
+1. web-platform-tests/web-animations tests written in testtharness.js are run.
+    1. grunt creates a karma config with karma-testharness-adaptor.js included.
+    1. grunt adds the web-platform-tests/web-animations files to the custom testharnessTests config in the karma config.
+    1. grunt adds failure expectations to the custom testharnessTests config in the karma config.
+    1. grunt starts the karma server with the config and waits for the result.
+    1. The testharness.js adaptor runs the included tests (ignoring expected failures) and reports the results to karma.
+    1. karma outputs results to the console and returns the final pass/fail result to grunt.
+1. grunt exits successfully if both test runs passed.
+
