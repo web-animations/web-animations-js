@@ -11,7 +11,7 @@
     "polyfill"
   ],
   "homepage": "https://github.com/web-animations",
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "main": "web-animations.min.js",
   "files": [
     "*.min.js",
