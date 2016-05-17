@@ -122,6 +122,50 @@
     return true;
   }
 
+  function runRemainingTests(remainingTestURLs, config, testNameDiv, iframe) {
+    if (remainingTestURLs.length == 0) {
+      karma.complete();
+      return;
+    }
+
+    var testURL = remainingTestURLs[0];
+    if (testURL in config.skip) {
+      console.log('Skipping: ' + testURL + ' because: ' + config.skip[testURL]);
+      karma.result({
+        suite: [testURL],
+        description: '',
+        skipped: true,
+      });
+      runRemainingTests(remainingTestURLs.slice(1), config, testNameDiv, iframe);
+      return;
+    }
+
+    // This expects testharnessreport.js in the iframe to look for this function on the
+    // parent window and call it once testharness.js has loaded.
+    window.onTestharnessLoaded = function(innerWindow) {
+      innerWindow.add_completion_callback(function(results) {
+        var failures = {};
+        var passes = {};
+        results.forEach(function(result) {
+          if (result.status == 0) {
+            passes[result.name] = true;
+          } else {
+            if (result.name in failures) {
+              console.warn(testURL + ' has duplicate test name: ' + result.name);
+            }
+            failures[result.name] = result.message;
+          }
+        });
+
+        karma.result(checkExpectations(testURL, passes, failures, config.expectedFailures[testURL], config.flakyFailureIndicator));
+        runRemainingTests(remainingTestURLs.slice(1), config, testNameDiv, iframe);
+      });
+    };
+    testNameDiv.textContent = testURL;
+    iframe.src = testURL;
+  }
+
+
   karma.start = function() {
     // Karma's config.client object appears as karma.config here.
     var config = karma.config.testharnessTests;
@@ -131,56 +175,13 @@
 
     karma.info({total: config.testURLList.length});
 
-    var testName = document.createElement('div');
-    document.body.appendChild(testName);
+    var testNameDiv = document.createElement('div');
+    document.body.appendChild(testNameDiv);
     var iframe = document.createElement('iframe');
     iframe.style.width = 'calc(100vw - 30px)';
     iframe.style.height = 'calc(100vh - 60px)';
     document.body.appendChild(iframe);
 
-    function runRemainingTests() {
-      if (config.testURLList.length == 0) {
-        karma.complete();
-        return;
-      }
-
-      var testURL = config.testURLList.shift();
-      if (testURL in config.skip) {
-        console.log('Skipping: ' + testURL + ' because: ' + config.skip[testURL]);
-        karma.result({
-          suite: [testURL],
-          description: '',
-          skipped: true,
-        });
-        runRemainingTests();
-        return;
-      }
-
-      // This expects testharnessreport.js in the iframe to look for this function on the
-      // parent window and call it once testharness.js has loaded.
-      window.onTestharnessLoaded = function(innerWindow) {
-        innerWindow.add_completion_callback(function(results) {
-          var failures = {};
-          var passes = {};
-          results.forEach(function(result) {
-            if (result.status == 0) {
-              passes[result.name] = true;
-            } else {
-              if (result.name in failures) {
-                console.warn(testURL + ' has duplicate test name: ' + result.name);
-              }
-              failures[result.name] = result.message;
-            }
-          });
-
-          karma.result(checkExpectations(testURL, passes, failures, config.expectedFailures[testURL], config.flakyFailureIndicator));
-          runRemainingTests();
-        });
-      };
-      testName.textContent = testURL;
-      iframe.src = testURL;
-    }
-
-    runRemainingTests();
+    runRemainingTests(config.testURLList, config, testNameDiv, iframe);
   };
 })();
