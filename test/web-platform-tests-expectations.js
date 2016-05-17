@@ -8,7 +8,7 @@ module.exports = {
         'It seems to enter an infinite loop and halt the browser.',
   },
 
-  flakyFailureIndicator: 'FLAKY_TEST_RESULT',
+  flakyTestIndicator: 'FLAKY_TEST_RESULT',
   expectedFailures: {
     'test/web-platform-tests/web-animations/animatable/animate.html': {
       'Element.animate() creates an Animation object':

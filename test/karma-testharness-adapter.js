@@ -19,7 +19,7 @@
     return '\'' + string.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'') + '\'';
   }
 
-  function checkExpectations(testURL, passes, failures, expectedFailures, flakyFailureIndicator) {
+  function checkExpectations(testURL, passes, failures, expectedFailures, flakyTestIndicator) {
     expectedFailures = expectedFailures || {};
 
     var failedDifferently = false;
@@ -37,7 +37,7 @@
     for (var name in failures) {
       var message = failures[name];
       if (name in expectedFailures) {
-        if (expectedFailures[name] != flakyFailureIndicator && message != expectedFailures[name]) {
+        if (expectedFailures[name] != flakyTestIndicator && message != expectedFailures[name]) {
           failedDifferently = true;
           differentFailures[name] = message;
         }
@@ -47,7 +47,7 @@
       }
     }
     for (var name in expectedFailures) {
-      if (name in passes) {
+      if (name in passes && expectedFailures[name] != flakyTestIndicator) {
         passedUnexpectedly = true;
         unexpectedPasses.push(name);
       } else if (!(name in failures)) {
@@ -98,7 +98,7 @@
       testURLList: '<Array of test URLs>',
       skip: '<Object mapping skipped test URLs to the reason for skipping>',
       expectedFailures: '<Object mapping test URLs to expected inner test failures>',
-      flakyFailureIndicator: '<String used in expectedFailures to indicate non deterministic failure messages>',
+      flakyTestIndicator: '<String used in expectedFailures to indicate flaky test (pass/fail)>',
     };
     var errorMessage = '';
     if (!config) {
@@ -157,7 +157,7 @@
           }
         });
 
-        karma.result(checkExpectations(testURL, passes, failures, config.expectedFailures[testURL], config.flakyFailureIndicator));
+        karma.result(checkExpectations(testURL, passes, failures, config.expectedFailures[testURL], config.flakyTestIndicator));
         runRemainingTests(remainingTestURLs.slice(1), config, testNameDiv, iframe);
       });
     };
