@@ -96,7 +96,7 @@
   function checkConfig(config) {
     var requiredProperties = {
       testURLList: '<Array of test URLs>',
-      skip: '<Object maping skipped test URLs with the reason for skipping>',
+      skip: '<Object mapping skipped test URLs to the reason for skipping>',
       expectedFailures: '<Object mapping test URLs to expected inner test failures>',
       flakyFailureIndicator: '<String used in expectedFailures to indicate non deterministic failure messages>',
     };
@@ -106,7 +106,7 @@
     } else {
       for (var property in requiredProperties) {
         if (!(property in config)) {
-          errorMessage += 'Missing property ' + property + '\n';
+          errorMessage += 'Missing property ' + property + ' from testharnessTests.\n';
         }
       }
     }
