@@ -131,7 +131,11 @@
 
     karma.info({total: config.testURLList.length});
 
+    var testName = document.createElement('div');
+    document.body.appendChild(testName);
     var iframe = document.createElement('iframe');
+    iframe.style.width = 'calc(100vw - 30px)';
+    iframe.style.height = 'calc(100vh - 60px)';
     document.body.appendChild(iframe);
 
     function runRemainingTests() {
@@ -173,6 +177,7 @@
           runRemainingTests();
         });
       };
+      testName.textContent = testURL;
       iframe.src = testURL;
     }
 

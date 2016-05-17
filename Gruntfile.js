@@ -233,6 +233,9 @@ module.exports = function(grunt) {
           'test/resources/*',
           'src/**',
           '*.js',
+
+          // TODO(alancutter): Make a separate grunt task for serving these imported Blink tests.
+          'test/blink/**',
         ];
         for (var pattern of servedFiles) {
           karmaConfig.files.push({pattern, included: false, served: true});
