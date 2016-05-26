@@ -276,9 +276,16 @@ module.exports = function(grunt) {
   });
 
   grunt.task.registerMultiTask('debug', 'Debug <target> tests under Karma', function(testFilter) {
-    var chalk = require('chalk');
-    console.log(chalk.inverse('>>> Press "DEBUG" in the web page to run tests and Ctrl-C here to finish. <<<'));
+    if (testFilter) {
+      console.log('Test file URLs:');
+      for (var testFile of testFilter.split(',')) {
+        console.log('http://localhost:9876/base/' + testFile);
+      }
+    } else {
+      console.log('Test runner URL: http://localhost:9876/debug.html');
+    }
     runTests(this, function(karmaConfig) {
+      karmaConfig.browsers = [];
       karmaConfig.singleRun = false;
     }, testFilter);
   });
