@@ -198,34 +198,49 @@ module.exports = function(grunt) {
     });
   }
 
-  function runTests(task, configCallback) {
+  function runTests(task, configCallback, testFilter) {
     var done = task.async();
     var config = targetConfig[task.target];
+    if (testFilter) {
+      testFilter = new Set(testFilter.split(','));
+    }
 
-    var polyfillTestsPassed = false;
-    var webPlatformTestsPassed = false;
+    function filterTests(testFiles) {
+      if (!testFilter) {
+        return testFiles;
+      }
+      return testFiles.filter(file => testFilter.has(file));
+    }
 
     function runPolyfillTests() {
+      var testFiles = filterTests(config.polyfillTests);
+      if (testFiles.length == 0) {
+        return Promise.resolve(true);
+      }
+
       console.info('Running polyfill tests...');
       return runKarma(function(karmaConfig) {
         configCallback(karmaConfig);
         karmaConfig.plugins.push('karma-mocha', 'karma-chai');
         karmaConfig.frameworks.push('mocha', 'chai');
-        karmaConfig.files = ['test/karma-mocha-setup.js'].concat(config.src, config.polyfillTests);
-      }).then(function(success) {
-        polyfillTestsPassed = success;
+        karmaConfig.files = ['test/karma-mocha-setup.js'].concat(config.src, testFiles);
       });
     }
     function runWebPlatformTests() {
       if (!config.runWebPlatformTests) {
-        webPlatformTestsPassed = true;
-        return Promise.resolve();
+        return Promise.resolve(true);
       }
+
+      var testFiles = filterTests(grunt.file.expand('test/web-platform-tests/web-animations/**/*.html'));
+      if (testFiles.length == 0) {
+        return Promise.resolve(true);
+      }
+
       console.info('Running web-platform-tests/web-animations tests...');
       return runKarma(function(karmaConfig) {
         configCallback(karmaConfig);
         karmaConfig.client.testharnessTests = require('./test/web-platform-tests-expectations.js');
-        karmaConfig.client.testharnessTests.testURLList = grunt.file.expand('test/web-platform-tests/web-animations/**/*.html');
+        karmaConfig.client.testharnessTests.testURLList = testFiles;
         karmaConfig.files.push('test/karma-testharness-adapter.js');
         var servedFiles = [
           'test/web-platform-tests/resources/**',
@@ -238,14 +253,15 @@ module.exports = function(grunt) {
           'test/blink/**',
         ];
         for (var pattern of servedFiles) {
-          karmaConfig.files.push({pattern, included: false, served: true});
+          karmaConfig.files.push({pattern, included: false, served: true, nocache: true});
         }
-      }).then(function(success) {
-        webPlatformTestsPassed = success;
       });
     }
 
-    runPolyfillTests().then(runWebPlatformTests).then(function() {
+    var polyfillTestsPassed = false;
+    runPolyfillTests().then(success => {
+      polyfillTestsPassed = success;
+    }).then(runWebPlatformTests).then(webPlatformTestsPassed => {
       done(polyfillTestsPassed && webPlatformTestsPassed);
     }).catch(function(error) {
       console.error(error);
@@ -253,18 +269,18 @@ module.exports = function(grunt) {
     });
   }
 
-  grunt.task.registerMultiTask('test', 'Run <target> tests under Karma', function() {
+  grunt.task.registerMultiTask('test', 'Run <target> tests under Karma', function(testFilter) {
     runTests(this, function(karmaConfig) {
       karmaConfig.singleRun = true;
-    });
+    }, testFilter);
   });
 
-  grunt.task.registerMultiTask('debug', 'Debug <target> tests under Karma', function() {
+  grunt.task.registerMultiTask('debug', 'Debug <target> tests under Karma', function(testFilter) {
     var chalk = require('chalk');
     console.log(chalk.inverse('>>> Press "DEBUG" in the web page to run tests and Ctrl-C here to finish. <<<'));
     runTests(this, function(karmaConfig) {
       karmaConfig.singleRun = false;
-    });
+    }, testFilter);
   });
 
   grunt.task.registerMultiTask('sauce', 'Run <target> tests under Karma on Saucelabs', function() {

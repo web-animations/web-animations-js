@@ -9,6 +9,24 @@
 1. Run `grunt test` to run polyfill and web-platform-tests tests.
 
 
+## Debugging tests
+
+You can run the tests in an interactive mode with `grunt debug`. This starts the
+Karma server once for each polyfill target for each test framework. Press DEBUG
+to run the tests in a new tab, press Ctrl-C on the command line to move to the next
+polyfill target/test framework.
+
+While the Karma server is running you may point any browser to the served URL. Files
+in the repository are located at http://localhost:9876/base/\<path\>.
+Example: http://localhost:9876/base/test/web-platform-tests/web-animations/animation/pause.html
+Unfortunately Karma doesn't serve file lists for directories, files need to be navigated to directly.
+
+The polyfill target and tests can be specified as arguments to the `debug` task.
+Example: `grunt debug:web-animations-next:test/web-platform-tests/web-animations/animation/pause.html`
+will run just the pause.html test on the web-animations-next polyfill when you click DEBUG.  
+Multiple test files may be listed with comma separation.
+
+
 ## Design notes
 
 [Design diagrams](https://drive.google.com/folderview?id=0B9rpPoIDv3vTNlZxOVp6a2tNa1E&usp=sharing)
