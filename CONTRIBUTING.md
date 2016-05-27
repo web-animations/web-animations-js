@@ -35,7 +35,7 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
     * Increment the second number and reset the third to 0 when there are significant new, but backwards compatible features
     * Otherwise, increment the third number
 
-2.  Add versioned release notes to `History.md`, for example:
+1.  Add versioned release notes to `History.md`, for example:
 
         ### 3.13.37 — *November 1, 2001*
 
@@ -46,23 +46,25 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
 
         git log `git describe --tags --abbrev=0 web-animations-js/master`..web-animations-next/master --pretty=format:"  * %s"
 
-3.  Specify the new version inside `package.json` (for NPM), for example:
+1.  Specify the new version inside `package.json` (for NPM), for example:
 
     ```js
       "version": "3.13.37",
     ```
 
-4.  Submit both changes to web-animations-next then follow the procedure to push from web-animations-next to web-animations-js.
+1.  Build the polyfill with `npm install && grunt` then update `README.md`'s Build Target Comparison with the current gzipped sizes.
 
-5.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
+1.  Submit both changes to web-animations-next then follow the procedure to push from web-animations-next to web-animations-js.
+
+1.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
     commit pushed to web-animations-js in step #4. Copy the release notes from `History.md`
     added in step #2.
 
-6. Once you've pushed to web-animations-js, run `npm publish` from that checked-out folder
+1. Once you've pushed to web-animations-js, run `npm publish` from that checked-out folder
 
    To do this, you'll need to be a collaborator [on the NPM project](https://www.npmjs.com/package/web-animations-js), or have a collaborator help you.
 
-7. If there are any breaking changes to the API in this release you must notify web-animations-changes@googlegroups.com.
+1. If there are any breaking changes to the API in this release you must notify web-animations-changes@googlegroups.com.
 
    Only owners of the group may post to it so you may need to request ownership or ask someone to post it for you.
 
