@@ -11,9 +11,11 @@ module.exports = {
   flakyTestIndicator: 'FLAKY_TEST_RESULT',
   expectedFailures: {
     'test/web-platform-tests/web-animations/animatable/animate.html': {
+      // Serialization of objects cannot be feasibly overwritten by the polyfill.
       'Element.animate() creates an Animation object':
           'assert_equals: Returned object is an Animation expected "[object Animation]" but got "[object Object]"',
 
+      // Serialization of objects cannot be feasibly overwritten by the polyfill.
       'Element.animate() creates an Animation object with a KeyframeEffect':
           'assert_equals: Returned Animation has a KeyframeEffect expected "[object KeyframeEffect]" but got "[object Object]"',
 
@@ -412,6 +414,7 @@ module.exports = {
       'DocumentTimeline must be primary interface of document.timeline':
           'assert_own_property: self does not have own property "DocumentTimeline" expected property "DocumentTimeline" missing',
 
+      // Serialization of objects cannot be feasibly overwritten by the polyfill.
       'Stringification of document.timeline':
           'assert_equals: class string of document.timeline expected "[object DocumentTimeline]" but got "[object Object]"',
 
@@ -883,6 +886,7 @@ module.exports = {
       'a KeyframeEffectReadOnly constructed with null target':
           'KeyframeEffectReadOnly is not defined',
 
+      // Serialization of objects cannot be feasibly overwritten by the polyfill.
       'KeyframeEffect constructor creates an AnimationEffectTiming timing object':
           'assert_equals: expected "[object KeyframeEffect]" but got "[object Object]"',
     },
