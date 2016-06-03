@@ -227,11 +227,7 @@ module.exports = function(grunt) {
       });
     }
     function runWebPlatformTests() {
-      if (!config.runWebPlatformTests) {
-        return Promise.resolve(true);
-      }
-
-      var testFiles = filterTests(grunt.file.expand('test/web-platform-tests/web-animations/**/*.html'));
+      var testFiles = filterTests(grunt.file.expand(config.webPlatformTests));
       if (testFiles.length == 0) {
         return Promise.resolve(true);
       }
