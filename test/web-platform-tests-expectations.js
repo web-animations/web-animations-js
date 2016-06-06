@@ -229,12 +229,12 @@ module.exports = {
 
     'test/web-platform-tests/web-animations/interfaces/Animation/oncancel.html': {
       'oncancel event is fired when animation.cancel() is called.':
-          'assert_equals: event.timelineTime should equal to the animation timeline when finished promise is rejected expected (undefined) undefined but got (number) 1111.6200000000001',
+          'FLAKY_TEST_RESULT',
     },
 
     'test/web-platform-tests/web-animations/interfaces/Animation/onfinish.html': {
       'onfinish event is fired when animation.finish() is called':
-          'assert_equals: event.timelineTime should equal to the animation timeline when finished promise is resolved expected (undefined) undefined but got (number) 1079.882351',
+          'FLAKY_TEST_RESULT',
     },
 
     'test/web-platform-tests/web-animations/interfaces/Animation/pause.html': {
@@ -260,7 +260,7 @@ module.exports = {
 
     'test/web-platform-tests/web-animations/interfaces/Animation/playbackRate.html': {
       'Test the effect of setting playbackRate while playing animation':
-          'assert_approx_equals: animation.currentTime should be the same speed as timeline now. expected 16.114772999999786 +/- 0.001 but got 0',
+          'FLAKY_TEST_RESULT',
     },
 
     'test/web-platform-tests/web-animations/interfaces/Animation/reverse.html': {
@@ -360,7 +360,7 @@ module.exports = {
 
     'test/web-platform-tests/web-animations/interfaces/AnimationEffectTiming/endDelay.html': {
       'onfinish event is fired currentTime is after endTime':
-          'assert_equals: receivedEvents[0].timelineTime should equal to the animation timeline when finished promise is resolved expected 1173.360423 but got 1190.491128',
+          'FLAKY_TEST_RESULT',
 
       'set endDelay -1000':
           'anim.effect.getComputedTiming is not a function',
@@ -414,10 +414,10 @@ module.exports = {
           'assert_equals: set currentTime just a little before duration expected "0.0001" but got "0"',
 
       'changed duration immediately updates its computed styles':
-          'assert_equals: set double duration expected "0.5" but got "0.005"',
+          'FLAKY_TEST_RESULT',
 
       'changed iterations immediately updates its computed styles':
-          'assert_equals: set 2 iterations expected "0" but got "0.01"',
+          'FLAKY_TEST_RESULT',
     },
 
     'test/web-platform-tests/web-animations/interfaces/AnimationEffectTiming/iterationStart.html': {
