@@ -130,13 +130,13 @@
       var tests = Object.keys(failures[testURL]);
       tests.sort();
       return (
-        '    ' + stringify(testURL) + ': {\n' +
-        tests.map(function(test) {
-          return (
-            '      ' + stringify(test) + ':\n' +
-            '          ' + stringify(failures[testURL][test]) + ',\n');
-        }).join('\n') +
-        '    },\n');
+          '    ' + stringify(testURL) + ': {\n' +
+          tests.map(function(test) {
+            return (
+                '      ' + stringify(test) + ':\n' +
+                '          ' + stringify(failures[testURL][test]) + ',\n');
+          }).join('\n') +
+          '    },\n');
     }).join('\n');
   }
 
