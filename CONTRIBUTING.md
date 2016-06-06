@@ -15,6 +15,8 @@ You can run the tests in an interactive mode with `grunt debug`. This starts the
 Karma server once for each polyfill target for each test framework.
 Navigate to `http://localhost:9876/debug.html` to open the test runner in your
 browser of choice, all test results appear in the Javascript console.
+Test failures can be accessed via `window.failures` and `window.formattedFailures`
+once the tests have completed.
 
 The polyfill target and tests can be specified as arguments to the `debug` task.  
 Example: `grunt debug:web-animations-next:test/web-platform-tests/web-animations/animation/pause.html`  

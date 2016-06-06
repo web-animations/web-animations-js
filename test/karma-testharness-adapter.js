@@ -19,7 +19,7 @@
     return '\'' + string.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'') + '\'';
   }
 
-  function checkExpectations(testURL, passes, failures, expectedFailures, flakyTestIndicator) {
+  function checkExpectations(testURL, passes, failures, expectedFailures) {
     expectedFailures = expectedFailures || {};
 
     var failedDifferently = false;
@@ -37,7 +37,7 @@
     for (var name in failures) {
       var message = failures[name];
       if (name in expectedFailures) {
-        if (expectedFailures[name] != flakyTestIndicator && message != expectedFailures[name]) {
+        if (message != expectedFailures[name]) {
           failedDifferently = true;
           differentFailures[name] = message;
         }
@@ -47,7 +47,7 @@
       }
     }
     for (var name in expectedFailures) {
-      if (name in passes && expectedFailures[name] != flakyTestIndicator) {
+      if (name in passes) {
         passedUnexpectedly = true;
         unexpectedPasses.push(name);
       } else if (!(name in failures)) {
@@ -122,9 +122,29 @@
     return true;
   }
 
-  function runRemainingTests(remainingTestURLs, config, testNameDiv, iframe) {
+  // Serialises the failures suitable for pasting into expectedFailures: {} in web-platform-tests-expectations.js
+  function formatFailures(failures) {
+    var testURLs = Object.keys(failures);
+    testURLs.sort();
+    return testURLs.map(function(testURL) {
+      var tests = Object.keys(failures[testURL]);
+      tests.sort();
+      return (
+        '    ' + stringify(testURL) + ': {\n' +
+        tests.map(function(test) {
+          return (
+            '      ' + stringify(test) + ':\n' +
+            '          ' + stringify(failures[testURL][test]) + ',\n');
+        }).join('\n') +
+        '    },\n');
+    }).join('\n');
+  }
+
+  function runRemainingTests(remainingTestURLs, config, testNameDiv, iframe, outputFailures) {
     if (remainingTestURLs.length == 0) {
       karma.complete();
+      window.failures = outputFailures;
+      window.formattedFailures = formatFailures(outputFailures);
       return;
     }
 
@@ -136,7 +156,7 @@
         description: '',
         skipped: true,
       });
-      runRemainingTests(remainingTestURLs.slice(1), config, testNameDiv, iframe);
+      runRemainingTests(remainingTestURLs.slice(1), config, testNameDiv, iframe, outputFailures);
       return;
     }
 
@@ -144,9 +164,14 @@
     // parent window and call it once testharness.js has loaded.
     window.onTestharnessLoaded = function(innerWindow) {
       innerWindow.add_completion_callback(function(results) {
+        var expectations = config.expectedFailures[testURL];
         var failures = {};
         var passes = {};
         results.forEach(function(result) {
+          if (expectations && expectations[result.name] == config.flakyTestIndicator) {
+            failures[result.name] = config.flakyTestIndicator;
+            return;
+          }
           if (result.status == 0) {
             passes[result.name] = true;
           } else {
@@ -156,15 +181,17 @@
             failures[result.name] = result.message;
           }
         });
+        if (Object.keys(failures).length > 0) {
+          outputFailures[testURL] = failures;
+        }
 
-        karma.result(checkExpectations(testURL, passes, failures, config.expectedFailures[testURL], config.flakyTestIndicator));
-        runRemainingTests(remainingTestURLs.slice(1), config, testNameDiv, iframe);
+        karma.result(checkExpectations(testURL, passes, failures, expectations));
+        runRemainingTests(remainingTestURLs.slice(1), config, testNameDiv, iframe, outputFailures);
       });
     };
     testNameDiv.textContent = testURL;
     iframe.src = testURL;
   }
-
 
   karma.start = function() {
     // Karma's config.client object appears as karma.config here.
@@ -182,6 +209,6 @@
     iframe.style.height = 'calc(100vh - 60px)';
     document.body.appendChild(iframe);
 
-    runRemainingTests(config.testURLList, config, testNameDiv, iframe);
+    runRemainingTests(config.testURLList, config, testNameDiv, iframe, {});
   };
 })();
