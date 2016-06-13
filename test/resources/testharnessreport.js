@@ -406,9 +406,8 @@ function dump_test_results(tests, status) {
 }
 
 /* BEGIN WEB ANIMATIONS POLYFILL EXTRAS */
-// TODO(alancutter): Use a generic script injection method to allow grunt to choose what
-// version of the polyfill to load for testing.
-document.write('<script src="/polyfill/web-animations-next.dev.js"></script>');
+// The path /polyfill.js is expected to be a proxy for the appropriate polyfill script configured in Karma.
+document.write('<script src="/polyfill.js"></script>');
 if (window.parent && parent.window.onTestharnessLoaded) {
     parent.window.onTestharnessLoaded(window);
 } else {
