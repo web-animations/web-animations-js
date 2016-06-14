@@ -406,8 +406,8 @@ function dump_test_results(tests, status) {
 }
 
 /* BEGIN WEB ANIMATIONS POLYFILL EXTRAS */
-// The path /polyfill.js is expected to be a proxy for the appropriate polyfill script configured in Karma.
-document.write('<script src="/polyfill.js"></script>');
+// The path /base/polyfill.js is expected to be a proxy for the appropriate polyfill script configured in Karma.
+document.write('<script src="/base/polyfill.js"></script>');
 if (window.parent && parent.window.onTestharnessLoaded) {
     parent.window.onTestharnessLoaded(window);
 } else {
