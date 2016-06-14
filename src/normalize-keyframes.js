@@ -231,7 +231,9 @@
           if (memberValue != null) {
             memberValue = Number(memberValue);
             if (!isFinite(memberValue))
-              throw new TypeError('keyframe offsets must be numbers.');
+              throw new TypeError('Keyframe offsets must be numbers.');
+            if (memberValue < 0 || memberValue > 1)
+              throw new TypeError('Keyframe offsets must be between 0 and 1.');
           }
         } else if (member == 'composite') {
           if (memberValue == 'add' || memberValue == 'accumulate') {
@@ -243,6 +245,10 @@
           } else if (memberValue != 'replace') {
             throw new TypeError('Invalid composite mode ' + memberValue + '.');
           }
+        } else if (member == 'easing') {
+          console.log(memberValue);
+          debugger;
+          memberValue = shared.toTimingFunction(memberValue);
         } else {
           memberValue = '' + memberValue;
         }

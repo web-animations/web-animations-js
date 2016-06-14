@@ -101,7 +101,7 @@
           applyTo: applyTo,
           startOffset: keyframes[startIndex].offset,
           endOffset: keyframes[endIndex].offset,
-          easing: shared.toTimingFunction(easing ? easing : 'linear'),
+          easing: easing ? easing : shared.toTimingFunction('linear'),
           property: groupName,
           interpolation: scope.propertyInterpolation(groupName,
               keyframes[startIndex].value,
