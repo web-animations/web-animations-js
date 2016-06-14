@@ -13,11 +13,6 @@ module.exports = {
 
   flakyTestIndicator: 'FLAKY_TEST_RESULT',
   expectedFailures: {
-    'test/web-platform-tests/web-animations/animation-model/keyframe-effects/the-effect-value-of-a-keyframe-effect.html': {
-      'Overlapping keyframes at 0 and 1 use the appropriate value when the progress is outside the range [0, 1]':
-          'assert_equals: When progress is negative, the first keyframe with a 0 offset should be used expected "0" but got "0.151"',
-    },
-
     'test/web-platform-tests/web-animations/interfaces/Animatable/animate-basic.html': {
       'Element.animate() creates an Animation object':
           'assert_equals: Returned object is an Animation expected "[object Animation]" but got "[object Object]"',
