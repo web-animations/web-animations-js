@@ -146,14 +146,13 @@ suite('keyframes', function() {
 
   test('Normalize keyframes with invalid specified easing.', function() {
     var normalizedKeyframes;
-    assert.doesNotThrow(function() {
+    assert.throws(function() {
       normalizedKeyframes = normalizeKeyframes([
         {left: '0px', easing: 'easy-peasy'},
         {left: '10px'},
         {left: '0px'}
       ]);
     });
-    assert.equal(normalizedKeyframes[0].easing, 'easy-peasy');
   });
 
   test('Normalize keyframes where some properties are given non-string, non-number values.', function() {
