@@ -234,11 +234,15 @@
               throw new TypeError('keyframe offsets must be numbers.');
           }
         } else if (member == 'composite') {
-          throw {
-            type: DOMException.NOT_SUPPORTED_ERR,
-            name: 'NotSupportedError',
-            message: 'add compositing is not supported'
-          };
+          if (memberValue == 'add' || memberValue == 'accumulate') {
+            throw {
+              type: DOMException.NOT_SUPPORTED_ERR,
+              name: 'NotSupportedError',
+              message: 'add compositing is not supported'
+            };
+          } else if (memberValue != 'replace') {
+            throw new TypeError('Invalid composite mode ' + memberValue + '.');
+          }
         } else {
           memberValue = '' + memberValue;
         }
@@ -256,11 +260,7 @@
       var offset = keyframes[i].offset;
       if (offset != null) {
         if (offset < previousOffset) {
-          throw {
-            code: DOMException.INVALID_MODIFICATION_ERR,
-            name: 'InvalidModificationError',
-            message: 'Keyframes are not loosely sorted by offset. Sort or specify offsets.'
-          };
+          throw new TypeError('Keyframes are not loosely sorted by offset. Sort or specify offsets.');
         }
         previousOffset = offset;
       } else {
