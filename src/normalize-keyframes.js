@@ -246,8 +246,6 @@
             throw new TypeError('Invalid composite mode ' + memberValue + '.');
           }
         } else if (member == 'easing') {
-          console.log(memberValue);
-          debugger;
           memberValue = shared.toTimingFunction(memberValue);
         } else {
           memberValue = '' + memberValue;
