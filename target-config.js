@@ -110,6 +110,26 @@
       'test/js/timeline.js',
       'test/js/web-animations-next-animation.js');
 
+  var webAnimations1WebPlatformTests = [
+    'test/web-platform-tests/web-animations/animation-model/animation-types/discrete-animation.html',
+    'test/web-platform-tests/web-animations/animation-model/keyframe-effects/effect-value-context.html',
+    'test/web-platform-tests/web-animations/animation-model/keyframe-effects/the-effect-value-of-a-keyframe-effect.html',
+    'test/web-platform-tests/web-animations/interfaces/Animatable/animate-basic.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/cancel.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/id.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/pause.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/play.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/playState.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/startTime.html',
+    'test/web-platform-tests/web-animations/interfaces/KeyframeEffect/effect-easing.html',
+    'test/web-platform-tests/web-animations/timing-model/animation-effects/active-time.html',
+    'test/web-platform-tests/web-animations/timing-model/animation-effects/simple-iteration-progress.html',
+  ];
+
+  var webAnimationsNextWebPlatformTests = [
+    'test/web-platform-tests/web-animations/**/*.html',
+  ];
+
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {
     'web-animations': {
@@ -120,7 +140,7 @@
       webAnimationsNextSrc: [],
       src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimations1BonusSrc),
       polyfillTests: webAnimations1PolyfillTests,
-      runWebPlatformTests: false,
+      webPlatformTests: webAnimations1WebPlatformTests,
     },
     'web-animations-next': {
       scopeSrc: scopeSrc,
@@ -130,7 +150,7 @@
       webAnimationsNextSrc: webAnimationsNextSrc,
       src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimations1BonusSrc).concat(webAnimationsNextSrc),
       polyfillTests: webAnimationsNextPolyfillTests,
-      runWebPlatformTests: true,
+      webPlatformTests: webAnimationsNextWebPlatformTests,
     },
     'web-animations-next-lite': {
       scopeSrc: scopeSrc,
@@ -140,7 +160,7 @@
       webAnimationsNextSrc: webAnimationsNextSrc,
       src: scopeSrc.concat(sharedSrc).concat(liteWebAnimations1Src).concat(webAnimations1BonusSrc).concat(webAnimationsNextSrc),
       polyfillTests: [],
-      runWebPlatformTests: false,
+      webPlatformTests: [],
     },
   };
 

@@ -21,7 +21,6 @@ module.exports = function(config) {
       '/resources/WebIDLParser.js': '/base/test/web-platform-tests/resources/webidl2/lib/webidl2.js',
 
       '/test/': '/base/test/',
-      '/polyfill/': '/base/',
     },
   });
 };

@@ -227,11 +227,7 @@ module.exports = function(grunt) {
       });
     }
     function runWebPlatformTests() {
-      if (!config.runWebPlatformTests) {
-        return Promise.resolve(true);
-      }
-
-      var testFiles = filterTests(grunt.file.expand('test/web-platform-tests/web-animations/**/*.html'));
+      var testFiles = filterTests(grunt.file.expand(config.webPlatformTests));
       if (testFiles.length == 0) {
         return Promise.resolve(true);
       }
@@ -241,6 +237,7 @@ module.exports = function(grunt) {
         configCallback(karmaConfig);
         karmaConfig.client.testharnessTests = require('./test/web-platform-tests-expectations.js');
         karmaConfig.client.testharnessTests.testURLList = testFiles;
+        karmaConfig.proxies['/polyfill.js'] = '/base/' + task.target + '.min.js';
         karmaConfig.files.push('test/karma-testharness-adapter.js');
         var servedFiles = [
           'test/web-platform-tests/resources/**',

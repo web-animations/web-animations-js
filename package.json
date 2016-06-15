@@ -41,6 +41,6 @@
     "source-map": "~0.1.40"
   },
   "scripts": {
-    "test": "grunt test gjslint git-status checkrepo"
+    "test": "grunt web-animations web-animations-next test gjslint git-status checkrepo"
   }
 }
