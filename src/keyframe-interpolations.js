@@ -81,18 +81,18 @@
         var applyTo = endOffset;
 
         if (i == 0) {
-            applyFrom = -Infinity;
-            WEB_ANIMATIONS_TESTING && console.assert(startOffset == 0);
-            if (endOffset == 0) {
-                endIndex = startIndex;
-            }
+          applyFrom = -Infinity;
+          WEB_ANIMATIONS_TESTING && console.assert(startOffset == 0);
+          if (endOffset == 0) {
+            endIndex = startIndex;
+          }
         }
         if (i == keyframes.length - 2) {
-            applyTo = Infinity;
-            WEB_ANIMATIONS_TESTING && console.assert(endOffset == 1);
-            if (startOffset == 1) {
-                startIndex = endIndex;
-            }
+          applyTo = Infinity;
+          WEB_ANIMATIONS_TESTING && console.assert(endOffset == 1);
+          if (startOffset == 1) {
+            startIndex = endIndex;
+          }
         }
 
         var easing = keyframes[startIndex].easing;
