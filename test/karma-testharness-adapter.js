@@ -15,6 +15,9 @@
 (function() {
   var karma = window.__karma__;
 
+  // Behaves like JSON.stringify() except only for strings and outputs strings with single quotes
+  // instead of double quotes.
+  // This so we can paste test results as expectations while keeping our linter happy.
   function stringify(string) {
     return '\'' + string.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'') + '\'';
   }
