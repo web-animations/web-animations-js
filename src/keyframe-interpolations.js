@@ -21,12 +21,10 @@
     return function(target, fraction) {
       if (fraction != null) {
         interpolations.filter(function(interpolation) {
-          return (fraction <= 0 && interpolation.startTime == 0) ||
-                 (fraction >= 1 && interpolation.endTime == 1) ||
-                 (fraction >= interpolation.startTime && fraction <= interpolation.endTime);
+          return fraction >= interpolation.applyFrom && fraction < interpolation.applyTo;
         }).forEach(function(interpolation) {
-          var offsetFraction = fraction - interpolation.startTime;
-          var localDuration = interpolation.endTime - interpolation.startTime;
+          var offsetFraction = fraction - interpolation.startOffset;
+          var localDuration = interpolation.endOffset - interpolation.startOffset;
           var scaledLocalTime = localDuration == 0 ? 0 : interpolation.easing(offsetFraction / localDuration);
           scope.apply(target, interpolation.property, interpolation.interpolation(scaledLocalTime));
         });
@@ -75,29 +73,44 @@
     for (var groupName in propertySpecificKeyframeGroups) {
       var keyframes = propertySpecificKeyframeGroups[groupName];
       for (var i = 0; i < keyframes.length - 1; i++) {
-        var startTime = keyframes[i].offset;
-        var endTime = keyframes[i + 1].offset;
-        var startValue = keyframes[i].value;
-        var endValue = keyframes[i + 1].value;
-        var easing = keyframes[i].easing;
-        if (startTime == endTime) {
-          if (endTime == 1) {
-            startValue = endValue;
-          } else {
-            endValue = startValue;
+        var startIndex = i;
+        var endIndex = i + 1;
+        var startOffset = keyframes[startIndex].offset;
+        var endOffset = keyframes[endIndex].offset;
+        var applyFrom = startOffset;
+        var applyTo = endOffset;
+
+        if (i == 0) {
+          applyFrom = -Infinity;
+          WEB_ANIMATIONS_TESTING && console.assert(startOffset == 0);
+          if (endOffset == 0) {
+            endIndex = startIndex;
           }
         }
+        if (i == keyframes.length - 2) {
+          applyTo = Infinity;
+          WEB_ANIMATIONS_TESTING && console.assert(endOffset == 1);
+          if (startOffset == 1) {
+            startIndex = endIndex;
+          }
+        }
+
+        var easing = keyframes[startIndex].easing;
         interpolations.push({
-          startTime: startTime,
-          endTime: endTime,
+          applyFrom: applyFrom,
+          applyTo: applyTo,
+          startOffset: keyframes[startIndex].offset,
+          endOffset: keyframes[endIndex].offset,
           easing: shared.toTimingFunction(easing ? easing : 'linear'),
           property: groupName,
-          interpolation: scope.propertyInterpolation(groupName, startValue, endValue)
+          interpolation: scope.propertyInterpolation(groupName,
+              keyframes[startIndex].value,
+              keyframes[endIndex].value)
         });
       }
     }
     interpolations.sort(function(leftInterpolation, rightInterpolation) {
-      return leftInterpolation.startTime - rightInterpolation.startTime;
+      return leftInterpolation.startOffset - rightInterpolation.startOffset;
     });
     return interpolations;
   }

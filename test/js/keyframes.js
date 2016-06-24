@@ -431,13 +431,17 @@ suite('keyframes', function() {
     });
     assert.equal(interpolations.length, 2);
 
-    assert.closeTo(interpolations[0].startTime, 0, 0.001);
-    assert.closeTo(interpolations[0].endTime, 0.3, 0.001);
+    assert.equal(interpolations[0].applyFrom, -Infinity);
+    assert.closeTo(interpolations[0].applyTo, 0.3, 0.001);
+    assert.closeTo(interpolations[0].startOffset, 0, 0.001);
+    assert.closeTo(interpolations[0].endOffset, 0.3, 0.001);
     assert.equal(interpolations[0].property, 'left');
     assert.equal(typeof interpolations[0].interpolation, 'function');
 
-    assert.closeTo(interpolations[1].startTime, 0.3, 0.001);
-    assert.closeTo(interpolations[1].endTime, 1, 0.001);
+    assert.closeTo(interpolations[1].applyFrom, 0.3, 0.001);
+    assert.equal(interpolations[1].applyTo, Infinity);
+    assert.closeTo(interpolations[1].startOffset, 0.3, 0.001);
+    assert.closeTo(interpolations[1].endOffset, 1, 0.001);
     assert.equal(interpolations[1].property, 'left');
     assert.equal(typeof interpolations[1].interpolation, 'function');
   });
