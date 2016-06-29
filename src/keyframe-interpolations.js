@@ -45,7 +45,7 @@
         if (member != 'offset' && member != 'easing' && member != 'composite') {
           var propertySpecificKeyframe = {
             offset: keyframes[i].offset,
-            easing: keyframes[i].easing,
+            easing: keyframes[i][shared.easingFunctionSymbol],
             value: keyframes[i][member]
           };
           propertySpecificKeyframeGroups[member] = propertySpecificKeyframeGroups[member] || [];

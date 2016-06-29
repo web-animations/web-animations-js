@@ -246,7 +246,7 @@
             throw new TypeError('Invalid composite mode ' + memberValue + '.');
           }
         } else if (member == 'easing') {
-          memberValue = shared.toTimingFunction(memberValue);
+          keyframe[shared.easingFunctionSymbol] = shared.toTimingFunction(memberValue);
         } else {
           memberValue = '' + memberValue;
         }
@@ -301,6 +301,7 @@
     return keyframes;
   }
 
+  shared.easingFunctionSymbol = window.Symbol ? Symbol('easingFunction') : '_easingFunction';
   shared.convertToArrayForm = convertToArrayForm;
   shared.normalizeKeyframes = normalizeKeyframes;
 
