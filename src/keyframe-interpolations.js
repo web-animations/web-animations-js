@@ -25,7 +25,7 @@
         }).forEach(function(interpolation) {
           var offsetFraction = fraction - interpolation.startOffset;
           var localDuration = interpolation.endOffset - interpolation.startOffset;
-          var scaledLocalTime = localDuration == 0 ? 0 : interpolation.easing(offsetFraction / localDuration);
+          var scaledLocalTime = localDuration == 0 ? 0 : interpolation.easingFunction(offsetFraction / localDuration);
           scope.apply(target, interpolation.property, interpolation.interpolation(scaledLocalTime));
         });
       } else {
@@ -42,10 +42,10 @@
 
     for (var i = 0; i < keyframes.length; i++) {
       for (var member in keyframes[i]) {
-        if (member != 'offset' && member != 'easing' && member != 'composite') {
+        if (member != 'offset' && member != 'easing' && member != '_easingFunction' && member != 'composite') {
           var propertySpecificKeyframe = {
             offset: keyframes[i].offset,
-            easing: keyframes[i][shared.easingFunctionSymbol],
+            easingFunction: keyframes[i]._easingFunction,
             value: keyframes[i][member]
           };
           propertySpecificKeyframeGroups[member] = propertySpecificKeyframeGroups[member] || [];
@@ -95,13 +95,12 @@
           }
         }
 
-        var easing = keyframes[startIndex].easing;
         interpolations.push({
           applyFrom: applyFrom,
           applyTo: applyTo,
           startOffset: keyframes[startIndex].offset,
           endOffset: keyframes[endIndex].offset,
-          easing: easing ? easing : shared.toTimingFunction('linear'),
+          easingFunction: keyframes[startIndex].easingFunction || shared.toTimingFunction('linear'),
           property: groupName,
           interpolation: scope.propertyInterpolation(groupName,
               keyframes[startIndex].value,
