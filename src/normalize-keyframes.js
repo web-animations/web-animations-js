@@ -247,6 +247,8 @@
           }
         } else if (member == 'easing') {
           keyframe._easingFunction = shared.toTimingFunction(memberValue);
+        } else if (member == '_easingFunction') {
+          continue;
         } else {
           memberValue = '' + memberValue;
         }
