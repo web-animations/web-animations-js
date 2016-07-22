@@ -253,7 +253,7 @@
     if (preset) {
       return preset;
     }
-    // Easing is invalid, this should never be reached.
+    // At this point none of our parse attempts succeeded; the easing is invalid.
     // Fall back to linear in the interest of not crashing the page.
     return linear;
   }
