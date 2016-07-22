@@ -42,10 +42,10 @@
 
     for (var i = 0; i < keyframes.length; i++) {
       for (var member in keyframes[i]) {
-        if (member != 'offset' && member != 'easing' && member != '_easingFunction' && member != 'composite') {
+        if (member != 'offset' && member != 'easing' && member != 'composite') {
           var propertySpecificKeyframe = {
             offset: keyframes[i].offset,
-            easingFunction: keyframes[i]._easingFunction,
+            easing: keyframes[i].easing,
             value: keyframes[i][member]
           };
           propertySpecificKeyframeGroups[member] = propertySpecificKeyframeGroups[member] || [];
@@ -100,7 +100,7 @@
           applyTo: applyTo,
           startOffset: keyframes[startIndex].offset,
           endOffset: keyframes[endIndex].offset,
-          easingFunction: keyframes[startIndex].easingFunction || shared.toTimingFunction('linear'),
+          easingFunction: shared.parseEasingFunction(keyframes[startIndex].easing),
           property: groupName,
           interpolation: scope.propertyInterpolation(groupName,
               keyframes[startIndex].value,

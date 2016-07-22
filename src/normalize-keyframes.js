@@ -246,9 +246,7 @@
             throw new TypeError('Invalid composite mode ' + memberValue + '.');
           }
         } else if (member == 'easing') {
-          keyframe._easingFunction = shared.toTimingFunction(memberValue);
-        } else if (member == '_easingFunction') {
-          continue;
+          memberValue = shared.normalizeEasing(memberValue);
         } else {
           memberValue = '' + memberValue;
         }
@@ -256,6 +254,8 @@
       }
       if (keyframe.offset == undefined)
         keyframe.offset = null;
+      if (keyframe.easing == undefined)
+        keyframe.easing = 'linear';
       return keyframe;
     });
 
