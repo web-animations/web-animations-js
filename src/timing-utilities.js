@@ -238,6 +238,9 @@
   }
 
   function parseEasingFunction(normalizedEasing) {
+    if (normalizedEasing == 'linear') {
+      return linear;
+    }
     var cubicData = cubicBezierRe.exec(normalizedEasing);
     if (cubicData) {
       return cubic.apply(this, cubicData.slice(1).map(Number));
