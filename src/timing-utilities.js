@@ -104,7 +104,7 @@
       return this._direction;
     },
     set easing(value) {
-      this._easingFunction = toTimingFunction(value);
+      this._easingFunction = parseEasingFunction(normalizeEasing(value));
       this._setMember('easing', value);
     },
     get easing() {
@@ -224,32 +224,39 @@
   var cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
   var stepRe = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
 
-  function toTimingFunction(easing) {
+  function normalizeEasing(easing) {
     if (!styleForCleaning) {
       styleForCleaning = document.createElement('div').style;
     }
     styleForCleaning.animationTimingFunction = '';
     styleForCleaning.animationTimingFunction = easing;
-    var validatedEasing = styleForCleaning.animationTimingFunction;
-
-    if (validatedEasing == '' && isInvalidTimingDeprecated()) {
+    var normalizedEasing = styleForCleaning.animationTimingFunction;
+    if (normalizedEasing == '' && isInvalidTimingDeprecated()) {
       throw new TypeError(easing + ' is not a valid value for easing');
     }
+    return normalizedEasing;
+  }
 
-    var cubicData = cubicBezierRe.exec(validatedEasing);
+  function parseEasingFunction(normalizedEasing) {
+    if (normalizedEasing == 'linear') {
+      return linear;
+    }
+    var cubicData = cubicBezierRe.exec(normalizedEasing);
     if (cubicData) {
       return cubic.apply(this, cubicData.slice(1).map(Number));
     }
-    var stepData = stepRe.exec(validatedEasing);
+    var stepData = stepRe.exec(normalizedEasing);
     if (stepData) {
       return step(Number(stepData[1]), {'start': Start, 'middle': Middle, 'end': End}[stepData[2]]);
     }
-    var preset = presets[validatedEasing];
+    var preset = presets[normalizedEasing];
     if (preset) {
       return preset;
     }
+    // At this point none of our parse attempts succeeded; the easing is invalid.
+    // Fall back to linear in the interest of not crashing the page.
     return linear;
-  };
+  }
 
   function calculateActiveDuration(timing) {
     return Math.abs(repeatedDuration(timing) / timing.playbackRate);
@@ -345,11 +352,13 @@
   shared.calculateActiveDuration = calculateActiveDuration;
   shared.calculateTimeFraction = calculateTimeFraction;
   shared.calculatePhase = calculatePhase;
-  shared.toTimingFunction = toTimingFunction;
+  shared.normalizeEasing = normalizeEasing;
+  shared.parseEasingFunction = parseEasingFunction;
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.normalizeTimingInput = normalizeTimingInput;
-    testing.toTimingFunction = toTimingFunction;
+    testing.normalizeEasing = normalizeEasing;
+    testing.parseEasingFunction = parseEasingFunction;
     testing.calculateActiveDuration = calculateActiveDuration;
     testing.calculatePhase = calculatePhase;
     testing.PhaseNone = PhaseNone;

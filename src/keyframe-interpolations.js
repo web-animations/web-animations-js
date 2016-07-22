@@ -25,7 +25,7 @@
         }).forEach(function(interpolation) {
           var offsetFraction = fraction - interpolation.startOffset;
           var localDuration = interpolation.endOffset - interpolation.startOffset;
-          var scaledLocalTime = localDuration == 0 ? 0 : interpolation.easing(offsetFraction / localDuration);
+          var scaledLocalTime = localDuration == 0 ? 0 : interpolation.easingFunction(offsetFraction / localDuration);
           scope.apply(target, interpolation.property, interpolation.interpolation(scaledLocalTime));
         });
       } else {
@@ -95,13 +95,12 @@
           }
         }
 
-        var easing = keyframes[startIndex].easing;
         interpolations.push({
           applyFrom: applyFrom,
           applyTo: applyTo,
           startOffset: keyframes[startIndex].offset,
           endOffset: keyframes[endIndex].offset,
-          easing: shared.toTimingFunction(easing ? easing : 'linear'),
+          easingFunction: shared.parseEasingFunction(keyframes[startIndex].easing),
           property: groupName,
           interpolation: scope.propertyInterpolation(groupName,
               keyframes[startIndex].value,

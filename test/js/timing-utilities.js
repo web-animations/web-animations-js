@@ -8,6 +8,11 @@ suite('timing-utilities', function() {
     assert.equal(calculateActiveDuration({duration: 1000, playbackRate: 4, iterations: 20}), 5000);
     assert.equal(calculateActiveDuration({duration: 500, playbackRate: 0.1, iterations: 300}), 1500000);
   });
+
+  function convertEasing(easing) {
+    return parseEasingFunction(normalizeEasing(easing));
+  }
+
   test('conversion of timing functions', function() {
     function assertTimingFunctionsEqual(tf1, tf2, message) {
       for (var i = 0; i <= 1; i += 0.1) {
@@ -16,12 +21,12 @@ suite('timing-utilities', function() {
     }
 
     assertTimingFunctionsEqual(
-        toTimingFunction('ease-in-out'),
-        toTimingFunction('eAse\\2d iN-ouT'),
+        convertEasing('ease-in-out'),
+        convertEasing('eAse\\2d iN-ouT'),
         'Should accept arbitrary casing and escape chararcters');
 
-    var f = toTimingFunction('ease');
-    var g = toTimingFunction('cubic-bezier(.25, 0.1, 0.25, 1.0)');
+    var f = convertEasing('ease');
+    var g = convertEasing('cubic-bezier(.25, 0.1, 0.25, 1.0)');
     assertTimingFunctionsEqual(f, g, 'ease should map onto preset cubic-bezier');
     assert.closeTo(f(0.1844), 0.2599, 0.001);
     assert.closeTo(g(0.1844), 0.2599, 0.001);
@@ -30,12 +35,12 @@ suite('timing-utilities', function() {
     assert.equal(g(0), 0);
     assert.equal(g(1), 1);
 
-    f = toTimingFunction('cubic-bezier(0, 1, 1, 0)');
+    f = convertEasing('cubic-bezier(0, 1, 1, 0)');
     assert.closeTo(f(0.104), 0.3920, 0.001);
 
     function assertInvalidEasingThrows(easing) {
       assert.throws(function() {
-        toTimingFunction(easing);
+        convertEasing(easing);
       }, easing);
     }
 
@@ -45,7 +50,7 @@ suite('timing-utilities', function() {
     assertInvalidEasingThrows('cubic-bezier(-1, 1, 1, 1)');
     assertInvalidEasingThrows('cubic-bezier(1, 1, 1)');
 
-    f = toTimingFunction('steps(10, end)');
+    f = convertEasing('steps(10, end)');
     assert.equal(f(0), 0);
     assert.equal(f(0.09), 0);
     assert.equal(f(0.1), 0.1);
