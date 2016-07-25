@@ -21,10 +21,6 @@
       return shared.calculateTimeFraction(activeDuration, localTime, timing);
     };
     effectTime._totalDuration = timing.delay + activeDuration + timing.endDelay;
-    effectTime._isCurrent = function(localTime) {
-      var phase = shared.calculatePhase(activeDuration, localTime, timing);
-      return phase === PhaseActive || phase === PhaseBefore;
-    };
     return effectTime;
   }
 
@@ -47,7 +43,6 @@
     keyframeEffect._hasSameTarget = function(otherTarget) {
       return target === otherTarget;
     };
-    keyframeEffect._isCurrent = effectTime._isCurrent;
     keyframeEffect._totalDuration = effectTime._totalDuration;
     keyframeEffect._id = id;
     return keyframeEffect;
@@ -64,9 +59,6 @@
       return null;
     };
     nullEffect._totalDuration = 0;
-    nullEffect._isCurrent = function() {
-      return false;
-    };
     nullEffect._hasSameTarget = function() {
       return false;
     };
