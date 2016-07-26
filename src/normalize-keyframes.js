@@ -150,8 +150,16 @@
     return value;
   }
 
+  function isNotAnimatable(property) {
+    // https://w3c.github.io/web-animations/#concept-not-animatable
+    return property === 'display' || property.lastIndexOf('animation', 0) === 0 || property.lastIndexOf('transition', 0) === 0;
+  }
+
   // This delegates parsing shorthand value syntax to the browser.
   function expandShorthandAndAntiAlias(property, value, result) {
+    if (isNotAnimatable(property)) {
+      return;
+    }
     var longProperties = shorthandToLonghand[property];
     if (longProperties) {
       shorthandExpanderElem.style[property] = value;
