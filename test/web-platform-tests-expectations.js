@@ -176,10 +176,10 @@ module.exports = {
           'KeyframeEffectReadOnly is not defined',
 
       'Test finish() while pause-pending with negative playbackRate':
-          'assert_equals: The start time of a pause-pending animation should be set after calling finish() expected (undefined) undefined but got (number) 100000',
+          'assert_equals: The play state of a pause-pending animation should become "finished" after finish() is called expected "finished" but got "paused"',
 
       'Test finish() while pause-pending with positive playbackRate':
-          'assert_approx_equals: The start time of a pause-pending animation should be set after calling finish() expected NaN +/- 0.0005 but got 0',
+          'assert_equals: The play state of a pause-pending animation should become "finished" after finish() is called expected "finished" but got "paused"',
 
       'Test finish() while paused':
           'assert_equals: The play state of a paused animation should become "finished" after finish() is called expected "finished" but got "paused"',
