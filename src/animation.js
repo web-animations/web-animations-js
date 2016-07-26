@@ -116,7 +116,10 @@
       this._playbackRate = value;
       this._startTime = null;
       if (this.playState != 'paused' && this.playState != 'idle') {
-        this.play();
+        this._finishedFlag = false;
+        this._idle = false;
+        this._ensureAlive();
+        scope.invalidateEffects();
       }
       if (oldCurrentTime != null) {
         this.currentTime = oldCurrentTime;
@@ -141,7 +144,15 @@
     play: function() {
       this._paused = false;
       if (this._isFinished || this._idle) {
-        this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
+        if (this._playbackRate >= 0) {
+          this._currentTime = 0;
+        } else if (this._totalDuration < Infinity) {
+          this._currentTime = this._totalDuration;
+        } else {
+          throw new DOMException(
+              'Unable to rewind negative playback rate animation with infinite duration',
+              'InvalidStateError');
+        }
         this._startTime = null;
       }
       this._finishedFlag = false;

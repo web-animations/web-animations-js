@@ -276,9 +276,6 @@
       this._forEachChild(function(childAnimation) {
         childAnimation.playbackRate = value;
       });
-      if (this.playState != 'paused' && this.playState != 'idle') {
-        this.play();
-      }
       if (oldCurrentTime !== null) {
         this.currentTime = oldCurrentTime;
       }
