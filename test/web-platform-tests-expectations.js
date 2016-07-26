@@ -3,9 +3,6 @@ module.exports = {
   skip: {
     'test/web-platform-tests/web-animations/interfaces/Animation/constructor.html':
         'KeyframeEffectReadOnly is not defined causing the test to timeout.',
-
-    'test/web-platform-tests/web-animations/interfaces/KeyframeEffect/effect-easing-steps.html':
-        'It seems to enter an infinite loop and halt the browser.',
   },
 
   flakyTestIndicator: 'FLAKY_TEST_RESULT',
@@ -875,6 +872,44 @@ module.exports = {
 
       'effect easing produces negative values with keyframe easing producing negative values':
           'assert_approx_equals: The left of the animation should be approximately -16.589193103032184 at 10ms expected -16.589193103032184 +/- 0.01 but got 0',
+    },
+
+    'test/web-platform-tests/web-animations/interfaces/KeyframeEffect/effect-easing-steps.html': {
+      'Test bounds point of step-start easing':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-start easing with compositor':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-start easing with reverse direction':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-start easing with iterationStart not at a transition point':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-start easing with iterationStart and delay':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-start easing with iterationStart and reverse direction':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step(4, start) easing with iterationStart 0.75 and delay':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-start easing with alternate direction':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-start easing with alternate-reverse direction':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-start easing in keyframe':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-end easing with iterationStart and delay':
+          'animation.effect.getComputedTiming is not a function',
+
+      'Test bounds point of step-end easing with iterationStart not at a transition point':
+          'animation.effect.getComputedTiming is not a function',
     },
 
     'test/web-platform-tests/web-animations/interfaces/KeyframeEffect/getComputedTiming.html': {
