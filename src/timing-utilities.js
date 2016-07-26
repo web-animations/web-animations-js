@@ -178,11 +178,11 @@
         return x;
       }
       var start = 0, end = 1;
-      while (1) {
+      while (start < end) {
         var mid = (start + end) / 2;
         function f(a, b, m) { return 3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m};
         var xEst = f(a, c, mid);
-        if (Math.abs(x - xEst) < 0.0001) {
+        if (Math.abs(x - xEst) < 0.00001) {
           return f(b, d, mid);
         }
         if (xEst < x) {
@@ -191,6 +191,7 @@
           end = mid;
         }
       }
+      return f(b, d, mid);
     }
   }
 
