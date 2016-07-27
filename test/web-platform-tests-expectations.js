@@ -170,10 +170,10 @@ module.exports = {
           'KeyframeEffectReadOnly is not defined',
 
       'Test finish() while pause-pending with negative playbackRate':
-          'assert_equals: The start time of a pause-pending animation should be set after calling finish() expected (undefined) undefined but got (number) 100000',
+          'assert_equals: The play state of a pause-pending animation should become "finished" after finish() is called expected "finished" but got "paused"',
 
       'Test finish() while pause-pending with positive playbackRate':
-          'assert_approx_equals: The start time of a pause-pending animation should be set after calling finish() expected NaN +/- 0.0005 but got 0',
+          'assert_equals: The play state of a pause-pending animation should become "finished" after finish() is called expected "finished" but got "paused"',
 
       'Test finish() while paused':
           'assert_equals: The play state of a paused animation should become "finished" after finish() is called expected "finished" but got "paused"',
@@ -226,11 +226,6 @@ module.exports = {
           'assert_throws: Expect InvalidStateError exception on calling pause() from idle with a negative playbackRate and infinite-duration animation function "function () {\n"use strict";\n animation.pause(); }" did not throw',
     },
 
-    'test/web-platform-tests/web-animations/interfaces/Animation/play.html': {
-      'play() throws when seeking an infinite-duration animation played in reverse':
-          'assert_throws: Expected InvalidStateError exception on calling play() with a negative playbackRate and infinite-duration animation function "function () {\n"use strict";\n animation.play(); }" did not throw',
-    },
-
     'test/web-platform-tests/web-animations/interfaces/Animation/playState.html': {
       'Animation.playState is \'paused\' after cancelling an animation, seeking it makes it paused':
           'assert_equals: After seeking an idle animation, it is effectively paused expected "paused" but got "idle"',
@@ -253,9 +248,6 @@ module.exports = {
 
       'reverse() when playbackRate > 0 and currentTime < 0':
           'assert_equals: reverse() should start playing from the animation effect end if the playbackRate > 0 and the currentTime < 0 expected 100000 but got -200000',
-
-      'reverse() when playbackRate > 0 and currentTime < 0 and the target effect end is positive infinity':
-          'assert_throws: reverse() should throw InvalidStateError if the playbackRate > 0 and the currentTime < 0 and the target effect is positive infinity function "function () {\n"use strict";\n animation.reverse(); }" did not throw',
 
       'reverse() when playbackRate > 0 and currentTime > effect end':
           'assert_equals: reverse() should start playing from the animation effect end if the playbackRate > 0 and the currentTime > effect end expected 100000 but got 200000',
