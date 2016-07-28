@@ -152,9 +152,6 @@ module.exports = {
     },
 
     'test/web-platform-tests/web-animations/interfaces/Animation/cancel.html': {
-      'After cancelling an animation, it can still be seeked':
-          'assert_equals: margin-left style is updated when cancelled animation is seeked expected "50px" but got "0px"',
-
       'Animated style is cleared after calling Animation.cancel()':
           'assert_not_equals: transform style is animated before cancelling got disallowed value "none"',
     },
@@ -224,11 +221,6 @@ module.exports = {
 
       'pause() from idle with a negative playbackRate and endless effect':
           'assert_throws: Expect InvalidStateError exception on calling pause() from idle with a negative playbackRate and infinite-duration animation function "function () {\n"use strict";\n animation.pause(); }" did not throw',
-    },
-
-    'test/web-platform-tests/web-animations/interfaces/Animation/playState.html': {
-      'Animation.playState is \'paused\' after cancelling an animation, seeking it makes it paused':
-          'assert_equals: After seeking an idle animation, it is effectively paused expected "paused" but got "idle"',
     },
 
     'test/web-platform-tests/web-animations/interfaces/Animation/playbackRate.html': {
@@ -1437,7 +1429,7 @@ module.exports = {
           'assert_equals: expected "running" but got "idle"',
 
       'Setting the start time clears the hold time':
-          'assert_equals: The current time is calculated from the hold time expected (number) 1000 but got (object) null',
+          'assert_approx_equals: The current time is calculated from the start time, not the hold time expected 2000 +/- 0.0005 but got 1000',
 
       'Setting the start time of an animation without an active timeline':
           'Animation with null timeline is not supported',

@@ -89,6 +89,10 @@
       this._currentTimePending = false;
       if (this._currentTime == newTime)
         return;
+      if (this._idle) {
+        this._idle = false;
+        this._paused = true;
+      }
       this._tickCurrentTime(newTime, true);
       scope.invalidateEffects();
     },
@@ -180,8 +184,9 @@
         return;
       this._inEffect = false;
       this._idle = true;
+      this._paused = false;
       this._finishedFlag = true;
-      this.currentTime = 0;
+      this._currentTime = 0;
       this._startTime = null;
       this._effect._update(null);
       // effects are invalid after cancellation as the animation state
