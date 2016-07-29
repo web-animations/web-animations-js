@@ -145,7 +145,7 @@
         return 'finished';
       return 'running';
     },
-    _quietlySeekToEnd: function() {
+    _rewind: function() {
       if (this._playbackRate >= 0) {
         this._currentTime = 0;
       } else if (this._totalDuration < Infinity) {
@@ -159,7 +159,7 @@
     play: function() {
       this._paused = false;
       if (this._isFinished || this._idle) {
-        this._quietlySeekToEnd();
+        this._rewind();
         this._startTime = null;
       }
       this._finishedFlag = false;
@@ -171,7 +171,7 @@
       if (!this._isFinished && !this._paused && !this._idle) {
         this._currentTimePending = true;
       } else if (this._idle) {
-        this._quietlySeekToEnd();
+        this._rewind();
         this._idle = false;
       }
       this._startTime = null;
