@@ -214,13 +214,7 @@ module.exports = {
 
     'test/web-platform-tests/web-animations/interfaces/Animation/pause.html': {
       'pause() from idle':
-          'assert_equals: currentTime is set to 0 expected (number) 0 but got (object) null',
-
-      'pause() from idle with a negative playbackRate':
-          'assert_equals: currentTime is set to the effect end expected (number) 1000000 but got (object) null',
-
-      'pause() from idle with a negative playbackRate and endless effect':
-          'assert_throws: Expect InvalidStateError exception on calling pause() from idle with a negative playbackRate and infinite-duration animation function "function () {\n"use strict";\n animation.pause(); }" did not throw',
+          'assert_equals: initially pause-pending expected "pending" but got "paused"',
     },
 
     'test/web-platform-tests/web-animations/interfaces/Animation/playbackRate.html': {

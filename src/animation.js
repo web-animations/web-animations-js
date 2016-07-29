@@ -145,18 +145,21 @@
         return 'finished';
       return 'running';
     },
+    _quietlySeekToEnd: function() {
+      if (this._playbackRate >= 0) {
+        this._currentTime = 0;
+      } else if (this._totalDuration < Infinity) {
+        this._currentTime = this._totalDuration;
+      } else {
+        throw new DOMException(
+            'Unable to rewind negative playback rate animation with infinite duration',
+            'InvalidStateError');
+      }
+    },
     play: function() {
       this._paused = false;
       if (this._isFinished || this._idle) {
-        if (this._playbackRate >= 0) {
-          this._currentTime = 0;
-        } else if (this._totalDuration < Infinity) {
-          this._currentTime = this._totalDuration;
-        } else {
-          throw new DOMException(
-              'Unable to rewind negative playback rate animation with infinite duration',
-              'InvalidStateError');
-        }
+        this._quietlySeekToEnd();
         this._startTime = null;
       }
       this._finishedFlag = false;
@@ -167,6 +170,9 @@
     pause: function() {
       if (!this._isFinished && !this._paused && !this._idle) {
         this._currentTimePending = true;
+      } else if (this._idle) {
+        this._quietlySeekToEnd();
+        this._idle = false;
       }
       this._startTime = null;
       this._paused = true;
