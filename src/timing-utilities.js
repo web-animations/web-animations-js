@@ -174,7 +174,7 @@
       return linear;
     }
     return function(x) {
-      if (x == 0 || x == 1) {
+      if (x <= 0 || x >= 1) {
         return x;
       }
       var start = 0, end = 1;
