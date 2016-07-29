@@ -1429,7 +1429,7 @@ module.exports = {
           'Animation with null timeline is not supported',
 
       'Setting the start time resolves a pending pause task':
-          'assert_equals: Animation is in pause-pending state expected "pending" but got "idle"',
+          'assert_equals: Animation is in pause-pending state expected "pending" but got "paused"',
 
       'Setting the start time updates the finished state':
           'assert_equals: Seeked to finished state using the startTime expected "finished" but got "idle"',
