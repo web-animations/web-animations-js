@@ -368,7 +368,7 @@
       var timing = this.effect._timing;
       var t = this.currentTime;
       if (t !== null)
-        t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
+        t = shared.calculateIterationProgress(shared.calculateActiveDuration(timing), t, timing);
       if (t == null || isNaN(t))
         this._removeChildAnimations();
     },

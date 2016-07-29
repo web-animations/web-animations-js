@@ -56,72 +56,27 @@ suite('timing-utilities', function() {
     assert.equal(f(0.1), 0.1);
     assert.equal(f(0.25), 0.2);
   });
-  test('calculating phase', function() {
-    // calculatePhase(activeDuration, localTime, timing);
-    assert.equal(calculatePhase(1000, 100, {delay: 0}), PhaseActive);
-    assert.equal(calculatePhase(1000, 100, {delay: 200}), PhaseBefore);
-    assert.equal(calculatePhase(1000, 2000, {delay: 200}), PhaseAfter);
-    assert.equal(calculatePhase(1000, null, {delay: 200}), PhaseNone);
-  });
-  test('calculating active time', function() {
-    // calculateActiveTime(activeDuration, fillMode, localTime, phase, delay);
-    assert.equal(calculateActiveTime(1000, 'forwards', 100, PhaseActive, 0), 100);
-    assert.equal(calculateActiveTime(1000, 'forwards', 100, PhaseBefore, 200), null);
-    assert.equal(calculateActiveTime(1000, 'both', 100, PhaseBefore, 200), 0);
-    assert.equal(calculateActiveTime(1000, 'forwards', 500, PhaseActive, 200), 300);
-    assert.equal(calculateActiveTime(1000, 'forwards', 1100, PhaseAfter, 200), 1000);
-    assert.equal(calculateActiveTime(1000, 'none', 1100, PhaseAfter, 200), null);
-    assert.equal(calculateActiveTime(Infinity, 'both', 5000000, PhaseActive, 2000000), 3000000);
-    assert.equal(calculateActiveTime(Infinity, 'both', 50000, PhaseBefore, 2000000), 0);
-  });
-  test('calculating scaled active time', function() {
-    // calculateScaledActiveTime(activeDuration, activeTime, startOffset, timingInput);
-    assert.equal(calculateScaledActiveTime(1000, 200, 300, {playbackRate: 1.5}), 600);
-    assert.equal(calculateScaledActiveTime(1000, 200, 300, {playbackRate: -4}), 3500);
-    assert.equal(calculateScaledActiveTime(Infinity, 400, 200, {playbackRate: 1}), 600);
-    assert.equal(calculateScaledActiveTime(Infinity, 400, 200, {playbackRate: -4}), Infinity);
-  });
-  test('calculating iteration time', function() {
-    // calculateIterationTime(iterationDuration, repeatedDuration, scaledActiveTime, startOffset, timingInput);
-    assert.equal(calculateIterationTime(500, 5000, 600, 100, {iterations: 10, iterationStart: 0}), 100);
-    assert.equal(calculateIterationTime(500, 5000, Infinity, 100, {iterations: 10, iterationStart: 0}), 500);
-    assert.equal(calculateIterationTime(500, 5000, 5100, 100, {iterations: 3.2, iterationStart: 0.8}), 500);
-  });
-  test('calculating current iteration', function() {
-    // calculateCurrentIteration(iterationDuration, iterationTime, scaledActiveTime, timingInput);
-    assert.equal(calculateCurrentIteration(1000, 400, 4400, {iterations: 50, iterationStart: 0.8}), 4);
-    assert.equal(calculateCurrentIteration(1000, 1000, 4400, {iterations: 50.2, iterationStart: 0.8}), 50);
-  });
-  test('calculating transformed time', function() {
-    // calculateTransformedTime(currentIteration, iterationDuration, iterationTime, timingInput);
-    assert.equal(calculateTransformedTime(4, 1000, 200, {_easingFunction: function(x) { return x; }, direction: 'normal'}), 200);
-    assert.equal(calculateTransformedTime(4, 1000, 200, {_easingFunction: function(x) { return x; }, direction: 'reverse'}), 800);
-    assert.closeTo(calculateTransformedTime(4, 1000, 200, {_easingFunction: function(x) { return x * x; }, direction: 'reverse'}), 640, 0.0001);
-    assert.closeTo(calculateTransformedTime(4, 1000, 600, {_easingFunction: function(x) { return x * x; }, direction: 'alternate'}), 360, 0.0001);
-    assert.closeTo(calculateTransformedTime(3, 1000, 600, {_easingFunction: function(x) { return x * x; }, direction: 'alternate'}), 160, 0.0001);
-    assert.closeTo(calculateTransformedTime(4, 1000, 600, {_easingFunction: function(x) { return x * x; }, direction: 'alternate-reverse'}), 160, 0.0001);
-    assert.closeTo(calculateTransformedTime(3, 1000, 600, {_easingFunction: function(x) { return x * x; }, direction: 'alternate-reverse'}), 360, 0.0001);
-  });
   test('EffectTime', function() {
     var timing = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'linear', direction: 'alternate', delay: 100, fill: 'forwards'});
     var timing2 = normalizeTimingInput({duration: 1000, iterations: 4, iterationStart: 0.5, easing: 'ease', direction: 'alternate', delay: 100, fill: 'forwards'});
     var effectTF = effectTime(timing);
     var effectTF2 = effectTime(timing2);
+    var epsilon = 0.005;
     assert.equal(effectTF(0), null);
     assert.equal(effectTF(100), 0.5);
-    assert.closeTo(effectTF2(100), 0.8, 0.005);
+    assert.closeTo(effectTF2(100), 0.8, epsilon);
     assert.equal(effectTF(600), 1);
-    assert.closeTo(effectTF2(600), 1, 0.005);
-    assert.equal(effectTF(700), 0.9);
-    assert.closeTo(effectTF2(700), 0.99, 0.005);
+    assert.closeTo(effectTF2(600), 1, epsilon);
+    assert.closeTo(effectTF(700), 0.9, epsilon);
+    assert.closeTo(effectTF2(700), 0.99, epsilon);
     assert.equal(effectTF(1600), 0);
-    assert.closeTo(effectTF2(1600), 0, 0.005);
-    assert.equal(effectTF(4000), 0.4);
-    assert.closeTo(effectTF2(4000), 0.68, 0.005);
+    assert.closeTo(effectTF2(1600), 0, epsilon);
+    assert.closeTo(effectTF(4000), 0.4, epsilon);
+    assert.closeTo(effectTF2(4000), 0.68, epsilon);
     assert.equal(effectTF(4100), 0.5);
-    assert.closeTo(effectTF2(4100), 0.8, 0.005);
+    assert.closeTo(effectTF2(4100), 0.8, epsilon);
     assert.equal(effectTF(6000), 0.5);
-    assert.closeTo(effectTF2(6000), 0.8, 0.005);
+    assert.closeTo(effectTF2(6000), 0.8, epsilon);
   });
   test('TypeErrors', function() {
     var timing = normalizeTimingInput({

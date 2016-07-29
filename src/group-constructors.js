@@ -168,13 +168,13 @@
 
       // If the group has a negative playback rate and is not fill backwards/both, then it should go
       // out of effect when it reaches the start of its active interval (tf == 0). If it is fill
-      // backwards/both then it should stay in effect. calculateTimeFraction will return 0 in the
+      // backwards/both then it should stay in effect. calculateIterationProgress will return 0 in the
       // backwards-filling case, and null otherwise.
       if (tf == 0 && animation.playbackRate < 0) {
         if (!timing) {
           timing = shared.normalizeTimingInput(animation.effect.timing);
         }
-        tf = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), -1, timing);
+        tf = shared.calculateIterationProgress(shared.calculateActiveDuration(timing), -1, timing);
         if (isNaN(tf) || tf == null) {
           animation._forEachChild(function(child) {
             child.currentTime = -1;

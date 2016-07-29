@@ -369,9 +369,6 @@ module.exports = {
     },
 
     'test/web-platform-tests/web-animations/interfaces/AnimationEffectTiming/getComputedStyle.html': {
-      'change currentTime when fill forwards and endDelay is negative':
-          'assert_equals: set currentTime same as endTime expected "0" but got "0.5"',
-
       'change currentTime when fill forwards and endDelay is positive':
           'assert_equals: set currentTime just a little before duration expected "0.0001" but got "0"',
 
@@ -1342,83 +1339,6 @@ module.exports = {
 
       'Test zero iterations: iterations:0 iterationStart:3 duration:Infinity delay:1 fill:both':
           'anim.effect.getComputedTiming is not a function',
-    },
-
-    'test/web-platform-tests/web-animations/timing-model/animation-effects/simple-iteration-progress.html': {
-      'Test fractional iterations: iterations:3.5 iterationStart:0 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 1',
-
-      'Test fractional iterations: iterations:3.5 iterationStart:0 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test fractional iterations: iterations:3.5 iterationStart:2.5 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 0',
-
-      'Test fractional iterations: iterations:3.5 iterationStart:2.5 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 1',
-
-      'Test fractional iterations: iterations:3.5 iterationStart:3 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 1',
-
-      'Test fractional iterations: iterations:3.5 iterationStart:3 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test infinity iterations: iterations:Infinity iterationStart:0 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test infinity iterations: iterations:Infinity iterationStart:0 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test infinity iterations: iterations:Infinity iterationStart:2.5 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 1',
-
-      'Test infinity iterations: iterations:Infinity iterationStart:2.5 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 1',
-
-      'Test infinity iterations: iterations:Infinity iterationStart:3 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test infinity iterations: iterations:Infinity iterationStart:3 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test integer iterations: iterations:3 iterationStart:0 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test integer iterations: iterations:3 iterationStart:2.5 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 0',
-
-      'Test integer iterations: iterations:3 iterationStart:2.5 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 1',
-
-      'Test integer iterations: iterations:3 iterationStart:3 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test zero iterations: iterations:0 iterationStart:0 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test zero iterations: iterations:0 iterationStart:0 duration:100 delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test zero iterations: iterations:0 iterationStart:0 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test zero iterations: iterations:0 iterationStart:2.5 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 0',
-
-      'Test zero iterations: iterations:0 iterationStart:2.5 duration:100 delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 0',
-
-      'Test zero iterations: iterations:0 iterationStart:2.5 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0.5 but got 1',
-
-      'Test zero iterations: iterations:0 iterationStart:3 duration:0 delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test zero iterations: iterations:0 iterationStart:3 duration:100 delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
-
-      'Test zero iterations: iterations:0 iterationStart:3 duration:Infinity delay:1 fill:both':
-          'assert_equals: expected 0 but got 1',
     },
 
     'test/web-platform-tests/web-animations/timing-model/animations/set-the-animation-start-time.html': {
