@@ -31,7 +31,7 @@
     var callback = function() {
       var t = callback._animation ? callback._animation.currentTime : null;
       if (t !== null) {
-        t = shared.calculateTimeFraction(shared.calculateActiveDuration(timing), t, timing);
+        t = shared.calculateIterationProgress(shared.calculateActiveDuration(timing), t, timing);
         if (isNaN(t))
           t = null;
       }

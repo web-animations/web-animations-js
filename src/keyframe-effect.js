@@ -18,7 +18,7 @@
     var timeFraction = 0;
     var activeDuration = shared.calculateActiveDuration(timing);
     var effectTime = function(localTime) {
-      return shared.calculateTimeFraction(activeDuration, localTime, timing);
+      return shared.calculateIterationProgress(activeDuration, localTime, timing);
     };
     effectTime._totalDuration = timing.delay + activeDuration + timing.endDelay;
     return effectTime;

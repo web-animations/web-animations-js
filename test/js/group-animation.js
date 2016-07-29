@@ -1093,7 +1093,7 @@ suite('group-animation', function() {
     tick(102);
     assert.equal(getComputedStyle(this.target).marginLeft, '2px');
     tick(103);
-    assert.equal(getComputedStyle(this.target).marginLeft, '3px');
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
     tick(104);
   });
 
