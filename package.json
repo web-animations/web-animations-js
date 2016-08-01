@@ -14,6 +14,7 @@
   "license": "Apache-2.0",
   "main": "web-animations.min.js",
   "files": [
+    "src/*",
     "*.min.js",
     "*.min.js.map"
   ],
