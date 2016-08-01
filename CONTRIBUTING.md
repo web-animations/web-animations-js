@@ -46,7 +46,7 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
     Use the following to generate a summary of commits, but edit the list to contain only
     relevant information.
 
-        git log `git describe --tags --abbrev=0 web-animations-js/master`..web-animations-next/master --pretty=format:"  * %s"
+        git log --first-parent `git describe --tags --abbrev=0 web-animations-js/master`..web-animations-next/master --pretty=format:"  * %s"
 
 1.  Specify the new version inside `package.json` (for NPM), for example:
 
