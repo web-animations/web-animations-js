@@ -830,23 +830,14 @@ module.exports = {
     },
 
     'test/web-platform-tests/web-animations/interfaces/KeyframeEffect/effect-easing.html': {
-      'effect easing produces values greater than 1 with keyframe easing cubic-bezier(0, 0, 0, 0)':
-          'assert_approx_equals: The left of the animation should be approximately 102.40666638411385 at 250ms expected 102.40666638411385 +/- 0.01 but got 100',
-
       'effect easing produces values greater than 1 with keyframe easing cubic-bezier(1, 1, 1, 1)':
           'assert_approx_equals: The left of the animation should be approximately 102.40666638411385 at 250ms expected 102.40666638411385 +/- 0.01 but got 100',
 
       'effect easing produces negative values 1 with keyframe easing cubic-bezier(0, 0, 0, 0)':
           'assert_approx_equals: The left of the animation should be approximately -29.501119758965654 at 250ms expected -29.501119758965654 +/- 0.01 but got 0',
 
-      'effect easing produces negative values 1 with keyframe easing cubic-bezier(1, 1, 1, 1)':
-          'assert_approx_equals: The left of the animation should be approximately -29.501119758965654 at 250ms expected -29.501119758965654 +/- 0.01 but got 0',
-
-      'effect easing produces values greater than 1 with keyframe easing producing values greater than 1':
-          'assert_approx_equals: The left of the animation should be approximately 101.9006796334848 at 240ms expected 101.9006796334848 +/- 0.01 but got 100',
-
-      'effect easing produces negative values with keyframe easing producing negative values':
-          'assert_approx_equals: The left of the animation should be approximately -16.589193103032184 at 10ms expected -16.589193103032184 +/- 0.01 but got 0',
+      'effect easing which produces values greater than 1 and the tangent on the upper boundary is infinity with keyframe easing producing values greater than 1':
+          'assert_approx_equals: The left of the animation should be approximately 100 at 240ms expected 100 +/- 0.01 but got 99.5333',
     },
 
     'test/web-platform-tests/web-animations/interfaces/KeyframeEffect/effect-easing-steps.html': {

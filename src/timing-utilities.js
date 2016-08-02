@@ -174,9 +174,23 @@
       return linear;
     }
     return function(x) {
-      if (x == 0 || x == 1) {
-        return x;
+      if (x <= 0) {
+        var start_gradient = 0;
+        if (a > 0)
+          start_gradient = b / a;
+        else if (!b && c > 0)
+          start_gradient = d / c;
+        return start_gradient * x;
       }
+      if (x >= 1) {
+        var end_gradient = 0;
+        if (c < 1)
+          end_gradient = (d - 1) / (c - 1);
+        else if (c == 1 && a < 1)
+          end_gradient = (b - 1) / (a - 1);
+        return 1 + end_gradient * (x - 1);
+      }
+
       var start = 0, end = 1;
       while (start < end) {
         var mid = (start + end) / 2;
