@@ -39,7 +39,7 @@
     rafCallbacks = [];
     if (t < timeline.currentTime)
       t = timeline.currentTime;
-    tick(t, true);
+    timeline._animations = tick(t, true, timeline._animations);
     processing.forEach(function(entry) { entry[1](t); });
     applyPendingEffects();
     _now = undefined;
@@ -63,7 +63,7 @@
       animation._timeline = this;
       this._animations.push(animation);
       scope.restart();
-      scope.invalidateEffects();
+      scope.applyDirtiedAnimation(animation);
       return animation;
     }
   };
@@ -92,8 +92,18 @@
     return hasRestartedThisFrame;
   };
 
-  scope.invalidateEffects = function() {
-    tick(scope.timeline.currentTime, false);
+  // This allows us to synchonously apply an animation's effect in case script mutation
+  // of Animation objects occur between the RAF callback and frame rendering.
+  scope.applyDirtiedAnimation = function(animation) {
+    if (inTick) {
+      return;
+    }
+    animation._markTarget();
+    var animations = animation._targetAnimations();
+    var remainingAnimations = tick(scope.timeline.currentTime, false, animations);
+    if (remainingAnimations.indexOf(animation) === -1) {
+      timeline._animations.splice(timeline._animations.indexOf(animation), 1);
+    }
     applyPendingEffects();
   };
 
@@ -105,24 +115,28 @@
 
   var t60hz = 1000 / 60;
 
-  function tick(t, isAnimationFrame) {
+  var inTick = false;
+  function tick(t, isAnimationFrame, updatingAnimations) {
+    inTick = true;
+    updatingAnimations.sort(compareAnimations);
     hasRestartedThisFrame = false;
     var timeline = scope.timeline;
+
     timeline.currentTime = t;
-    timeline._animations.sort(compareAnimations);
     ticking = false;
-    var updatingAnimations = timeline._animations;
-    timeline._animations = [];
 
     var newPendingClears = [];
     var newPendingEffects = [];
-    updatingAnimations = updatingAnimations.filter(function(animation) {
+    var remainingAnimations = updatingAnimations.filter(function(animation) {
       animation._tick(t, isAnimationFrame);
 
-      if (!animation._inEffect)
+      if (!animation._inEffect) {
         newPendingClears.push(animation._effect);
-      else
+        animation._unmarkTarget();
+      } else {
         newPendingEffects.push(animation._effect);
+        animation._markTarget();
+      }
 
       if (animation._needsTick)
         ticking = true;
@@ -136,10 +150,11 @@
     pendingEffects.push.apply(pendingEffects, newPendingClears);
     pendingEffects.push.apply(pendingEffects, newPendingEffects);
 
-    timeline._animations.push.apply(timeline._animations, updatingAnimations);
-
     if (ticking)
       requestAnimationFrame(function() {});
+
+    inTick = false;
+    return remainingAnimations;
   };
 
   if (WEB_ANIMATIONS_TESTING) {

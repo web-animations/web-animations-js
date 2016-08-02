@@ -237,7 +237,7 @@ module.exports = function(grunt) {
         configCallback(karmaConfig);
         karmaConfig.client.testharnessTests = require('./test/web-platform-tests-expectations.js');
         karmaConfig.client.testharnessTests.testURLList = testFiles;
-        karmaConfig.proxies['/base/polyfill.js'] = '/base/' + task.target + '.min.js';
+        karmaConfig.proxies['/base/polyfill.js'] = '/base/' + task.target + '.dev.js';
         karmaConfig.files.push('test/karma-testharness-adapter.js');
         var servedFiles = [
           'test/web-platform-tests/resources/**',

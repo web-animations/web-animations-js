@@ -24,13 +24,13 @@ suite('animation', function() {
     var a = document.body.animate([], 2000);
     a.pause();
     tick(100);
-    assert.equal(a.currentTime, 0);
+    assert.equal(a.currentTime, 0, 'after pause()');
     tick(300);
     a.play();
-    assert.equal(a.currentTime, 0);
+    assert.equal(a.currentTime, 0, 'after play()');
     tick(310);
-    assert.equal(a.currentTime, 0);
-    assert.equal(a.startTime, 310);
+    assert.equal(a.currentTime, 0, 'current time after tick');
+    assert.equal(a.startTime, 310, 'start time after tick');
 
     var a = document.body.animate([], 2000);
     a.startTime = -690;
@@ -404,8 +404,8 @@ suite('animation', function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
     tick(0);
-    var animationBehind = target.animate([{width: '1234px'}, {width: '1234px'}], {duration: 1, fill: 'both'});
-    var animationInfront = target.animate([{width: '0px'}, {width: '100px'}], 100);
+    var animationBehind = target.animate([{width: '1234px'}, {width: '1234px'}], {duration: 1, fill: 'both', id: 'behind'});
+    var animationInfront = target.animate([{width: '0px'}, {width: '100px'}], {duration: 100, id: 'infront'});
     assert.equal(getComputedStyle(target).width, '0px');
     animationInfront.currentTime = 50;
     assert.equal(getComputedStyle(target).width, '50px');
