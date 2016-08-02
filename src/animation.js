@@ -265,9 +265,9 @@
     },
     _unmarkTarget: function() {
       var animations = this._targetAnimations();
-      var i = animations.indexOf(this);
-      if (i !== -1) {
-        animations.splice(i, 1);
+      var index = animations.indexOf(this);
+      if (index !== -1) {
+        animations.splice(index, 1);
       }
     },
   };
