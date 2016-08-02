@@ -39,6 +39,7 @@
     rafCallbacks = [];
     if (t < timeline.currentTime)
       t = timeline.currentTime;
+    timeline._animations.sort(compareAnimations);
     timeline._animations = tick(t, true, timeline._animations);
     processing.forEach(function(entry) { entry[1](t); });
     applyPendingEffects();
@@ -100,7 +101,8 @@
     }
     animation._markTarget();
     var animations = animation._targetAnimations();
-    var remainingAnimations = tick(scope.timeline.currentTime, false, animations);
+    animations.sort(compareAnimations);
+    var remainingAnimations = tick(scope.timeline.currentTime, false, animations.slice());
     if (remainingAnimations.indexOf(animation) === -1) {
       timeline._animations.splice(timeline._animations.indexOf(animation), 1);
     }
@@ -118,7 +120,6 @@
   var inTick = false;
   function tick(t, isAnimationFrame, updatingAnimations) {
     inTick = true;
-    updatingAnimations.sort(compareAnimations);
     hasRestartedThisFrame = false;
     var timeline = scope.timeline;
 
