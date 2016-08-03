@@ -104,7 +104,7 @@
       return this._direction;
     },
     set easing(value) {
-      this._easingFunction = toTimingFunction(value);
+      this._easingFunction = parseEasingFunction(normalizeEasing(value));
       this._setMember('easing', value);
     },
     get easing() {
@@ -174,15 +174,29 @@
       return linear;
     }
     return function(x) {
-      if (x == 0 || x == 1) {
-        return x;
+      if (x <= 0) {
+        var start_gradient = 0;
+        if (a > 0)
+          start_gradient = b / a;
+        else if (!b && c > 0)
+          start_gradient = d / c;
+        return start_gradient * x;
       }
+      if (x >= 1) {
+        var end_gradient = 0;
+        if (c < 1)
+          end_gradient = (d - 1) / (c - 1);
+        else if (c == 1 && a < 1)
+          end_gradient = (b - 1) / (a - 1);
+        return 1 + end_gradient * (x - 1);
+      }
+
       var start = 0, end = 1;
-      while (1) {
+      while (start < end) {
         var mid = (start + end) / 2;
         function f(a, b, m) { return 3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m};
         var xEst = f(a, c, mid);
-        if (Math.abs(x - xEst) < 0.0001) {
+        if (Math.abs(x - xEst) < 0.00001) {
           return f(b, d, mid);
         }
         if (xEst < x) {
@@ -191,6 +205,7 @@
           end = mid;
         }
       }
+      return f(b, d, mid);
     }
   }
 
@@ -224,38 +239,49 @@
   var cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
   var stepRe = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
 
-  function toTimingFunction(easing) {
+  function normalizeEasing(easing) {
     if (!styleForCleaning) {
       styleForCleaning = document.createElement('div').style;
     }
     styleForCleaning.animationTimingFunction = '';
     styleForCleaning.animationTimingFunction = easing;
-    var validatedEasing = styleForCleaning.animationTimingFunction;
-
-    if (validatedEasing == '' && isInvalidTimingDeprecated()) {
+    var normalizedEasing = styleForCleaning.animationTimingFunction;
+    if (normalizedEasing == '' && isInvalidTimingDeprecated()) {
       throw new TypeError(easing + ' is not a valid value for easing');
     }
+    return normalizedEasing;
+  }
 
-    var cubicData = cubicBezierRe.exec(validatedEasing);
+  function parseEasingFunction(normalizedEasing) {
+    if (normalizedEasing == 'linear') {
+      return linear;
+    }
+    var cubicData = cubicBezierRe.exec(normalizedEasing);
     if (cubicData) {
       return cubic.apply(this, cubicData.slice(1).map(Number));
     }
-    var stepData = stepRe.exec(validatedEasing);
+    var stepData = stepRe.exec(normalizedEasing);
     if (stepData) {
       return step(Number(stepData[1]), {'start': Start, 'middle': Middle, 'end': End}[stepData[2]]);
     }
-    var preset = presets[validatedEasing];
+    var preset = presets[normalizedEasing];
     if (preset) {
       return preset;
     }
+    // At this point none of our parse attempts succeeded; the easing is invalid.
+    // Fall back to linear in the interest of not crashing the page.
     return linear;
-  };
+  }
 
   function calculateActiveDuration(timing) {
     return Math.abs(repeatedDuration(timing) / timing.playbackRate);
   }
 
   function repeatedDuration(timing) {
+    // https://w3c.github.io/web-animations/#calculating-the-active-duration
+    if (timing.duration === 0 || timing.iterations === 0) {
+      return 0;
+    }
     return timing.duration * timing.iterations;
   }
 
@@ -265,19 +291,24 @@
   var PhaseActive = 3;
 
   function calculatePhase(activeDuration, localTime, timing) {
+    // https://w3c.github.io/web-animations/#animation-effect-phases-and-states
     if (localTime == null) {
       return PhaseNone;
     }
-    if (localTime < timing.delay) {
+
+    var endTime = timing.delay + activeDuration + timing.endDelay;
+    if (localTime < Math.min(timing.delay, endTime)) {
       return PhaseBefore;
     }
-    if (localTime >= timing.delay + activeDuration) {
+    if (localTime >= Math.min(timing.delay + activeDuration, endTime)) {
       return PhaseAfter;
     }
+
     return PhaseActive;
   }
 
   function calculateActiveTime(activeDuration, fillMode, localTime, phase, delay) {
+    // https://w3c.github.io/web-animations/#calculating-the-active-time
     switch (phase) {
       case PhaseBefore:
         if (fillMode == 'backwards' || fillMode == 'both')
@@ -294,48 +325,74 @@
     }
   }
 
-  function calculateScaledActiveTime(activeDuration, activeTime, startOffset, timing) {
-    return (timing.playbackRate < 0 ? activeTime - activeDuration : activeTime) * timing.playbackRate + startOffset;
-  }
-
-  function calculateIterationTime(iterationDuration, repeatedDuration, scaledActiveTime, startOffset, timing) {
-    if (scaledActiveTime === Infinity || scaledActiveTime === -Infinity || (scaledActiveTime - startOffset == repeatedDuration && timing.iterations && ((timing.iterations + timing.iterationStart) % 1 == 0))) {
-      return iterationDuration;
+  function calculateOverallProgress(iterationDuration, phase, iterations, activeTime, iterationStart) {
+    // https://w3c.github.io/web-animations/#calculating-the-overall-progress
+    var overallProgress = iterationStart;
+    if (iterationDuration === 0) {
+      if (phase !== PhaseBefore) {
+        overallProgress += iterations;
+      }
+    } else {
+      overallProgress += activeTime / iterationDuration;
     }
-
-    return scaledActiveTime % iterationDuration;
+    return overallProgress;
   }
 
-  function calculateCurrentIteration(iterationDuration, iterationTime, scaledActiveTime, timing) {
-    if (scaledActiveTime === 0) {
-      return 0;
+  function calculateSimpleIterationProgress(overallProgress, iterationStart, phase, iterations, activeTime, iterationDuration) {
+    // https://w3c.github.io/web-animations/#calculating-the-simple-iteration-progress
+
+    var simpleIterationProgress = (overallProgress === Infinity) ? iterationStart % 1 : overallProgress % 1;
+    if (simpleIterationProgress === 0 && phase === PhaseAfter && iterations !== 0 &&
+        (activeTime !== 0 || iterationDuration === 0)) {
+      simpleIterationProgress = 1;
     }
-    if (iterationTime == iterationDuration) {
-      return timing.iterationStart + timing.iterations - 1;
+    return simpleIterationProgress;
+  }
+
+  function calculateCurrentIteration(phase, iterations, simpleIterationProgress, overallProgress) {
+    // https://w3c.github.io/web-animations/#calculating-the-current-iteration
+    if (phase === PhaseAfter && iterations === Infinity) {
+      return Infinity;
     }
-    return Math.floor(scaledActiveTime / iterationDuration);
+    if (simpleIterationProgress === 1) {
+      return Math.floor(overallProgress) - 1;
+    }
+    return Math.floor(overallProgress);
   }
 
-  function calculateTransformedTime(currentIteration, iterationDuration, iterationTime, timing) {
-    var currentIterationIsOdd = currentIteration % 2 >= 1;
-    var currentDirectionIsForwards = timing.direction == 'normal' || timing.direction == (currentIterationIsOdd ? 'alternate-reverse' : 'alternate');
-    var directedTime = currentDirectionIsForwards ? iterationTime : iterationDuration - iterationTime;
-    var timeFraction = directedTime / iterationDuration;
-    return iterationDuration * timing._easingFunction(timeFraction);
+  function calculateDirectedProgress(playbackDirection, currentIteration, simpleIterationProgress) {
+    // https://w3c.github.io/web-animations/#calculating-the-directed-progress
+    var currentDirection = playbackDirection;
+    if (playbackDirection !== 'normal' && playbackDirection !== 'reverse') {
+      var d = currentIteration;
+      if (playbackDirection === 'alternate-reverse') {
+        d += 1;
+      }
+      currentDirection = 'normal';
+      if (d !== Infinity && d % 2 !== 0) {
+        currentDirection = 'reverse';
+      }
+    }
+    if (currentDirection === 'normal') {
+      return simpleIterationProgress;
+    }
+    return 1 - simpleIterationProgress;
   }
 
-  function calculateTimeFraction(activeDuration, localTime, timing) {
+  function calculateIterationProgress(activeDuration, localTime, timing) {
     var phase = calculatePhase(activeDuration, localTime, timing);
     var activeTime = calculateActiveTime(activeDuration, timing.fill, localTime, phase, timing.delay);
     if (activeTime === null)
       return null;
-    if (activeDuration === 0)
-      return phase === PhaseBefore ? 0 : 1;
-    var startOffset = timing.iterationStart * timing.duration;
-    var scaledActiveTime = calculateScaledActiveTime(activeDuration, activeTime, startOffset, timing);
-    var iterationTime = calculateIterationTime(timing.duration, repeatedDuration(timing), scaledActiveTime, startOffset, timing);
-    var currentIteration = calculateCurrentIteration(timing.duration, iterationTime, scaledActiveTime, timing);
-    return calculateTransformedTime(currentIteration, timing.duration, iterationTime, timing) / timing.duration;
+
+    var overallProgress = calculateOverallProgress(timing.duration, phase, timing.iterations, activeTime, timing.iterationStart);
+    var simpleIterationProgress = calculateSimpleIterationProgress(overallProgress, timing.iterationStart, phase, timing.iterations, activeTime, timing.duration);
+    var currentIteration = calculateCurrentIteration(phase, timing.iterations, simpleIterationProgress, overallProgress);
+    var directedProgress = calculateDirectedProgress(timing.direction, currentIteration, simpleIterationProgress);
+
+    // https://w3c.github.io/web-animations/#calculating-the-transformed-progress
+    // https://w3c.github.io/web-animations/#calculating-the-iteration-progress
+    return timing._easingFunction(directedProgress);
   }
 
   shared.cloneTimingInput = cloneTimingInput;
@@ -343,24 +400,21 @@
   shared.numericTimingToObject = numericTimingToObject;
   shared.normalizeTimingInput = normalizeTimingInput;
   shared.calculateActiveDuration = calculateActiveDuration;
-  shared.calculateTimeFraction = calculateTimeFraction;
+  shared.calculateIterationProgress = calculateIterationProgress;
   shared.calculatePhase = calculatePhase;
-  shared.toTimingFunction = toTimingFunction;
+  shared.normalizeEasing = normalizeEasing;
+  shared.parseEasingFunction = parseEasingFunction;
 
   if (WEB_ANIMATIONS_TESTING) {
     testing.normalizeTimingInput = normalizeTimingInput;
-    testing.toTimingFunction = toTimingFunction;
+    testing.normalizeEasing = normalizeEasing;
+    testing.parseEasingFunction = parseEasingFunction;
     testing.calculateActiveDuration = calculateActiveDuration;
     testing.calculatePhase = calculatePhase;
     testing.PhaseNone = PhaseNone;
     testing.PhaseBefore = PhaseBefore;
     testing.PhaseActive = PhaseActive;
     testing.PhaseAfter = PhaseAfter;
-    testing.calculateActiveTime = calculateActiveTime;
-    testing.calculateScaledActiveTime = calculateScaledActiveTime;
-    testing.calculateIterationTime = calculateIterationTime;
-    testing.calculateCurrentIteration = calculateCurrentIteration;
-    testing.calculateTransformedTime = calculateTransformedTime;
   }
 
 })(webAnimationsShared, webAnimationsTesting);

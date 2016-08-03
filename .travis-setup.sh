@@ -81,12 +81,14 @@ Chrome)
 Firefox)
   sudo rm -f /usr/local/bin/firefox
   case $VERSION in
+  stable)
+    ;;
   beta)
     yes "\n" | sudo add-apt-repository -y ppa:mozillateam/firefox-next
     ;;
-  aurora)
-    yes "\n" | sudo add-apt-repository -y ppa:ubuntu-mozilla-daily/firefox-aurora
-    ;;
+  # TODO(alancutter): Add support for firefox-aurora.
+  # This will need to download the binary manually as the ubuntu-mozilla-daily
+  # ppa doesn't support the version of linux that Travis uses.
   esac
   sudo apt-get update --fix-missing
   sudo apt-get install firefox

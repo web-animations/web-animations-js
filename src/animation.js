@@ -89,8 +89,12 @@
       this._currentTimePending = false;
       if (this._currentTime == newTime)
         return;
+      if (this._idle) {
+        this._idle = false;
+        this._paused = true;
+      }
       this._tickCurrentTime(newTime, true);
-      scope.invalidateEffects();
+      scope.applyDirtiedAnimation(this);
     },
     get startTime() {
       return this._startTime;
@@ -103,7 +107,7 @@
         return;
       this._startTime = newTime;
       this._tickCurrentTime((this._timeline.currentTime - this._startTime) * this.playbackRate);
-      scope.invalidateEffects();
+      scope.applyDirtiedAnimation(this);
     },
     get playbackRate() {
       return this._playbackRate;
@@ -116,7 +120,10 @@
       this._playbackRate = value;
       this._startTime = null;
       if (this.playState != 'paused' && this.playState != 'idle') {
-        this.play();
+        this._finishedFlag = false;
+        this._idle = false;
+        this._ensureAlive();
+        scope.applyDirtiedAnimation(this);
       }
       if (oldCurrentTime != null) {
         this.currentTime = oldCurrentTime;
@@ -138,20 +145,34 @@
         return 'finished';
       return 'running';
     },
+    _rewind: function() {
+      if (this._playbackRate >= 0) {
+        this._currentTime = 0;
+      } else if (this._totalDuration < Infinity) {
+        this._currentTime = this._totalDuration;
+      } else {
+        throw new DOMException(
+            'Unable to rewind negative playback rate animation with infinite duration',
+            'InvalidStateError');
+      }
+    },
     play: function() {
       this._paused = false;
       if (this._isFinished || this._idle) {
-        this._currentTime = this._playbackRate > 0 ? 0 : this._totalDuration;
+        this._rewind();
         this._startTime = null;
       }
       this._finishedFlag = false;
       this._idle = false;
       this._ensureAlive();
-      scope.invalidateEffects();
+      scope.applyDirtiedAnimation(this);
     },
     pause: function() {
       if (!this._isFinished && !this._paused && !this._idle) {
         this._currentTimePending = true;
+      } else if (this._idle) {
+        this._rewind();
+        this._idle = false;
       }
       this._startTime = null;
       this._paused = true;
@@ -162,20 +183,22 @@
       this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
       this._startTime = this._totalDuration - this.currentTime;
       this._currentTimePending = false;
-      scope.invalidateEffects();
+      scope.applyDirtiedAnimation(this);
     },
     cancel: function() {
       if (!this._inEffect)
         return;
       this._inEffect = false;
       this._idle = true;
+      this._paused = false;
+      this._isFinished = true;
       this._finishedFlag = true;
-      this.currentTime = 0;
+      this._currentTime = 0;
       this._startTime = null;
       this._effect._update(null);
       // effects are invalid after cancellation as the animation state
       // needs to un-apply.
-      scope.invalidateEffects();
+      scope.applyDirtiedAnimation(this);
     },
     reverse: function() {
       this.playbackRate *= -1;
@@ -226,6 +249,26 @@
     },
     get _needsTick() {
       return (this.playState in {'pending': 1, 'running': 1}) || !this._finishedFlag;
+    },
+    _targetAnimations: function() {
+      var target = this._effect._target;
+      if (!target._activeAnimations) {
+        target._activeAnimations = [];
+      }
+      return target._activeAnimations;
+    },
+    _markTarget: function() {
+      var animations = this._targetAnimations();
+      if (animations.indexOf(this) === -1) {
+        animations.push(this);
+      }
+    },
+    _unmarkTarget: function() {
+      var animations = this._targetAnimations();
+      var index = animations.indexOf(this);
+      if (index !== -1) {
+        animations.splice(index, 1);
+      }
     },
   };
 

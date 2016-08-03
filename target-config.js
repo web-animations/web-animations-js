@@ -81,7 +81,7 @@
       'src/effect-callback.js',
       'src/group-constructors.js'];
 
-  var webAnimations1Test = [
+  var webAnimations1PolyfillTests = [
       'test/js/animation-cancel-event.js',
       'test/js/animation-finish-event.js',
       'test/js/animation.js',
@@ -97,9 +97,10 @@
       'test/js/tick.js',
       'test/js/timing-utilities.js',
       'test/js/timing.js',
-      'test/js/transform-handler.js'];
+      'test/js/transform-handler.js',
+      'test/js/visibility-handler.js'];
 
-  var webAnimationsNextTest = webAnimations1Test.concat(
+  var webAnimationsNextPolyfillTests = webAnimations1PolyfillTests.concat(
       'test/js/effect-callback.js',
       'test/js/group-animation-cancel-event.js',
       'test/js/group-animation-finish-event.js',
@@ -108,6 +109,26 @@
       'test/js/keyframe-effect-constructor.js',
       'test/js/timeline.js',
       'test/js/web-animations-next-animation.js');
+
+  var webAnimations1WebPlatformTests = [
+    'test/web-platform-tests/web-animations/animation-model/animation-types/discrete-animation.html',
+    'test/web-platform-tests/web-animations/animation-model/keyframe-effects/effect-value-context.html',
+    'test/web-platform-tests/web-animations/animation-model/keyframe-effects/the-effect-value-of-a-keyframe-effect.html',
+    'test/web-platform-tests/web-animations/interfaces/Animatable/animate-basic.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/cancel.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/id.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/pause.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/play.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/playState.html',
+    'test/web-platform-tests/web-animations/interfaces/Animation/startTime.html',
+    'test/web-platform-tests/web-animations/interfaces/KeyframeEffect/effect-easing.html',
+    'test/web-platform-tests/web-animations/timing-model/animation-effects/active-time.html',
+    'test/web-platform-tests/web-animations/timing-model/animation-effects/simple-iteration-progress.html',
+  ];
+
+  var webAnimationsNextWebPlatformTests = [
+    'test/web-platform-tests/web-animations/**/*.html',
+  ];
 
   // This object specifies the source and test files for different Web Animation build targets.
   var targetConfig = {
@@ -118,7 +139,8 @@
       webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: [],
       src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimations1BonusSrc),
-      test: webAnimations1Test,
+      polyfillTests: webAnimations1PolyfillTests,
+      webPlatformTests: webAnimations1WebPlatformTests,
     },
     'web-animations-next': {
       scopeSrc: scopeSrc,
@@ -127,7 +149,8 @@
       webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: webAnimationsNextSrc,
       src: scopeSrc.concat(sharedSrc).concat(webAnimations1Src).concat(webAnimations1BonusSrc).concat(webAnimationsNextSrc),
-      test: webAnimationsNextTest,
+      polyfillTests: webAnimationsNextPolyfillTests,
+      webPlatformTests: webAnimationsNextWebPlatformTests,
     },
     'web-animations-next-lite': {
       scopeSrc: scopeSrc,
@@ -136,7 +159,8 @@
       webAnimations1BonusSrc: webAnimations1BonusSrc,
       webAnimationsNextSrc: webAnimationsNextSrc,
       src: scopeSrc.concat(sharedSrc).concat(liteWebAnimations1Src).concat(webAnimations1BonusSrc).concat(webAnimationsNextSrc),
-      test: [],
+      polyfillTests: [],
+      webPlatformTests: [],
     },
   };
 

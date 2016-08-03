@@ -1,4 +1,6 @@
-/*global add_completion_callback, setup */
+/* global add_completion_callback */
+/* global setup */
+
 /*
  * This file is intended for vendors to implement
  * code needed to integrate testharness.js tests with their own test systems.
@@ -22,8 +24,6 @@
  * For more documentation about the callback functions and the
  * parameters they are called with see testharness.js
  */
-
-
 
 var metadata_generator = {
 
@@ -219,10 +219,14 @@ var metadata_generator = {
      * Metadata is in pretty-printed JSON format
      */
     generateSource: function() {
+        /* "\/" is used instead of a plain forward slash so that the contents
+        of testharnessreport.js can (for convenience) be copy-pasted into a
+        script tag without issue. Otherwise, the HTML parser would think that
+        the script ended in the middle of that string literal. */
         var source =
             '<script id="metadata_cache">/*\n' +
             this.jsonifyObject(this.currentMetadata, '') + '\n' +
-            '*/</script>\n';
+            '*/<\/script>\n';
         return source;
     },
 
@@ -373,23 +377,43 @@ var metadata_generator = {
         add_completion_callback(
             function (tests, harness_status) {
                 metadata_generator.process(tests, harness_status);
+                dump_test_results(tests, harness_status);
             });
     }
 };
 
-var url = document.URL;
-var path = url.slice(0, url.lastIndexOf('/'));
-if (path.slice(-13).indexOf('interpolation') != -1) {
-    document.write('<script src="../../../web-animations-next.dev.js"></script>');
-} else {
-    document.write('<script src="../../web-animations-next.dev.js"></script>');
+function dump_test_results(tests, status) {
+    var results_element = document.createElement("script");
+    results_element.type = "text/json";
+    results_element.id = "__testharness__results__";
+    var test_results = tests.map(function(x) {
+        return {name:x.name, status:x.status, message:x.message, stack:x.stack}
+    });
+    var data = {test:window.location.href,
+                tests:test_results,
+                status: status.status,
+                message: status.message,
+                stack: status.stack};
+    results_element.textContent = JSON.stringify(data);
+
+    // To avoid a HierarchyRequestError with XML documents, ensure that 'results_element'
+    // is inserted at a location that results in a valid document.
+    var parent = document.body
+        ? document.body                 // <body> is required in XHTML documents
+        : document.documentElement;     // fallback for optional <body> in HTML5, SVG, etc.
+
+    parent.appendChild(results_element);
 }
 
-if (window.parent && parent.window.initTestHarness) {
-  parent.window.initTestHarness(window);
+/* BEGIN WEB ANIMATIONS POLYFILL EXTRAS */
+// The path /base/polyfill.js is expected to be a proxy for the appropriate polyfill script configured in Karma.
+document.write('<script src="/base/polyfill.js"></script>');
+if (window.parent && parent.window.onTestharnessLoaded) {
+    parent.window.onTestharnessLoaded(window);
 } else {
   metadata_generator.setup();
 }
+/* END WEB ANIMATIONS POLYFILL EXTRAS */
 
 /* If the parent window has a testharness_properties object,
  * we use this to provide the test settings. This is used by the

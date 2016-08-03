@@ -45,7 +45,7 @@ suite('keyframes', function() {
 
   test('Normalize keyframes with some offsets not specified, but sorted by offset where specified. Some offsets are out of [0, 1] range.', function() {
     var normalizedKeyframes;
-    assert.doesNotThrow(function() {
+    assert.throws(function() {
       normalizedKeyframes = normalizeKeyframes([
         {offset: -1},
         {offset: 0},
@@ -55,11 +55,6 @@ suite('keyframes', function() {
         {offset: 2}
       ]);
     });
-    assert.equal(normalizedKeyframes.length, 4);
-    assert.closeTo(normalizedKeyframes[0].offset, 0, 0.001);
-    assert.closeTo(normalizedKeyframes[1].offset, 0.5, 0.001);
-    assert.closeTo(normalizedKeyframes[2].offset, 0.75, 0.001);
-    assert.closeTo(normalizedKeyframes[3].offset, 1, 0.001);
   });
 
   test('Normalize keyframes with some offsets not specified, but sorted by offset where specified. All specified offsets in [0, 1] range.', function() {
@@ -151,14 +146,13 @@ suite('keyframes', function() {
 
   test('Normalize keyframes with invalid specified easing.', function() {
     var normalizedKeyframes;
-    assert.doesNotThrow(function() {
+    assert.throws(function() {
       normalizedKeyframes = normalizeKeyframes([
         {left: '0px', easing: 'easy-peasy'},
         {left: '10px'},
         {left: '0px'}
       ]);
     });
-    assert.equal(normalizedKeyframes[0].easing, 'easy-peasy');
   });
 
   test('Normalize keyframes where some properties are given non-string, non-number values.', function() {
@@ -431,13 +425,17 @@ suite('keyframes', function() {
     });
     assert.equal(interpolations.length, 2);
 
-    assert.closeTo(interpolations[0].startTime, 0, 0.001);
-    assert.closeTo(interpolations[0].endTime, 0.3, 0.001);
+    assert.equal(interpolations[0].applyFrom, -Infinity);
+    assert.closeTo(interpolations[0].applyTo, 0.3, 0.001);
+    assert.closeTo(interpolations[0].startOffset, 0, 0.001);
+    assert.closeTo(interpolations[0].endOffset, 0.3, 0.001);
     assert.equal(interpolations[0].property, 'left');
     assert.equal(typeof interpolations[0].interpolation, 'function');
 
-    assert.closeTo(interpolations[1].startTime, 0.3, 0.001);
-    assert.closeTo(interpolations[1].endTime, 1, 0.001);
+    assert.closeTo(interpolations[1].applyFrom, 0.3, 0.001);
+    assert.equal(interpolations[1].applyTo, Infinity);
+    assert.closeTo(interpolations[1].startOffset, 0.3, 0.001);
+    assert.closeTo(interpolations[1].endOffset, 1, 0.001);
     assert.equal(interpolations[1].property, 'left');
     assert.equal(typeof interpolations[1].interpolation, 'function');
   });

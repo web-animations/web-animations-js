@@ -150,8 +150,16 @@
     return value;
   }
 
+  function isNotAnimatable(property) {
+    // https://w3c.github.io/web-animations/#concept-not-animatable
+    return property === 'display' || property.lastIndexOf('animation', 0) === 0 || property.lastIndexOf('transition', 0) === 0;
+  }
+
   // This delegates parsing shorthand value syntax to the browser.
   function expandShorthandAndAntiAlias(property, value, result) {
+    if (isNotAnimatable(property)) {
+      return;
+    }
     var longProperties = shorthandToLonghand[property];
     if (longProperties) {
       shorthandExpanderElem.style[property] = value;
@@ -231,14 +239,22 @@
           if (memberValue != null) {
             memberValue = Number(memberValue);
             if (!isFinite(memberValue))
-              throw new TypeError('keyframe offsets must be numbers.');
+              throw new TypeError('Keyframe offsets must be numbers.');
+            if (memberValue < 0 || memberValue > 1)
+              throw new TypeError('Keyframe offsets must be between 0 and 1.');
           }
         } else if (member == 'composite') {
-          throw {
-            type: DOMException.NOT_SUPPORTED_ERR,
-            name: 'NotSupportedError',
-            message: 'add compositing is not supported'
-          };
+          if (memberValue == 'add' || memberValue == 'accumulate') {
+            throw {
+              type: DOMException.NOT_SUPPORTED_ERR,
+              name: 'NotSupportedError',
+              message: 'add compositing is not supported'
+            };
+          } else if (memberValue != 'replace') {
+            throw new TypeError('Invalid composite mode ' + memberValue + '.');
+          }
+        } else if (member == 'easing') {
+          memberValue = shared.normalizeEasing(memberValue);
         } else {
           memberValue = '' + memberValue;
         }
@@ -246,6 +262,8 @@
       }
       if (keyframe.offset == undefined)
         keyframe.offset = null;
+      if (keyframe.easing == undefined)
+        keyframe.easing = 'linear';
       return keyframe;
     });
 
@@ -256,11 +274,7 @@
       var offset = keyframes[i].offset;
       if (offset != null) {
         if (offset < previousOffset) {
-          throw {
-            code: DOMException.INVALID_MODIFICATION_ERR,
-            name: 'InvalidModificationError',
-            message: 'Keyframes are not loosely sorted by offset. Sort or specify offsets.'
-          };
+          throw new TypeError('Keyframes are not loosely sorted by offset. Sort or specify offsets.');
         }
         previousOffset = offset;
       } else {

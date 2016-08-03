@@ -511,8 +511,8 @@ suite('animation', function() {
     assert.equal(a.startTime, null);
     tick(1);
     a.pause();
-    assert.equal(a.playState, 'idle');
-    assert.equal(a.currentTime, null);
+    assert.equal(a.playState, 'paused');
+    assert.equal(a.currentTime, 0);
     assert.equal(a.startTime, null);
   });
   test('Animations ignore NaN times', function() {

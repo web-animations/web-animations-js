@@ -482,6 +482,40 @@ suite('group-animation', function() {
     assert.equal(getComputedStyle(this.complexTarget).marginLeft, '0px');
   });
 
+  test('cancelling group animation clears nested effect with zero duration', function() {
+    tick(0);
+    var opacity1 = new KeyframeEffect(
+        this.target1,
+        [
+          {opacity: 0.5},
+          {opacity: 0.5}
+        ],
+        {fill: 'both'});
+    var opacity2 = new KeyframeEffect(
+        this.target2,
+        [
+          {opacity: 0.5},
+          {opacity: 0.5}
+        ],
+        {duration: 100});
+    var opacity3 = new KeyframeEffect(
+        this.target3,
+        [
+          {opacity: 0.5},
+          {opacity: 0.5}
+        ],
+        {duration: 300});
+    var animation = document.timeline.play(new GroupEffect([opacity1, opacity2, opacity3]));
+    animation.currentTime = 200;
+    assert.equal(getComputedStyle(this.target1).opacity, '0.5');
+    assert.equal(getComputedStyle(this.target2).opacity, '1');
+    assert.equal(getComputedStyle(this.target3).opacity, '0.5');
+    animation.cancel();
+    assert.equal(getComputedStyle(this.target1).opacity, '1');
+    assert.equal(getComputedStyle(this.target2).opacity, '1');
+    assert.equal(getComputedStyle(this.target3).opacity, '1');
+  });
+
   test('redundant effect node wrapping', function() {
     var sequenceEffect = new SequenceEffect([
       this.staticEffect(this.target, '0px', 1),
@@ -1059,7 +1093,7 @@ suite('group-animation', function() {
     tick(102);
     assert.equal(getComputedStyle(this.target).marginLeft, '2px');
     tick(103);
-    assert.equal(getComputedStyle(this.target).marginLeft, '3px');
+    assert.equal(getComputedStyle(this.target).marginLeft, '0px');
     tick(104);
   });
 

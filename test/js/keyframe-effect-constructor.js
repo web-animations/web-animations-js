@@ -354,4 +354,29 @@ suite('keyframe-effect-constructor', function() {
     effect.timing.iterations = 2;
     assert.closeTo(Number(getComputedStyle(target).opacity), 0.75, 0.01, 't=125 after setting iterations');
   });
+
+  test('Not Animatable properties are not animated', function() {
+    var target = document.createElement('div');
+    target.style.opacity = 0;
+    target.style.display = 'block';
+    target.style['animation-timing-function'] = 'ease-in';
+    target.style['transition-duration'] = '0s';
+    document.body.appendChild(target);
+
+    var keyframeEffect = new KeyframeEffect(target, [
+      {opacity: '0.75', display: 'none', animationTimingFunction: 'linear', transitionDuration: '5s'},
+      {opacity: '0.25', display: 'none', animationTimingFunction: 'linear', transitionDuration: '5s'}
+    ], 2000);
+
+    var animation = document.timeline.play(keyframeEffect);
+
+    tick(0);
+    assert.equal(getComputedStyle(target).opacity, 0.75);
+
+    tick(1000);
+    assert.equal(getComputedStyle(target).opacity, 0.5);
+    assert.equal(getComputedStyle(target).display, 'block');
+    assert.equal(getComputedStyle(target).animationTimingFunction, 'ease-in');
+    assert.equal(getComputedStyle(target).transitionDuration, '0s');
+  });
 });

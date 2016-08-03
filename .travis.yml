@@ -1,10 +1,10 @@
 language: node_js
 
 node_js:
- - "0.10"
+ - "4.4.4"
 
 install:
-  - BROWSER="Firefox-aurora" ./.travis-setup.sh
+  - BROWSER="Firefox-stable" ./.travis-setup.sh
 
 before_script:
   - export DISPLAY=:99.0

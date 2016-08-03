@@ -1,0 +1,4 @@
+[submodule "test/web-platform-tests"]
+  path = test/web-platform-tests
+  url = https://github.com/alancutter/web-platform-tests.git
+  branch = nativeShippingAPI
