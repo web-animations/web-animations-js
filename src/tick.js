@@ -39,7 +39,8 @@
     rafCallbacks = [];
     if (t < timeline.currentTime)
       t = timeline.currentTime;
-    tick(t, true);
+    timeline._animations.sort(compareAnimations);
+    timeline._animations = tick(t, true, timeline._animations)[0];
     processing.forEach(function(entry) { entry[1](t); });
     applyPendingEffects();
     _now = undefined;
@@ -63,7 +64,7 @@
       animation._timeline = this;
       this._animations.push(animation);
       scope.restart();
-      scope.invalidateEffects();
+      scope.applyDirtiedAnimation(animation);
       return animation;
     }
   };
@@ -92,8 +93,24 @@
     return hasRestartedThisFrame;
   };
 
-  scope.invalidateEffects = function() {
-    tick(scope.timeline.currentTime, false);
+  // RAF is supposed to be the last script to occur before frame rendering but not
+  // all browsers behave like this. This function is for synchonously updating an
+  // animation's effects whenever its state is mutated by script to work around
+  // incorrect script execution ordering by the browser.
+  scope.applyDirtiedAnimation = function(animation) {
+    if (inTick) {
+      return;
+    }
+    animation._markTarget();
+    var animations = animation._targetAnimations();
+    animations.sort(compareAnimations);
+    var inactiveAnimations = tick(scope.timeline.currentTime, false, animations.slice())[1];
+    inactiveAnimations.forEach(function(animation) {
+      var index = timeline._animations.indexOf(animation);
+      if (index !== -1) {
+        timeline._animations.splice(index, 1);
+      }
+    });
     applyPendingEffects();
   };
 
@@ -105,41 +122,51 @@
 
   var t60hz = 1000 / 60;
 
-  function tick(t, isAnimationFrame) {
+  var inTick = false;
+  function tick(t, isAnimationFrame, updatingAnimations) {
+    inTick = true;
     hasRestartedThisFrame = false;
     var timeline = scope.timeline;
+
     timeline.currentTime = t;
-    timeline._animations.sort(compareAnimations);
     ticking = false;
-    var updatingAnimations = timeline._animations;
-    timeline._animations = [];
 
     var newPendingClears = [];
     var newPendingEffects = [];
-    updatingAnimations = updatingAnimations.filter(function(animation) {
+    var activeAnimations = [];
+    var inactiveAnimations = [];
+    updatingAnimations.forEach(function(animation) {
       animation._tick(t, isAnimationFrame);
 
-      if (!animation._inEffect)
+      if (!animation._inEffect) {
         newPendingClears.push(animation._effect);
-      else
+        animation._unmarkTarget();
+      } else {
         newPendingEffects.push(animation._effect);
+        animation._markTarget();
+      }
 
       if (animation._needsTick)
         ticking = true;
 
       var alive = animation._inEffect || animation._needsTick;
       animation._inTimeline = alive;
-      return alive;
+      if (alive) {
+        activeAnimations.push(animation);
+      } else {
+        inactiveAnimations.push(animation);
+      }
     });
 
     // FIXME: Should remove dupliactes from pendingEffects.
     pendingEffects.push.apply(pendingEffects, newPendingClears);
     pendingEffects.push.apply(pendingEffects, newPendingEffects);
 
-    timeline._animations.push.apply(timeline._animations, updatingAnimations);
-
     if (ticking)
       requestAnimationFrame(function() {});
+
+    inTick = false;
+    return [activeAnimations, inactiveAnimations];
   };
 
   if (WEB_ANIMATIONS_TESTING) {

@@ -43,6 +43,7 @@
     keyframeEffect._hasSameTarget = function(otherTarget) {
       return target === otherTarget;
     };
+    keyframeEffect._target = target;
     keyframeEffect._totalDuration = effectTime._totalDuration;
     keyframeEffect._id = id;
     return keyframeEffect;
