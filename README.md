@@ -1,172 +1,80 @@
 
-Quick Start
------------
-
-To provide native Chrome Web Animation features (`Element.animate` and Playback
-Control) in other browsers, use `web-animations.min.js`. To explore all of the
-proposed Web Animations API, use `web-animations-next.min.js`.
-
 What is Web Animations?
 -----------------------
 
-Web Animations is a new JavaScript API for driving animated content on the web.
-By unifying the animation features of SVG and CSS, Web Animations unlocks
-features previously only usable declaratively, and exposes powerful,
-high-performance animation capabilities to developers.
+A new JavaScript API for driving animated content on the web. By unifying
+the animation features of SVG and CSS, Web Animations unlocks features
+previously only usable declaratively, and exposes powerful, high-performance
+animation capabilities to developers.
 
-For more details see the
-[W3C specification](http://w3c.github.io/web-animations/).
+What is in this repository?
+---------------------------
 
-What is the polyfill?
----------------------
+A JavaScript implementation of the Web Animations API that provides Web
+Animation features in browsers that do not support it natively. The polyfill
+falls back to the native implementation when one is available.
 
-The polyfill is a JavaScript implementation of the Web Animations API. It is
-supported on modern versions of all major browsers, including:
+Quick start
+-----------
 
-* Chrome
-* Firefox 27+
-* IE10+ (including Edge)
-* Safari (iOS) 7.1+
-* Safari (Mac) 9+
-
-Getting Started
----------------
-
-Here's a simple example of an animation that scales and changes the opacity of
-a `<div>` over 0.5 seconds. The animation alternates producing a pulsing
-effect.
+Here's a simple example of an animation that fades and scales a `<div>`.  
+[Try it as a live demo.](http://jsbin.com/yageyezabo/edit?html,js,output)
 
 ```html
+<!-- Include the polyfill -->
 <script src="web-animations.min.js"></script>
-<div class="pulse" style="width:150px;">Hello world!</div>
+
+<!-- Set up a target to animate -->
+<div class="pulse" style="width: 150px;">Hello world!</div>
+
+<!-- Animate! -->
 <script>
     var elem = document.querySelector('.pulse');
-    var animation = elem.animate([
-        {opacity: 0.5, transform: "scale(0.5)"},
-        {opacity: 1.0, transform: "scale(1)"}
-    ], {
+    var animation = elem.animate({
+        opacity: [0.5, 1],
+        transform: ['scale(0.5)', 'scale(1)'],
+    }, {
         direction: 'alternate',
         duration: 500,
-        iterations: Infinity
+        iterations: Infinity,
     });
 </script>
 ```
 
-Web Animations supports off-main-thread animations, and also allows procedural
-generation of animations and fine-grained control of animation playback. See
-<http://web-animations.github.io> for ideas and inspiration - or [web-animations-codelabs](https://github.com/web-animations/web-animations-codelabs).
+Documentation
+-------------
 
-Native Fallback
----------------
+* [Codelab tutorial](https://github.com/web-animations/web-animations-codelabs)
+* [Examples of usage](/docs/examples.md)
+* [Live demos](https://web-animations.github.io/web-animations-demos)
+* [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate)
+* [W3C specification](http://w3c.github.io/web-animations/)
 
-When the polyfill runs on a browser that implements `Element.animate` and
-`Animation` Playback Control it will detect and use the underlying native
-features.
+We love feedback!
+-----------------
 
-Different Build Targets
------------------------
-
-### web-animations.min.js
-
-Tracks the Web Animations features that are supported natively in browsers.
-Today that means Element.animate and Playback Control in Chrome. If you’re not
-sure what features you will need, start with this.
-
-### web-animations-next.min.js
-
-Contains all of web-animations.min.js plus features that are still undergoing
-discussion or have yet to be implemented natively.
-
-### web-animations-next-lite.min.js
-
-A cut down version of web-animations-next, it removes several lesser used
-property handlers and some of the larger and less used features such as matrix
-interpolation/decomposition.
-
-### Build Target Comparison
-
-|                        | web-animations | web-animations-next | web-animations-next-lite |
-|------------------------|:--------------:|:-------------------:|:------------------------:|
-|Size (gzipped)          | 15KB           | 18KB                | 15KB                     |
-|Element.animate         | ✔             | ✔                  | ✔                       |
-|Timing input (easings, duration, fillMode, etc.) for animation effects| ✔ | ✔ | ✔             | 
-|Playback control        | ✔             | ✔                  | ✔                       |
-|Support for animating lengths, transforms and opacity| ✔ | ✔ | ✔                       |
-|Support for animating other CSS properties| ✔ | ✔            | 🚫                       |
-|Matrix fallback for transform animations | ✔ | ✔             | 🚫                       |
-|KeyframeEffect constructor   | 🚫             | ✔                  | ✔                       |
-|Simple GroupEffects & SequenceEffects           | 🚫             | ✔                  | ✔                       |
-|Custom Effects          | 🚫             | ✔                  | ✔                       |
-|Timing input (easings, duration, fillMode, etc.) for groups</div>| 🚫 | 🚫\* | 🚫         |
-|Additive animation      | 🚫\*           | 🚫\*                | 🚫                       |
-|Motion path             | 🚫\*           | 🚫\*                | 🚫                       |
-|Modifiable keyframe effect timing| 🚫          | 🚫\*                | 🚫\*                     |
-|Modifiable group timing | 🚫             | 🚫\*                | 🚫\*                     |
-|Usable inline style\*\* | ✔             | ✔                  | 🚫                       |
-
-\* support is planned for these features.
-\*\* see inline style caveat below.
-
-Caveats
--------
-
-Some things won’t ever be faithful to the native implementation due to browser
-and CSS API limitations. These include:
-
-### Inline Style
-
-Inline style modification is the mechanism used by the polyfill to animate
-properties. Both web-animations and web-animations-next incorporate a module
-that emulates a vanilla inline style object, so that style modification from
-JavaScript can still work in the presence of animations. However, to keep the
-size of web-animations-next-lite as small as possible, the style emulation
-module is not included. When using this version of the polyfill, JavaScript
-inline style modification will be overwritten by animations.
-Due to browser constraints inline style modification is not supported on iOS 7
-or Safari 6 (or earlier versions).
-
-### Prefix handling
-
-The polyfill will automatically detect the correctly prefixed name to use when
-writing animated properties back to the platform. Where possible, the polyfill
-will only accept unprefixed versions of experimental features. For example:
-
-```js
-var effect = new KeyframeEffect(elem, {"transform": "translate(100px, 100px)"}, 2000);
-```
-
-will work in all browsers that implement a conforming version of transform, but
-
-```js
-var effect = new KeyframeEffect(elem, {"-webkit-transform": "translate(100px, 100px)"}, 2000);
-```
-
-will not work anywhere.
-
-API and Specification Feedback
-------------------------------
-
-File an issue on GitHub: <https://github.com/w3c/web-animations/issues/new>.
-Alternatively, send an email to <public-fx@w3.org> with subject line
-“[web-animations] … message topic …”
+* For feedback on the API and the specification:
+    * File an issue on GitHub: <https://github.com/w3c/web-animations/issues/new>
+    * Alternatively, send an email to <public-fx@w3.org> with subject line
+"[web-animations] ... message topic ..."
 ([archives](http://lists.w3.org/Archives/Public/public-fx/)).
 
-Polyfill Issues
+* For issues with the polyfill, report them on GitHub:
+<https://github.com/web-animations/web-animations-js/issues/new>.
+
+Keep up-to-date
 ---------------
 
-Report any issues with this implementation on GitHub:
-<https://github.com/web-animations/web-animations-next/issues/new>.
-
-Breaking changes
-----------------
-
-When we make a potentially breaking change to the polyfill's API
-surface (like a rename) we will, where possible, continue supporting the
-old version, deprecated, for three months, and ensure that there are
-console warnings to indicate that a change is pending. After three
-months, the old version of the API surface (e.g. the old version of a
-function name) will be removed. *If you see deprecation warnings you
-can't avoid it by not updating*.
-
-We also announce anything that isn't a bug fix on
+Breaking polyfill changes will be announced on this low-volume mailing list:
 [web-animations-changes@googlegroups.com](https://groups.google.com/forum/#!forum/web-animations-changes).
+
+More info
+---------
+
+* [Technical details about the polyfill](/docs/support.md)
+    * [Browser support](/docs/support.md#browser-support)
+    * [Fallback to native](/docs/support.md#native-fallback)
+    * [Feature list](/docs/support.md#features)
+    * [Feature deprecation and removal processes](/docs/support.md#process-for-breaking-changes)
+* To test experimental API features, try one of the
+  [experimental targets](/docs/experimental.md)

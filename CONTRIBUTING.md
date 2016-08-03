@@ -54,7 +54,7 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
       "version": "3.13.37",
     ```
 
-1.  Build the polyfill with `npm install && grunt` then update `README.md`'s Build Target Comparison with the current gzipped sizes.
+1.  Build the polyfill with `npm install && grunt` then update `docs/experimental.md`'s Build Target Comparison with the current gzipped sizes.
 
 1.  Submit both changes to web-animations-next then follow the procedure to push from web-animations-next to web-animations-js.
 
