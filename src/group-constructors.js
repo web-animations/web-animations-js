@@ -12,6 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
 (function(shared, scope, testing) {
 
   function groupChildDuration(node) {
@@ -116,7 +117,8 @@
     },
     remove: function() {
       scope.removeMulti([this]);
-    }
+    },
+    _updateActiveDuration: function() {}
   };
 
   window.SequenceEffect.prototype = Object.create(constructor.prototype);
