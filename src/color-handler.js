@@ -12,6 +12,7 @@
 //   See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
 (function(scope, testing) {
 
   var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
