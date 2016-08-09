@@ -11,9 +11,9 @@ module.exports = {
       'Element.animate() creates an Animation object':
           'assert_equals: Returned object is an Animation expected "[object Animation]" but got "[object Object]"',
 
-      // Seems to be a bug in Firefox 47? The TypeError is thrown but disappears by the time it bubbles up to assert_throws().
+      // Seems to be a bug in Firefox 47 onwards? The TypeError is thrown but disappears by the time it bubbles up to assert_throws().
       'Element.animate() does not accept property-indexed keyframes with an invalid easing value':
-          'assert_throws: function "function () {\n"use strict";\n\n      div.animate(subtest.input, 2000);\n    }" did not throw',
+          'assert_throws: function "function () {\n      div.animate(subtest.input, 2000);\n    }" did not throw',
     },
 
     'test/web-platform-tests/web-animations/interfaces/Animatable/animate-effect.html': {
@@ -146,11 +146,6 @@ module.exports = {
           'document.getAnimations is not a function',
     },
 
-    'test/web-platform-tests/web-animations/interfaces/Animatable/animate-timeline.html': {
-      'Element.animate() correctly sets the Animation\'s timeline when triggered on an element in a different document':
-          'div.animate is not a function',
-    },
-
     'test/web-platform-tests/web-animations/interfaces/Animation/cancel.html': {
       'Animated style is cleared after calling Animation.cancel()':
           'assert_not_equals: transform style is animated before cancelling got disallowed value "none"',
@@ -158,10 +153,10 @@ module.exports = {
 
     'test/web-platform-tests/web-animations/interfaces/Animation/finish.html': {
       'Test exceptions when finishing infinite animation':
-          'assert_throws: function "function () {\n"use strict";\n\n    animation.finish();\n  }" did not throw',
+          'assert_throws: function "function () {\n    animation.finish();\n  }" did not throw',
 
       'Test exceptions when finishing non-running animation':
-          'assert_throws: function "function () {\n"use strict";\n\n    animation.finish();\n  }" did not throw',
+          'assert_throws: function "function () {\n    animation.finish();\n  }" did not throw',
 
       'Test finish() resolves finished promise synchronously with an animation without a target':
           'KeyframeEffectReadOnly is not defined',
@@ -258,16 +253,16 @@ module.exports = {
 
     'test/web-platform-tests/web-animations/interfaces/AnimationEffectTiming/duration.html': {
       'set 100 string duration in animate using an options object':
-          'assert_throws: function "function () {\n"use strict";\n\n    div.animate({ opacity: [ 0, 1 ] }, { duration: \'100\' });\n  }" did not throw',
+          'assert_throws: function "function () {\n    div.animate({ opacity: [ 0, 1 ] }, { duration: \'100\' });\n  }" did not throw',
 
       'set NaN duration in animate using a duration parameter':
-          'assert_throws: function "function () {\n"use strict";\n\n    div.animate({ opacity: [ 0, 1 ] }, NaN);\n  }" did not throw',
+          'assert_throws: function "function () {\n    div.animate({ opacity: [ 0, 1 ] }, NaN);\n  }" did not throw',
 
       'set NaN duration in animate using an options object':
-          'assert_throws: function "function () {\n"use strict";\n\n    div.animate({ opacity: [ 0, 1 ] }, { duration: NaN });\n  }" did not throw',
+          'assert_throws: function "function () {\n    div.animate({ opacity: [ 0, 1 ] }, { duration: NaN });\n  }" did not throw',
 
       'set abc string duration in animate using an options object':
-          'assert_throws: function "function () {\n"use strict";\n\n    div.animate({ opacity: [ 0, 1 ] }, { duration: \'abc\' });\n  }" did not throw',
+          'assert_throws: function "function () {\n    div.animate({ opacity: [ 0, 1 ] }, { duration: \'abc\' });\n  }" did not throw',
 
       'set auto duration in animate as object':
           'assert_equals: set duration \'auto\' expected (string) "auto" but got (number) 0',
@@ -282,7 +277,7 @@ module.exports = {
           'anim.effect.getComputedTiming is not a function',
 
       'set duration string 100':
-          'assert_throws: function "function () {\n"use strict";\n\n    anim.effect.timing.duration = \'100\';\n  }" did not throw',
+          'assert_throws: function "function () {\n    anim.effect.timing.duration = \'100\';\n  }" did not throw',
     },
 
     'test/web-platform-tests/web-animations/interfaces/AnimationEffectTiming/easing.html': {
@@ -325,10 +320,10 @@ module.exports = {
           'anim.effect.getComputedTiming is not a function',
 
       'set endDelay Infinity':
-          'assert_throws: we can not assign Infinity to timing.endDelay function "function () {\n"use strict";\n\n    anim.effect.timing.endDelay = Infinity;\n  }" did not throw',
+          'assert_throws: we can not assign Infinity to timing.endDelay function "function () {\n    anim.effect.timing.endDelay = Infinity;\n  }" did not throw',
 
       'set endDelay negative Infinity':
-          'assert_throws: we can not assign negative Infinity to timing.endDelay function "function () {\n"use strict";\n\n    anim.effect.timing.endDelay = -Infinity;\n  }" did not throw',
+          'assert_throws: we can not assign negative Infinity to timing.endDelay function "function () {\n    anim.effect.timing.endDelay = -Infinity;\n  }" did not throw',
     },
 
     'test/web-platform-tests/web-animations/interfaces/AnimationEffectTiming/fill.html': {
@@ -375,7 +370,7 @@ module.exports = {
 
     'test/web-platform-tests/web-animations/interfaces/AnimationEffectTiming/iterationStart.html': {
       'Test invalid iterationStart value':
-          'assert_throws: function "function () {\n"use strict";\n\n                  anim.effect.timing.iterationStart = -1;\n                }" threw object "ReferenceError: timing is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n                  anim.effect.timing.iterationStart = -1;\n                }" threw object "ReferenceError: timing is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Test that changing the iterationStart affects computed timing during the active phase':
           'anim.effect.getComputedTiming is not a function',
@@ -463,91 +458,91 @@ module.exports = {
 
     'test/web-platform-tests/web-animations/interfaces/KeyframeEffect/constructor.html': {
       'Invalid KeyframeEffectReadOnly option by -Infinity':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by NaN':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a NaN duration':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a NaN iterations':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a blank easing':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a multi-value easing':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a negative Infinity duration':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a negative Infinity iterations':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a negative duration':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a negative iterations':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a negative value':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a string duration':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by a variable easing':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by an \'inherit\' easing':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by an \'initial\' easing':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid KeyframeEffectReadOnly option by an unrecognized easing':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target,\n                                 { left: ["10px", "20px"] },\n                                 stest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'Invalid easing [a blank easing] in keyframe sequence should be thrown':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
 
       'Invalid easing [a multi-value easing] in keyframe sequence should be thrown':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
 
       'Invalid easing [a variable easing] in keyframe sequence should be thrown':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
 
       'Invalid easing [an \'inherit\' easing] in keyframe sequence should be thrown':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
 
       'Invalid easing [an \'initial\' easing] in keyframe sequence should be thrown':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
 
       'Invalid easing [an unrecognized easing] in keyframe sequence should be thrown':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "TypeError" ("TypeError")',
 
       'KeyframeEffect constructor creates an AnimationEffectTiming timing object':
           'assert_equals: expected "[object KeyframeEffect]" but got "[object Object]"',
 
       'KeyframeEffectReadOnly constructor throws with a keyframe sequence with an invalid easing value':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'KeyframeEffectReadOnly constructor throws with keyframes not loosely sorted by offset':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'KeyframeEffectReadOnly constructor throws with keyframes with an invalid composite value':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'KeyframeEffectReadOnly constructor throws with keyframes with an out-of-bounded negative offset':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'KeyframeEffectReadOnly constructor throws with keyframes with an out-of-bounded positive offset':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'KeyframeEffectReadOnly constructor throws with property-indexed keyframes with an invalid easing value':
-          'assert_throws: function "function () {\n"use strict";\n\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
+          'assert_throws: function "function () {\n      new KeyframeEffectReadOnly(target, subtest.input);\n    }" threw object "ReferenceError: KeyframeEffectReadOnly is not defined" ("ReferenceError") expected object "[object Object]" ("TypeError")',
 
       'a KeyframeEffectReadOnly can be constructed with a keyframe sequence where greater shorthand precedes lesser shorthand':
           'KeyframeEffectReadOnly is not defined',
