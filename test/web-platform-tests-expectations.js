@@ -11,9 +11,9 @@ module.exports = {
       'Element.animate() creates an Animation object':
           'assert_equals: Returned object is an Animation expected "[object Animation]" but got "[object Object]"',
 
-      // Seems to be a bug in Firefox 47? The TypeError is thrown but disappears by the time it bubbles up to assert_throws().
+      // Seems to be a bug in Firefox 47 onwards? The TypeError is thrown but disappears by the time it bubbles up to assert_throws().
       'Element.animate() does not accept property-indexed keyframes with an invalid easing value':
-          'assert_throws: function "function () {\n"use strict";\n\n      div.animate(subtest.input, 2000);\n    }" did not throw',
+          'assert_throws: function "function () {\n      div.animate(subtest.input, 2000);\n    }" did not throw',
     },
 
     'test/web-platform-tests/web-animations/interfaces/Animatable/animate-effect.html': {
