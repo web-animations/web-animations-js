@@ -1,12 +1,25 @@
-## Developer setup instructions
+## Developer instructions
 
-1. `git clone git@github.com:web-animations/web-animations-next.git`
+### Setup
+
+1. Fork web-animations/web-animations-js.
+1. `git clone git@github.com:$GITHUB_USER/web-animations-js.git`
 1. `git submodule update --init --recursive` (Necessary for running tests.)
 1. Install [node](https://nodejs.org/en/) and make sure `npm` is in your $PATH
 1. Run `npm install` in the respository to pull in development dependencies.
 1. Run `npm install -g grunt grunt-cli` to get the build tools for the command line.
+
+### Contributing
+
+Note that development should occur against the `dev` branch, not `master`. This
+is the default target for pull requests.
+
+1. In your fork of web-animations-js, `git checkout dev` or create a new branch whose parent is dev.
 1. Run `grunt` to build the polyfill.
 1. Run `grunt test` to run polyfill and web-platform-tests tests.
+1. Commit changes to your fork.
+1. Create a pull request from your fork of web-animations-js to
+   [web-animations/web-animations-js/dev](https://github.com/web-animations/web-animations-js/tree/dev).
 
 
 ## Debugging tests
@@ -18,9 +31,9 @@ browser of choice, all test results appear in the Javascript console.
 Test failures can be accessed via `window.failures` and `window.formattedFailures`
 once the tests have completed.
 
-The polyfill target and tests can be specified as arguments to the `debug` task.  
-Example: `grunt debug:web-animations-next:test/web-platform-tests/web-animations/animation/pause.html`  
-Multiple test files may be listed with comma separation. Specifying files will output their URL in the command line.  
+The polyfill target and tests can be specified as arguments to the `debug` task.
+Example: `grunt debug:web-animations-next:test/web-platform-tests/web-animations/animation/pause.html`
+Multiple test files may be listed with comma separation. Specifying files will output their URL in the command line.
 Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/animation/pause.html`
 
 
@@ -46,7 +59,7 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
     Use the following to generate a summary of commits, but edit the list to contain only
     relevant information.
 
-        git log --first-parent `git describe --tags --abbrev=0 web-animations-js/master`..web-animations-next/master --pretty=format:"  * %s"
+        git log --first-parent `git describe --tags --abbrev=0 master`..dev --pretty=format:"  * %s"
 
 1.  Specify the new version inside `package.json` (for NPM), for example:
 
@@ -56,7 +69,25 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
 
 1.  Build the polyfill with `npm install && grunt` then update `docs/experimental.md`'s Build Target Comparison with the current gzipped sizes.
 
-1.  Submit both changes to web-animations-next then follow the procedure to push from web-animations-next to web-animations-js.
+1.  Commit the above changes to web-animations-js/dev and merge to
+    web-animations-js/master.
+
+    ```sh
+    git checkout master
+    git merge dev --no-edit --quiet
+    ```
+
+1.  Build and commit minified JavaScript files.
+
+    ```sh
+    npm install
+    grunt
+    # Optional "grunt test" to make sure everything still passes.
+    git add -f *.min.js*
+    git rm .gitignore
+    git commit -m 'Add build artifacts from '`cat .git/refs/heads/dev`
+    git push HEAD:refs/heads/master
+    ```
 
 1.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
     commit pushed to web-animations-js in step #4. Copy the release notes from `History.md`
@@ -69,20 +100,6 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
 1. If there are any breaking changes to the API in this release you must notify web-animations-changes@googlegroups.com.
 
    Only owners of the group may post to it so you may need to request ownership or ask someone to post it for you.
-
-## Pushing from web-animations-next to web-animations-js
-
-    git fetch web-animations-next
-    git fetch web-animations-js
-    git checkout web-animations-js/master
-    git merge web-animations-next/master --no-edit --quiet
-    npm install
-    grunt
-    # Optional "grunt test" to make sure everything still passes.
-    git add -f *.min.js*
-    git rm .gitignore
-    git commit -m 'Add build artifacts from '`cat .git/refs/remotes/web-animations-next/master`
-    git push web-animations-js HEAD:refs/heads/master
 
 ## Testing architecture
 
