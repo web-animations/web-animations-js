@@ -16,7 +16,6 @@
     "node_modules",
     "templates",
     "test",
-    "src",
     "Gruntfile.js",
     "package.json",
     "target-config.js",
