@@ -158,6 +158,7 @@
     'perspective',
     'right',
     'shape-margin',
+    'stroke-dashoffset',
     'text-indent',
     'top',
     'vertical-align',
