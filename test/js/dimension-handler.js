@@ -71,4 +71,8 @@ suite('dimension-handler', function() {
     assert.isUndefined(webAnimations1.consumeLengthOrPercent('(10px)'));
     assert.isUndefined(webAnimations1.consumeLengthOrPercent('calc(10px,10px)'));
   });
+  test('interpolation of more specific properties', function() {
+    assert.equal(webAnimations1.propertyInterpolation('strokeDashoffset', '10px', '50px')(0.25), '20px');
+    assert.equal(webAnimations1.propertyInterpolation('textIndent', '10px', '50px')(0.25), '20px');
+  });
 });
