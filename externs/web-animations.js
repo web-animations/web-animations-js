@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All rights reserved.
+ * Copyright 2016 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,7 +18,7 @@
 /**
  * @fileoverview Basic externs for the Web Animations API. This is not
  * nessecarily exhaustive. For more information, see the spec-
- *   https://www.w3.org/TR/web-animations/
+ *   https://w3c.github.io/web-animations
  * @externs
  */
 
