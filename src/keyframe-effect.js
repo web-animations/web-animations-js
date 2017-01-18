@@ -50,23 +50,6 @@
     return keyframeEffect;
   };
 
-  scope.NullEffect = function(clear) {
-    var nullEffect = function() {
-      if (clear) {
-        clear();
-        clear = null;
-      }
-    };
-    nullEffect._update = function() {
-      return null;
-    };
-    nullEffect._totalDuration = 0;
-    nullEffect._hasSameTarget = function() {
-      return false;
-    };
-    return nullEffect;
-  };
-
   if (WEB_ANIMATIONS_TESTING) {
     testing.webAnimations1KeyframeEffect = scope.KeyframeEffect;
     testing.effectTime = EffectTime;
