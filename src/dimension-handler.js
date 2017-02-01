@@ -55,8 +55,8 @@
       return;
 
     for (var unit in matchedUnits) {
-      var result = eval(string.replace(new RegExp('U' + unit, 'g'), '').replace(new RegExp(taggedUnitRegExp, 'g'), '*0'));
-      if (!isFinite(result))
+      var result = Number(string.replace(new RegExp('U' + unit, 'g'), '').replace(new RegExp(taggedUnitRegExp, 'g'), '*0'));
+      if (isNaN(result))
         return;
       matchedUnits[unit] = result;
     }
