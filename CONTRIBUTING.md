@@ -7,7 +7,7 @@
 1. `git submodule update --init --recursive` (Necessary for running tests.)
 1. Install [node](https://nodejs.org/en/) and make sure `npm` is in your $PATH
 1. Run `npm install` in the respository to pull in development dependencies.
-1. Run `npm install -g grunt grunt-cli` to get the build tools for the command line.
+1. Run `npm install -g grunt-cli` to get the build tools for the command line.
 
 ### Contributing
 
