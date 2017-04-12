@@ -46,7 +46,7 @@ suite('box-handler', function() {
         'Round interpolation result');
     assert.equal(
         webAnimations1.propertyInterpolation('clip', 'rect(10px, 10px, 10px, 10px)', 'rect(20px, 20px, 20px, 20px)')(0.25),
-        'rect(12.500px, 12.500px, 12.500px, 12.500px)',
+        'rect(12.5px, 12.5px, 12.5px, 12.5px)',
         'Round interpolation result');
     assert.equal(
         webAnimations1.propertyInterpolation('clip', 'rect(10px, 10%, 10px, 10%)', 'rect(10em, 10px, 10em, 10px)')(0.4),

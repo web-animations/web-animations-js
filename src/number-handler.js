@@ -16,7 +16,7 @@
 (function(scope, testing) {
 
   function numberToString(x) {
-    return x.toFixed(3).replace('.000', '');
+    return x.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
   }
 
   function clamp(min, max, x) {
@@ -53,11 +53,37 @@
     };
   }
 
+  function parseNumberList(string) {
+    var items = string.trim().split(/\s*[\s,]\s*/);
+    if (items.length === 0) {
+      return;
+    }
+    var result = [];
+    for (var i = 0; i < items.length; i++) {
+      var number = parseNumber(items[i]);
+      if (number === undefined) {
+        return;
+      }
+      result.push(number);
+    }
+    return result;
+  }
+
+  function mergeNumberLists(left, right) {
+    if (left.length != right.length) {
+      return;
+    }
+    return [left, right, function(numberList) {
+      return numberList.map(numberToString).join(' ');
+    }];
+  }
+
   function round(left, right) {
     return [left, right, Math.round];
   }
 
   scope.clamp = clamp;
+  scope.addPropertiesHandler(parseNumberList, mergeNumberLists, ['stroke-dasharray']);
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, Infinity), ['border-image-width', 'line-height']);
   scope.addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'shape-image-threshold']);
   scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
@@ -65,6 +91,7 @@
   scope.addPropertiesHandler(parseNumber, round, ['z-index']);
 
   scope.parseNumber = parseNumber;
+  scope.parseNumberList = parseNumberList;
   scope.mergeNumbers = mergeNumbers;
   scope.numberToString = numberToString;
 
