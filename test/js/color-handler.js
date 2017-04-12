@@ -11,7 +11,7 @@ suite('color-handler', function() {
   test('invalid colors fail to parse', function() {
     assert.isUndefined(parseColor(''));
     assert.isUndefined(parseColor('bananayellow'));
-    assert.isUndefined(parseColor('rgb(10, 20, 30, 40)'));
+    assert.isUndefined(parseColor('rgb(10, 20, 30, 40, 50)'));
   });
   test('color interpolation', function() {
     assert.equal(webAnimations1.propertyInterpolation('color', '#00aa11', '#aa00bb')(0.2), 'rgba(34,136,51,1)');
