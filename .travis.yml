@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
- - "4.4.4"
+ - "6.10.2"
 
 install:
   - BROWSER="Firefox-stable" ./.travis-setup.sh
