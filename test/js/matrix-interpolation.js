@@ -39,6 +39,15 @@ suite('matrix interpolation', function() {
     var evaluatedInterp = interpolatedMatrix(0.5);
     compareMatrices(evaluatedInterp, [1, -0.1, 0, 1, 0, 0], 6);
 
+    var interpolatedMatrix = webAnimations1.propertyInterpolation(
+        'transform',
+        'matrix(0, 0, 0, 0, 0, 0)',
+        'matrix(1, 0, 0, 1, 0, 0)');
+    var evaluatedInterp = interpolatedMatrix(0.25);
+    compareMatrices(evaluatedInterp, [0, 0, 0, 0, 0, 0], 6);
+    evaluatedInterp = interpolatedMatrix(0.75);
+    compareMatrices(evaluatedInterp, [1, 0, 0, 1, 0, 0], 6);
+
     interpolatedMatrix = webAnimations1.propertyInterpolation(
         'transform',
         'matrix(1, 0, 0, 1, 0, 0)',
