@@ -23,7 +23,7 @@ Build target comparison
 
 |                        | web-animations | web-animations-next | web-animations-next-lite |
 |------------------------|:--------------:|:-------------------:|:------------------------:|
-|Size (gzipped)          | 15KB           | 18KB                | 15KB                     |
+|Size (gzipped)          | 15KB           | 19KB                | 15KB                     |
 |Element.animate         | ✔             | ✔                  | ✔                       |
 |Timing input (easings, duration, fillMode, etc.) for animation effects| ✔ | ✔ | ✔             | 
 |Playback control        | ✔             | ✔                  | ✔                       |
