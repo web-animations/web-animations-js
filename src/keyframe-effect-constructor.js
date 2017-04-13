@@ -12,7 +12,6 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
 (function(shared, scope, testing) {
 
   var disassociate = function(effect) {
@@ -71,7 +70,7 @@
       this._normalizedKeyframes = new KeyframeList(effectInput);
     }
     this._keyframes = effectInput;
-    this._updateActiveDuration();
+    this.activeDuration = shared.calculateActiveDuration(this._timing);
     this._id = id;
     return this;
   };
@@ -94,9 +93,6 @@
     get parent() {
       return this._parent;
     },
-    get activeDuration() {
-      return this._activeDuration;
-    },
     clone: function() {
       if (typeof this.getFrames() == 'function') {
         throw new Error('Cloning custom effects is not supported.');
@@ -108,9 +104,6 @@
     },
     remove: function() {
       scope.removeMulti([this]);
-    },
-    _updateActiveDuration: function() {
-      this._activeDuration = shared.calculateActiveDuration(this._timing);
     }
   };
 
