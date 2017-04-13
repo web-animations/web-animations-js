@@ -11,8 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //     See the License for the specific language governing permissions and
 // limitations under the License.
-
-'use strict';
 (function(shared, scope, testing) {
 
   var nullTarget = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');

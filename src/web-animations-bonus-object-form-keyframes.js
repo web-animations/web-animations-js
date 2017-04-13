@@ -12,7 +12,6 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
 (function(shared) {
   // If the polyfill is being loaded in a context where Element.animate is
   // supported but object-form syntax is not, then creating an animation

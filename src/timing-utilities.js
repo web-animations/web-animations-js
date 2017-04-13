@@ -12,7 +12,6 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
 (function(shared, testing) {
 
   var fills = 'backwards|forwards|both|none'.split('|');
@@ -53,7 +52,7 @@
       if (this._effect) {
         this._effect._timingInput[member] = value;
         this._effect._timing = shared.normalizeTimingInput(this._effect._timingInput);
-        this._effect._updateActiveDuration();
+        this._effect.activeDuration = shared.calculateActiveDuration(this._effect._timing);
         if (this._effect._animation) {
           this._effect._animation._rebuildUnderlyingAnimation();
         }
@@ -144,7 +143,7 @@
           if ((property == 'direction') && (directions.indexOf(timingInput[property]) == -1)) {
             return;
           }
-          if (property == 'playbackRate') {
+          if (property == 'playbackRate' && timingInput[property] !== 1 && shared.isDeprecated('AnimationEffectTiming.playbackRate', '2014-11-28', 'Use Animation.playbackRate instead.')) {
             return;
           }
           timing[property] = timingInput[property];
