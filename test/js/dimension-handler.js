@@ -43,7 +43,7 @@ suite('dimension-handler', function() {
     assert.equal(webAnimations1.propertyInterpolation('left', '10px', '50px')(0.25), '20px');
     assert.equal(webAnimations1.propertyInterpolation('left', '10%', '50%')(0.25), '20%');
     assert.equal(webAnimations1.propertyInterpolation('left', '0px', '0.001px')(0.05), '0px');
-    assert.equal(webAnimations1.propertyInterpolation('left', '0px', '10px')(0.234), '2.340px');
+    assert.equal(webAnimations1.propertyInterpolation('left', '0px', '10px')(0.234), '2.34px');
     assert.equal(webAnimations1.propertyInterpolation('left', '10px', '10em')(0.4), 'calc(6px + 4em)');
     assert.equal(webAnimations1.propertyInterpolation('left', '10px', '10%')(0.4), 'calc(6px + 4%)');
     assert.equal(webAnimations1.propertyInterpolation('left', 'calc(10px + 5em)', 'calc(20px + 35em)')(0.4), 'calc(14px + 17em)');
@@ -70,5 +70,9 @@ suite('dimension-handler', function() {
     assert.isUndefined(webAnimations1.consumeLengthOrPercent('(10px'));
     assert.isUndefined(webAnimations1.consumeLengthOrPercent('(10px)'));
     assert.isUndefined(webAnimations1.consumeLengthOrPercent('calc(10px,10px)'));
+  });
+  test('interpolation of more specific properties', function() {
+    assert.equal(webAnimations1.propertyInterpolation('strokeDashoffset', '10px', '50px')(0.25), '20px');
+    assert.equal(webAnimations1.propertyInterpolation('textIndent', '10px', '50px')(0.25), '20px');
   });
 });

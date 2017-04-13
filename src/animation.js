@@ -12,6 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
 (function(shared, scope, testing) {
 
   shared.sequenceNumber = 0;
@@ -191,7 +192,6 @@
       this._inEffect = false;
       this._idle = true;
       this._paused = false;
-      this._isFinished = true;
       this._finishedFlag = true;
       this._currentTime = 0;
       this._startTime = null;

@@ -11,16 +11,23 @@ suite('color-handler', function() {
   test('invalid colors fail to parse', function() {
     assert.isUndefined(parseColor(''));
     assert.isUndefined(parseColor('bananayellow'));
-    assert.isUndefined(parseColor('rgb(10, 20, 30, 40)'));
+    assert.isUndefined(parseColor('rgb(10, 20, 30, 40, 50)'));
   });
   test('color interpolation', function() {
     assert.equal(webAnimations1.propertyInterpolation('color', '#00aa11', '#aa00bb')(0.2), 'rgba(34,136,51,1)');
     assert.equal(webAnimations1.propertyInterpolation('color', 'transparent', '#004488')(0), 'transparent');
-    assert.equal(webAnimations1.propertyInterpolation('color', 'transparent', '#004488')(0.5), 'rgba(0,68,136,0.500)');
+    assert.equal(webAnimations1.propertyInterpolation('color', 'transparent', '#004488')(0.5), 'rgba(0,68,136,0.5)');
     assert.equal(webAnimations1.propertyInterpolation('color', 'red', 'green')(2), 'rgba(0,255,0,1)');
     assert.equal(webAnimations1.propertyInterpolation('color', 'red', 'green')(-1), 'rgba(255,0,0,1)');
   });
+  test('svg color interpolation', function() {
+    assert.equal(webAnimations1.propertyInterpolation('fill', '#00fe00', '#180036')(0.5), 'rgba(12,127,27,1)');
+    assert.equal(webAnimations1.propertyInterpolation('floodColor', '#00fe00', '#180036')(0.5), 'rgba(12,127,27,1)');
+    assert.equal(webAnimations1.propertyInterpolation('lightingColor', '#00fe00', '#180036')(0.5), 'rgba(12,127,27,1)');
+    assert.equal(webAnimations1.propertyInterpolation('stopColor', '#00fe00', '#180036')(0.5), 'rgba(12,127,27,1)');
+    assert.equal(webAnimations1.propertyInterpolation('stroke', '#00fe00', '#180036')(0.5), 'rgba(12,127,27,1)');
+  });
   test('interpolation to/from initial', function() {
-    assert.equal(webAnimations1.propertyInterpolation('backgroundColor', 'initial', 'red')(0.5), 'rgba(255,0,0,0.500)');
+    assert.equal(webAnimations1.propertyInterpolation('backgroundColor', 'initial', 'red')(0.5), 'rgba(255,0,0,0.5)');
   });
 });

@@ -19,6 +19,12 @@ suite('number-handler', function() {
       assert.equal(webAnimations1.parseNumber(string), tests[string], 'Parsing "' + string + '"');
     }
   });
+  test('number list interpolation', function() {
+    assert.equal(webAnimations1.propertyInterpolation('strokeDasharray', '10', '20')(0.25), '12.5');
+    assert.equal(webAnimations1.propertyInterpolation('strokeDasharray', '10 100', '20 200')(0.25), '12.5 125');
+    assert.equal(webAnimations1.propertyInterpolation('strokeDasharray', '10, 100', '20, 200')(0.25), '12.5 125');
+    assert.equal(webAnimations1.propertyInterpolation('strokeDasharray', '10,100', '20 200')(0.25), '12.5 125');
+  });
   test('invalid numbers fail to parse', function() {
     assert.isUndefined(webAnimations1.parseNumber(''));
     assert.isUndefined(webAnimations1.parseNumber('nine'));
@@ -26,6 +32,7 @@ suite('number-handler', function() {
     assert.isUndefined(webAnimations1.parseNumber('+-0'));
     assert.isUndefined(webAnimations1.parseNumber('50px'));
     assert.isUndefined(webAnimations1.parseNumber('1.2.3'));
+    assert.isUndefined(webAnimations1.parseNumberList('10,,20'));
   });
   test('opacity clamping', function() {
     var interpolation = webAnimations1.propertyInterpolation('opacity', '0', '1');

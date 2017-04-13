@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/web-animations/web-animations-js.git"
   },
-  "version": "2.2.2",
+  "version": "2.2.3",
   "keywords": [
     "animations",
     "polyfill"

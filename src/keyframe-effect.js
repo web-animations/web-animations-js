@@ -12,6 +12,7 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
 (function(shared, scope, testing) {
 
   function EffectTime(timing) {
@@ -47,23 +48,6 @@
     keyframeEffect._totalDuration = effectTime._totalDuration;
     keyframeEffect._id = id;
     return keyframeEffect;
-  };
-
-  scope.NullEffect = function(clear) {
-    var nullEffect = function() {
-      if (clear) {
-        clear();
-        clear = null;
-      }
-    };
-    nullEffect._update = function() {
-      return null;
-    };
-    nullEffect._totalDuration = 0;
-    nullEffect._hasSameTarget = function() {
-      return false;
-    };
-    return nullEffect;
   };
 
   if (WEB_ANIMATIONS_TESTING) {

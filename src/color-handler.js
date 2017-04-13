@@ -12,6 +12,7 @@
 //   See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
 (function(scope, testing) {
 
   var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
@@ -51,7 +52,8 @@
 
   scope.addPropertiesHandler(parseColor, mergeColors,
       ['background-color', 'border-bottom-color', 'border-left-color', 'border-right-color',
-       'border-top-color', 'color', 'outline-color', 'text-decoration-color']);
+       'border-top-color', 'color', 'fill', 'flood-color', 'lighting-color',
+       'outline-color', 'stop-color', 'stroke', 'text-decoration-color']);
   scope.consumeColor = scope.consumeParenthesised.bind(null, parseColor);
   scope.mergeColors = mergeColors;
 

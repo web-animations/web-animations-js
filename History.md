@@ -1,3 +1,23 @@
+### 2.2.3 - *April 13 2017*
+
+  *  [Added HTML import targets.](https://github.com/web-animations/web-animations-js/pull/94)
+
+  *  Added support for animating SVG related properties:
+      *  [fill](https://github.com/web-animations/web-animations-next/pull/484)
+      *  [floodColor](https://github.com/web-animations/web-animations-next/pull/484)
+      *  [lightingColor](https://github.com/web-animations/web-animations-next/pull/484)
+      *  [stopColor](https://github.com/web-animations/web-animations-next/pull/484)
+      *  [strokeDashoffset](https://github.com/web-animations/web-animations-js/pull/96)
+      *  [strokeDasharray](https://github.com/web-animations/web-animations-js/pull/120)
+
+  *  [Fixed crash when animating non-invertable matrices.](https://github.com/web-animations/web-animations-js/pull/121)
+
+  *  [Fixed source maps for Bower installs.](https://github.com/web-animations/web-animations-js/pull/93)
+
+  *  [Updated README.md documentation structure.](https://github.com/web-animations/web-animations-next/pull/489)
+
+  *  [Added 'use strict' to source files.](https://github.com/web-animations/web-animations-next/pull/488)
+
 ### 2.2.2 - *August 3 2016*
 
   * [Fixed handling of keyframes with overlapping offsets.](https://github.com/web-animations/web-animations-next/pull/470)

@@ -12,6 +12,7 @@
 //   See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
 (function(scope, testing) {
 
   function parseDimension(unitRegExp, string) {
@@ -158,6 +159,7 @@
     'perspective',
     'right',
     'shape-margin',
+    'stroke-dashoffset',
     'text-indent',
     'top',
     'vertical-align',
