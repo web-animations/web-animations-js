@@ -1,6 +1,6 @@
 ### 2.2.4 - *April 14 2017*
 
-  *  [Reverted adding 'use strict' to source files.](https://github.com/web-animations/web-animations-next/pull/97)
+  *  [Reverted adding 'use strict' to source files.](https://github.com/web-animations/web-animations-next/pull/124)
 
 ### 2.2.3 - *April 13 2017*
 
