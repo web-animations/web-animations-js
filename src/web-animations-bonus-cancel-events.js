@@ -12,7 +12,6 @@
 //     See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
 (function() {
 
   if (document.createElement('div').animate([]).oncancel !== undefined) {
