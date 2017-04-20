@@ -1,3 +1,7 @@
+### 2.2.5 - *April 17 2017*
+
+  *  Removed erroneously added *.gz files from release.
+
 ### 2.2.4 - *April 14 2017*
 
   *  [Reverted adding 'use strict' to source files.](https://github.com/web-animations/web-animations-next/pull/124)
