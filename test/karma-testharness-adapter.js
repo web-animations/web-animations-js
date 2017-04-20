@@ -154,7 +154,7 @@
           tests.map(function(test) {
             return (
                 '          ' + stringify(test) + ':\n' +
-                '            ' + stringify(failures[testURL][test]) + ',\n');
+                '              ' + stringify(failures[testURL][test]) + ',\n');
           }).join('\n') +
           '        },\n');
     }).join('\n');
