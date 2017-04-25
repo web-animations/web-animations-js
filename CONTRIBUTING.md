@@ -83,7 +83,7 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
     npm install
     grunt
     # Optional "grunt test" to make sure everything still passes.
-    git add -f *.min.js*
+    git add -f *.min.js{,.map}
     git rm .gitignore
     git commit -m 'Add build artifacts from '`cat .git/refs/heads/dev`
     git push HEAD:refs/heads/master
