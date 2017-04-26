@@ -13,7 +13,7 @@ Browser support
 
 The polyfill is supported on modern versions of all major browsers, including:
 
-* Chrome
+* Chrome 55+
 * Firefox 27+
 * IE10+ (including Edge)
 * Safari (iOS) 7.1+
