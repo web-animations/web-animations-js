@@ -88,6 +88,7 @@
   scope.addPropertiesHandler(parseNumber, mergeFlex, ['flex-grow', 'flex-shrink']);
   scope.addPropertiesHandler(parseNumber, mergePositiveIntegers, ['orphans', 'widows']);
   scope.addPropertiesHandler(parseNumber, round, ['z-index']);
+  scope.addPropertiesHandler(parseNumber, mergeNumbers, ['stroke-dashoffset']);
 
   scope.parseNumber = parseNumber;
   scope.parseNumberList = parseNumberList;
