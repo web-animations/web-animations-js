@@ -3,6 +3,7 @@
   "description": "JavaScript implementation of the Web Animations API",
   "homepage": "https://github.com/web-animations/web-animations-js",
   "main": "web-animations.min.js",
+  "version": "2.1.4",
   "moduleType": [
     "globals"
   ],
