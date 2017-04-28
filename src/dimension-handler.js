@@ -14,6 +14,8 @@
 
 (function(scope, testing) {
 
+  var mexp = require('math-expression-evaluator');
+
   function parseDimension(unitRegExp, string) {
     string = string.trim().toLowerCase();
 
@@ -54,7 +56,7 @@
       return;
 
     for (var unit in matchedUnits) {
-      var result = eval(string.replace(new RegExp('U' + unit, 'g'), '').replace(new RegExp(taggedUnitRegExp, 'g'), '*0'));
+      var result = mexp.eval(string.replace(new RegExp('U' + unit, 'g'), '').replace(new RegExp(taggedUnitRegExp, 'g'), '*0'));
       if (!isFinite(result))
         return;
       matchedUnits[unit] = result;
