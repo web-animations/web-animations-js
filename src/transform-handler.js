@@ -116,7 +116,7 @@
       right.decompositionPair = left;
       var rightArgs = scope.makeMatrixDecomposition(right);
     }
-    if (leftArgs[0] == null || rightArgs[0] == null)
+    if (!leftArgs[0] || !rightArgs[0])
       return [[false], [true], function(x) { return x ? right[0].d : left[0].d; }];
     leftArgs[0].push(0);
     rightArgs[0].push(1);
