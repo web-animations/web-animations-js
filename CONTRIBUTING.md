@@ -20,6 +20,7 @@ is the default target for pull requests.
 1. Commit changes to your fork.
 1. Create a pull request from your fork of web-animations-js to
    [web-animations/web-animations-js/dev](https://github.com/web-animations/web-animations-js/tree/dev).
+1. Ensure that you've signed the [Google Contributor License Agreement](https://cla.developers.google.com/clas).
 
 
 ## Debugging tests
