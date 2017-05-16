@@ -229,6 +229,9 @@ module.exports = {
         },
 
         'test/web-platform-tests/web-animations/interfaces/Animation/finished.html': {
+          'Test finished promise changes for animation duration changes':
+              'FLAKY_TEST_RESULT',
+
           'Test finished promise is not resolved once the animation falls out finished state even though the current finished promise is generated soon after animation state became finished':
               'assert_unreached: Animation.finished should not be resolved Reached unreachable code',
 
