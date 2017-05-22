@@ -41,6 +41,20 @@ Here's a simple example of an animation that fades and scales a `<div>`.
 </script>
 ```
 
+Install
+-----------
+
+Install the [npm](https://www.npmjs.com/package/web-animations-js) package:
+
+`npm install web-animations-js`
+
+then use web-animation-js as either a CommonJS or an ES2015 module:
+
+CommonJS module: `require('web-animation-js')`
+or ES2015 module: `import 'web-animation-js'`
+
+This will requires a module bundler such as [Browserify](http://browserify.org/), [Webpack](https://webpack.js.org), or [Rollup](https://rollupjs.org/).
+
 Documentation
 -------------
 
