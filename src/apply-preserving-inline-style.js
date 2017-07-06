@@ -14,6 +14,16 @@
 
 (function(scope, testing) {
 
+  /**
+   * IE/Edge do not support `transform` styles for SVG elements. Instead,
+   * `transform` attribute can be animated with some restrictions.
+   * See https://connect.microsoft.com/IE/feedback/details/811744/ie11-bug-with-implementation-of-css-transforms-in-svg,
+   * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/1173754/,
+   * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/101242/, etc.
+   */
+  var applySvgTransforms =
+      /Trident|MSIE|IEMobile|Edge/i.test(window.navigator.userAgent);
+
   var styleAttributes = {
     cssText: 1,
     length: 1,
@@ -44,6 +54,7 @@
     WEB_ANIMATIONS_TESTING && console.assert(!(element.style instanceof AnimatedCSSStyleDeclaration),
         'Element must not already have an animated style attached.');
 
+    this._element = element;
     // Stores the inline style of the element on its behalf while the
     // polyfill uses the element's inline style to simulate web animations.
     // This is needed to fake regular inline style CSSOM access on the element.
@@ -51,6 +62,9 @@
     this._style = element.style;
     this._length = 0;
     this._isAnimatedProperty = {};
+    this._isSvg = element.namespaceURI &&
+        element.namespaceURI.indexOf('/svg') != -1;
+    this._savedTransformAttr = null;
 
     // Copy the inline style contents over to the surrogate.
     for (var i = 0; i < this._style.length; i++) {
@@ -110,9 +124,25 @@
     _set: function(property, value) {
       this._style[property] = value;
       this._isAnimatedProperty[property] = true;
+      if (this._isSvg && property == 'transform' && applySvgTransforms) {
+        // On IE/Edge, also set SVG element's `transform` attribute to 2d
+        // matrix of the transform. The `transform` style does not work, but
+        // `transform` attribute can be used instead.
+        if (this._savedTransformAttr == null) {
+          this._savedTransformAttr = this._element.getAttribute('transform');
+        }
+        this._element.setAttribute('transform', scope.transformToMatrix2d(value));
+      }
     },
     _clear: function(property) {
       this._style[property] = this._surrogateStyle[property];
+      if (this._isSvg && property == 'transform' && applySvgTransforms) {
+        if (this._savedTransformAttr) {
+          this._element.setAttribute('transform', this._savedTransformAttr);
+        } else {
+          this._element.removeAttribute('transform');
+        }
+      }
       delete this._isAnimatedProperty[property];
     },
   };
