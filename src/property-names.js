@@ -15,12 +15,14 @@
 (function(scope, testing) {
 
   var aliased = {};
+  var canonical = {};
 
   function alias(name, aliases) {
     aliases.concat([name]).forEach(function(candidate) {
       if (candidate in document.documentElement.style) {
         aliased[name] = candidate;
       }
+      canonical[candidate] = name;
     });
   }
   alias('transform', ['webkitTransform', 'msTransform']);
@@ -30,6 +32,9 @@
 
   scope.propertyName = function(property) {
     return aliased[property] || property;
+  };
+  scope.canonicalPropertyName = function(property) {
+    return canonical[property] || property;
   };
 
 })(webAnimations1, webAnimationsTesting);

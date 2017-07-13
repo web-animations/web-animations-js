@@ -256,14 +256,14 @@
 
   scope.addPropertiesHandler(parseTransform, mergeTransforms, ['transform']);
 
-  scope.transformToMatrix2d = function(string) {
+  scope.transformToSvgMatrix = function(string) {
     // matrix(<a> <b> <c> <d> <e> <f>)
     var mat = scope.transformListToMatrix(parseTransform(string));
     return 'matrix(' +
-        numberToLongString(mat[0])  + ' ' +  // <a>
-        numberToLongString(mat[1])  + ' ' +  // <b>
-        numberToLongString(mat[4])  + ' ' +  // <c>
-        numberToLongString(mat[5])  + ' ' +  // <d>
+        numberToLongString(mat[0]) + ' ' +  // <a>
+        numberToLongString(mat[1]) + ' ' +  // <b>
+        numberToLongString(mat[4]) + ' ' +  // <c>
+        numberToLongString(mat[5]) + ' ' +  // <d>
         numberToLongString(mat[12]) + ' ' +  // <e>
         numberToLongString(mat[13]) +        // <f>
         ')';
