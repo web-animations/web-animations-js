@@ -106,6 +106,10 @@ suite('apply-preserving-inline-style', function() {
         ' (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36' +
         ' Edge/12.10136');
     assert.equal(updateSvgTransformAttr(win), true);
+    // ICS Android: transforms are NOT supported.
+    agent('Mozilla/5.0 (Linux; U; Android 4.0.4; en-gb; MZ604 Build/I.7.1-45)' +
+        ' AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30');
+    assert.equal(updateSvgTransformAttr(win), true);
   });
   test('Set and clear transform', function() {
     // This is not an SVG element, so CSS transform support is not consulted.

@@ -20,12 +20,13 @@
    * See https://connect.microsoft.com/IE/feedback/details/811744/ie11-bug-with-implementation-of-css-transforms-in-svg,
    * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/1173754/,
    * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/101242/, etc.
+   * The same problem is exhibited by pre-Chrome Android browsers (ICS).
    * Unfortunately, there's no easy way to feature-detect it.
    */
   function updateSvgTransformAttr(window) {
     if (window._webAnimationsUpdateSvgTransformAttr == null) {
       window._webAnimationsUpdateSvgTransformAttr =
-          /Trident|MSIE|IEMobile|Edge/i.test(window.navigator.userAgent);
+          /Trident|MSIE|IEMobile|Edge|Android 4/i.test(window.navigator.userAgent);
     }
     return window._webAnimationsUpdateSvgTransformAttr;
   }
