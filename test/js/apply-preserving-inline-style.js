@@ -7,12 +7,12 @@ suite('apply-preserving-inline-style', function() {
     this.svgContainer = document.createElementNS(
         'http://www.w3.org/2000/svg', 'svg');
     document.documentElement.appendChild(this.svgContainer);
-    window._webAnimationsUpdateSvgTransformAttr = null;
+    delete window._webAnimationsUpdateSvgTransformAttr;
   });
   teardown(function() {
     document.documentElement.removeChild(this.element);
     document.documentElement.removeChild(this.svgContainer);
-    window._webAnimationsUpdateSvgTransformAttr = null;
+    delete window._webAnimationsUpdateSvgTransformAttr;
   });
 
   test('Style is patched', function() {
@@ -76,40 +76,45 @@ suite('apply-preserving-inline-style', function() {
     assert.equal(this.style.length, 1);
   });
   test('Detect SVG transform compatibility', function() {
-    var win = {navigator: {userAgent: ''}};
-    function agent(str) {
-      win._webAnimationsUpdateSvgTransformAttr = null;
-      win.navigator.userAgent = str;
+    var element = document.createElement('div');
+    var svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    function check(userAgent, shouldUpdateSvgTransformAttr) {
+      var win = {navigator: {userAgent: userAgent}};
+      // Non-SVG element is never updated.
+      assert.equal(updateSvgTransformAttr(win, element), false);
+      // SVG element may be updated as tested.
+      assert.equal(updateSvgTransformAttr(win, svgElement),
+          shouldUpdateSvgTransformAttr);
     }
     // Unknown data: assume that transforms supported.
-    assert.equal(updateSvgTransformAttr(win), false);
+    check('', false);
     // Chrome: transforms supported.
-    agent('Mozilla/5.0 (Linux; Android 5.1.1; Nexus 6 Build/LYZ28E)' +
+    check('Mozilla/5.0 (Linux; Android 5.1.1; Nexus 6 Build/LYZ28E)' +
         ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.20' +
-        ' Mobile Safari/537.36');
-    assert.equal(updateSvgTransformAttr(win), false);
-    // Safary: transforms supported.
-    agent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) ' +
+        ' Mobile Safari/537.36',
+        false);
+    // Safari: transforms supported.
+    check('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) ' +
         'AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 ' +
-        'Safari/7046A194A');
-    assert.equal(updateSvgTransformAttr(win), false);
+        'Safari/7046A194A',
+        false);
     // Firefox: transforms supported.
-    agent('Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) ' +
-        'Gecko/20100101 Firefox/40.1');
-    assert.equal(updateSvgTransformAttr(win), false);
+    check('Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) ' +
+        'Gecko/20100101 Firefox/40.1',
+        false);
     // IE: transforms are NOT supported.
-    agent('Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 7.0;' +
-        ' InfoPath.3; .NET CLR 3.1.40767; Trident/6.0; en-IN)');
-    assert.equal(updateSvgTransformAttr(win), true);
+    check('Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 7.0;' +
+        ' InfoPath.3; .NET CLR 3.1.40767; Trident/6.0; en-IN)',
+        true);
     // Edge: transforms are NOT supported.
-    agent('Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36' +
+    check('Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36' +
         ' (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36' +
-        ' Edge/12.10136');
-    assert.equal(updateSvgTransformAttr(win), true);
+        ' Edge/12.10136',
+        true);
     // ICS Android: transforms are NOT supported.
-    agent('Mozilla/5.0 (Linux; U; Android 4.0.4; en-gb; MZ604 Build/I.7.1-45)' +
-        ' AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30');
-    assert.equal(updateSvgTransformAttr(win), true);
+    check('Mozilla/5.0 (Linux; U; Android 4.0.4; en-gb; MZ604 Build/I.7.1-45)' +
+        ' AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30',
+        true);
   });
   test('Set and clear transform', function() {
     // This is not an SVG element, so CSS transform support is not consulted.
@@ -139,7 +144,7 @@ suite('apply-preserving-inline-style', function() {
     assert.equal(getComputedStyle(svgElement).transform, 'none');
     assert.equal(svgElement.hasAttribute('transform'), false);
   });
-  test('Set and clear NOT supported transform on SVG element', function() {
+  test('Set and clear transform CSS property not supported on SVG element', function() {
     window._webAnimationsUpdateSvgTransformAttr = true;
     var svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     ensureStyleIsPatched(svgElement);
@@ -155,7 +160,7 @@ suite('apply-preserving-inline-style', function() {
     assert.equal(getComputedStyle(svgElement).transform, 'none');
     assert.equal(svgElement.getAttribute('transform'), null);
   });
-  test('Set and clear NOT supported prefixed transform on SVG element', function() {
+  test('Set and clear prefixed transform CSS property not supported on SVG element', function() {
     window._webAnimationsUpdateSvgTransformAttr = true;
     var svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     ensureStyleIsPatched(svgElement);
@@ -168,7 +173,7 @@ suite('apply-preserving-inline-style', function() {
     svgElement.style._clear('msTransform');
     assert.equal(svgElement.getAttribute('transform'), null);
   });
-  test('Restore NOT supported transform on SVG element', function() {
+  test('Restore transform CSS property not supported on SVG element', function() {
     window._webAnimationsUpdateSvgTransformAttr = true;
     var svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     svgElement.setAttribute('transform', 'matrix(2 0 0 2 0 0)');

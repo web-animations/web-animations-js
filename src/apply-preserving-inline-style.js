@@ -14,6 +14,8 @@
 
 (function(scope, testing) {
 
+  var SVG_TRANSFORM_PROP = '_webAnimationsUpdateSvgTransformAttr';
+
   /**
    * IE/Edge do not support `transform` styles for SVG elements. Instead,
    * `transform` attribute can be animated with some restrictions.
@@ -23,12 +25,15 @@
    * The same problem is exhibited by pre-Chrome Android browsers (ICS).
    * Unfortunately, there's no easy way to feature-detect it.
    */
-  function updateSvgTransformAttr(window) {
-    if (window._webAnimationsUpdateSvgTransformAttr == null) {
-      window._webAnimationsUpdateSvgTransformAttr =
+  function updateSvgTransformAttr(window, element) {
+    if (!element.namespaceURI || element.namespaceURI.indexOf('/svg') == -1) {
+      return false;
+    }
+    if (!(SVG_TRANSFORM_PROP in window)) {
+      window[SVG_TRANSFORM_PROP] =
           /Trident|MSIE|IEMobile|Edge|Android 4/i.test(window.navigator.userAgent);
     }
-    return window._webAnimationsUpdateSvgTransformAttr;
+    return window[SVG_TRANSFORM_PROP];
   }
 
   var styleAttributes = {
@@ -69,10 +74,7 @@
     this._style = element.style;
     this._length = 0;
     this._isAnimatedProperty = {};
-    this._updateSvgTransformAttr =
-        element.namespaceURI &&
-        element.namespaceURI.indexOf('/svg') != -1 &&
-        updateSvgTransformAttr(window);
+    this._updateSvgTransformAttr = updateSvgTransformAttr(window, element);
     this._savedTransformAttr = null;
 
     // Copy the inline style contents over to the surrogate.
@@ -134,7 +136,7 @@
       this._style[property] = value;
       this._isAnimatedProperty[property] = true;
       if (this._updateSvgTransformAttr &&
-          scope.canonicalPropertyName(property) == 'transform') {
+          scope.unprefixedPropertyName(property) == 'transform') {
         // On IE/Edge, also set SVG element's `transform` attribute to 2d
         // matrix of the transform. The `transform` style does not work, but
         // `transform` attribute can be used instead.
@@ -149,7 +151,7 @@
     _clear: function(property) {
       this._style[property] = this._surrogateStyle[property];
       if (this._updateSvgTransformAttr &&
-          scope.canonicalPropertyName(property) == 'transform') {
+          scope.unprefixedPropertyName(property) == 'transform') {
         if (this._savedTransformAttr) {
           this._element.setAttribute('transform', this._savedTransformAttr);
         } else {
