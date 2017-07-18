@@ -18,6 +18,9 @@
     "*.min.js",
     "*.min.js.map"
   ],
+  "dependencies": {
+    "math-expression-evaluator": "^1.2.17"
+  },
   "devDependencies": {
     "mocha": "1.21.4",
     "chai": "^1.9.1",
@@ -36,7 +39,6 @@
     "karma-sauce-launcher": "~0.2.3",
     "grunt-checkrepo": "~0.1.0",
     "grunt-saucelabs": "~4.0.2",
-    "grunt-checkrepo": "~0.1.0",
     "grunt-git-status": "~1.0.0",
     "grunt-template": "~0.2.3",
     "source-map": "~0.1.40"
