@@ -1,3 +1,7 @@
+### 2.3.1 - *July 20 2017*
+
+  * Fix [https://github.com/web-animations/web-animations-js/issues/157](missing web-animations.min.js issue)
+
 ### 2.3.0 - *July 20 2017*
 
   *  [Support IE/Edge SVG transforms.](https://github.com/web-animations/web-animations-js/pull/148)
