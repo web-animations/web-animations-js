@@ -37,6 +37,9 @@ module.exports = {
 
           'Element.animate() does not accept property-indexed keyframes with an invalid easing value':
               'assert_throws: function "function () {\n      div.animate(subtest.input, 2000);\n    }" did not throw',
+
+          'Element.animate() does not accept property-indexed keyframes with an invalid easing value':
+              'assert_throws: function "function() {\n      div.animate(subtest.input, 2000);\n    }" did not throw',
         },
 
         'test/web-platform-tests/web-animations/interfaces/Animation/cancel.html': {
@@ -1366,6 +1369,9 @@ module.exports = {
 
           'Element.animate() does not accept property-indexed keyframes with an invalid easing value':
               'assert_throws: function "function () {\n      div.animate(subtest.input, 2000);\n    }" did not throw',
+
+          'Element.animate() does not accept property-indexed keyframes with an invalid easing value':
+              'assert_throws: function "function() {\n      div.animate(subtest.input, 2000);\n    }" did not throw',
         },
 
         'test/web-platform-tests/web-animations/interfaces/Animatable/animate-effect.html': {
