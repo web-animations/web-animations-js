@@ -18,8 +18,12 @@
   // Behaves like JSON.stringify() except only for strings and outputs strings with single quotes
   // instead of double quotes.
   // This so we can paste test results as expectations while keeping our linter happy.
-  function stringify(string) {
-    return '\'' + string.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'') + '\'';
+  function stringify(x) {
+    if (typeof x == 'string') {
+      return '\'' + x.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, '\\\'') + '\'';
+    }
+    console.assert(typeof x != 'object');
+    return x.toString();
   }
 
   function checkExpectations(testURL, passes, failures, expectedFailures) {
@@ -98,10 +102,12 @@
 
   function checkConfig(config) {
     var requiredProperties = {
+      target: '<String name of polyfill target being tested>',
       testURLList: '<Array of test URLs>',
       skip: '<Object mapping skipped test URLs to the reason for skipping>',
-      expectedFailures: '<Object mapping test URLs to expected inner test failures>',
+      failureConfigurations: '<Array of objects mapping test configuration to test URLs to expected inner test failures>',
       flakyTestIndicator: '<String used in expectedFailures to indicate flaky test (pass/fail)>',
+      withNativeFallback: '<Boolean to indicate whether the native browser fallback should be included>',
     };
     var errorMessage = '';
     if (!config) {
@@ -125,29 +131,64 @@
     return true;
   }
 
+  var filteredConfigurationAttributes = ['target', 'withNativeFallback'];
+
   // Serialises the failures suitable for pasting into expectedFailures: {} in web-platform-tests-expectations.js
-  function formatFailures(failures) {
+  function formatFailures(config, failures) {
+    var result = '    {\n';
+
+    result += '      configuration: {\n';
+    filteredConfigurationAttributes.forEach(function(attribute) {
+      result += '        ' + attribute + ': ' + stringify(config[attribute]) + ',\n';
+    });
+    result += '      },\n';
+
+    result += '      failures: {\n';
     var testURLs = Object.keys(failures);
     testURLs.sort();
-    return testURLs.map(function(testURL) {
+    result += testURLs.map(function(testURL) {
       var tests = Object.keys(failures[testURL]);
       tests.sort();
       return (
-          '    ' + stringify(testURL) + ': {\n' +
+          '        ' + stringify(testURL) + ': {\n' +
           tests.map(function(test) {
             return (
-                '      ' + stringify(test) + ':\n' +
-                '          ' + stringify(failures[testURL][test]) + ',\n');
+                '          ' + stringify(test) + ':\n' +
+                '              ' + stringify(failures[testURL][test]) + ',\n');
           }).join('\n') +
-          '    },\n');
+          '        },\n');
     }).join('\n');
+    result += '      },\n';
+
+    result += '    },\n';
+    return result;
+  }
+
+  function getExpectedFailures(config, testURL) {
+    var result = {};
+    config.failureConfigurations.forEach(function(failureConfiguration) {
+      var configFilter = failureConfiguration.configuration;
+      var filterMatches = filteredConfigurationAttributes.every(function(attribute) {
+        console.assert(attribute in config);
+        console.assert(attribute in configFilter);
+        return configFilter[attribute] == null || config[attribute] == configFilter[attribute];
+      });
+      if (!filterMatches) {
+        return;
+      }
+      var testURLFailures = failureConfiguration.failures[testURL] || [];
+      for (var testName in testURLFailures) {
+        result[testName] = testURLFailures[testName];
+      }
+    });
+    return result;
   }
 
   function runRemainingTests(remainingTestURLs, config, testNameDiv, iframe, outputFailures) {
     if (remainingTestURLs.length == 0) {
       karma.complete();
       window.failures = outputFailures;
-      window.formattedFailures = formatFailures(outputFailures);
+      window.formattedFailures = formatFailures(config, outputFailures);
       return;
     }
 
@@ -167,11 +208,11 @@
     // parent window and call it once testharness.js has loaded.
     window.onTestharnessLoaded = function(innerWindow) {
       innerWindow.add_completion_callback(function(results) {
-        var expectations = config.expectedFailures[testURL];
+        var expectedFailures = getExpectedFailures(config, testURL);
         var failures = {};
         var passes = {};
         results.forEach(function(result) {
-          if (expectations && expectations[result.name] == config.flakyTestIndicator) {
+          if (expectedFailures && expectedFailures[result.name] == config.flakyTestIndicator) {
             failures[result.name] = config.flakyTestIndicator;
             return;
           }
@@ -188,7 +229,7 @@
           outputFailures[testURL] = failures;
         }
 
-        karma.result(checkExpectations(testURL, passes, failures, expectations));
+        karma.result(checkExpectations(testURL, passes, failures, expectedFailures));
         runRemainingTests(remainingTestURLs.slice(1), config, testNameDiv, iframe, outputFailures);
       });
     };

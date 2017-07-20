@@ -14,6 +14,78 @@
 
 (function(scope, testing) {
 
+  // Evaluates a calc expression.
+  // https://drafts.csswg.org/css-values-3/#calc-notation
+  function calculate(expression) {
+    // In calc expressions, white space is required on both sides of the
+    // + and - operators. https://drafts.csswg.org/css-values-3/#calc-notation
+    // Thus any + or - immediately adjacent to . or 0..9 is part of the number,
+    // e.g. -1.23e+45
+    // This regular expression matches ( ) * / + - and numbers.
+    var tokenRegularExpression = /([\+\-\w\.]+|[\(\)\*\/])/g;
+    var currentToken;
+    function consume() {
+      var matchResult = tokenRegularExpression.exec(expression);
+      if (matchResult)
+        currentToken = matchResult[0];
+      else
+        currentToken = undefined;
+    }
+    consume(); // Read the initial token.
+
+    function calcNumber() {
+      // https://drafts.csswg.org/css-values-3/#number-value
+      var result = Number(currentToken);
+      consume();
+      return result;
+    }
+
+    function calcValue() {
+      // <calc-value> = <number> | <dimension> | <percentage> | ( <calc-sum> )
+      if (currentToken !== '(')
+        return calcNumber();
+      consume();
+      var result = calcSum();
+      if (currentToken !== ')')
+        return NaN;
+      consume();
+      return result;
+    }
+
+    function calcProduct() {
+      // <calc-product> = <calc-value> [ '*' <calc-value> | '/' <calc-number-value> ]*
+      var left = calcValue();
+      while (currentToken === '*' || currentToken === '/') {
+        var operator = currentToken;
+        consume();
+        var right = calcValue();
+        if (operator === '*')
+          left *= right;
+        else
+          left /= right;
+      }
+      return left;
+    }
+
+    function calcSum() {
+      // <calc-sum> = <calc-product> [ [ '+' | '-' ] <calc-product> ]*
+      var left = calcProduct();
+      while (currentToken === '+' || currentToken === '-') {
+        var operator = currentToken;
+        consume();
+        var right = calcProduct();
+        if (operator === '+')
+          left += right;
+        else
+          left -= right;
+      }
+      return left;
+    }
+
+    // <calc()> = calc( <calc-sum> )
+    return calcSum();
+  }
+
   function parseDimension(unitRegExp, string) {
     string = string.trim().toLowerCase();
 
@@ -36,7 +108,7 @@
     var taggedUnitRegExp = 'U(' + unitRegExp.source + ')';
 
     // Validating input is simply applying as many reductions as we can.
-    var typeCheck = string.replace(/[-+]?(\d*\.)?\d+/g, 'N')
+    var typeCheck = string.replace(/[-+]?(\d*\.)?\d+([Ee][-+]?\d+)?/g, 'N')
         .replace(new RegExp('N' + taggedUnitRegExp, 'g'), 'D')
         .replace(/\s[+-]\s/g, 'O')
         .replace(/\s/g, '');
@@ -54,7 +126,7 @@
       return;
 
     for (var unit in matchedUnits) {
-      var result = eval(string.replace(new RegExp('U' + unit, 'g'), '').replace(new RegExp(taggedUnitRegExp, 'g'), '*0'));
+      var result = calculate(string.replace(new RegExp('U' + unit, 'g'), '').replace(new RegExp(taggedUnitRegExp, 'g'), '*0'));
       if (!isFinite(result))
         return;
       matchedUnits[unit] = result;

@@ -14,6 +14,28 @@
 
 (function(scope, testing) {
 
+  var SVG_TRANSFORM_PROP = '_webAnimationsUpdateSvgTransformAttr';
+
+  /**
+   * IE/Edge do not support `transform` styles for SVG elements. Instead,
+   * `transform` attribute can be animated with some restrictions.
+   * See https://connect.microsoft.com/IE/feedback/details/811744/ie11-bug-with-implementation-of-css-transforms-in-svg,
+   * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/1173754/,
+   * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/101242/, etc.
+   * The same problem is exhibited by pre-Chrome Android browsers (ICS).
+   * Unfortunately, there's no easy way to feature-detect it.
+   */
+  function updateSvgTransformAttr(window, element) {
+    if (!element.namespaceURI || element.namespaceURI.indexOf('/svg') == -1) {
+      return false;
+    }
+    if (!(SVG_TRANSFORM_PROP in window)) {
+      window[SVG_TRANSFORM_PROP] =
+          /Trident|MSIE|IEMobile|Edge|Android 4/i.test(window.navigator.userAgent);
+    }
+    return window[SVG_TRANSFORM_PROP];
+  }
+
   var styleAttributes = {
     cssText: 1,
     length: 1,
@@ -44,6 +66,7 @@
     WEB_ANIMATIONS_TESTING && console.assert(!(element.style instanceof AnimatedCSSStyleDeclaration),
         'Element must not already have an animated style attached.');
 
+    this._element = element;
     // Stores the inline style of the element on its behalf while the
     // polyfill uses the element's inline style to simulate web animations.
     // This is needed to fake regular inline style CSSOM access on the element.
@@ -51,6 +74,8 @@
     this._style = element.style;
     this._length = 0;
     this._isAnimatedProperty = {};
+    this._updateSvgTransformAttr = updateSvgTransformAttr(window, element);
+    this._savedTransformAttr = null;
 
     // Copy the inline style contents over to the surrogate.
     for (var i = 0; i < this._style.length; i++) {
@@ -110,9 +135,30 @@
     _set: function(property, value) {
       this._style[property] = value;
       this._isAnimatedProperty[property] = true;
+      if (this._updateSvgTransformAttr &&
+          scope.unprefixedPropertyName(property) == 'transform') {
+        // On IE/Edge, also set SVG element's `transform` attribute to 2d
+        // matrix of the transform. The `transform` style does not work, but
+        // `transform` attribute can be used instead.
+        // Notice, if the platform indeed supports SVG/CSS transforms the CSS
+        // declaration is supposed to override the attribute.
+        if (this._savedTransformAttr == null) {
+          this._savedTransformAttr = this._element.getAttribute('transform');
+        }
+        this._element.setAttribute('transform', scope.transformToSvgMatrix(value));
+      }
     },
     _clear: function(property) {
       this._style[property] = this._surrogateStyle[property];
+      if (this._updateSvgTransformAttr &&
+          scope.unprefixedPropertyName(property) == 'transform') {
+        if (this._savedTransformAttr) {
+          this._element.setAttribute('transform', this._savedTransformAttr);
+        } else {
+          this._element.removeAttribute('transform');
+        }
+        this._savedTransformAttr = null;
+      }
       delete this._isAnimatedProperty[property];
     },
   };
@@ -185,7 +231,9 @@
     }
   };
 
-  if (WEB_ANIMATIONS_TESTING)
+  if (WEB_ANIMATIONS_TESTING) {
     testing.ensureStyleIsPatched = ensureStyleIsPatched;
+    testing.updateSvgTransformAttr = updateSvgTransformAttr;
+  }
 
 })(webAnimations1, webAnimationsTesting);

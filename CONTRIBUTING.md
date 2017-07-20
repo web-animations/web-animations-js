@@ -20,6 +20,7 @@ is the default target for pull requests.
 1. Commit changes to your fork.
 1. Create a pull request from your fork of web-animations-js to
    [web-animations/web-animations-js/dev](https://github.com/web-animations/web-animations-js/tree/dev).
+1. Ensure that you've signed the [Google Contributor License Agreement](https://cla.developers.google.com/clas).
 
 
 ## Debugging tests
@@ -83,7 +84,7 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
     npm install
     grunt
     # Optional "grunt test" to make sure everything still passes.
-    git add -f *.min.js*
+    git add -f *.min.js{,.map}
     git rm .gitignore
     git commit -m 'Add build artifacts from '`cat .git/refs/heads/dev`
     git push HEAD:refs/heads/master

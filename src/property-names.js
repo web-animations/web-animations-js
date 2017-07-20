@@ -14,13 +14,15 @@
 
 (function(scope, testing) {
 
-  var aliased = {};
+  var prefixed = {};
+  var unprefixed = {};
 
   function alias(name, aliases) {
     aliases.concat([name]).forEach(function(candidate) {
       if (candidate in document.documentElement.style) {
-        aliased[name] = candidate;
+        prefixed[name] = candidate;
       }
+      unprefixed[candidate] = name;
     });
   }
   alias('transform', ['webkitTransform', 'msTransform']);
@@ -29,7 +31,10 @@
   alias('perspectiveOrigin', ['webkitPerspectiveOrigin']);
 
   scope.propertyName = function(property) {
-    return aliased[property] || property;
+    return prefixed[property] || property;
+  };
+  scope.unprefixedPropertyName = function(property) {
+    return unprefixed[property] || property;
   };
 
 })(webAnimations1, webAnimationsTesting);

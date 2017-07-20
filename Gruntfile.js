@@ -206,6 +206,7 @@ module.exports = function(grunt) {
     }
 
     function filterTests(testFiles) {
+      console.assert(testFiles.length > 0);
       if (!testFilter) {
         return testFiles;
       }
@@ -226,18 +227,20 @@ module.exports = function(grunt) {
         karmaConfig.files = ['test/karma-mocha-setup.js'].concat(config.src, testFiles);
       });
     }
-    function runWebPlatformTests() {
+    function runWebPlatformTests(withNativeFallback) {
       var testFiles = filterTests(grunt.file.expand(config.webPlatformTests));
       if (testFiles.length == 0) {
         return Promise.resolve(true);
       }
 
-      console.info('Running web-platform-tests/web-animations tests...');
+      var withOrWithout = withNativeFallback ? 'with' : 'without';
+      console.info('Running web-platform-tests/web-animations tests for target ' + task.target + ' ' + withOrWithout + ' native fallback...');
       return runKarma(function(karmaConfig) {
         configCallback(karmaConfig);
         karmaConfig.client.testharnessTests = require('./test/web-platform-tests-expectations.js');
         karmaConfig.client.testharnessTests.testURLList = testFiles;
-        karmaConfig.proxies['/base/polyfill.js'] = '/base/' + task.target + '.min.js';
+        karmaConfig.client.testharnessTests.target = task.target;
+        karmaConfig.client.testharnessTests.withNativeFallback = withNativeFallback;
         karmaConfig.files.push('test/karma-testharness-adapter.js');
         var servedFiles = [
           'test/web-platform-tests/resources/**',
@@ -256,10 +259,15 @@ module.exports = function(grunt) {
     }
 
     var polyfillTestsPassed = false;
+    var webPlatformTestsWithFallbackPassed = false;
+    var webPlatformTestsWithoutFallbackPassed = false;
     runPolyfillTests().then(success => {
       polyfillTestsPassed = success;
-    }).then(runWebPlatformTests).then(webPlatformTestsPassed => {
-      done(polyfillTestsPassed && webPlatformTestsPassed);
+    }).then(() => runWebPlatformTests(true)).then(success => {
+      webPlatformTestsWithFallbackPassed = success;
+    }).then(() => runWebPlatformTests(false)).then(success => {
+      webPlatformTestsWithoutFallbackPassed = success;
+      done(polyfillTestsPassed && webPlatformTestsWithFallbackPassed && webPlatformTestsWithoutFallbackPassed);
     }).catch(function(error) {
       console.error(error);
       done(false);
