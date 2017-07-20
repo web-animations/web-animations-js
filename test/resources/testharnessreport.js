@@ -407,17 +407,14 @@ function dump_test_results(tests, status) {
 
 /* BEGIN WEB ANIMATIONS POLYFILL EXTRAS */
 
-// Disable native Web Animations fallback.
-// TODO(alancutter): Make this configurable in testing targets.
-Element.prototype.animate = null;
-
-// The path /base/polyfill.js is expected to be a proxy for the appropriate polyfill script configured in Karma.
-document.write('<script src="/base/polyfill.js"></script>');
-if (window.parent && parent.window.onTestharnessLoaded) {
-    parent.window.onTestharnessLoaded(window);
-} else {
-  metadata_generator.setup();
+// This must be run under a Karma server via "grunt test".
+var config = window.parent.__karma__.config.testharnessTests;
+if (!config.withNativeFallback) {
+    // Disable native Web Animations fallback.
+    Element.prototype.animate = null;
 }
+document.write('<script src="/base/' + config.target + '.min.js"></script>');
+parent.window.onTestharnessLoaded(window);
 
 /* END WEB ANIMATIONS POLYFILL EXTRAS */
 

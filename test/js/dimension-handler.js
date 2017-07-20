@@ -18,6 +18,8 @@ suite('dimension-handler', function() {
         {px: 50.0, em: -6.5});
     assert.deepEqual(webAnimations1.parseLength('calc((5px + 2px)*(1 + 2*(4 + 2*-5)) + 7px - (5em + 6vw/2)*4)'),
         {px: -70, em: -20, vw: -12});
+    assert.deepEqual(webAnimations1.parseLength('calc(-13.2E+1rem/+12e-1/(+1 + +2 - -2 * 2 - -3))'),
+        {rem: -11});
     assert.deepEqual(webAnimations1.parseLength('calc(calc(5px) + calc(((3))) *calc(calc(10px)))'),
         {px: 35});
   });

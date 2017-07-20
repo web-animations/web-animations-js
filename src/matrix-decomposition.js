@@ -435,5 +435,6 @@
 
   scope.dot = dot;
   scope.makeMatrixDecomposition = makeMatrixDecomposition;
+  scope.transformListToMatrix = convertToMatrix;
 
 })(webAnimations1, webAnimationsTesting);
