@@ -85,14 +85,17 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
     grunt
     # Optional "grunt test" to make sure everything still passes.
     git add -f *.min.js{,.map}
-    git rm .gitignore
+    git rm --ignore-unmatch .gitignore
     git commit -m 'Add build artifacts from '`cat .git/refs/heads/dev`
-    git push HEAD:refs/heads/master
+    git push origin master
     ```
 
-1.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
-    commit pushed to web-animations-js in step #4. Copy the release notes from `History.md`
-    added in step #2.
+1.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases).
+
+    *  For the **tag version**, put the new version number of this release.
+    *  For the **target**, select "master".
+    *  For the **title**, look at previous releases for examples.
+    *  For the **description**, copy the release notes from `History.md` added in step #2.
 
 1. Once you've pushed to web-animations-js, run `npm publish` from that checked-out folder
 
