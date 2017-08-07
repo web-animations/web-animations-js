@@ -14,7 +14,7 @@
 
 
 (function(shared, scope, testing) {
-  var originalRequestAnimationFrame = window.requestAnimationFrame;
+  var originalRequestAnimationFrame = window.requestAnimationFrame || function(f) {setTimeout(f, 16);};
   window.requestAnimationFrame = function(f) {
     return originalRequestAnimationFrame(function(x) {
       scope.timeline._updateAnimationsPromises();

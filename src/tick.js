@@ -14,7 +14,7 @@
 
 
 (function(shared, scope, testing) {
-  var originalRequestAnimationFrame = window.requestAnimationFrame;
+  var originalRequestAnimationFrame = window.requestAnimationFrame || function(f) {setTimeout(f, 16);};
   var rafCallbacks = [];
   var rafId = 0;
   window.requestAnimationFrame = function(f) {
