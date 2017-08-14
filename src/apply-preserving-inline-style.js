@@ -222,11 +222,13 @@
 
   scope.apply = function(element, property, value) {
     ensureStyleIsPatched(element);
-    element.style._set(scope.propertyName(property), value);
+    if (typeof scope.propertyName == 'function') {
+        element.style._set(scope.propertyName(property), value);
+    }
   };
 
   scope.clear = function(element, property) {
-    if (element._webAnimationsPatchedStyle) {
+    if (element._webAnimationsPatchedStyle && typeof scope.propertyName == 'function') {
       element.style._clear(scope.propertyName(property));
     }
   };
