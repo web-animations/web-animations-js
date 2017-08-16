@@ -14,6 +14,22 @@ A JavaScript implementation of the Web Animations API that provides Web
 Animation features in browsers that do not support it natively. The polyfill
 falls back to the native implementation when one is available.
 
+Angular-2 Users
+---------------
+
+If you came to this repo because your animations do not work in Safari/Firefox
+etc then you need to install this library and add it as a polyfill, like so:
+
+```
+npm install 'web-animations-js'
+```
+
+Then add to polyfills.ts:
+
+```
+import 'web-animations-js';
+```
+
 Quick start
 -----------
 
