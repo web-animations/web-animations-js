@@ -205,6 +205,11 @@
     var animatedStyle = new AnimatedCSSStyleDeclaration(element);
     try {
       configureProperty(element, 'style', { get: function() { return animatedStyle; } });
+
+      if (!element.style._set || !element.style._clear) {
+        throw 'Couldnt configure property style.';
+      }
+
     } catch (_) {
       // iOS and older versions of Safari (pre v7) do not support overriding an element's
       // style object. Animations will clobber any inline styles as a result.
