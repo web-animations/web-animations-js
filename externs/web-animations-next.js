@@ -16,55 +16,51 @@
 
 
 /**
- * @fileoverview Basic externs for the Web Animations API (Level 2 / Groups).
- * This is not intended to be exhaustive, and requires the base externs from
- * web-animations.js.
+ * @fileoverview Externs for the Web Animations API (Level 2 / Groups).
+ *
+ * This defines externs for the "-next" version of the Web Animations API
+ * polyfill found online at:
+ *    https://github.com/web-animations/web-animations.js
+ *
+ * These features are NOT natively implemented in browsers and are not clearly
+ * part of the official spec. This is NOT intended to be exhaustive, and
+ * requires the base externs from web-animations.js.
+ *
  * @externs
  */
 
 
-/**
- * @interface
- */
-var AnimationEffectReadOnly = function() {};
-
-/** @type {!AnimationEffectTiming} */
-AnimationEffectReadOnly.prototype.timing;
-
-
-/**
- * @param {Element} target
- * @param {!Array<!Object>} frames
- * @param {(number|AnimationEffectTimingProperties)=} opt_options
- * @constructor
- * @implements {AnimationEffectReadOnly}
- */
-var KeyframeEffect = function(target, frames, opt_options) {};
-
-/**
- * @return {!Array<!Object>}
- */
-KeyframeEffect.prototype.getFrames = function() {};
-
-/** @type {!AnimationEffectTiming} */
-KeyframeEffect.prototype.timing;
-
 /** @type {Element} */
-KeyframeEffect.prototype.target;
+KeyframeEffectReadOnly.prototype.target;
 
-/** @type {?function(number, !KeyframeEffect, !Animation)} */
-KeyframeEffect.prototype.onsample;
+/** @type {?function(number, !KeyframeEffect, !Animation)|undefined} */
+KeyframeEffectReadOnly.prototype.onsample;
+
+
+/**
+ * @param {!AnimationEffectReadOnly} effect
+ * @return {!Animation}
+ */
+DocumentTimeline.prototype.play = function(effect) {};
+
+/**
+ * @return {!Array<!Animation>}
+ */
+DocumentTimeline.prototype.getAnimations = function() {};
 
 
 /**
  * @param {!Array<!AnimationEffectReadOnly>} children
- * @param {AnimationEffectTimingProperties=} opt_timing
+ * @param {AnimationEffectTimingProperties=} timing
  * @constructor
  * @implements {AnimationEffectReadOnly}
  */
-var SequenceEffect = function(children, opt_timing) {};
+var SequenceEffect = function(children, timing) {};
 
-/** @type {!AnimationEffectTiming} */
+/** @override */
+SequenceEffect.prototype.getComputedTiming = function() {};
+
+/** @override */
 SequenceEffect.prototype.timing;
 
 /** @type {!Array<!AnimationEffectReadOnly>} */
@@ -73,41 +69,17 @@ SequenceEffect.prototype.children;
 
 /**
  * @param {!Array<!AnimationEffectReadOnly>} children
- * @param {AnimationEffectTimingProperties=} opt_timing
+ * @param {AnimationEffectTimingProperties=} timing
  * @constructor
  * @implements {AnimationEffectReadOnly}
  */
-var GroupEffect = function(children, opt_timing) {};
+var GroupEffect = function(children, timing) {};
 
-/** @type {!AnimationEffectTiming} */
+/** @override */
+GroupEffect.prototype.getComputedTiming = function() {};
+
+/** @override */
 GroupEffect.prototype.timing;
 
 /** @type {!Array<!AnimationEffectReadOnly>} */
 GroupEffect.prototype.children;
-
-
-/**
- * @interface
- */
-var AnimationTimeline = function() {};
-
-/** @type {?number} */
-AnimationTimeline.prototype.currentTime;
-
-/**
- * @param {!AnimationEffectReadOnly} effect
- * @return {!Animation}
- */
-AnimationTimeline.prototype.play = function(effect) {};
-
-/**
- * @interface
- * @extends {AnimationTimeline}
- */
-var DocumentTimeline = function() {};
-
-/** @type {AnimationEffectReadOnly|undefined} */
-Animation.prototype.effect;
-
-/** @type {!DocumentTimeline} */
-Document.prototype.timeline;
