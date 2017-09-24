@@ -157,28 +157,28 @@ var KeyframeEffect = function(target, frames, options) {};
  */
 var AnimationEffectTimingProperties;
 
-/** @type {number} */
+/** @type {number|undefined} */
 AnimationEffectTimingProperties.prototype.delay;
 
-/** @type {number} */
+/** @type {number|undefined} */
 AnimationEffectTimingProperties.prototype.endDelay;
 
-/** @type {string} */
+/** @type {string|undefined} */
 AnimationEffectTimingProperties.prototype.fill;
 
-/** @type {number} */
+/** @type {number|undefined} */
 AnimationEffectTimingProperties.prototype.iterationStart;
 
-/** @type {number} */
+/** @type {number|undefined} */
 AnimationEffectTimingProperties.prototype.iterations;
 
-/** @type {number|string} */
+/** @type {number|string|undefined} */
 AnimationEffectTimingProperties.prototype.duration;
 
-/** @type {string} */
+/** @type {string|undefined} */
 AnimationEffectTimingProperties.prototype.direction;
 
-/** @type {string} */
+/** @type {string|undefined} */
 AnimationEffectTimingProperties.prototype.easing;
 
 
@@ -188,7 +188,7 @@ AnimationEffectTimingProperties.prototype.easing;
  */
 var KeyframeAnimationOptions;
 
-/** @type {string} */
+/** @type {string|undefined} */
 KeyframeAnimationOptions.prototype.id;
 
 
