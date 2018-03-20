@@ -91,7 +91,7 @@
 
   * Added arbitrary easing capitalisation.
 
-  * Added "id" effect option. (http://w3c.github.io/web-animations/#dom-keyframeanimationoptions-id)
+  * Added "id" effect option. (https://drafts.csswg.org/web-animations/#dom-keyframeanimationoptions-id)
 
   * Added "oncancel" event handler.
 

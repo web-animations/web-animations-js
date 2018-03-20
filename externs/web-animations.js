@@ -18,7 +18,7 @@
 /**
  * @fileoverview Basic externs for the Web Animations API. This is not
  * nessecarily exhaustive. For more information, see the spec-
- *   https://w3c.github.io/web-animations
+ *   https://drafts.csswg.org/web-animations/
  * @externs
  */
 

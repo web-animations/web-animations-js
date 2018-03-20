@@ -69,7 +69,7 @@ element.animate([
 Timing parameters
 -----------------
 - Web Animations inherits many of its timing parameters from CSS Animations.
-- See the [specification](http://w3c.github.io/web-animations/#animationeffecttimingreadonly) for details on each parameter.
+- See the [specification](https://drafts.csswg.org/web-animations/#animationeffecttimingreadonly) for details on each parameter.
 
 [**Live demo**](http://jsbin.com/dabehipiyo/edit?js,output)
 ```javascript
@@ -106,7 +106,7 @@ element.animate({
 Playback controls
 -----------------
 - element.animate() returns an Animation object with basic playback controls.
-- See the [specification](http://w3c.github.io/web-animations/#the-animation-interface) for details on each method.
+- See the [specification](https://drafts.csswg.org/web-animations/#the-animation-interface) for details on each method.
 
 [**Live demo**](http://jsbin.com/kutaqoxejo/edit?js,output)
 ```javascript
