@@ -81,7 +81,7 @@
     },
     set iterationStart(value) {
       if ((isNaN(value) || value < 0) && isInvalidTimingDeprecated()) {
-        throw new TypeError('iterationStart must be a non-negative number, received: ' + timing.iterationStart);
+        throw new TypeError('iterationStart must be a non-negative number, received: ' + value);
       }
       this._setMember('iterationStart', value);
     },
@@ -192,9 +192,9 @@
       }
 
       var start = 0, end = 1;
+      function f(a, b, m) { return 3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m};
       while (start < end) {
         var mid = (start + end) / 2;
-        function f(a, b, m) { return 3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m};
         var xEst = f(a, c, mid);
         if (Math.abs(x - xEst) < 0.00001) {
           return f(b, d, mid);
