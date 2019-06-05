@@ -56,7 +56,7 @@ module.exports = function(grunt) {
     var record = config.uglify[target];
     record.options.sourceMapIn = source + '.map';
     record.options.banner = grunt.file.read('templates/boilerplate');
-    record.options.wrap = true;
+    record.options.enclose = true;
     record.options.compress.dead_code = true;
     record.options.mangle = { eval: true };
     return name;
