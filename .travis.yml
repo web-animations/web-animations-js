@@ -3,4 +3,4 @@ services: xvfb
 language: node_js
 node_js: "6.10.2"
 install: BROWSER="Firefox-stable" ./.travis-setup.sh
-script: xvfb-run npm test
+script: xvfb-run -a npm test
