@@ -1,17 +1,6 @@
 dist: xenial
-
-services:
-  - xvfb
-
+services: xvfb
 language: node_js
-
-node_js:
- - "6.10.2"
-
-install:
-  - BROWSER="Firefox-stable" ./.travis-setup.sh
-
-before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - sleep 3 # give xvfb some time to start
+node_js: "6.10.2"
+install: BROWSER="Firefox-stable" ./.travis-setup.sh
+script: xvfb-run npm test
