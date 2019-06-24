@@ -1,6 +1,6 @@
 dist: xenial
 services: xvfb
 language: node_js
-node_js: "6.10.2"
+node_js: "10.15.3"
 install: BROWSER="Firefox-stable" ./.travis-setup.sh
 script: xvfb-run -a npm test
