@@ -237,7 +237,8 @@
   var styleForCleaning = null;
   var numberString = '\\s*(-?\\d+\\.?\\d*|-?\\.\\d+)\\s*';
   var cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
-  var stepRe = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
+  var step1Re = /steps\(\s*(\d+)\s*\)/;
+  var step2Re = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
 
   function normalizeEasing(easing) {
     if (!styleForCleaning) {
@@ -260,9 +261,13 @@
     if (cubicData) {
       return cubic.apply(this, cubicData.slice(1).map(Number));
     }
-    var stepData = stepRe.exec(normalizedEasing);
-    if (stepData) {
-      return step(Number(stepData[1]), {'start': Start, 'middle': Middle, 'end': End}[stepData[2]]);
+    var step1Data = step1Re.exec(normalizedEasing);
+    if (step1Data) {
+      return step(Number(step1Data[1]), End);
+    }
+    var step2Data = step2Re.exec(normalizedEasing);
+    if (step2Data) {
+      return step(Number(step2Data[1]), {'start': Start, 'middle': Middle, 'end': End}[step2Data[2]]);
     }
     var preset = presets[normalizedEasing];
     if (preset) {
