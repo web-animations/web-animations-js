@@ -56,7 +56,7 @@ module.exports = function(grunt) {
     var record = config.uglify[target];
     record.options.sourceMapIn = source + '.map';
     record.options.banner = grunt.file.read('templates/boilerplate');
-    record.options.wrap = true;
+    record.options.enclose = true;
     record.options.compress.dead_code = true;
     record.options.mangle = { eval: true };
     return name;
@@ -191,10 +191,9 @@ module.exports = function(grunt) {
     return new Promise(function(resolve) {
       var karmaConfig = require('karma/lib/config').parseConfig(require('path').resolve('test/karma-config.js'), {});
       configCallback(karmaConfig);
-      var karmaServer = require('karma').server;
-      karmaServer.start(karmaConfig, function(exitCode) {
+      new (require('karma').Server)(karmaConfig, function(exitCode) {
         resolve(exitCode == 0);
-      });
+      }).start();
     });
   }
 

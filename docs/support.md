@@ -13,11 +13,15 @@ Browser support
 
 The polyfill is supported on modern versions of all major browsers, including:
 
-* Chrome 55+
+* Chrome 56+
 * Firefox 27+
 * IE10+ (including Edge)
 * Safari (iOS) 7.1+
 * Safari (Mac) 9+
+
+In particular, the polyfill requires requestAnimationFrame. If your browser does not
+have requestAnimationFrame, consider loading a requestAnimationFrame polyfill first
+([example](https://gist.githubusercontent.com/paulirish/1579671/raw/682e5c880c92b445650c4880a6bf9f3897ec1c5b/rAF.js)).
 
 Native fallback
 ---------------

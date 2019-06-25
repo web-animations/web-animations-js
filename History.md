@@ -1,3 +1,9 @@
+### 2.3.2 - *June 25 2019*
+
+  * [Fix the wrapping IIFE of the prod bundle.](https://github.com/web-animations/web-animations-js/issues/208)
+  * [Minor fixes for Closure compilation compatibility.](https://github.com/web-animations/web-animations-js/issues/200)
+  * [Fixed `Cannot set property _isFinished of #<Object> which has only a getter`](https://github.com/web-animations/web-animations-js/issues/165)
+
 ### 2.3.1 - *July 20 2017*
 
   * Fix [https://github.com/web-animations/web-animations-js/issues/157](missing web-animations.min.js issue)
@@ -91,7 +97,7 @@
 
   * Added arbitrary easing capitalisation.
 
-  * Added "id" effect option. (http://w3c.github.io/web-animations/#dom-keyframeanimationoptions-id)
+  * Added "id" effect option. (https://drafts.csswg.org/web-animations/#dom-keyframeanimationoptions-id)
 
   * Added "oncancel" event handler.
 

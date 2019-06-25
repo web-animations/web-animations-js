@@ -45,6 +45,14 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
 
 ## Publishing a release
 
+1.  Clone a fresh copy of [web-animations-js](https://github.com/web-animations/web-animations-js).
+
+1.  Make sure you are on the `dev` branch.
+
+    ```sh
+    git checkout dev
+    ```
+
 1.  Determine the version number for the release
 
     * Increment the first number and reset others to 0 when there are large breaking changes
@@ -70,8 +78,14 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
 
 1.  Build the polyfill with `npm install && grunt` then update `docs/experimental.md`'s Build Target Comparison with the current gzipped sizes.
 
-1.  Commit the above changes to web-animations-js/dev and merge to
-    web-animations-js/master.
+1.  Commit and push the above changes to web-animations-js/dev.
+
+    ```sh
+    # Create a commit with above changes
+    git push origin dev
+    ```
+
+1.  Merge to local master branch:
 
     ```sh
     git checkout master
@@ -85,14 +99,17 @@ Example: `http://localhost:9876/base/test/web-platform-tests/web-animations/anim
     grunt
     # Optional "grunt test" to make sure everything still passes.
     git add -f *.min.js{,.map}
-    git rm .gitignore
+    git rm --ignore-unmatch .gitignore
     git commit -m 'Add build artifacts from '`cat .git/refs/heads/dev`
-    git push HEAD:refs/heads/master
+    git push origin master
     ```
 
-1.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases) at the
-    commit pushed to web-animations-js in step #4. Copy the release notes from `History.md`
-    added in step #2.
+1.  Draft a [new release](https://github.com/web-animations/web-animations-js/releases).
+
+    *  For the **tag version**, put the new version number of this release.
+    *  For the **target**, select "master".
+    *  For the **title**, look at previous releases for examples.
+    *  For the **description**, copy the release notes from `History.md` added in step #2.
 
 1. Once you've pushed to web-animations-js, run `npm publish` from that checked-out folder
 
