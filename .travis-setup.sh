@@ -26,6 +26,9 @@ uname -a
 cat /etc/lsb-release
 
 npm install
+# npm may update the package-lock.json. Revert this to avoid failing grunt-checkrepo.
+git checkout HEAD package-lock.json
+
 npm install -g grunt-cli
 
 sudo apt-get update --fix-missing
@@ -62,19 +65,19 @@ Chrome)
   sudo dpkg --install $CHROME || sudo apt-get -f install
   which google-chrome
   ls -l `which google-chrome`
-  
+
   if [ -f /opt/google/chrome/chrome-sandbox ]; then
     export CHROME_SANDBOX=/opt/google/chrome/chrome-sandbox
   else
     export CHROME_SANDBOX=$(ls /opt/google/chrome*/chrome-sandbox)
   fi
-  
+
   # Download a custom chrome-sandbox which works inside OpenVC containers (used on travis).
   sudo rm -f $CHROME_SANDBOX
   sudo wget https://googledrive.com/host/0B5VlNZ_Rvdw6NTJoZDBSVy1ZdkE -O $CHROME_SANDBOX
   sudo chown root:root $CHROME_SANDBOX; sudo chmod 4755 $CHROME_SANDBOX
   sudo md5sum $CHROME_SANDBOX
-  
+
   google-chrome --version
   ;;
 
