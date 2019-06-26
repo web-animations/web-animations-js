@@ -39,4 +39,7 @@ suite('number-handler', function() {
     assert.equal(interpolation(-1), '0');
     assert.equal(interpolation(2), '1');
   });
+  test('unitless stroke-dashoffset interpolation', function() {
+    assert.equal(webAnimations1.propertyInterpolation('strokeDashoffset', '10', '50')(0.25), '20');
+  });
 });
