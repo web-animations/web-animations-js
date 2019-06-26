@@ -25,17 +25,33 @@
 
 /**
  * @param {!Array<!Object>} frames
- * @param {(number|AnimationEffectTimingProperties)=} opt_options
+ * @param {(number|KeyframeAnimationOptions)=} options
  * @return {!Animation}
  */
-Element.prototype.animate = function(frames, opt_options) {};
+Element.prototype.animate = function(frames, options) {};
+
+/**
+ * @return {!Array<!Animation>}
+ */
+Element.prototype.getAnimations = function() {};
 
 
 /**
- * @interface
- * @extends {EventTarget}
+ * @constructor
+ * @param {AnimationEffectReadOnly=} effect
+ * @param {AnimationTimeline=} timeline
+ * @implements {EventTarget}
  */
-var Animation = function() {};
+var Animation = function(effect, timeline) {};
+
+/** @override */
+Animation.prototype.addEventListener = function(type, listener, options) {};
+
+/** @override */
+Animation.prototype.removeEventListener = function(type, listener, options) {};
+
+/** @override */
+Animation.prototype.dispatchEvent = function(evt) {};
 
 /**
  * @return {undefined}
@@ -50,11 +66,6 @@ Animation.prototype.finish = function() {};
 /**
  * @return {undefined}
  */
-Animation.prototype.reverse = function() {};
-
-/**
- * @return {undefined}
- */
 Animation.prototype.pause = function() {};
 
 /**
@@ -62,17 +73,22 @@ Animation.prototype.pause = function() {};
  */
 Animation.prototype.play = function() {};
 
-/** @type {number} */
-Animation.prototype.startTime;
+/**
+ * @return {undefined}
+ */
+Animation.prototype.reverse = function() {};
 
 /** @type {number} */
 Animation.prototype.currentTime;
 
-/** @type {number} */
-Animation.prototype.playbackRate;
+/** @type {AnimationEffectReadOnly} */
+Animation.prototype.effect;
+
+/** @type {!Promise<void>} */
+Animation.prototype.finished;
 
 /** @type {string} */
-Animation.prototype.playState;
+Animation.prototype.id;
 
 /** @type {?function(!Event)} */
 Animation.prototype.oncancel;
@@ -80,47 +96,180 @@ Animation.prototype.oncancel;
 /** @type {?function(!Event)} */
 Animation.prototype.onfinish;
 
+/** @type {number} */
+Animation.prototype.playbackRate;
 
-/**
- * @typedef {{
- *   delay: (number|undefined),
- *   endDelay: (number|undefined),
- *   fillMode: (string|undefined),
- *   iterationStart: (number|undefined),
- *   iterations: (number|undefined),
- *   duration: (number|string|undefined),
- *   direction: (string|undefined),
- *   easing: (string|undefined)
- * }}
- */
-var AnimationEffectTimingProperties;
+/** @type {string} */
+Animation.prototype.playState;
+
+/** @type {!Promise<void>} */
+Animation.prototype.ready;
+
+/** @type {number} */
+Animation.prototype.startTime;
+
+/** @type {!AnimationTimeline} */
+Animation.prototype.timeline;
 
 
 /**
  * @interface
  */
-var AnimationEffectTiming = function() {};
+var AnimationEffectReadOnly = function() {};
+
+/**
+ * @return {!ComputedTimingProperties}
+ */
+AnimationEffectReadOnly.prototype.getComputedTiming = function() {};
+
+/** @type {!AnimationEffectTiming} */
+AnimationEffectReadOnly.prototype.timing;
+
+
+/**
+ * @constructor
+ * @param {Element} target
+ * @param {(!Array<!Object<string, *>>|!Object<string, !Array<*>>)} frames
+ * @param {(number|AnimationEffectTimingProperties)=} options
+ * @implements {AnimationEffectReadOnly}
+ */
+var KeyframeEffectReadOnly = function(target, frames, options) {};
+
+/** @override */
+KeyframeEffectReadOnly.prototype.getComputedTiming = function() {};
+
+/** @override */
+KeyframeEffectReadOnly.prototype.timing;
+
+
+/**
+ * @constructor
+ * @param {Element} target
+ * @param {(!Array<!Object<string, *>>|!Object<string, !Array<*>>)} frames
+ * @param {(number|AnimationEffectTimingProperties)=} options
+ * @extends {KeyframeEffectReadOnly}
+ */
+var KeyframeEffect = function(target, frames, options) {};
+
+
+/**
+ * @record
+ */
+var AnimationEffectTimingProperties;
+
+/** @type {number|undefined} */
+AnimationEffectTimingProperties.prototype.delay;
+
+/** @type {number|undefined} */
+AnimationEffectTimingProperties.prototype.endDelay;
+
+/** @type {string|undefined} */
+AnimationEffectTimingProperties.prototype.fill;
+
+/** @type {number|undefined} */
+AnimationEffectTimingProperties.prototype.iterationStart;
+
+/** @type {number|undefined} */
+AnimationEffectTimingProperties.prototype.iterations;
+
+/** @type {number|string|undefined} */
+AnimationEffectTimingProperties.prototype.duration;
+
+/** @type {string|undefined} */
+AnimationEffectTimingProperties.prototype.direction;
+
+/** @type {string|undefined} */
+AnimationEffectTimingProperties.prototype.easing;
+
+
+/**
+ * @record
+ * @extends {AnimationEffectTimingProperties}
+ */
+var KeyframeAnimationOptions;
+
+/** @type {string|undefined} */
+KeyframeAnimationOptions.prototype.id;
+
+
+/**
+ * @record
+ * @extends {AnimationEffectTimingProperties}
+ */
+var ComputedTimingProperties;
 
 /** @type {number} */
-AnimationEffectTiming.prototype.delay;
+ComputedTimingProperties.prototype.endTime;
 
 /** @type {number} */
-AnimationEffectTiming.prototype.endDelay;
+ComputedTimingProperties.prototype.activeDuration;
+
+/** @type {?number} */
+ComputedTimingProperties.prototype.localTime;
+
+/** @type {?number} */
+ComputedTimingProperties.prototype.progress;
+
+/** @type {?number} */
+ComputedTimingProperties.prototype.currentIteration;
+
+
+/**
+ * @interface
+ */
+var AnimationEffectTimingReadOnly = function() {}
+
+/** @type {number} */
+AnimationEffectTimingReadOnly.prototype.delay;
+
+/** @type {number} */
+AnimationEffectTimingReadOnly.prototype.endDelay;
 
 /** @type {string} */
-AnimationEffectTiming.prototype.fillMode;
+AnimationEffectTimingReadOnly.prototype.fill;
 
 /** @type {number} */
-AnimationEffectTiming.prototype.iterationStart;
+AnimationEffectTimingReadOnly.prototype.iterationStart;
 
 /** @type {number} */
-AnimationEffectTiming.prototype.iterations;
+AnimationEffectTimingReadOnly.prototype.iterations;
 
 /** @type {number|string} */
-AnimationEffectTiming.prototype.duration;
+AnimationEffectTimingReadOnly.prototype.duration;
 
 /** @type {string} */
-AnimationEffectTiming.prototype.direction;
+AnimationEffectTimingReadOnly.prototype.direction;
 
 /** @type {string} */
-AnimationEffectTiming.prototype.easing;
+AnimationEffectTimingReadOnly.prototype.easing;
+
+
+/**
+ * @interface
+ * @extends {AnimationEffectTimingReadOnly}
+ */
+var AnimationEffectTiming = function() {};
+
+
+/**
+ * @interface
+ */
+var AnimationTimeline = function() {};
+
+/** @type {?number} */
+AnimationTimeline.prototype.currentTime;
+
+
+/**
+ * @constructor
+ * @implements {AnimationTimeline}
+ */
+var DocumentTimeline = function() {};
+
+/** @override */
+DocumentTimeline.prototype.currentTime;
+
+
+/** @type {!DocumentTimeline} */
+Document.prototype.timeline;
+
