@@ -14,7 +14,7 @@ A JavaScript implementation of the Web Animations API that provides Web
 Animation features in browsers that do not support it natively. The polyfill
 falls back to the native implementation when one is available.
 
-Quick start
+How To Use
 -----------
 
 Here's a simple example of an animation that fades and scales a `<div>`.  
